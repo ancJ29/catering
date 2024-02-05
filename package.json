@@ -4,9 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "sync:schema": "node ./scripts/sync-schema.js",
     "dev": "vite",
-    "build": "yarn pre-build && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "static:check": "eslint . && prettier --check .",
     "static:fix": "eslint . --fix && prettier --write .",
