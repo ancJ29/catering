@@ -5,6 +5,7 @@ import { create } from "zustand";
 
 type MetaDataStore = {
   roles: OptionProps[];
+  departments: OptionProps[];
   dictionaries: Record<string, Dictionary>;
   loadMetaData: () => Promise<void>;
 };
@@ -12,10 +13,12 @@ type MetaDataStore = {
 export default create<MetaDataStore>((set) => ({
   dictionaries: {},
   roles: [],
+  departments: [],
   loadMetaData: async () => {
     const data = await getMetadata();
     set(() => ({
       roles: buildOptions(data.roles),
+      departments: buildOptions(data.departments),
       dictionaries: data.dictionaries,
     }));
   },

@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "sync:schema": "node ./scripts/sync-schema.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

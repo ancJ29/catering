@@ -70,6 +70,12 @@ export const configs = {
     schema: {
       request: z.any(),
       response: z.object({
+        departments: z
+          .object({
+            id: z.string(),
+            name: z.string(),
+          })
+          .array(),
         roles: z
           .object({
             id: z.string(),
@@ -489,6 +495,12 @@ export const configs = {
             active: z.boolean(),
             createdAt: z.date(),
             updatedAt: z.date(),
+            departments: z
+              .object({
+                id: z.string(),
+                name: z.string(),
+              })
+              .array(),
             roles: z
               .object({
                 id: z.string(),
@@ -516,6 +528,7 @@ export const configs = {
         email: emailSchema.optional(),
         phone: phoneSchema.optional(),
         roleId: z.string(),
+        departmentIds: z.string().array().default([]),
       }),
       response: z.object({
         id: z.string(),

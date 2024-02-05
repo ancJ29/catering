@@ -10,16 +10,33 @@ const configs = (
       width: "15%",
     },
     {
+      key: "fullName",
+      header: t("Full Name"),
+      width: "15%",
+    },
+    {
       key: "email",
       header: t("Email"),
-      width: "20%",
+      width: "25%",
     },
     {
       key: "roles",
       header: t("Role"),
-      width: "20%",
+      width: "10%",
       renderCell: (roles: { name: string }[]) => {
         return roles.map((role) => t(role.name)).join(", ");
+      },
+    },
+    {
+      key: "departments",
+      header: t("Department"),
+      width: "20%",
+      renderCell: (departments: { name: string }[]) => {
+        return (
+          departments
+            .map((department) => department.name)
+            .join(", ") || "-"
+        );
       },
     },
     {

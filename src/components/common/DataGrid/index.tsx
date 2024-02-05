@@ -14,6 +14,7 @@ import Empty from "./Empty";
 
 function DataGrid<T extends GenericObject>({
   hasOrderColumn = false,
+  hasActionColumn = false,
   className,
   columns,
   data,
@@ -26,8 +27,9 @@ function DataGrid<T extends GenericObject>({
       _contentBuilder(rows, columns, {
         hasOrderColumn,
         actionHandlers,
+        hasActionColumn,
       }),
-    [rows, columns, hasOrderColumn, actionHandlers],
+    [rows, columns, hasOrderColumn, actionHandlers, hasActionColumn],
   );
 
   useEffect(() => {
@@ -52,10 +54,12 @@ function _contentBuilder<T extends GenericObject>(
   columns: DataGridColumnProps[],
   {
     actionHandlers,
+    hasActionColumn = false,
     hasOrderColumn = false,
   }: {
-    actionHandlers?: DataGridActionProps<T>;
     hasOrderColumn?: boolean;
+    hasActionColumn?: boolean;
+    actionHandlers?: DataGridActionProps<T>;
   } = {},
 ) {
   return (
@@ -64,6 +68,7 @@ function _contentBuilder<T extends GenericObject>(
         hasOrderColumn={hasOrderColumn}
         columns={columns}
         actionHandlers={actionHandlers}
+        hasActionColumn={hasActionColumn}
       />
       {rows.length > 0 ? (
         rows.map((row, index) => (
@@ -75,7 +80,7 @@ function _contentBuilder<T extends GenericObject>(
               <Cell key={column.key} row={row} column={column} />
             ))}
 
-            {actionHandlers && (
+            {hasActionColumn && actionHandlers && (
               <Box className={classes.actions}>
                 <Actions
                   key={index + 1}
@@ -95,9 +100,11 @@ function _contentBuilder<T extends GenericObject>(
 
 function Headers<T>({
   columns,
+  hasActionColumn,
   hasOrderColumn,
   actionHandlers,
 }: {
+  hasActionColumn: boolean;
   hasOrderColumn: boolean;
   columns: DataGridColumnProps[];
   actionHandlers?: DataGridActionProps<T>;
@@ -121,7 +128,7 @@ function Headers<T>({
           {column.header || ""}
         </Box>
       ))}
-      {actionHandlers && (
+      {hasActionColumn && actionHandlers && (
         <Box className={classes.actions}>&nbsp;</Box>
       )}
     </div>

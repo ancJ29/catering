@@ -32,6 +32,7 @@ export default {
   "Disabled": "Ngưng hoạt động",
   "Add user": "Thêm người dùng",
   "Add": "Thêm",
+  "Department": "Bộ phận",
   "Full name": "Họ tên",
   "John Doe": "Nguyễn Văn An",
   "field is required": "vui lòng nhập thông tin",

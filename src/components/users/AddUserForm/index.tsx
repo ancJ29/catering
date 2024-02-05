@@ -3,9 +3,9 @@ import {
   configs as actionConfigs,
   emailSchema,
 } from "@/auto-generated/api-configs";
+import Autocomplete from "@/components/common/Autocomplete";
 import ButtonIcon from "@/components/common/ButtonIcon";
 import PhoneInput from "@/components/common/PhoneInput";
-import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import logger from "@/services/logger";
@@ -35,7 +35,11 @@ import classes from "./AddUserForm.module.scss";
 const { request } = actionConfigs[Actions.ADD_USER].schema;
 type Request = z.infer<typeof request>;
 
-export const initialValues: Request = {
+type Form = Omit<Request, "departmentIds"> & {
+  departmentId?: string;
+};
+export const initialValues: Form = {
+  departmentId: "",
   userName: "",
   password: "",
   fullName: "",
@@ -54,13 +58,14 @@ type AddUserFormProps = {
 const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
   const t = useTranslation();
   const data = useMetaDataStore();
-  const [roles] = useState(
-    data.roles.map((role) => ({
+  const [options] = useState({
+    roles: data.roles.map((role) => ({
       value: role.value,
       label: t(role.label),
     })),
-  );
-  const form = useForm<Request>({
+    departments: data.departments,
+  });
+  const form = useForm<Form>({
     initialValues: {
       ...initialValues,
       password: randomPassword(),
@@ -68,7 +73,7 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
     validate: _validate(t),
   });
   const addUser = useCallback(
-    async (values: Request) => {
+    async (values: Form) => {
       const res = await callApi<Request, { id: string }>({
         action: Actions.ADD_USER,
         params: {
@@ -76,6 +81,7 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
           userName: values.userName.trim(),
           fullName: values.fullName.trim(),
           roleId: values.roleId,
+          departmentIds: [values.departmentId || ""].filter(Boolean),
           email: values.email?.trim() || undefined,
           phone:
             convertToInternationalFormat(
@@ -96,7 +102,7 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
   );
 
   const submit = useCallback(
-    (values: Request) => {
+    (values: Form) => {
       modals.openConfirmModal({
         title: t("Add user"),
         children: (
@@ -135,12 +141,18 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
         placeholder={t("Username")}
         {...form.getInputProps("userName")}
       />
-      <Select
+      <Autocomplete
         w={w}
         withAsterisk
-        options={roles}
+        options={options.roles}
         label={t("Role")}
         {...form.getInputProps("roleId")}
+      />
+      <Autocomplete
+        w={w}
+        label={t("Department")}
+        options={options.departments}
+        {...form.getInputProps("departmentId")}
       />
       <Box w={w}>
         <Flex w={w} align="end" justify="between" gap={2}>

@@ -7,6 +7,7 @@ export type DataGridProps<T> = {
   columns: DataGridColumnProps[];
   data?: T[];
   hasOrderColumn?: boolean;
+  hasActionColumn?: boolean;
   actionHandlers?: DataGridActionProps<T>;
   ActionComponent?: () => ReactNode;
 };

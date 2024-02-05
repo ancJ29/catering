@@ -32,6 +32,7 @@ export default {
   "Disabled": "Disabled",
   "Add user": "Add user",
   "Add": "Add",
+  "Department": "Department",
   "Full name": "Full name",
   "John Doe": "John Doe",
   "field is required": "required",
