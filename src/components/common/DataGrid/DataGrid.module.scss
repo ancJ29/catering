@@ -1,0 +1,80 @@
+@import "@/styles/_variables.scss";
+
+.container {
+  border: 1px solid $input-highlight-color;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.headerRow {
+  display: flex;
+  background-color: $main-color;
+  font-weight: bold;
+  color: white;
+  padding: 0 0.6rem;
+  gap: 8px;
+}
+
+.headerCell,
+.dataCell {
+  padding: 8px 0;
+}
+
+.dataRow {
+  display: flex;
+  border-bottom: 1px solid $border-color;
+  cursor: pointer;
+  gap: 8px;
+  align-items: center;
+  padding: 0.5rem 0.3rem;
+}
+
+.dataRow:hover {
+  background-color: #f9f9f9;
+}
+
+.dataRow:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.selected {
+  background-color: #e0e0e0;
+}
+
+.tableEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 40vh;
+}
+
+.actions {
+  display: flex;
+  justify-content: end;
+  padding-right: 1rem;
+  flex-grow: 1;
+}
+
+.img1 {
+  fill: #aeb8c2;
+}
+
+.img2 {
+  fill: #f5f5f7;
+}
+
+.img3 {
+  fill: #dce0e6;
+}
+
+.img4 {
+  fill: #fff;
+}
+
+.img5 {
+  fill-opacity: 0.8;
+  fill: #f5f5f5;
+}

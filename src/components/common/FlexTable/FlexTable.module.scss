@@ -1,0 +1,28 @@
+@import "@/styles/_variables.scss";
+
+.tableWrapper {
+  border: 1px solid $input-highlight-color;
+  overflow-y: hidden;
+  border-radius: 8px;
+}
+
+.header {
+  background-color: $main-color;
+  padding: 0.6rem;
+  color: white;
+  gap: 10px;
+
+  &:hover {
+    background: $main-color !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .tableWrapper {
+    border: none;
+  }
+
+  .header {
+    display: none;
+  }
+}

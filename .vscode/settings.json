@@ -1,0 +1,21 @@
+{
+  "cSpell.ignorePaths": [
+    "./src/services/i18n/lang/vi.ts",
+    "./src/types/auto-generated",
+  ],
+  "cSpell.words": [
+    "arrowParens",
+    "mantine",
+    "tabler",
+    "toastify",
+    "usehooks",
+    "zustand",
+    "ndyenchi",
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.addMissingImports": "explicit",
+    "source.removeUnusedImports": "explicit"
+  },
+}

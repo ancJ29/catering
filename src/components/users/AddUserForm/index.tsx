@@ -1,0 +1,212 @@
+import {
+  Actions,
+  configs as actionConfigs,
+  emailSchema,
+} from "@/auto-generated/api-configs";
+import ButtonIcon from "@/components/common/ButtonIcon";
+import PhoneInput from "@/components/common/PhoneInput";
+import Select from "@/components/common/Select";
+import useTranslation from "@/hooks/useTranslation";
+import callApi from "@/services/api";
+import logger from "@/services/logger";
+import useMetaDataStore from "@/stores/meta-data.store";
+import {
+  convertToInternationalFormat,
+  isVietnamesePhoneNumber,
+  randomPassword,
+} from "@/utils";
+import {
+  Box,
+  Button,
+  Flex,
+  InputLabel,
+  PasswordInput,
+  Text,
+  TextInput,
+} from "@mantine/core";
+import { isNotEmpty, useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
+import { IconCopy } from "@tabler/icons-react";
+import { useCallback, useState } from "react";
+import { toast } from "react-toastify";
+import { z } from "zod";
+import classes from "./AddUserForm.module.scss";
+
+const { request } = actionConfigs[Actions.ADD_USER].schema;
+type Request = z.infer<typeof request>;
+
+export const initialValues: Request = {
+  userName: "",
+  password: "",
+  fullName: "",
+  roleId: "",
+  email: "",
+  phone: "",
+};
+
+const w = "100%";
+
+type AddUserFormProps = {
+  onClose: () => void;
+  onSuccess: () => void;
+};
+
+const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
+  const t = useTranslation();
+  const data = useMetaDataStore();
+  const [roles] = useState(
+    data.roles.map((role) => ({
+      value: role.value,
+      label: t(role.label),
+    })),
+  );
+  const form = useForm<Request>({
+    initialValues: {
+      ...initialValues,
+      password: randomPassword(),
+    },
+    validate: _validate(t),
+  });
+  const addUser = useCallback(
+    async (values: Request) => {
+      const res = await callApi<Request, { id: string }>({
+        action: Actions.ADD_USER,
+        params: {
+          password: Math.random().toString(36).slice(-8),
+          userName: values.userName.trim(),
+          fullName: values.fullName.trim(),
+          roleId: values.roleId,
+          email: values.email?.trim() || undefined,
+          phone:
+            convertToInternationalFormat(
+              values.phone?.trim() || undefined,
+            ) || undefined,
+        },
+        options: {
+          toastMessage: t("Add user successfully"),
+        },
+      });
+      if (res?.id) {
+        onSuccess();
+        onClose();
+      }
+      logger.debug(values);
+    },
+    [onClose, onSuccess, t],
+  );
+
+  const submit = useCallback(
+    (values: Request) => {
+      modals.openConfirmModal({
+        title: t("Add user"),
+        children: (
+          <Text size="sm">
+            {t("Are you sure you want to add new user?")}
+          </Text>
+        ),
+        labels: { confirm: "OK", cancel: t("Cancel") },
+        onConfirm: () => addUser(values),
+      });
+    },
+    [addUser, t],
+  );
+
+  const copyPassword = useCallback(() => {
+    navigator.clipboard.writeText(form.values.password);
+    toast.success(t("Password copied"));
+  }, [form.values.password, t]);
+
+  return (
+    <form
+      className={classes.wrapper}
+      onSubmit={form.onSubmit(submit)}
+    >
+      <TextInput
+        w={w}
+        withAsterisk
+        label={t("Full name")}
+        placeholder={t("John Doe")}
+        {...form.getInputProps("fullName")}
+      />
+      <TextInput
+        w={w}
+        withAsterisk
+        label={t("Username")}
+        placeholder={t("Username")}
+        {...form.getInputProps("userName")}
+      />
+      <Select
+        w={w}
+        withAsterisk
+        options={roles}
+        label={t("Role")}
+        {...form.getInputProps("roleId")}
+      />
+      <Box w={w}>
+        <Flex w={w} align="end" justify="between" gap={2}>
+          <PasswordInput
+            w={w}
+            disabled
+            visible
+            label={t("Password")}
+            placeholder={t("Password")}
+            {...form.getInputProps("password")}
+          />
+          <ButtonIcon onClick={copyPassword}>
+            <IconCopy strokeWidth="1.5" color="black" />
+          </ButtonIcon>
+        </Flex>
+        <Flex w={w} justify="end">
+          <InputLabel c={"red.5"}>
+            {t(
+              "Please copy and keep password safe before create new user",
+            )}
+          </InputLabel>
+        </Flex>
+      </Box>
+      <TextInput
+        w={w}
+        label={t("Email")}
+        placeholder={t("Email")}
+        {...form.getInputProps("email")}
+      />
+      <PhoneInput
+        w={w}
+        label={t("Phone")}
+        placeholder={t("Phone")}
+        onChangeValue={(phone) => form.setFieldValue("phone", phone)}
+        {...form.getInputProps("phone")}
+      />
+      <Button type="submit">{t("Add")}</Button>
+    </form>
+  );
+};
+
+export default AddUserForm;
+
+function _validate(t: (s: string) => string) {
+  return {
+    userName: isNotEmpty(t("field is required")),
+    fullName: isNotEmpty(t("field is required")),
+    roleId: isNotEmpty(t("field is required")),
+    phone: (value: unknown) => {
+      if (value) {
+        if (typeof value !== "string") {
+          return t("Invalid phone number");
+        }
+        if (value && !isVietnamesePhoneNumber(value)) {
+          return t("Invalid phone number");
+        }
+      }
+    },
+    email: (value: unknown) => {
+      if (value) {
+        try {
+          emailSchema.parse(value);
+        } catch (error) {
+          return t("Invalid email");
+        }
+      }
+    },
+  };
+}

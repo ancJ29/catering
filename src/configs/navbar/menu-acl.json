@@ -1,0 +1,10 @@
+{
+  "OWNER": [
+    "dashboard",
+    "reservation-management",
+    "chain-management",
+    "branch-management",
+    "customer-management",
+    "account-management"
+  ]
+}

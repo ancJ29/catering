@@ -1,0 +1,12 @@
+@import "@/styles/_variables.scss";
+
+.container {
+  cursor: pointer;
+  padding: 0.6rem;
+  background: none;
+
+  &:hover {
+    border-radius: 8px;
+    background: $hover-background-color;
+  }
+}

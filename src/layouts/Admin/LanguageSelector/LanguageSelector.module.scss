@@ -1,0 +1,19 @@
+@import "@/styles/_variables.scss";
+
+.item {
+  padding: 1rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  &:hover {
+    background: $hover-background-color;
+  }
+}
+
+.btnIcon {
+  background: none;
+  &:hover {
+    background: $hover-background-color;
+  }
+}

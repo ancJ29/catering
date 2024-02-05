@@ -1,0 +1,28 @@
+[
+  {
+    "key": "dashboard",
+    "label": "Dashboard",
+    "icon": "layout-dashboard",
+    "url": "/dashboard",
+    "subs": [
+      {
+        "key": "sub-dashboard",
+        "label": "Dashboard",
+        "icon": "layout-dashboard",
+        "url": "/dashboard-1"
+      }
+    ]
+  },
+  {
+    "key": "product",
+    "label": "Product Management",
+    "icon": "soup",
+    "url": "/product-management"
+  },
+  {
+    "key": "user",
+    "label": "User Management",
+    "icon": "user-square",
+    "url": "/user-management"
+  }
+]

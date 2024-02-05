@@ -1,0 +1,13 @@
+@import "@/styles/_variables.scss";
+
+.container {
+  background: none;
+
+  &:disabled {
+    background: $disabled-color;
+  }
+
+  &:enabled:hover {
+    background: $hover-background-color;
+  }
+}

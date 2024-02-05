@@ -1,0 +1,17 @@
+@import "@/styles/_variables.scss";
+
+.logout-icon {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: $hover-background-color;
+  }
+}
+
+.wrapper {
+  border-bottom: 1px solid $border-color;
+}
