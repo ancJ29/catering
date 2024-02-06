@@ -3,6 +3,7 @@ import * as z from "zod";
 export const productSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
+  type: z.string().nullish(),
   name: z.string(),
   code: z.string(),
   description: z.string().nullish(),

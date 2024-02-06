@@ -92,8 +92,8 @@ async function _loadData(
   });
 
   if (res?.hasMore) {
-    const _users = (res?.departments || []) as GenericObject[];
-    return _users.concat(
+    const _departments = (res?.departments || []) as GenericObject[];
+    return _departments.concat(
       await _loadData(kitchenType, noCache, res.cursor),
     );
   }

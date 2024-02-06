@@ -4,9 +4,13 @@ import { ReactNode } from "react";
 type TextAlign = "left" | "center" | "right";
 
 export type DataGridProps<T> = {
+  limit?: number;
+  page?: number;
+  isPaginated?: boolean;
   className?: string;
   columns: DataGridColumnProps[];
   data?: T[];
+  onChangePage?: (page: number) => void;
   onSort?: (column: DataGridColumnProps) => void;
   hasOrderColumn?: boolean;
   hasActionColumn?: boolean;

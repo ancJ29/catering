@@ -18,7 +18,7 @@ const configs = (
       textAlign: "left",
     },
     {
-      key: "kitchen-type",
+      key: "catering-type",
       header: t("Type"),
       width: "20%",
       renderCell: (_, row) => {

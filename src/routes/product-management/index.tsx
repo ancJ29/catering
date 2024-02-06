@@ -2,12 +2,15 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
+import useMetaDataStore from "@/stores/meta-data.store";
 import { GenericObject } from "@/types";
-import { Stack } from "@mantine/core";
+import { unique } from "@/utils";
+import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import configs from "./_configs";
@@ -19,40 +22,89 @@ export type Response = z.infer<typeof response>;
 
 const ProductManagement = () => {
   const t = useTranslation();
+  const { enumMap } = useMetaDataStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
   const [products, setProducts] = useState<GenericObject[]>([]);
+  const [data, setData] = useState<GenericObject[]>([]);
+  const [page, setPage] = useState(1);
+  const [names, setNames] = useState([""]);
 
-  const _reload = useCallback(async (noCache?: boolean) => {
-    if (noCache) {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-    }
-    _loadData(noCache).then((products) =>
-      setProducts(products || []),
-    );
-  }, []);
+  const _reload = useCallback(
+    async (noCache?: boolean) => {
+      if (noCache) {
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
+      _loadData(noCache).then((products: GenericObject[] = []) => {
+        const _products = products.map((el) => {
+          const type = enumMap.get(el.type as string);
+          el.typeName = type ? t(type) : "-";
+          if (typeof el.name === "string") {
+            el.name = el.name.split(".").slice(0, -1).join(".");
+          }
+          return el;
+        });
+        setProducts(_products);
+        setData(_products);
+        setNames(unique(_products.map((el) => el.name as string)));
+      });
+    },
+    [enumMap, t],
+  );
+
+  const filter = useCallback(
+    (keyword: string) => {
+      setPage(1);
+      if (!keyword) {
+        setData(products);
+        return;
+      }
+      const _keyword = keyword.toLowerCase();
+      setData(
+        products.filter((c) =>
+          (c.name as string)?.toLocaleLowerCase().includes(_keyword),
+        ),
+      );
+    },
+    [products],
+  );
 
   useOnMounted(_reload);
 
   return (
     <Stack gap={10} w="100%" h="100%" p={10}>
+      <Flex justify="end" align={"center"}>
+        <Autocomplete w={"20vw"} onEnter={filter} data={names} />
+      </Flex>
       <DataGrid
+        page={page}
+        limit={10}
+        isPaginated
         hasOrderColumn
         columns={dataGridConfigs}
-        data={products}
+        data={data}
+        onChangePage={setPage}
       />
     </Stack>
   );
 };
 
-export async function _loadData(
+async function _loadData(
   noCache?: boolean,
   cursor?: string,
 ): Promise<GenericObject[]> {
   const res = await callApi<Request, Response>({
     action: Actions.GET_PRODUCTS,
-    params: { cursor, take: 100 },
+    params: {
+      take: 100,
+      cursor,
+    },
     options: { noCache },
   });
+
+  if (res?.hasMore) {
+    const _products = (res?.products || []) as GenericObject[];
+    return _products.concat(await _loadData(noCache, res.cursor));
+  }
   return res?.products || [];
 }
 

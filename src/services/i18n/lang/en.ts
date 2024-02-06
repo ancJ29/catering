@@ -45,6 +45,9 @@ export default {
   "Cancel": "Cancel",
   "Code": "Code",
   "Type": "Type",
+  "Page": "Page",
+  "YES": "YES",
+  "NO": "NO",
   "Suppliers": "Suppliers",
   "Are you sure you want to add new user?":
     "Are you sure you want to add new user?",

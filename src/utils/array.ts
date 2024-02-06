@@ -62,3 +62,7 @@ export function isSubArray<T extends string | number>(
   });
   return children.some((item) => !parentMap.has(item));
 }
+
+export function unique<T>(arr: T[]) {
+  return [...new Set(arr)];
+}

@@ -1,13 +1,20 @@
+import ButtonIcon from "@/components/common/ButtonIcon";
+import Select from "@/components/common/Select";
+import useTranslation from "@/hooks/useTranslation";
 import {
   DataGridActionProps,
   DataGridColumnProps,
   DataGridProps,
   GenericObject,
 } from "@/types";
-import { Box, Flex, Table } from "@mantine/core";
+import { Box, Flex, Table, Text } from "@mantine/core";
 import {
   IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
   IconChevronUp,
+  IconChevronsLeft,
+  IconChevronsRight,
   IconSelector,
 } from "@tabler/icons-react";
 import cls from "classnames";
@@ -17,7 +24,16 @@ import Scroll from "../InfiniteScroll";
 import classes from "./DataGrid.module.scss";
 import Empty from "./Empty";
 
+const limitOptions = [10, 20, 50, 100].map((el) => ({
+  value: el,
+  label: el.toString(),
+}));
+
 function DataGrid<T extends GenericObject>({
+  limit: _limit = 0,
+  page: _page = 1,
+  onChangePage,
+  isPaginated = false,
   hasOrderColumn = false,
   hasActionColumn = false,
   className,
@@ -26,9 +42,14 @@ function DataGrid<T extends GenericObject>({
   actionHandlers,
   onSort,
 }: DataGridProps<T>) {
-  const [rows, setRows] = useState<T[]>(data || []);
-
   const [configs, setConfig] = useState(columns);
+  const [rows, setRows] = useState<T[]>(data || []);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(_limit || 10);
+  const lastPage = useMemo(
+    () => (isPaginated ? Math.ceil(rows.length / limit) : 0),
+    [limit, rows.length, isPaginated],
+  );
 
   const sort = useCallback(() => {
     const column = configs.find((el) => el.sorting);
@@ -79,30 +100,61 @@ function DataGrid<T extends GenericObject>({
     [configs, onSort, sort],
   );
 
-  const Content = useMemo(
-    () =>
-      _contentBuilder(rows, configs, {
-        hasOrderColumn,
-        actionHandlers,
-        hasActionColumn,
-        onSort: sortHandler,
-      }),
-    [
-      rows,
-      configs,
+  const Content = useMemo(() => {
+    let data = rows;
+    let from = 0;
+    if (isPaginated) {
+      from = limit * (page - 1);
+      data = rows.slice(from, from + limit);
+    }
+    return _contentBuilder(data, configs, {
+      orderFrom: from,
       hasOrderColumn,
       actionHandlers,
       hasActionColumn,
-      sortHandler,
-    ],
-  );
+      onSort: sortHandler,
+    });
+  }, [
+    rows,
+    isPaginated,
+    limit,
+    configs,
+    hasOrderColumn,
+    actionHandlers,
+    hasActionColumn,
+    sortHandler,
+    page,
+  ]);
 
   useEffect(() => {
     setRows(data || []);
   }, [data]);
 
+  useEffect(() => {
+    if (_limit !== limit) {
+      setLimit(limit);
+    }
+  }, [_limit, limit]);
+  useEffect(() => {
+    if (_page !== page) {
+      setPage(_page);
+    }
+  }, [page, _page]);
+
   return (
     <Table.ScrollContainer minWidth={"100%"} p={0} mt={20} w="100%">
+      {isPaginated && (
+        <Pagination
+          limit={limit}
+          setLimit={setLimit}
+          page={page}
+          lastPage={lastPage}
+          setPage={(page) => {
+            onChangePage && onChangePage(page);
+            setPage(page);
+          }}
+        />
+      )}
       <div className={cls(classes.container, className)}>
         <div>
           <Scroll dataLength={rows.length} rows={Content} />
@@ -112,17 +164,116 @@ function DataGrid<T extends GenericObject>({
   );
 }
 
+export function Pagination({
+  page,
+  limit,
+  lastPage,
+  setPage,
+  setLimit,
+}: {
+  limit: number;
+  lastPage: number;
+  page: number;
+  setLimit: (limit: number) => void;
+  setPage: (page: number) => void;
+}) {
+  const t = useTranslation();
+  return (
+    <Flex justify="end" align="center" mb={12} mx={4} gap={4}>
+      <Text mr={4}>
+        {t("Page")}: {page} / {lastPage}
+      </Text>
+      <ButtonIcon disabled={page < 3} onClick={() => setPage(1)}>
+        <IconChevronsLeft strokeWidth="1.5" color="black" />
+      </ButtonIcon>
+      <ButtonIcon
+        disabled={page < 2}
+        onClick={() => setPage(Math.max(page - 1, 0))}
+      >
+        <IconChevronLeft strokeWidth="1.5" color="black" />
+      </ButtonIcon>
+      <Page
+        page={page - 2}
+        lastPage={lastPage}
+        onClick={() => setPage(page - 2)}
+      />
+      <Page
+        page={page - 1}
+        lastPage={lastPage}
+        onClick={() => setPage(page - 1)}
+      />
+      <Page disabled page={page} lastPage={lastPage} />
+      <Page
+        page={page + 1}
+        lastPage={lastPage}
+        onClick={() => setPage(page + 1)}
+      />
+      <Page
+        page={page + 2}
+        lastPage={lastPage}
+        onClick={() => setPage(page + 2)}
+      />
+      <ButtonIcon
+        disabled={lastPage <= page}
+        onClick={() => setPage(Math.min(page + 1, lastPage))}
+      >
+        <IconChevronRight strokeWidth="1.5" color="black" />
+      </ButtonIcon>
+      <ButtonIcon
+        disabled={lastPage <= page - 1}
+        onClick={() => setPage(lastPage)}
+      >
+        <IconChevronsRight strokeWidth="1.5" color="black" />
+      </ButtonIcon>
+      <Select
+        w={100}
+        value={limit.toString()}
+        options={limitOptions}
+        onChange={(value: string | null) => {
+          if (!value || isNaN(parseInt(value))) {
+            return;
+          }
+          setLimit(parseInt(value));
+        }}
+      />
+    </Flex>
+  );
+}
+
+function Page({
+  page,
+  disabled,
+  lastPage,
+  onClick,
+}: {
+  disabled?: boolean;
+  page: number;
+  lastPage: number;
+  onClick?: () => void;
+}) {
+  if (page > lastPage || page < 1) {
+    return <></>;
+  }
+  return (
+    <ButtonIcon disabled={disabled} onClick={onClick}>
+      <Text c="black">{page}</Text>
+    </ButtonIcon>
+  );
+}
+
 export default DataGrid;
 
 function _contentBuilder<T extends GenericObject>(
   rows: T[],
   columns: DataGridColumnProps[],
   {
+    orderFrom = 0,
     actionHandlers,
     hasActionColumn = false,
     hasOrderColumn = false,
     onSort,
   }: {
+    orderFrom?: number;
     hasOrderColumn?: boolean;
     hasActionColumn?: boolean;
     onSort?: (column: DataGridColumnProps) => void;
@@ -142,7 +293,10 @@ function _contentBuilder<T extends GenericObject>(
         rows.map((row, index) => (
           <Box key={index} className={classes.dataRow}>
             {hasOrderColumn && (
-              <OrderCell key={`no.${index}`} index={index} />
+              <OrderCell
+                key={`no.${index}`}
+                index={orderFrom + index}
+              />
             )}
             {columns.map((column) => (
               <Cell key={column.key} row={row} column={column} />
@@ -201,6 +355,7 @@ function Headers<T>({
             key={index}
             className={classes.headerCell}
             w={column.width}
+            // bg="red.1"
             style={column.headerStyle || column.style}
             hidden={column.hidden}
             ta={
@@ -210,16 +365,20 @@ function Headers<T>({
             }
           >
             {column.sortable ? (
-              <Flex justify="space-between" align="center" w="100%">
+              <Flex
+                justify="space-between"
+                align="center"
+                pr={10}
+                w="100%"
+              >
                 {column.header || ""}
                 {column.sortable && (
-                  <Box
+                  <ButtonIcon
                     onClick={() => onSort(column)}
-                    className={classes.sortable}
                     style={{ width: column.width }}
                   >
                     <Icon width={15} height={15} />
-                  </Box>
+                  </ButtonIcon>
                 )}
               </Flex>
             ) : (

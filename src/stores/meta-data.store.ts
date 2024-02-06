@@ -9,6 +9,7 @@ type MetaDataStore = {
   dictionaries: Record<string, Dictionary>;
   kitchenType?: string;
   enums: { id: string; name: string }[];
+  enumMap: Map<string, string>;
   loadMetaData: () => Promise<void>;
 };
 
@@ -18,6 +19,7 @@ export default create<MetaDataStore>((set) => ({
   ),
   roles: [],
   departments: [],
+  enumMap: new Map(),
   enums: [],
   loadMetaData: async () => {
     const data = await getMetadata();
@@ -31,9 +33,11 @@ export default create<MetaDataStore>((set) => ({
       );
     }
     set(() => ({
-      kitchenType: data.enums.find((e) => e.name === "client-kitchen")
-        ?.id,
+      kitchenType: data.enums.find(
+        (e) => e.name === "client-catering",
+      )?.id,
       enums: data.enums,
+      enumMap: new Map(data.enums.map((e) => [e.id, e.name])),
       roles: buildOptions(data.roles),
       departments: buildOptions(data.departments),
       dictionaries: {

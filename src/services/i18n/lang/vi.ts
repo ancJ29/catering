@@ -45,6 +45,9 @@ export default {
     "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
   "Code": "Code",
   "Type": "Type",
+  "Page": "Trang",
+  "YES": "Có",
+  "NO": "Không",
   "Suppliers": "Nhà cung cấp",
   "Are you sure you want to add new user?":
     "Bạn có chắc chắn muốn thêm người dùng mới?",
