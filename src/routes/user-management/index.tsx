@@ -121,33 +121,33 @@ const UserManagement = () => {
 
   return (
     <Stack gap={10} w="100%" h="100%" p={10}>
-      <Flex w={"100%"} justify="end">
-        <Button mr={8} mb={8} w={100} onClick={open}>
+      <Flex w={"100%"} justify="end" align="center" gap={12}>
+        <form
+          onSubmit={search}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: 8,
+          }}
+        >
+          <TextInput
+            value={filter.keyword}
+            onChange={handleKeywordChange}
+          />
+          <Button
+            ml={8}
+            w={100}
+            type="submit"
+            disabled={!filter.keyword}
+          >
+            {t("Search")}
+          </Button>
+        </form>
+        <Button w={100} onClick={open}>
           {t("Add")}
         </Button>
       </Flex>
-      <form
-        onSubmit={search}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          gap: 8,
-        }}
-      >
-        <TextInput
-          value={filter.keyword}
-          onChange={handleKeywordChange}
-        />
-        <Button
-          ml={8}
-          w={100}
-          type="submit"
-          disabled={!filter.keyword}
-        >
-          {t("Search")}
-        </Button>
-      </form>
       <DataGrid
         hasOrderColumn
         columns={dataGridConfigs}

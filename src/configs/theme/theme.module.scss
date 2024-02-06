@@ -1,21 +1,11 @@
-@import "@/styles/_variables.scss";
-
-.label {
-  color: $input-label-color;
-}
-
 .innerInput {
-  // color: $input-color;
-
   &::placeholder {
-    color: $input-placeholder-color;
+    color: var("--input-placeholder-color");
   }
 }
 
 .input {
-  // color: $input-color;
-
   &::placeholder {
-    color: $input-placeholder-color;
+    color: var("--input-placeholder-color");
   }
 }

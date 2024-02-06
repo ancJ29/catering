@@ -1,20 +1,14 @@
-@import "@/styles/_variables.scss";
-
-label {
-  user-select: none;
-}
-
 .bdr {
   &-t {
-    border-top: 1px solid $border-color;
+    border-top: 1px solid var(--border-color);
   }
 
   &-b {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--border-color);
   }
 
   &-f {
-    border: 1px solid $border-color;
+    border: 1px solid var(--border-color);
   }
 }
 
@@ -32,13 +26,13 @@ label {
 
 .bg {
   &-main {
-    background-color: $main-color;
+    background-color: var(--main-color);
   }
 }
 
 .text {
   &-main {
-    color: $main-color;
+    color: var(--main-color);
   }
 
   &-white {
@@ -46,7 +40,7 @@ label {
   }
 
   &-hight-light {
-    color: $highlight-color;
+    color: var(--highlight-color);
   }
 
   &-16 {
@@ -106,7 +100,7 @@ label {
   background: none;
 
   &:hover {
-    background: $hover-background-color;
+    background: var(--hover-background-color);
   }
 }
 

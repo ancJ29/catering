@@ -1,4 +1,3 @@
-import ButtonIcon from "@/components/common/ButtonIcon";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import {
@@ -7,7 +6,14 @@ import {
   DataGridProps,
   GenericObject,
 } from "@/types";
-import { Box, Flex, Pagination, Table, Text } from "@mantine/core";
+import {
+  Box,
+  Flex,
+  Pagination,
+  Table,
+  Text,
+  UnstyledButton,
+} from "@mantine/core";
 import {
   IconChevronDown,
   IconChevronUp,
@@ -322,12 +328,12 @@ function Headers<T>({
               >
                 {column.header || ""}
                 {column.sortable && (
-                  <ButtonIcon
+                  <UnstyledButton
                     onClick={() => onSort(column)}
                     style={{ width: column.width }}
                   >
                     <Icon width={15} height={15} />
-                  </ButtonIcon>
+                  </UnstyledButton>
                 )}
               </Flex>
             ) : (
@@ -412,7 +418,7 @@ function Cell<T extends GenericObject>({
 
 function OrderHeader() {
   return (
-    <Box ta="center" className={classes.headerCell} w={20}>
+    <Box ta="left" className={classes.headerCell} w={50}>
       #
     </Box>
   );
@@ -423,8 +429,8 @@ function OrderCell({ index }: { index: number }) {
     <Box
       key={`no.${index}`}
       className={classes.dataCell}
-      ta="center"
-      w={20}
+      ta="left"
+      w={50}
     >
       {index + 1}
     </Box>

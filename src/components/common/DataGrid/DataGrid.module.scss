@@ -1,7 +1,5 @@
-@import "@/styles/_variables.scss";
-
 .container {
-  border: 1px solid $input-highlight-color;
+  border: 1px solid var(--input-highlight-color);
   width: 100%;
   margin-bottom: 20px;
   border-radius: 8px;
@@ -9,7 +7,7 @@
 
 .headerRow {
   display: flex;
-  background-color: $main-color;
+  background-color: var(--main-color);
   font-weight: bold;
   color: white;
   padding: 0 0.6rem;
@@ -24,7 +22,7 @@
 
 .dataRow {
   display: flex;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   gap: 8px;
   align-items: center;

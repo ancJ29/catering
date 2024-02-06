@@ -90,7 +90,16 @@ const LoginForm = () => {
                 label={t("Remember me")}
               />
               <Anchor href="/forgot-password" underline="never">
-                <TextCenter>{t("Forgot your password")}?</TextCenter>
+                <TextCenter
+                  // TODO: use common style
+                  style={{
+                    fontSize: "1rem",
+                    fontWeight: "500",
+                    color: "var(--input-label-color)",
+                  }}
+                >
+                  {t("Forgot your password")}?
+                </TextCenter>
               </Anchor>
             </Flex>
             <Button type="submit" w="100%">

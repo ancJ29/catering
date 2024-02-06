@@ -1,11 +1,12 @@
+import useOnEnter from "@/hooks/useOnEnter";
 import { OptionProps } from "@/types";
+import { blank } from "@/utils";
 import {
   AutocompleteProps,
   Autocomplete as MantineAutocomplete,
 } from "@mantine/core";
 import { IconChevronDown, IconFilter } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
-import classes from "./Autocomplete.module.scss";
 
 interface IAutocompleteProps extends AutocompleteProps {
   options?: OptionProps[];
@@ -18,7 +19,7 @@ const Autocomplete = ({
   options,
   data,
   disabled,
-  onEnter,
+  onEnter = blank,
   onChange,
   ...props
 }: IAutocompleteProps) => {
@@ -34,24 +35,17 @@ const Autocomplete = ({
     },
     [onChange],
   );
-  const _onKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        onEnter && onEnter(currentValue);
-      }
-    },
-    [currentValue, onEnter],
-  );
+
+  const _onEnter = useOnEnter(onEnter.bind(null, currentValue));
 
   return (
     <MantineAutocomplete
       classNames={{
         input: "truncate",
-        label: classes.label,
       }}
       leftSection={<IconFilter size={14} />}
       data={_data}
-      onKeyDown={_onKeyDown}
+      onKeyDown={_onEnter}
       onChange={_onChange}
       disabled={disabled ?? (_data?.length || 0) < 1}
       rightSection={<IconChevronDown size={14} />}

@@ -1,5 +1,5 @@
 import Loader from "@/components/common/Loader";
-import { theme } from "@/configs/theme/mantine-theme";
+import { resolver, theme } from "@/configs/theme/mantine-theme";
 import useAxiosLoading from "@/hooks/useAxiosLoading";
 import authRoutes from "@/router/auth.route";
 import guestRoutes from "@/router/guest.route";
@@ -40,7 +40,7 @@ const App = () => {
   }, [user, loaded]);
 
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} cssVariablesResolver={resolver}>
       <ModalsProvider>
         <LoadingOverlay
           visible={loading}

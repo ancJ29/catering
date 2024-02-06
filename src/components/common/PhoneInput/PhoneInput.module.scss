@@ -1,8 +1,6 @@
-@import "@/styles/_variables.scss";
-
 .input {
   padding: 0.8rem;
-  border: 0.0625rem solid $input-highlight-color;
+  border: 0.0625rem solid var(--input-highlight-color);
   color: black;
 
   &:focus {
@@ -10,7 +8,7 @@
   }
 
   &::placeholder {
-    color: $input-highlight-color;
+    color: var(--input-highlight-color);
   }
 }
 

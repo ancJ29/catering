@@ -1,6 +1,12 @@
-import DivButton from "@/components/common/DivButton";
 import useAuthStore from "@/stores/auth.store";
-import { Card, Center, Flex, Text, Title } from "@mantine/core";
+import {
+  Card,
+  Center,
+  Flex,
+  Text,
+  Title,
+  UnstyledButton,
+} from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 import LanguageSelector from "../LanguageSelector";
@@ -35,9 +41,9 @@ const AdminHeader = ({
             <Text fw={700}>{user?.fullName || ""}</Text>
           </NavLink>
           <LanguageSelector />
-          <DivButton className={classes["logout-icon"]}>
+          <UnstyledButton className={classes["logout-icon"]}>
             <IconLogout onClick={removeToken} />
-          </DivButton>
+          </UnstyledButton>
         </Flex>
       </Flex>
     </Card>

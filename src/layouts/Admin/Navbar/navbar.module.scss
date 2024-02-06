@@ -1,11 +1,9 @@
-@import "@/styles/_variables.scss";
-
 .item {
   padding: 1.2rem;
   display: flex;
 
   &:hover {
-    background: $hover-background-color;
+    background: var(--hover-background-color);
     cursor: pointer;
   }
 }
@@ -13,10 +11,10 @@
 .active {
   padding: 1.2rem;
   display: flex;
-  background: $navbar-active-background-color;
+  background: var(--navbar-active-background-color);
 
   &:hover {
-    background: $navbar-active-background-color;
+    background: var(--navbar-active-background-color);
     cursor: pointer;
   }
 }

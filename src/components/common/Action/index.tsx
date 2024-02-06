@@ -1,6 +1,5 @@
-import { Flex } from "@mantine/core";
+import { Flex, UnstyledButton } from "@mantine/core";
 import { IconCopy, IconEdit, IconTrash } from "@tabler/icons-react";
-import ButtonIcon from "../ButtonIcon";
 
 type Props = {
   title?: string;
@@ -25,15 +24,15 @@ const Action = ({
       justify={justify}
       opacity={disable ? 0.6 : 1}
     >
-      <ButtonIcon disabled={!onDelete} onClick={onDelete}>
+      <UnstyledButton disabled={!onDelete} onClick={onDelete}>
         <IconTrash strokeWidth="1.5" color="black" />
-      </ButtonIcon>
-      <ButtonIcon disabled={!onEdit} onClick={onEdit}>
+      </UnstyledButton>
+      <UnstyledButton disabled={!onEdit} onClick={onEdit}>
         <IconEdit strokeWidth="1.5" color="black" />
-      </ButtonIcon>
-      <ButtonIcon disabled={!onClone} onClick={onClone}>
+      </UnstyledButton>
+      <UnstyledButton disabled={!onClone} onClick={onClone}>
         <IconCopy strokeWidth="1.5" color="black" />
-      </ButtonIcon>
+      </UnstyledButton>
     </Flex>
   );
 };

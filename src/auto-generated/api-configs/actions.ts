@@ -75,7 +75,7 @@ export const configs = {
         roles: idAndNameSchema.array(),
         enums: idAndNameSchema
           .extend({
-            targeTable: z.string().optional(),
+            targetTable: z.string().nullish(),
           })
           .array(),
         dictionaries: z.object({
@@ -644,6 +644,7 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
+        take: z.number().min(50).max(1000).optional().default(20),
         name: z.string().optional(),
       }),
       response: listResponse.extend({

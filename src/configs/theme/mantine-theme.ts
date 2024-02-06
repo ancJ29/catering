@@ -1,10 +1,33 @@
 import {
+  CSSVariablesResolver,
   Checkbox,
   Input,
   PasswordInput,
   createTheme,
 } from "@mantine/core";
 import classes from "./theme.module.scss";
+
+const labelStyle = {
+  fontSize: "1rem",
+  fontWeight: "500",
+  color: "var(--input-label-color)",
+};
+
+// https://mantine.dev/styles/css-variables/#css-variables-resolver
+export const resolver: CSSVariablesResolver = (theme) => ({
+  variables: {
+    "--main-color": theme.colors.primary[7],
+    "--input-label-color": theme.colors.primary[4],
+    "--input-placeholder-color": theme.colors.primary[2],
+    "--border-color": "#ebebeb",
+    "--highlight-color": theme.colors.primary[2],
+    "--input-highlight-color": theme.colors.primary[2],
+    "--hover-background-color": theme.colors.primary[3],
+    "--navbar-active-background-color": theme.colors.primary[5],
+  },
+  light: {},
+  dark: {},
+});
 
 export const theme = createTheme({
   fontFamily: "Quicksand",
@@ -18,13 +41,13 @@ export const theme = createTheme({
   },
   components: {
     Checkbox: Checkbox.extend({
-      classNames: {
-        label: classes.label,
+      styles: {
+        label: labelStyle,
       },
     }),
     InputWrapper: Input.Wrapper.extend({
-      classNames: {
-        label: classes.label,
+      styles: {
+        label: labelStyle,
       },
     }),
     Input: Input.extend({
@@ -34,7 +57,6 @@ export const theme = createTheme({
     }),
     PasswordInput: PasswordInput.extend({
       classNames: {
-        label: classes.label,
         input: classes.input,
         innerInput: classes.innerInput,
       },

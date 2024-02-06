@@ -1,11 +1,13 @@
+import useOnEnter from "@/hooks/useOnEnter";
 import useTranslation from "@/hooks/useTranslation";
 import { OptionProps } from "@/types";
+import { blank } from "@/utils";
 import {
   MultiSelect as MantineMultiSelect,
   MultiSelectProps,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import classes from "./MultiSelect.module.scss";
 
 interface Props extends MultiSelectProps {
@@ -21,7 +23,7 @@ const MultiSelect = ({
   translation = false,
   value,
   placeholder,
-  onEnter,
+  onEnter = blank,
   ...props
 }: Props) => {
   const t = useTranslation();
@@ -36,16 +38,7 @@ const MultiSelect = ({
     () => (value.length > 0 ? undefined : placeholder),
     [placeholder, value],
   );
-  const handleChange = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && onEnter) {
-        e.preventDefault();
-        e.stopPropagation();
-        onEnter();
-      }
-    },
-    [onEnter],
-  );
+  const _onEnter = useOnEnter(onEnter);
 
   return (
     <MantineMultiSelect
@@ -58,7 +51,7 @@ const MultiSelect = ({
       }}
       value={value}
       placeholder={customPlaceholder}
-      onKeyDown={handleChange}
+      onKeyDown={_onEnter}
       {...props}
     />
   );

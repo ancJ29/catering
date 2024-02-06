@@ -1,19 +1,17 @@
-@import "@/styles/_variables.scss";
-
 .tableWrapper {
-  border: 1px solid $input-highlight-color;
+  border: 1px solid var(--input-highlight-color);
   overflow-y: hidden;
   border-radius: 8px;
 }
 
 .header {
-  background-color: $main-color;
+  background-color: var(--main-color);
   padding: 0.6rem;
   color: white;
   gap: 10px;
 
   &:hover {
-    background: $main-color !important;
+    background: var(--main-color) !important;
   }
 }
 

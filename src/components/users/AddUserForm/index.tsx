@@ -4,7 +4,6 @@ import {
   emailSchema,
 } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
-import ButtonIcon from "@/components/common/ButtonIcon";
 import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
@@ -23,6 +22,7 @@ import {
   PasswordInput,
   Text,
   TextInput,
+  UnstyledButton,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -167,9 +167,9 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
             placeholder={t("Password")}
             {...form.getInputProps("password")}
           />
-          <ButtonIcon onClick={copyPassword}>
+          <UnstyledButton onClick={copyPassword}>
             <IconCopy strokeWidth="1.5" color="black" />
-          </ButtonIcon>
+          </UnstyledButton>
         </Flex>
         <Flex w={w} justify="end">
           <InputLabel c={"red.5"}>
