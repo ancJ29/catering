@@ -4,14 +4,13 @@ import {
 } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
-import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { GenericObject } from "@/types";
 import { unique } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import configs from "./_configs";
 
@@ -31,15 +30,25 @@ const ProductManagement = () => {
 
   const _reload = useCallback(
     async (noCache?: boolean) => {
+      if (products.length > 0) {
+        return;
+      }
+      if (enumMap.size === 0) {
+        return;
+      }
       if (noCache) {
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
       _loadData(noCache).then((products: GenericObject[] = []) => {
         const _products = products.map((el) => {
           const type = enumMap.get(el.type as string);
-          el.typeName = type ? t(type) : "-";
+          el.typeName = type ? t(type) : `${type}.s`;
           if (typeof el.name === "string") {
-            el.name = el.name.split(".").slice(0, -1).join(".");
+            const strings = el.name.split(".");
+            el.name =
+              strings.length > 1
+                ? strings.slice(0, -1).join(".")
+                : strings[0];
           }
           return el;
         });
@@ -48,7 +57,7 @@ const ProductManagement = () => {
         setNames(unique(_products.map((el) => el.name as string)));
       });
     },
-    [enumMap, t],
+    [enumMap, products.length, t],
   );
 
   const filter = useCallback(
@@ -68,7 +77,9 @@ const ProductManagement = () => {
     [products],
   );
 
-  useOnMounted(_reload);
+  useEffect(() => {
+    _reload();
+  }, [_reload]);
 
   return (
     <Stack gap={10} w="100%" h="100%" p={10}>

@@ -19,7 +19,7 @@ export default create<MetaDataStore>((set) => ({
   ),
   roles: [],
   departments: [],
-  enumMap: new Map(),
+  enumMap: new Map<string, string>(),
   enums: [],
   loadMetaData: async () => {
     const data = await getMetadata();
