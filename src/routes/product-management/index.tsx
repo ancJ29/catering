@@ -85,7 +85,6 @@ const ProductManagement = () => {
     <Stack gap={10} w="100%" h="100%" p={10}>
       <Flex justify="end" align={"center"}>
         <Autocomplete
-          label="sample"
           w={"20vw"}
           onEnter={filter}
           data={names}
