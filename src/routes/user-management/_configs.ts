@@ -6,16 +6,19 @@ const configs = (
   return [
     {
       key: "userName",
+      sortable: true,
       header: t("Username"),
       width: "15%",
     },
     {
       key: "fullName",
-      header: t("Full Name"),
+      sortable: true,
+      header: t("Full name"),
       width: "15%",
     },
     {
       key: "email",
+      sortable: true,
       header: t("Email"),
       width: "25%",
     },
@@ -43,7 +46,6 @@ const configs = (
       key: "active",
       header: t("Status"),
       width: "20%",
-      // textAlign: "center",
       renderCell: (active) => {
         return active ? t("Active") : t("Disabled");
       },

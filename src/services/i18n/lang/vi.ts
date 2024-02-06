@@ -28,6 +28,7 @@ export default {
   "Status": "Trạng thái",
   "Phone": "Số điện thoại",
   "Role": "Vai trò",
+  "Search": "Tìm kiếm",
   "Active": "Đang hoạt động",
   "Disabled": "Ngưng hoạt động",
   "Add user": "Thêm người dùng",
@@ -42,6 +43,9 @@ export default {
   "Add user successfully": "Thêm người dùng thành công",
   "Are you sure you want to deactivate this user?":
     "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
+  "Code": "Code",
+  "Type": "Type",
+  "Suppliers": "Nhà cung cấp",
   "Are you sure you want to add new user?":
     "Bạn có chắc chắn muốn thêm người dùng mới?",
   "Please copy and keep password safe before create new user":

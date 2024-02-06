@@ -14,6 +14,7 @@ export const userSchema = z.object({
   email: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
   chainIds: z.string().array(),
   branchIds: z.string().array(),
 });

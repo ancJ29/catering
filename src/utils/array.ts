@@ -1,3 +1,5 @@
+import { GenericObject, OptionProps } from "@/types";
+
 export function uniqueByKey<T, K extends keyof T>(
   arr: T[],
   key: string,
@@ -23,12 +25,16 @@ export function sortByKey<T, K extends keyof T>(arr: T[], key: K) {
   });
 }
 
-export function buildOptions<
-  T extends { id?: string; name?: string },
->(data: T[]) {
+export function buildOptions<T extends GenericObject>(
+  data: T[],
+  keys: { value: string; label: string } = {
+    value: "id",
+    label: "name",
+  },
+): OptionProps[] {
   return data.map((item, index) => ({
-    value: item.id || index.toString(),
-    label: item.name || "",
+    value: (item[keys.value] || index.toString()) as string,
+    label: (item[keys.label] || "") as string,
   }));
 }
 

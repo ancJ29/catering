@@ -40,6 +40,7 @@ const base = import.meta.env.BASE_URL;
 const dateKeys = new Map<string, boolean>(
   Object.entries({
     createdAt: true,
+    lastInventoryDate: true,
     updatedAt: true,
     date: true,
     from: true,

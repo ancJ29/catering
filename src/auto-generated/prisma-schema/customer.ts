@@ -9,4 +9,5 @@ export const customerSchema = z.object({
   memo: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

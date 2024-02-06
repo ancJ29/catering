@@ -14,6 +14,12 @@
     ]
   },
   {
+    "key": "catering",
+    "label": "Catering Management",
+    "icon": "cooker",
+    "url": "/catering-management"
+  },
+  {
     "key": "product",
     "label": "Product Management",
     "icon": "soup",

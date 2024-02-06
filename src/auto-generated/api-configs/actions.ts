@@ -27,6 +27,7 @@ import {
   emailSchema,
   futureDateSchema,
   getSchema,
+  idAndNameSchema,
   listResponse,
   phoneSchema,
 } from "./schema";
@@ -70,19 +71,11 @@ export const configs = {
     schema: {
       request: z.any(),
       response: z.object({
-        departments: z
-          .object({
-            id: z.string(),
-            name: z.string(),
-          })
-          .array(),
-        roles: z
-          .object({
-            id: z.string(),
-            name: z.string(),
-          })
-          .array(),
+        departments: idAndNameSchema.array(),
+        roles: idAndNameSchema.array(),
+        enums: idAndNameSchema.array(),
         dictionaries: z.object({
+          version: z.string(),
           en: z.record(z.string(), z.string()),
           vi: z.record(z.string(), z.string()),
         }),
@@ -572,13 +565,16 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
+        type: z.string().optional(),
         name: z.string().optional(),
       }),
       response: listResponse.extend({
-        departments: z
-          .object({
-            id: z.string(),
-            name: z.string(),
+        departments: departmentSchema
+          .omit({
+            others: true,
+          })
+          .extend({
+            others: z.unknown(),
           })
           .array(),
       }),
@@ -595,6 +591,7 @@ export const configs = {
           clientId: true,
           createdAt: true,
           updatedAt: true,
+          others: true,
         })
         .partial({
           code: true,
@@ -612,6 +609,7 @@ export const configs = {
           clientId: true,
           code: true,
           supId: true,
+          others: true,
           createdAt: true,
           updatedAt: true,
         })

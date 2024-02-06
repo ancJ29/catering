@@ -11,4 +11,5 @@ export const actionLogSchema = z.object({
   userAgent: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

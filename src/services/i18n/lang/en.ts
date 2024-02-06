@@ -28,6 +28,7 @@ export default {
   "Status": "Status",
   "Phone": "Phone",
   "Role": "Role",
+  "Search": "Search",
   "Active": "Active",
   "Disabled": "Disabled",
   "Add user": "Add user",
@@ -42,6 +43,9 @@ export default {
   "Are you sure you want to deactivate this user?":
     "Are you sure you want to deactivate this user?",
   "Cancel": "Cancel",
+  "Code": "Code",
+  "Type": "Type",
+  "Suppliers": "Suppliers",
   "Are you sure you want to add new user?":
     "Are you sure you want to add new user?",
   "Please copy and keep password safe before create new user":

@@ -24,6 +24,11 @@ export const successResponse = z.object({
   success: z.boolean(),
 });
 
+export const idAndNameSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
 export const dateSchema = z
   .number()
   .or(z.date())
@@ -90,3 +95,5 @@ export const contextSchema = z.object({
   params: z.record(z.string(), z.unknown()).optional(),
   status: actionStatusEnum.optional(),
 });
+
+export const genericSchema = z.record(z.string(), z.unknown());

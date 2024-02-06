@@ -4,9 +4,14 @@ import {
   DataGridProps,
   GenericObject,
 } from "@/types";
-import { Box, Table } from "@mantine/core";
+import { Box, Flex, Table } from "@mantine/core";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconSelector,
+} from "@tabler/icons-react";
 import cls from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
 import classes from "./DataGrid.module.scss";
@@ -19,17 +24,77 @@ function DataGrid<T extends GenericObject>({
   columns,
   data,
   actionHandlers,
+  onSort,
 }: DataGridProps<T>) {
   const [rows, setRows] = useState<T[]>(data || []);
 
+  const [configs, setConfig] = useState(columns);
+
+  const sort = useCallback(() => {
+    const column = configs.find((el) => el.sorting);
+    if (!column) {
+      return;
+    }
+    setRows(
+      rows.sort((a, b) => {
+        let _a = "",
+          _b = "";
+        if (column.key in a) {
+          _a = a[column.key]?.toString() || "";
+        }
+        if (column.key in b) {
+          _b = b[column.key]?.toString() || "";
+        }
+        return column.sorting === "asc"
+          ? _a.localeCompare(_b)
+          : _b.localeCompare(_a);
+      }),
+    );
+  }, [configs, rows]);
+
+  const sortHandler = useCallback(
+    (column: DataGridColumnProps) => {
+      if (column.sortable) {
+        if (onSort) {
+          onSort(column);
+        } else {
+          setConfig(
+            configs.map((el) => {
+              if (el.key !== column.key) {
+                el.sorting = undefined;
+              } else {
+                if (el.sorting === "asc") {
+                  el.sorting = "desc";
+                } else {
+                  el.sorting = "asc";
+                }
+              }
+              return el;
+            }),
+          );
+          sort();
+        }
+      }
+    },
+    [configs, onSort, sort],
+  );
+
   const Content = useMemo(
     () =>
-      _contentBuilder(rows, columns, {
+      _contentBuilder(rows, configs, {
         hasOrderColumn,
         actionHandlers,
         hasActionColumn,
+        onSort: sortHandler,
       }),
-    [rows, columns, hasOrderColumn, actionHandlers, hasActionColumn],
+    [
+      rows,
+      configs,
+      hasOrderColumn,
+      actionHandlers,
+      hasActionColumn,
+      sortHandler,
+    ],
   );
 
   useEffect(() => {
@@ -56,15 +121,18 @@ function _contentBuilder<T extends GenericObject>(
     actionHandlers,
     hasActionColumn = false,
     hasOrderColumn = false,
+    onSort,
   }: {
     hasOrderColumn?: boolean;
     hasActionColumn?: boolean;
+    onSort?: (column: DataGridColumnProps) => void;
     actionHandlers?: DataGridActionProps<T>;
   } = {},
 ) {
   return (
     <div>
       <Headers
+        onSort={onSort}
         hasOrderColumn={hasOrderColumn}
         columns={columns}
         actionHandlers={actionHandlers}
@@ -98,36 +166,68 @@ function _contentBuilder<T extends GenericObject>(
   );
 }
 
+function sortIcon(sorting: false | "asc" | "desc") {
+  if (sorting === "asc") {
+    return IconChevronUp;
+  }
+  if (sorting === "desc") {
+    return IconChevronDown;
+  }
+  return IconSelector;
+}
+
 function Headers<T>({
   columns,
   hasActionColumn,
   hasOrderColumn,
   actionHandlers,
+  onSort = _blank,
 }: {
   hasActionColumn: boolean;
   hasOrderColumn: boolean;
   columns: DataGridColumnProps[];
   actionHandlers?: DataGridActionProps<T>;
+  onSort?: (column: DataGridColumnProps) => void;
 }) {
   return (
     <div className={classes.headerRow}>
       {hasOrderColumn && <OrderHeader />}
-      {columns.map((column, index) => (
-        <Box
-          key={index}
-          className={classes.headerCell}
-          w={column.width}
-          style={column.style}
-          hidden={column.hidden}
-          ta={
-            typeof column.textAlign === "object"
-              ? column.textAlign.header
-              : column.textAlign
-          }
-        >
-          {column.header || ""}
-        </Box>
-      ))}
+      {columns.map((column, index) => {
+        const Icon = column.sortable
+          ? sortIcon(column.sorting || false)
+          : "div";
+        return (
+          <Box
+            key={index}
+            className={classes.headerCell}
+            w={column.width}
+            style={column.headerStyle || column.style}
+            hidden={column.hidden}
+            ta={
+              typeof column.textAlign === "object"
+                ? column.textAlign.header
+                : column.textAlign
+            }
+          >
+            {column.sortable ? (
+              <Flex justify="space-between" align="center" w="100%">
+                {column.header || ""}
+                {column.sortable && (
+                  <Box
+                    onClick={() => onSort(column)}
+                    className={classes.sortable}
+                    style={{ width: column.width }}
+                  >
+                    <Icon width={15} height={15} />
+                  </Box>
+                )}
+              </Flex>
+            ) : (
+              column.header || ""
+            )}
+          </Box>
+        );
+      })}
       {hasActionColumn && actionHandlers && (
         <Box className={classes.actions}>&nbsp;</Box>
       )}
@@ -189,7 +289,7 @@ function Cell<T extends GenericObject>({
       key={column.key}
       w={column.width}
       className={classes.dataCell}
-      style={column.style}
+      style={column.cellStyle || column.style}
       hidden={column.hidden}
       ta={
         typeof column.textAlign === "object"
@@ -235,4 +335,8 @@ function _render(row: GenericObject, column: DataGridColumnProps) {
     return "-";
   }
   return "-";
+}
+
+function _blank() {
+  // ignore
 }

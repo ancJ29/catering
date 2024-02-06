@@ -7,4 +7,5 @@ export const clientEnumSchema = z.object({
   enabled: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

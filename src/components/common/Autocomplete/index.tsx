@@ -4,8 +4,8 @@ import {
   Autocomplete as MantineAutocomplete,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { useState } from "react";
 import classes from "./Autocomplete.module.scss";
+import { useMemo } from "react";
 
 interface IAutocompleteProps extends AutocompleteProps {
   options?: OptionProps[];
@@ -17,7 +17,10 @@ const Autocomplete = ({
   disabled,
   ...props
 }: IAutocompleteProps) => {
-  const [data] = useState(options?.map((el) => el.label));
+  const data = useMemo(
+    () => options?.map((el) => el.label),
+    [options],
+  );
   return (
     <MantineAutocomplete
       data={data}

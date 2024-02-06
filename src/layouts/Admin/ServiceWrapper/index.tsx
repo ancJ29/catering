@@ -11,7 +11,7 @@ type Props = {
 };
 
 const ServiceWrapper = ({ title, children }: Props) => {
-  const [open, { toggle }] = useDisclosure(isMobile ? false : true);
+  const [open, { toggle }] = useDisclosure(false);
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
