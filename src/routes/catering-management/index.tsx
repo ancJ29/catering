@@ -2,13 +2,14 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { GenericObject } from "@/types";
-import { Stack } from "@mantine/core";
+import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import configs from "./_configs";
@@ -23,6 +24,8 @@ const CateringManagement = () => {
   const { kitchenType } = useMetaDataStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
   const [caterings, setCaterings] = useState<GenericObject[]>([]);
+  const [data, setData] = useState<GenericObject[]>([]);
+  const [names, setNames] = useState([""]);
 
   const _reload = useCallback(
     async (noCache?: boolean) => {
@@ -32,21 +35,42 @@ const CateringManagement = () => {
       if (noCache) {
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
-      _loadData(kitchenType, noCache).then((caterings) =>
-        setCaterings(caterings || []),
-      );
+      _loadData(kitchenType, noCache).then((caterings) => {
+        setCaterings(caterings || []);
+        setData(caterings || []);
+        setNames(caterings.map((c) => c.name as string));
+      });
     },
     [kitchenType],
+  );
+
+  const filter = useCallback(
+    (keyword: string) => {
+      if (!keyword) {
+        setData(caterings);
+        return;
+      }
+      const _keyword = keyword.toLowerCase();
+      setData(
+        caterings.filter((c) =>
+          (c.name as string)?.toLocaleLowerCase().includes(_keyword),
+        ),
+      );
+    },
+    [caterings],
   );
 
   useOnMounted(_reload);
 
   return (
     <Stack gap={10} w="100%" h="100%" p={10}>
+      <Flex justify="end" align={"center"}>
+        <Autocomplete onEnter={filter} data={names} />
+      </Flex>
       <DataGrid
         hasOrderColumn
         columns={dataGridConfigs}
-        data={caterings}
+        data={data}
       />
     </Stack>
   );

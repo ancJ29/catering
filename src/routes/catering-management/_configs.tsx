@@ -1,4 +1,5 @@
 import { DataGridColumnProps } from "@/types";
+import SupplierSettingForm from "./SupplierSettingForm";
 
 const configs = (
   t: (key: string) => string,
@@ -6,6 +7,7 @@ const configs = (
   return [
     {
       key: "name",
+      sortable: true,
       header: t("Catering name"),
       width: "30%",
     },
@@ -49,7 +51,17 @@ const configs = (
       header: t("Suppliers"),
       width: "20%",
       style: { textAlign: "right", paddingRight: "1rem" },
-      renderCell: () => "TODO",
+      renderCell: (_, department) => {
+        const totalSupplier = parseInt(
+          department.others?.totalSupplier || "0",
+        );
+        return (
+          <SupplierSettingForm
+            department={department}
+            totalSupplier={totalSupplier}
+          />
+        );
+      },
     },
   ];
 };
