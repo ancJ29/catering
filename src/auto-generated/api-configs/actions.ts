@@ -73,7 +73,11 @@ export const configs = {
       response: z.object({
         departments: idAndNameSchema.array(),
         roles: idAndNameSchema.array(),
-        enums: idAndNameSchema.array(),
+        enums: idAndNameSchema
+          .extend({
+            targeTable: z.string().optional(),
+          })
+          .array(),
         dictionaries: z.object({
           version: z.string(),
           en: z.record(z.string(), z.string()),

@@ -65,6 +65,7 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
     })),
     departments: data.departments,
   });
+  logger.debug("options", options);
   const form = useForm<Form>({
     initialValues: {
       ...initialValues,

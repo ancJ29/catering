@@ -5,6 +5,7 @@ export const clientEnumSchema = z.object({
   clientId: z.number().int(),
   name: z.string(),
   enabled: z.boolean(),
+  targetTable: z.string().nullish(),
   code: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),

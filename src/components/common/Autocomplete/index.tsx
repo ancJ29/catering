@@ -53,7 +53,7 @@ const Autocomplete = ({
       data={_data}
       onKeyDown={_onKeyDown}
       onChange={_onChange}
-      disabled={disabled ?? (data?.length || 0) < 1}
+      disabled={disabled ?? (_data?.length || 0) < 1}
       rightSection={<IconChevronDown size={14} />}
       {...props}
     />
