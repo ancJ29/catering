@@ -7,14 +7,10 @@ import {
   DataGridProps,
   GenericObject,
 } from "@/types";
-import { Box, Flex, Table, Text } from "@mantine/core";
+import { Box, Flex, Pagination, Table, Text } from "@mantine/core";
 import {
   IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
   IconChevronUp,
-  IconChevronsLeft,
-  IconChevronsRight,
   IconSelector,
 } from "@tabler/icons-react";
 import cls from "classnames";
@@ -32,7 +28,6 @@ const limitOptions = [10, 20, 50, 100].map((el) => ({
 function DataGrid<T extends GenericObject>({
   limit: _limit = 0,
   page: _page = 1,
-  onChangePage,
   isPaginated = false,
   hasOrderColumn = false,
   hasActionColumn = false,
@@ -41,6 +36,7 @@ function DataGrid<T extends GenericObject>({
   data,
   actionHandlers,
   onSort,
+  onChangePage,
 }: DataGridProps<T>) {
   const [configs, setConfig] = useState(columns);
   const [rows, setRows] = useState<T[]>(data || []);
@@ -135,6 +131,7 @@ function DataGrid<T extends GenericObject>({
       setLimit(limit);
     }
   }, [_limit, limit]);
+
   useEffect(() => {
     if (_page !== page) {
       setPage(_page);
@@ -144,16 +141,21 @@ function DataGrid<T extends GenericObject>({
   return (
     <Table.ScrollContainer minWidth={"100%"} p={0} mt={20} w="100%">
       {isPaginated && (
-        <Pagination
-          limit={limit}
-          setLimit={setLimit}
-          page={page}
-          lastPage={lastPage}
-          setPage={(page) => {
-            onChangePage && onChangePage(page);
-            setPage(page);
-          }}
-        />
+        <Flex justify="end" align="center" mb={12} mx={4} gap={4}>
+          <PaginationBar
+            key={limit}
+            limit={limit}
+            setLimit={(limit) => {
+              setLimit(limit);
+              setPage(1);
+            }}
+            lastPage={lastPage}
+            setPage={(page) => {
+              onChangePage && onChangePage(page);
+              setPage(page);
+            }}
+          />
+        </Flex>
       )}
       <div className={cls(classes.container, className)}>
         <div>
@@ -164,8 +166,7 @@ function DataGrid<T extends GenericObject>({
   );
 }
 
-export function Pagination({
-  page,
+function PaginationBar({
   limit,
   lastPage,
   setPage,
@@ -173,91 +174,39 @@ export function Pagination({
 }: {
   limit: number;
   lastPage: number;
-  page: number;
   setLimit: (limit: number) => void;
   setPage: (page: number) => void;
 }) {
   const t = useTranslation();
   return (
-    <Flex justify="end" align="center" mb={12} mx={4} gap={4}>
-      <Text mr={4}>
-        {t("Page")}: {page} / {lastPage}
-      </Text>
-      <ButtonIcon disabled={page < 3} onClick={() => setPage(1)}>
-        <IconChevronsLeft strokeWidth="1.5" color="black" />
-      </ButtonIcon>
-      <ButtonIcon
-        disabled={page < 2}
-        onClick={() => setPage(Math.max(page - 1, 0))}
-      >
-        <IconChevronLeft strokeWidth="1.5" color="black" />
-      </ButtonIcon>
-      <Page
-        page={page - 2}
-        lastPage={lastPage}
-        onClick={() => setPage(page - 2)}
-      />
-      <Page
-        page={page - 1}
-        lastPage={lastPage}
-        onClick={() => setPage(page - 1)}
-      />
-      <Page disabled page={page} lastPage={lastPage} />
-      <Page
-        page={page + 1}
-        lastPage={lastPage}
-        onClick={() => setPage(page + 1)}
-      />
-      <Page
-        page={page + 2}
-        lastPage={lastPage}
-        onClick={() => setPage(page + 2)}
-      />
-      <ButtonIcon
-        disabled={lastPage <= page}
-        onClick={() => setPage(Math.min(page + 1, lastPage))}
-      >
-        <IconChevronRight strokeWidth="1.5" color="black" />
-      </ButtonIcon>
-      <ButtonIcon
-        disabled={lastPage <= page - 1}
-        onClick={() => setPage(lastPage)}
-      >
-        <IconChevronsRight strokeWidth="1.5" color="black" />
-      </ButtonIcon>
-      <Select
-        w={100}
-        value={limit.toString()}
-        options={limitOptions}
-        onChange={(value: string | null) => {
-          if (!value || isNaN(parseInt(value))) {
-            return;
-          }
-          setLimit(parseInt(value));
-        }}
-      />
+    <Flex
+      justify="space-between"
+      w="100%"
+      align="center"
+      mb={12}
+      mx={4}
+      gap={4}
+    >
+      <Flex align="center" gap={4}>
+        <Text c="primary" fw={"600"} mr={4}>
+          {t("Item per page")}:
+        </Text>
+        <Select
+          w={70}
+          value={limit.toString()}
+          options={limitOptions}
+          onChange={(value: string | null) => {
+            if (!value || isNaN(parseInt(value))) {
+              return;
+            }
+            setLimit(parseInt(value));
+          }}
+        />
+      </Flex>
+      {lastPage > 1 && (
+        <Pagination total={lastPage} onChange={setPage} />
+      )}
     </Flex>
-  );
-}
-
-function Page({
-  page,
-  disabled,
-  lastPage,
-  onClick,
-}: {
-  disabled?: boolean;
-  page: number;
-  lastPage: number;
-  onClick?: () => void;
-}) {
-  if (page > lastPage || page < 1) {
-    return <></>;
-  }
-  return (
-    <ButtonIcon disabled={disabled} onClick={onClick}>
-      <Text c="black">{page}</Text>
-    </ButtonIcon>
   );
 }
 

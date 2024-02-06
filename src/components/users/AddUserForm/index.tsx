@@ -26,9 +26,9 @@ import {
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import { IconCopy } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
-import { toast } from "react-toastify";
 import { z } from "zod";
 import classes from "./AddUserForm.module.scss";
 
@@ -120,7 +120,9 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
 
   const copyPassword = useCallback(() => {
     navigator.clipboard.writeText(form.values.password);
-    toast.success(t("Password copied"));
+    notifications.show({
+      message: t("Password copied to clipboard"),
+    });
   }, [form.values.password, t]);
 
   return (

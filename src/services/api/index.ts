@@ -5,10 +5,11 @@ import {
 import { ActionType } from "@/auto-generated/prisma-schema";
 import logger from "@/services/logger";
 import useAuthStore from "@/stores/auth.store";
+import { notifications } from "@mantine/notifications";
 import axios, { type AxiosResponse } from "axios";
 import dayjs from "dayjs";
 import { LRUCache } from "lru-cache";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { ZodTypeDef, z } from "zod";
 import validator from "./_validator";
 
@@ -118,13 +119,21 @@ export default async function callApi<T, R>({
   const start = Date.now();
   try {
     const data = await _fetch<R>(action, _params);
-    options.toastMessage && toast(options.toastMessage);
+    options.toastMessage &&
+      notifications.show({
+        color: "red.500",
+        message: options.toastMessage,
+      });
     key && cache.set(key, data as GenericObject);
     logger.debug("[api-v2-success]", key, action, _params, data);
     return data;
   } catch (error) {
     // TODO: translate error message
-    options?.toastMessage && toast("Unknown error");
+    options?.toastMessage &&
+      notifications.show({
+        color: "red.5",
+        message: "Unknown error!!!",
+      });
     logger.error("[api-v2-error]", error);
   } finally {
     _decreaseCounter(start);

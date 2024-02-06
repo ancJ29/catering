@@ -46,6 +46,7 @@ export default {
   "Code": "Code",
   "Type": "Type",
   "Page": "Page",
+  "Item per page": "Item per page",
   "YES": "YES",
   "NO": "NO",
   "Suppliers": "Suppliers",
@@ -55,4 +56,5 @@ export default {
     "Please copy and keep password safe before create new user",
   "Invalid phone number": "Invalid phone number",
   "Invalid email": "Invalid email",
+  "Password copied to clipboard": "Password copied to clipboard",
 } satisfies Dictionary;

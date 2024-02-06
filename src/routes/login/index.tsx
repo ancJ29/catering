@@ -7,7 +7,7 @@ import { Center, Title } from "@mantine/core";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+const Login = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -27,4 +27,6 @@ export default function Login() {
       <LoginForm />
     </AuthLayout>
   );
-}
+};
+
+export default Login;

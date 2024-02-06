@@ -46,6 +46,7 @@ export default {
   "Code": "Code",
   "Type": "Type",
   "Page": "Trang",
+  "Item per page": "Số dòng",
   "YES": "Có",
   "NO": "Không",
   "Suppliers": "Nhà cung cấp",
@@ -55,4 +56,5 @@ export default {
     "Vui lòng sao chép và lưu mật khẩu trước khi tạo người dùng mới",
   "Invalid phone number": "Số điện thoại không hợp lệ",
   "Invalid email": "Email không hợp lệ",
+  "Password copied to clipboard": "Mật khẩu đã được sao chép",
 } satisfies Dictionary;

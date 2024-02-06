@@ -7,6 +7,8 @@ import useAuthStore from "@/stores/auth.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import { useEffect, useMemo, useState } from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
 
@@ -46,6 +48,7 @@ const App = () => {
           overlayProps={{ radius: "sm", blur: 2 }}
         />
         {useRoutes(routes)}
+        <Notifications position="top-right" zIndex={1000} />
       </ModalsProvider>
     </MantineProvider>
   );
