@@ -14,6 +14,7 @@ export default {
   "Username or password is incorrect.":
     "Tên đăng nhập hoặc mật khẩu không chính xác.",
   "Sign in": "Đăng nhập",
+  "Last updated": "Cập nhật",
   "New password": "Mật khẩu mới",
   "Update password": "Cập nhật mật khẩu",
   "Enter new password": "Mật khẩu mới",
@@ -24,6 +25,7 @@ export default {
   "Dashboard": "Bảng điều khiển",
   "Product Management": "Quản lý sản phẩm",
   "User Management": "Quản lý người dùng",
+  "Customer Management": "Quản lý khách hàng",
   "Email": "Email",
   "Status": "Trạng thái",
   "Phone": "Số điện thoại",

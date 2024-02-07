@@ -9,18 +9,18 @@ const configs = (
       key: "name",
       sortable: true,
       header: t("Catering name"),
-      width: "30%",
+      width: "20%",
     },
     {
       key: "code",
       header: t("Code"),
-      width: "20%",
+      width: "15%",
       textAlign: "left",
     },
     {
       key: "catering-type",
       header: t("Type"),
-      width: "20%",
+      width: "15%",
       renderCell: (_, row) => {
         return row.others?.isCenter
           ? t("Central catering")
@@ -30,7 +30,7 @@ const configs = (
     {
       key: "enabled",
       header: t("Status"),
-      width: "20%",
+      width: "15%",
       renderCell: (value) => {
         return value ? t("In operation") : t("Stopped");
       },
@@ -49,7 +49,7 @@ const configs = (
     {
       key: "suppliers",
       header: t("Suppliers"),
-      width: "20%",
+      width: "10%",
       style: { textAlign: "right", paddingRight: "1rem" },
       renderCell: (_, department) => {
         const totalSupplier = parseInt(

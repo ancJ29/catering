@@ -22,6 +22,9 @@ const componentMap: Record<string, LazyExoticComponent> = {
   Dashboard: lazy(() => import("@/routes/dashboard")),
   Profile: lazy(() => import("@/routes/profile")),
   UserManagement: lazy(() => import("@/routes/user-management")),
+  CustomerManagement: lazy(
+    () => import("@/routes/customer-management"),
+  ),
   CateringManagement: lazy(
     () => import("@/routes/catering-management"),
   ),
@@ -49,7 +52,16 @@ const configs: Config[] = [
     },
   },
   {
-    // path: "/catering-management",
+    path: "/customer-management",
+    element: "CustomerManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Customer Management",
+      },
+    },
+  },
+  {
     path: "/catering-management",
     element: "CateringManagement",
     wrapper: {

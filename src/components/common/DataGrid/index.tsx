@@ -20,6 +20,7 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import cls from "classnames";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
@@ -34,6 +35,7 @@ const limitOptions = [10, 20, 50, 100].map((el) => ({
 function DataGrid<T extends GenericObject>({
   limit: _limit = 0,
   page: _page = 1,
+  hasUpdateColumn = true,
   isPaginated = false,
   hasOrderColumn = false,
   hasActionColumn = false,
@@ -114,18 +116,20 @@ function DataGrid<T extends GenericObject>({
       hasOrderColumn,
       actionHandlers,
       hasActionColumn,
+      hasUpdateColumn,
       onSort: sortHandler,
     });
   }, [
-    rows,
+    actionHandlers,
+    configs,
+    hasActionColumn,
+    hasOrderColumn,
+    hasUpdateColumn,
     isPaginated,
     limit,
-    configs,
-    hasOrderColumn,
-    actionHandlers,
-    hasActionColumn,
-    sortHandler,
     page,
+    rows,
+    sortHandler,
   ]);
 
   useEffect(() => {
@@ -224,17 +228,20 @@ function _contentBuilder<T extends GenericObject>(
   {
     orderFrom = 0,
     actionHandlers,
+    hasUpdateColumn = true,
     hasActionColumn = false,
     hasOrderColumn = false,
     onSort,
   }: {
     orderFrom?: number;
+    hasUpdateColumn?: boolean;
     hasOrderColumn?: boolean;
     hasActionColumn?: boolean;
     onSort?: (column: DataGridColumnProps) => void;
     actionHandlers?: DataGridActionProps<T>;
   } = {},
 ) {
+  // const t = useTranslation();
   return (
     <div>
       <Headers
@@ -243,35 +250,69 @@ function _contentBuilder<T extends GenericObject>(
         columns={columns}
         actionHandlers={actionHandlers}
         hasActionColumn={hasActionColumn}
+        hasUpdateColumn={hasUpdateColumn}
       />
       {rows.length > 0 ? (
         rows.map((row, index) => (
           <Box key={index} className={classes.dataRow}>
-            {hasOrderColumn && (
-              <OrderCell
-                key={`no.${index}`}
-                index={orderFrom + index}
-              />
-            )}
+            <OrderCell
+              hasOrderColumn={hasOrderColumn}
+              key={`no.${index}`}
+              index={orderFrom + index}
+            />
             {columns.map((column) => (
               <Cell key={column.key} row={row} column={column} />
             ))}
-
-            {hasActionColumn && actionHandlers && (
-              <Box className={classes.actions}>
-                <Actions
-                  key={index + 1}
-                  row={row}
-                  actionHandlers={actionHandlers}
-                />
-              </Box>
-            )}
+            <LastUpdated
+              hasUpdateColumn={hasUpdateColumn}
+              hasActionColumn={hasActionColumn}
+              lastModifiedBy={row.lastModifiedBy as string}
+              updatedAt={row.updatedAt as string}
+            />
+            <Actions
+              key={index + 1}
+              row={row}
+              hasActionColumn={hasActionColumn}
+              actionHandlers={actionHandlers}
+            />
           </Box>
         ))
       ) : (
         <Empty />
       )}
     </div>
+  );
+}
+
+function LastUpdated({
+  lastModifiedBy,
+  updatedAt,
+  hasUpdateColumn,
+  hasActionColumn,
+}: {
+  hasUpdateColumn?: boolean;
+  hasActionColumn?: boolean;
+  lastModifiedBy: string;
+  updatedAt: string;
+}) {
+  const t = useTranslation();
+  return hasUpdateColumn ? (
+    <Box
+      className={classes.updated}
+      style={{
+        flexGrow: !hasActionColumn ? 1 : undefined,
+      }}
+    >
+      <div>
+        <b>{t("Updated by")}</b>:&nbsp;
+        {(lastModifiedBy as string) || "-"}
+        <br />
+        <b>{t("Last updated")}</b>:&nbsp;
+        {dayjs(updatedAt as string).format("DD/MM/YYYY HH:mm")}
+      </div>
+    </Box>
+  ) : (
+    <></>
   );
 }
 
@@ -287,11 +328,13 @@ function sortIcon(sorting: false | "asc" | "desc") {
 
 function Headers<T>({
   columns,
+  hasUpdateColumn,
   hasActionColumn,
   hasOrderColumn,
   actionHandlers,
   onSort = _blank,
 }: {
+  hasUpdateColumn: boolean;
   hasActionColumn: boolean;
   hasOrderColumn: boolean;
   columns: DataGridColumnProps[];
@@ -345,35 +388,44 @@ function Headers<T>({
       {hasActionColumn && actionHandlers && (
         <Box className={classes.actions}>&nbsp;</Box>
       )}
+      {hasUpdateColumn && (
+        <Box className={classes.updated}>&nbsp;</Box>
+      )}
     </div>
   );
 }
 
 function Actions<T extends GenericObject>({
   row,
-  actionHandlers,
+  hasActionColumn,
+  actionHandlers = {},
 }: {
   row: T;
-  actionHandlers: DataGridActionProps<T>;
+  hasActionColumn?: boolean;
+  actionHandlers?: DataGridActionProps<T>;
 }) {
-  return (
-    <Action
-      onDelete={_buildHandler(
-        row,
-        actionHandlers?.deletable,
-        actionHandlers.onDelete,
-      )}
-      onEdit={_buildHandler(
-        row,
-        actionHandlers.editable,
-        actionHandlers.onEdit,
-      )}
-      onClone={_buildHandler(
-        row,
-        actionHandlers.cloneable,
-        actionHandlers.onClone,
-      )}
-    />
+  return hasActionColumn ? (
+    <Box className={classes.actions}>
+      <Action
+        onDelete={_buildHandler(
+          row,
+          actionHandlers?.deletable,
+          actionHandlers.onDelete,
+        )}
+        onEdit={_buildHandler(
+          row,
+          actionHandlers.editable,
+          actionHandlers.onEdit,
+        )}
+        onClone={_buildHandler(
+          row,
+          actionHandlers.cloneable,
+          actionHandlers.onClone,
+        )}
+      />
+    </Box>
+  ) : (
+    <></>
   );
 }
 
@@ -424,16 +476,25 @@ function OrderHeader() {
   );
 }
 
-function OrderCell({ index }: { index: number }) {
-  return (
+function OrderCell({
+  hasOrderColumn,
+  index,
+}: {
+  hasOrderColumn?: boolean;
+  index: number;
+}) {
+  return hasOrderColumn ? (
     <Box
       key={`no.${index}`}
       className={classes.dataCell}
       ta="left"
+      pl={10}
       w={50}
     >
       {index + 1}
     </Box>
+  ) : (
+    <></>
   );
 }
 

@@ -12,6 +12,7 @@ export type DataGridProps<T> = {
   data?: T[];
   onChangePage?: (page: number) => void;
   onSort?: (column: DataGridColumnProps) => void;
+  hasUpdateColumn?: boolean;
   hasOrderColumn?: boolean;
   hasActionColumn?: boolean;
   actionHandlers?: DataGridActionProps<T>;

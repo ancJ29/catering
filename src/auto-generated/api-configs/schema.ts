@@ -8,7 +8,7 @@ import { z } from "zod";
 
 export const getSchema = z.object({
   cursor: z.string().optional(),
-  take: z.number().min(1).max(300).optional().default(20),
+  take: z.number().min(1).max(100).optional().default(20),
 });
 
 export const addResponse = z.object({

@@ -8,7 +8,7 @@ const configs = (
       key: "name",
       sortable: true,
       header: t("Product Name"),
-      width: "50%",
+      width: "30%",
     },
     {
       key: "code",

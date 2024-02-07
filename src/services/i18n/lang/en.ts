@@ -14,6 +14,7 @@ export default {
   "Username or password is incorrect.":
     "Username or password is incorrect.",
   "Sign in": "Sign in",
+  "Last updated": "Last updated",
   "New password": "New password",
   "Update password": "Update password",
   "Enter new password": "Enter new password",
@@ -24,6 +25,7 @@ export default {
   "Dashboard": "Dashboard",
   "Product Management": "Product Management",
   "User Management": "User Management",
+  "Customer Management": "Customer Management",
   "Email": "Email",
   "Status": "Status",
   "Phone": "Phone",

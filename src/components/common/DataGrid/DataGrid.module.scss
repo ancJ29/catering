@@ -57,6 +57,13 @@
   flex-grow: 1;
 }
 
+.updated {
+  display: flex;
+  justify-content: end;
+  padding-right: 1rem;
+  width: 250px;
+}
+
 .img1 {
   fill: #aeb8c2;
 }

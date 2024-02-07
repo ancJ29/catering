@@ -14,6 +14,12 @@
     ]
   },
   {
+    "key": "customer",
+    "label": "Customer Management",
+    "icon": "building-bank",
+    "url": "/customer-management"
+  },
+  {
     "key": "catering",
     "label": "Catering Management",
     "icon": "cooker",
