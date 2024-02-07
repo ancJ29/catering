@@ -59,13 +59,17 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
   const t = useTranslation();
   const data = useMetaDataStore();
   const [options] = useState({
-    roles: data.roles.map((role) => ({
-      value: role.value,
-      label: t(role.label),
-    })),
-    departments: data.departments,
+    departmentIdByName: data.departmentIdByName,
+    departments: [...data.departmentIdByName.keys()],
+    roles: [...data.roleIdByName.keys()].map((name) => t(name)),
+    roleIdByName: new Map(
+      [...data.roleIdByName.entries()].map(([name, id]) => [
+        t(name),
+        id,
+      ]),
+    ),
   });
-  logger.debug("options", options);
+
   const form = useForm<Form>({
     initialValues: {
       ...initialValues,
@@ -73,16 +77,20 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
     },
     validate: _validate(t),
   });
+
   const addUser = useCallback(
     async (values: Form) => {
+      const departmentId = values.departmentId
+        ? options.departmentIdByName.get(values.departmentId)
+        : "";
       const res = await callApi<Request, { id: string }>({
         action: Actions.ADD_USER,
         params: {
           password: Math.random().toString(36).slice(-8),
           userName: values.userName.trim(),
           fullName: values.fullName.trim(),
-          roleId: values.roleId,
-          departmentIds: [values.departmentId || ""].filter(Boolean),
+          roleId: options.roleIdByName.get(values.roleId) || "",
+          departmentIds: [departmentId || ""].filter(Boolean),
           email: values.email?.trim() || undefined,
           phone:
             convertToInternationalFormat(
@@ -99,7 +107,7 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
       }
       logger.debug(values);
     },
-    [onClose, onSuccess, t],
+    [onClose, onSuccess, options, t],
   );
 
   const submit = useCallback(
@@ -147,14 +155,14 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
       <Autocomplete
         w={w}
         withAsterisk
-        options={options.roles}
+        data={options.roles}
         label={t("Role")}
         {...form.getInputProps("roleId")}
       />
       <Autocomplete
         w={w}
         label={t("Department")}
-        options={options.departments}
+        data={options.departments}
         {...form.getInputProps("departmentId")}
       />
       <Box w={w}>

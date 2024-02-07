@@ -1,15 +1,13 @@
 import { getMetadata } from "@/services/metadata";
-import { Dictionary, OptionProps } from "@/types";
-import { buildOptions } from "@/utils/array";
+import { Dictionary } from "@/types";
 import { create } from "zustand";
 
 type MetaDataStore = {
-  roles: OptionProps[];
-  departments: OptionProps[];
   dictionaries: Record<string, Dictionary>;
   kitchenType?: string;
-  enums: { id: string; name: string }[];
   enumMap: Map<string, string>;
+  departmentIdByName: Map<string, string>;
+  roleIdByName: Map<string, string>;
   loadMetaData: () => Promise<void>;
 };
 
@@ -17,10 +15,9 @@ export default create<MetaDataStore>((set) => ({
   dictionaries: JSON.parse(
     localStorage.getItem("____dictionaries____") || "{}",
   ),
-  roles: [],
-  departments: [],
   enumMap: new Map<string, string>(),
-  enums: [],
+  departmentIdByName: new Map<string, string>(),
+  roleIdByName: new Map<string, string>(),
   loadMetaData: async () => {
     const data = await getMetadata();
     if (
@@ -36,10 +33,11 @@ export default create<MetaDataStore>((set) => ({
       kitchenType: data.enums.find(
         (e) => e.name === "client-catering",
       )?.id,
-      enums: data.enums,
       enumMap: new Map(data.enums.map((e) => [e.id, e.name])),
-      roles: buildOptions(data.roles),
-      departments: buildOptions(data.departments),
+      departmentIdByName: new Map(
+        data.departments.map((e) => [e.name, e.id]),
+      ),
+      roleIdByName: new Map(data.roles.map((e) => [e.name, e.id])),
       dictionaries: {
         en: data.dictionaries.en,
         vi: data.dictionaries.vi,
