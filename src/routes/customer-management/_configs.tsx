@@ -1,6 +1,18 @@
+import {
+  Actions,
+  configs as actionConfigs,
+} from "@/auto-generated/api-configs";
 import { DataGridColumnProps } from "@/types";
+import { z } from "zod";
 
-const configs = (
+const { response } = actionConfigs[Actions.GET_CUSTOMERS].schema;
+const customerSchema = response.shape.customers.transform(
+  (array) => array[0],
+);
+
+export type Customer = z.infer<typeof customerSchema>;
+
+export const configs = (
   t: (key: string) => string,
 ): DataGridColumnProps[] => {
   return [
@@ -21,7 +33,7 @@ const configs = (
       header: t("Catering name"),
       width: "20%",
       textAlign: "left",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Customer) => {
         return row.others?.cateringName || "-";
       },
     },
@@ -30,11 +42,9 @@ const configs = (
       header: t("Catering name"),
       width: "10%",
       textAlign: "left",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Customer) => {
         return row.others?.type ? t(row.others?.type) : "-";
       },
     },
   ];
 };
-
-export default configs;

@@ -1,35 +1,25 @@
-import {
-  Actions,
-  configs as actionConfigs,
-} from "@/auto-generated/api-configs";
+import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import callApi from "@/services/api";
-import { GenericObject } from "@/types";
+import { loadAll } from "@/services/data-loaders";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
-import { z } from "zod";
-import configs from "./_configs";
-
-const { request, response } =
-  actionConfigs[Actions.GET_CUSTOMERS].schema;
-export type Request = z.infer<typeof request>;
-export type Response = z.infer<typeof response>;
+import { Customer, configs } from "./_configs";
 
 const CustomerManagement = () => {
   const t = useTranslation();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const [products, setProducts] = useState<GenericObject[]>([]);
-  const [data, setData] = useState<GenericObject[]>([]);
+  const [products, setProducts] = useState<Customer[]>([]);
+  const [data, setData] = useState<Customer[]>([]);
   const [names, setNames] = useState([""]);
 
-  const _reload = useCallback(async (noCache?: boolean) => {
-    if (noCache) {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-    }
-    _loadData(noCache).then((products) => {
+  const _reload = useCallback(() => {
+    loadAll<Customer>({
+      key: "customers",
+      action: Actions.GET_CUSTOMERS,
+    }).then((products) => {
       setProducts(products || []);
       setData(products || []);
       setNames(products.map((c) => c.name as string));
@@ -67,25 +57,5 @@ const CustomerManagement = () => {
     </Stack>
   );
 };
-
-async function _loadData(
-  noCache?: boolean,
-  cursor?: string,
-): Promise<GenericObject[]> {
-  const res = await callApi<Request, Response>({
-    action: Actions.GET_CUSTOMERS,
-    params: {
-      take: 100,
-      cursor,
-    },
-    options: { noCache },
-  });
-
-  if (res?.hasMore) {
-    const _customers = (res?.customers || []) as GenericObject[];
-    return _customers.concat(await _loadData(noCache, res.cursor));
-  }
-  return res?.customers || [];
-}
 
 export default CustomerManagement;

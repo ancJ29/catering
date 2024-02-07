@@ -1,7 +1,19 @@
+import {
+  Actions,
+  configs as actionConfigs,
+} from "@/auto-generated/api-configs";
 import { DataGridColumnProps } from "@/types";
+import { z } from "zod";
 import SupplierSettingForm from "./SupplierSettingForm";
 
-const configs = (
+const { response } = actionConfigs[Actions.GET_DEPARTMENTS].schema;
+const departmentSchema = response.shape.departments.transform(
+  (array) => array[0],
+);
+
+export type Department = z.infer<typeof departmentSchema>;
+
+export const configs = (
   t: (key: string) => string,
 ): DataGridColumnProps[] => {
   return [
@@ -65,5 +77,3 @@ const configs = (
     },
   ];
 };
-
-export default configs;

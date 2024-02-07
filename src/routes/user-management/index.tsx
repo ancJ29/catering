@@ -1,12 +1,10 @@
-import {
-  Actions,
-  configs as actionConfigs,
-} from "@/auto-generated/api-configs";
+import { Actions } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
 import AddUserForm from "@/components/users/AddUserForm";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
+import { loadAll } from "@/services/data-loaders";
 import { GenericObject } from "@/types";
 import {
   Button,
@@ -19,18 +17,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
-import { z } from "zod";
-import configs from "./_configs";
-
-const { request, response } = actionConfigs[Actions.GET_USERS].schema;
-export type GerUsersRequest = z.infer<typeof request>;
-export type GetUsersResponse = z.infer<typeof response>;
-
-const userSchema = response.shape.users.transform(
-  (users) => users[0],
-);
-
-type User = z.infer<typeof userSchema>;
+import { User, configs } from "./_configs";
 
 const UserManagement = () => {
   const t = useTranslation();
@@ -43,12 +30,13 @@ const UserManagement = () => {
 
   const _reload = useCallback(
     async (noCache?: boolean) => {
-      if (noCache) {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-      }
-      _loadAllUsers(noCache).then((users) => {
-        setUsers(users || []);
-        setData(users || []);
+      loadAll<User>({
+        key: "users",
+        noCache,
+        action: Actions.GET_USERS,
+      }).then((users) => {
+        setUsers(users);
+        setData(users);
       });
       close();
     },
@@ -174,26 +162,5 @@ const UserManagement = () => {
     </Stack>
   );
 };
-
-async function _loadAllUsers(
-  noCache?: boolean,
-  cursor?: string,
-): Promise<User[]> {
-  const res = await callApi<GerUsersRequest, GetUsersResponse>({
-    action: Actions.GET_USERS,
-    params: {
-      take: 100,
-      cursor,
-    },
-    options: { noCache },
-  });
-
-  if (res?.hasMore) {
-    return (res?.users || []).concat(
-      await _loadAllUsers(noCache, res.cursor),
-    );
-  }
-  return res?.users || [];
-}
 
 export default UserManagement;

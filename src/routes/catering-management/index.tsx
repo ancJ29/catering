@@ -1,48 +1,36 @@
-import {
-  Actions,
-  configs as actionConfigs,
-} from "@/auto-generated/api-configs";
+import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import callApi from "@/services/api";
+import { loadAll } from "@/services/data-loaders";
 import useMetaDataStore from "@/stores/meta-data.store";
-import { GenericObject } from "@/types";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
-import { z } from "zod";
-import configs from "./_configs";
-
-const { request, response } =
-  actionConfigs[Actions.GET_DEPARTMENTS].schema;
-export type Request = z.infer<typeof request>;
-export type Response = z.infer<typeof response>;
+import { Department, configs } from "./_configs";
 
 const CateringManagement = () => {
   const t = useTranslation();
   const { kitchenType } = useMetaDataStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const [caterings, setCaterings] = useState<GenericObject[]>([]);
-  const [data, setData] = useState<GenericObject[]>([]);
+  const [caterings, setCaterings] = useState<Department[]>([]);
+  const [data, setData] = useState<Department[]>([]);
   const [names, setNames] = useState([""]);
 
-  const _reload = useCallback(
-    async (noCache?: boolean) => {
-      if (!kitchenType) {
-        return;
-      }
-      if (noCache) {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-      }
-      _loadData(kitchenType, noCache).then((caterings) => {
-        setCaterings(caterings || []);
-        setData(caterings || []);
-        setNames(caterings.map((c) => c.name as string));
-      });
-    },
-    [kitchenType],
-  );
+  const _reload = useCallback(() => {
+    if (!kitchenType) {
+      return;
+    }
+    loadAll<Department>({
+      key: "departments",
+      action: Actions.GET_DEPARTMENTS,
+      params: { type: kitchenType },
+    }).then((caterings) => {
+      setCaterings(caterings || []);
+      setData(caterings || []);
+      setNames(caterings.map((c) => c.name as string));
+    });
+  }, [kitchenType]);
 
   const filter = useCallback(
     (keyword: string) => {
@@ -75,29 +63,5 @@ const CateringManagement = () => {
     </Stack>
   );
 };
-
-async function _loadData(
-  kitchenType: string,
-  noCache?: boolean,
-  cursor?: string,
-): Promise<GenericObject[]> {
-  const res = await callApi<Request, Response>({
-    action: Actions.GET_DEPARTMENTS,
-    params: {
-      take: 100,
-      cursor,
-      type: kitchenType,
-    },
-    options: { noCache },
-  });
-
-  if (res?.hasMore) {
-    const _departments = (res?.departments || []) as GenericObject[];
-    return _departments.concat(
-      await _loadData(kitchenType, noCache, res.cursor),
-    );
-  }
-  return res?.departments || [];
-}
 
 export default CateringManagement;

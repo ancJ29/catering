@@ -32,7 +32,14 @@ const limitOptions = [10, 20, 50, 100].map((el) => ({
   label: el.toString(),
 }));
 
-function DataGrid<T extends GenericObject>({
+type GenericObjectWithModificationInformation = GenericObject & {
+  updatedAt: Date;
+  lastModifiedBy?: string | null | undefined;
+};
+
+function DataGrid<
+  T extends GenericObjectWithModificationInformation,
+>({
   limit: _limit = 0,
   page: _page = 1,
   hasUpdateColumn = true,
@@ -222,7 +229,9 @@ function PaginationBar({
 
 export default DataGrid;
 
-function _contentBuilder<T extends GenericObject>(
+function _contentBuilder<
+  T extends GenericObjectWithModificationInformation,
+>(
   rows: T[],
   columns: DataGridColumnProps[],
   {
@@ -267,7 +276,7 @@ function _contentBuilder<T extends GenericObject>(
               hasUpdateColumn={hasUpdateColumn}
               hasActionColumn={hasActionColumn}
               lastModifiedBy={row.lastModifiedBy as string}
-              updatedAt={row.updatedAt as string}
+              updatedAt={row.updatedAt}
             />
             <Actions
               key={index + 1}
@@ -293,7 +302,7 @@ function LastUpdated({
   hasUpdateColumn?: boolean;
   hasActionColumn?: boolean;
   lastModifiedBy: string;
-  updatedAt: string;
+  updatedAt: Date;
 }) {
   const t = useTranslation();
   return hasUpdateColumn ? (
@@ -308,7 +317,7 @@ function LastUpdated({
         {(lastModifiedBy as string) || "-"}
         <br />
         <b>{t("Last updated")}</b>:&nbsp;
-        {dayjs(updatedAt as string).format("DD/MM/YYYY HH:mm")}
+        {dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}
       </div>
     </Box>
   ) : (

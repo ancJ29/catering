@@ -22,6 +22,7 @@ import {
   Policy,
   RequestDecorator,
 } from "./enums";
+import { customerOthersSchema } from "./others-schema";
 import {
   addResponse,
   dateSchema,
@@ -651,7 +652,7 @@ export const configs = {
             others: true,
           })
           .extend({
-            others: z.unknown(),
+            others: customerOthersSchema,
           })
           .array(),
       }),

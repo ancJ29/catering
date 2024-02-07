@@ -1,6 +1,17 @@
+import {
+  Actions,
+  configs as actionConfigs,
+} from "@/auto-generated/api-configs";
 import { DataGridColumnProps } from "@/types";
+import { z } from "zod";
 
-const configs = (
+const { response } = actionConfigs[Actions.GET_USERS].schema;
+const userSchema = response.shape.users.transform(
+  (array) => array[0],
+);
+export type User = z.infer<typeof userSchema>;
+
+export const configs = (
   t: (key: string) => string,
 ): DataGridColumnProps[] => {
   return [
@@ -52,5 +63,3 @@ const configs = (
     },
   ];
 };
-
-export default configs;
