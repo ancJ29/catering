@@ -15,6 +15,7 @@ export default {
     "Username or password is incorrect.",
   "Sign in": "Sign in",
   "Last updated": "Last updated",
+  "Last modifier": "Last modifier",
   "New password": "New password",
   "Update password": "Update password",
   "Enter new password": "Enter new password",
@@ -26,6 +27,7 @@ export default {
   "Product Management": "Product Management",
   "User Management": "User Management",
   "Customer Management": "Customer Management",
+  "Menu Management": "Menu Management",
   "Email": "Email",
   "Status": "Status",
   "Phone": "Phone",
@@ -59,4 +61,5 @@ export default {
   "Invalid phone number": "Invalid phone number",
   "Invalid email": "Invalid email",
   "Password copied to clipboard": "Password copied to clipboard",
+  "Customer": "Customer",
 } satisfies Dictionary;

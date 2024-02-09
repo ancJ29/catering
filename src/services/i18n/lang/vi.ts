@@ -15,6 +15,7 @@ export default {
     "Tên đăng nhập hoặc mật khẩu không chính xác.",
   "Sign in": "Đăng nhập",
   "Last updated": "Cập nhật",
+  "Last modifier": "Chỉnh sửa",
   "New password": "Mật khẩu mới",
   "Update password": "Cập nhật mật khẩu",
   "Enter new password": "Mật khẩu mới",
@@ -26,6 +27,7 @@ export default {
   "Product Management": "Quản lý sản phẩm",
   "User Management": "Quản lý người dùng",
   "Customer Management": "Quản lý khách hàng",
+  "Menu Management": "Lập thực đơn",
   "Email": "Email",
   "Status": "Trạng thái",
   "Phone": "Số điện thoại",
@@ -59,4 +61,5 @@ export default {
   "Invalid phone number": "Số điện thoại không hợp lệ",
   "Invalid email": "Email không hợp lệ",
   "Password copied to clipboard": "Mật khẩu đã được sao chép",
+  "Customer": "Khách hàng",
 } satisfies Dictionary;

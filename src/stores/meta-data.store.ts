@@ -20,10 +20,12 @@ export default create<MetaDataStore>((set) => ({
   roleIdByName: new Map<string, string>(),
   loadMetaData: async () => {
     const data = await getMetadata();
-    if (
-      localStorage.getItem("____dictionaries-version____") !==
-      data.dictionaries.version
-    ) {
+    const version = data.dictionaries.version;
+    const cachedVersion = localStorage.getItem(
+      "____dictionaries-version____",
+    );
+    if (cachedVersion !== version) {
+      localStorage.setItem("____dictionaries-version____", version);
       localStorage.setItem(
         "____dictionaries____",
         JSON.stringify(data.dictionaries),

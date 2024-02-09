@@ -31,6 +31,7 @@ const componentMap: Record<string, LazyExoticComponent> = {
   ProductManagement: lazy(
     () => import("@/routes/product-management"),
   ),
+  MenuManagement: lazy(() => import("@/routes/menu-management")),
 };
 
 const configs: Config[] = [
@@ -48,6 +49,16 @@ const configs: Config[] = [
       element: ServiceWrapper as Wrapper,
       props: {
         title: "User Management",
+      },
+    },
+  },
+  {
+    path: "/Menu-management",
+    element: "MenuManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Menu Management",
       },
     },
   },

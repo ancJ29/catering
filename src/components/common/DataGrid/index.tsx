@@ -313,7 +313,7 @@ function LastUpdated({
       }}
     >
       <div>
-        <b>{t("Updated by")}</b>:&nbsp;
+        <b>{t("Last modifier")}</b>:&nbsp;
         {(lastModifiedBy as string) || "-"}
         <br />
         <b>{t("Last updated")}</b>:&nbsp;

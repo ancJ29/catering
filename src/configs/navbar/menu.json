@@ -26,6 +26,12 @@
     "url": "/catering-management"
   },
   {
+    "key": "menu-management",
+    "label": "Menu Management",
+    "icon": "chef-hat",
+    "url": "/menu-management"
+  },
+  {
     "key": "product",
     "label": "Product Management",
     "icon": "soup",

@@ -19,7 +19,7 @@ export const configs = (
     {
       key: "name",
       sortable: true,
-      header: t("Catering name"),
+      header: t("Customer"),
       width: "20%",
     },
     {
@@ -39,7 +39,7 @@ export const configs = (
     },
     {
       key: "type",
-      header: t("Catering name"),
+      header: t("Customer type"),
       width: "10%",
       textAlign: "left",
       renderCell: (_, row: Customer) => {

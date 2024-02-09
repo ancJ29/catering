@@ -11,7 +11,7 @@ import { Customer, configs } from "./_configs";
 const CustomerManagement = () => {
   const t = useTranslation();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const [products, setProducts] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [data, setData] = useState<Customer[]>([]);
   const [names, setNames] = useState([""]);
 
@@ -19,33 +19,33 @@ const CustomerManagement = () => {
     loadAll<Customer>({
       key: "customers",
       action: Actions.GET_CUSTOMERS,
-    }).then((products) => {
-      setProducts(products || []);
-      setData(products || []);
-      setNames(products.map((c) => c.name as string));
+    }).then((customers) => {
+      setCustomers(customers || []);
+      setData(customers || []);
+      setNames(customers.map((c) => c.name as string));
     });
   }, []);
 
   const filter = useCallback(
     (keyword: string) => {
       if (!keyword) {
-        setData(products);
+        setData(customers);
         return;
       }
       const _keyword = keyword.toLowerCase();
       setData(
-        products.filter((c) =>
+        customers.filter((c) =>
           (c.name as string)?.toLocaleLowerCase().includes(_keyword),
         ),
       );
     },
-    [products],
+    [customers],
   );
 
   useOnMounted(_reload);
 
   return (
-    <Stack gap={10} w="100%" h="100%" p={10}>
+    <Stack gap={10}>
       <Flex justify="end" align={"center"}>
         <Autocomplete onEnter={filter} data={names} />
       </Flex>

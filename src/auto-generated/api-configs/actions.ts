@@ -1,6 +1,5 @@
 import {
   ActionType,
-  customerSchema,
   departmentSchema,
   menuSchema,
   messageSchema,
@@ -17,12 +16,15 @@ import {
 } from "@/auto-generated/prisma-schema/enums";
 import { z } from "zod";
 import {
+  xCustomerSchema,
+  xDepartmentSchema,
+} from "./custom-prisma-schema";
+import {
   ActionGroups,
   Actions,
   Policy,
   RequestDecorator,
 } from "./enums";
-import { customerOthersSchema } from "./others-schema";
 import {
   addResponse,
   dateSchema,
@@ -575,14 +577,7 @@ export const configs = {
         name: z.string().optional(),
       }),
       response: listResponse.extend({
-        departments: departmentSchema
-          .omit({
-            others: true,
-          })
-          .extend({
-            others: z.unknown(),
-          })
-          .array(),
+        departments: xDepartmentSchema.array(),
       }),
     },
   },
@@ -647,14 +642,7 @@ export const configs = {
     schema: {
       request: getSchema,
       response: listResponse.extend({
-        customers: customerSchema
-          .omit({
-            others: true,
-          })
-          .extend({
-            others: customerOthersSchema,
-          })
-          .array(),
+        customers: xCustomerSchema.array(),
       }),
     },
   },

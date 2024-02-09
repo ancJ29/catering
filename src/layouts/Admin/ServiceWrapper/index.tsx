@@ -1,3 +1,4 @@
+import useTranslation from "@/hooks/useTranslation";
 import { AppShell, Box, Burger, Button } from "@mantine/core";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import { IconArrowUp } from "@tabler/icons-react";
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const ServiceWrapper = ({ title, children }: Props) => {
+  const t = useTranslation();
   const [open, { toggle }] = useDisclosure(false);
   const [scroll, scrollTo] = useWindowScroll();
 
@@ -29,7 +31,7 @@ const ServiceWrapper = ({ title, children }: Props) => {
     >
       <AppShell.Header withBorder={false}>
         <AdminHeader
-          title={title}
+          title={t(title)}
           burger={<Burger opened={open} onClick={toggle} size="sm" />}
         />
       </AppShell.Header>
@@ -48,6 +50,7 @@ const ServiceWrapper = ({ title, children }: Props) => {
             flex: "grow",
             height: "auto",
             width: "100%",
+            padding: "10px",
           }}
         >
           {children}

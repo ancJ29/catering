@@ -108,7 +108,7 @@ const UserManagement = () => {
   );
 
   return (
-    <Stack gap={10} w="100%" h="100%" p={10}>
+    <Stack gap={10}>
       <Flex w={"100%"} justify="end" align="center" gap={12}>
         <form
           onSubmit={search}
