@@ -1,16 +1,5 @@
-import {
-  Actions,
-  configs as actionConfigs,
-} from "@/auto-generated/api-configs";
+import { Customer } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { z } from "zod";
-
-const { response } = actionConfigs[Actions.GET_CUSTOMERS].schema;
-const customerSchema = response.shape.customers.transform(
-  (array) => array[0],
-);
-
-export type Customer = z.infer<typeof customerSchema>;
 
 export const configs = (
   t: (key: string) => string,

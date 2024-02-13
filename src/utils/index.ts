@@ -4,3 +4,4 @@ export * from "./function";
 export * from "./object";
 export * from "./phone-number";
 export * from "./string";
+export * from "./time";

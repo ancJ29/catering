@@ -3,19 +3,15 @@ import {
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
 import { ActionType } from "@/auto-generated/prisma-schema";
+import cache from "@/services/cache";
 import logger from "@/services/logger";
 import useAuthStore from "@/stores/auth.store";
+import { GenericObject } from "@/types";
 import { notifications } from "@mantine/notifications";
 import axios, { type AxiosResponse } from "axios";
 import dayjs from "dayjs";
-import { LRUCache } from "lru-cache";
-// import { toast } from "react-toastify";
 import { ZodTypeDef, z } from "zod";
 import validator from "./_validator";
-
-type GenericObject = {
-  [key: string]: unknown;
-};
 
 type ActionConfig = {
   group: string;
@@ -37,7 +33,9 @@ type callApiProps<T> = {
 };
 
 const base = import.meta.env.BASE_URL;
-
+let counter = 0;
+const shouldValidateParams = import.meta.env.DEV;
+const shouldValidateResponse = import.meta.env.DEV;
 const dateKeys = new Map<string, boolean>(
   Object.entries({
     createdAt: true,
@@ -48,50 +46,6 @@ const dateKeys = new Map<string, boolean>(
     to: true,
   }),
 );
-
-let counter = 0;
-
-const cache = new LRUCache<string, GenericObject>({
-  max: 100,
-  maxSize: 1000,
-  sizeCalculation: () => 1,
-  ttl: 1000 * 60, // one minute
-});
-
-const shouldValidateParams = import.meta.env.DEV;
-const shouldValidateResponse = import.meta.env.DEV;
-function _validateParams<T>(action: string, params?: T) {
-  if (!shouldValidateParams) {
-    return params;
-  }
-  if (params) {
-    const payload = useAuthStore.getState().user || undefined;
-    const _params = params as Record<string, unknown>;
-    return validator(payload, action, _params) as T;
-  }
-  return params;
-}
-
-function _validateResponse<R>(action: string, data: R): R {
-  if (!shouldValidateResponse) {
-    return data;
-  }
-  const actionConfig = actionConfigs[
-    action as Actions
-  ] as ActionConfig;
-  if (actionConfig?.schema?.response) {
-    const res = actionConfig.schema.response.safeParse(data);
-    if (!res.success) {
-      logger.error("[api-v2-invalid-response]", res.error);
-      logger.error("[api-v2-invalid-response-data]", data);
-      // alert(`Invalid response of ${action}`);
-      throw new Error("Invalid response");
-    } else {
-      data = res.data as R;
-    }
-  }
-  return data;
-}
 
 export default async function callApi<T, R>({
   params,
@@ -141,6 +95,39 @@ export default async function callApi<T, R>({
   return undefined;
 }
 
+async function _decreaseCounter(start: number) {
+  const THRESHOLD = 800;
+  const delay = Math.max(THRESHOLD - (Date.now() - start), 0);
+  if (delay > 0) {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+  counter--;
+  if (counter < 1) {
+    window.dispatchEvent(new Event("clear-loading"));
+  }
+}
+
+async function _increaseCounter() {
+  counter < 1 && window.dispatchEvent(new Event("start-loading"));
+  counter++;
+}
+
+async function _fetch<R>(action: string, params: unknown) {
+  const token = useAuthStore.getState().token;
+  const res = await axios<unknown, AxiosResponse<R>>({
+    method: "POST",
+    url: base,
+    data: { action, params: _parseDateToUnix(params) },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : undefined,
+      "x-unix-timestamp": "true",
+      "x-client-id": import.meta.env.CLIENT_ID || "0",
+    },
+  });
+  return _validateResponse(action, _parseUnixToDate(res.data) as R);
+}
+
 function _key<T>(action?: string, params?: T) {
   const ONE_MINUTE = 60000;
   const now = Date.now();
@@ -174,39 +161,6 @@ function _checkCache<R>(
     return { key, data };
   }
   return { key };
-}
-
-async function _decreaseCounter(start: number) {
-  const THRESHOLD = 800;
-  const delay = Math.max(THRESHOLD - (Date.now() - start), 0);
-  if (delay > 0) {
-    await new Promise((resolve) => setTimeout(resolve, delay));
-  }
-  counter--;
-  if (counter < 1) {
-    window.dispatchEvent(new Event("clear-loading"));
-  }
-}
-
-async function _increaseCounter() {
-  counter < 1 && window.dispatchEvent(new Event("start-loading"));
-  counter++;
-}
-
-async function _fetch<R>(action: string, params: unknown) {
-  const token = useAuthStore.getState().token;
-  const res = await axios<unknown, AxiosResponse<R>>({
-    method: "POST",
-    url: base,
-    data: { action, params: _parseDateToUnix(params) },
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": token ? `Bearer ${token}` : undefined,
-      "x-unix-timestamp": "true",
-      "x-client-id": import.meta.env.CLIENT_ID || "0",
-    },
-  });
-  return _validateResponse(action, _parseUnixToDate(res.data) as R);
 }
 
 function _isDateKey(key?: string) {
@@ -249,4 +203,37 @@ function _parseDateToUnix(input: unknown, key?: string): unknown {
     );
   }
   return input;
+}
+
+function _validateParams<T>(action: string, params?: T) {
+  if (!shouldValidateParams) {
+    return params;
+  }
+  if (params) {
+    const payload = useAuthStore.getState().user || undefined;
+    const _params = params as Record<string, unknown>;
+    return validator(payload, action, _params) as T;
+  }
+  return params;
+}
+
+function _validateResponse<R>(action: string, data: R): R {
+  if (!shouldValidateResponse) {
+    return data;
+  }
+  const actionConfig = actionConfigs[
+    action as Actions
+  ] as ActionConfig;
+  if (actionConfig?.schema?.response) {
+    const res = actionConfig.schema.response.safeParse(data);
+    if (!res.success) {
+      logger.error("[api-v2-invalid-response]", res.error);
+      logger.error("[api-v2-invalid-response-data]", data);
+      // alert(`Invalid response of ${action}`);
+      throw new Error("Invalid response");
+    } else {
+      data = res.data as R;
+    }
+  }
+  return data;
 }

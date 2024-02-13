@@ -6,7 +6,6 @@ import {
   messageTemplateSchema,
   productSchema,
   reservationSchema,
-  tableSchema,
 } from "@/auto-generated/prisma-schema";
 import { branchSchema } from "@/auto-generated/prisma-schema/branch";
 import { chainSchema } from "@/auto-generated/prisma-schema/chain";
@@ -222,65 +221,6 @@ export const configs = {
       request: z.object({
         id: z.string(),
       }),
-    },
-  },
-  [Actions.GET_TABLES]: {
-    name: Actions.GET_TABLES,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    // policy: Policy.SAME_BRANCH,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        branchId: z.string(),
-      }),
-      response: listResponse.extend({
-        tables: tableSchema.array(),
-      }),
-    },
-  },
-  [Actions.ADD_TABLES]: {
-    name: Actions.ADD_TABLES,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: z.object({
-        branchId: z.string(),
-        tables: z.array(
-          tableSchema
-            .pick({
-              name: true,
-            })
-            .required(),
-        ),
-      }),
-    },
-  },
-  [Actions.UPDATE_TABLE]: {
-    name: Actions.UPDATE_TABLE,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: tableSchema
-        .pick({
-          id: true,
-          name: true,
-        })
-        .required(),
-    },
-  },
-  [Actions.DELETE_TABLE]: {
-    name: Actions.DELETE_TABLE,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: tableSchema
-        .pick({
-          id: true,
-        })
-        .required(),
     },
   },
   [Actions.GET_MESSAGES]: {

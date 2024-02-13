@@ -1,13 +1,19 @@
-import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useTranslation from "@/hooks/useTranslation";
-import { loadAll } from "@/services/data-loaders";
+import {
+  Product as _Product,
+  getAllProducts,
+} from "@/services/domain";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { unique } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Product, configs } from "./_configs";
+import { configs } from "./_configs";
+
+type Product = _Product & {
+  typeName?: string;
+};
 
 const ProductManagement = () => {
   const t = useTranslation();
@@ -25,11 +31,7 @@ const ProductManagement = () => {
     if (enumMap.size === 0) {
       return;
     }
-    // _loadData(noCache)
-    loadAll<Product>({
-      key: "products",
-      action: Actions.GET_PRODUCTS,
-    }).then((products: Product[] = []) => {
+    getAllProducts().then((products: Product[]) => {
       const _products = products.map((el) => {
         const type = enumMap.get(el.type as string);
         el.typeName = type ? t(type) : `${type}.s`;

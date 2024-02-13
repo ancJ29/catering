@@ -1,12 +1,11 @@
-import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { loadAll } from "@/services/data-loaders";
+import { Customer, getAllCustomers } from "@/services/domain";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
-import { Customer, configs } from "./_configs";
+import { configs } from "./_configs";
 
 const CustomerManagement = () => {
   const t = useTranslation();
@@ -16,10 +15,7 @@ const CustomerManagement = () => {
   const [names, setNames] = useState([""]);
 
   const _reload = useCallback(() => {
-    loadAll<Customer>({
-      key: "customers",
-      action: Actions.GET_CUSTOMERS,
-    }).then((customers) => {
+    getAllCustomers().then((customers) => {
       setCustomers(customers || []);
       setData(customers || []);
       setNames(customers.map((c) => c.name as string));

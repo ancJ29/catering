@@ -1,131 +1,272 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
+import Select from "@/components/common/Select";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { loadAll } from "@/services/data-loaders";
-import { Box, Flex, Stack, Table } from "@mantine/core";
+import {
+  Customer,
+  Product,
+  getAllCustomers,
+  getAllProducts,
+} from "@/services/domain";
+import { firstMonday, lastSunday, startOfWeek } from "@/utils";
+import {
+  Flex,
+  Group,
+  Radio,
+  SegmentedControl,
+  Stack,
+  Table,
+  UnstyledButton,
+} from "@mantine/core";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
-import { Customer, Product, Target } from "./_configs";
+import { Target, weekdays } from "./_configs";
+import Cell from "./components/Cell";
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 const ONE_WEEK = ONE_DAY * 7;
 
 const MenuManagement = () => {
   const t = useTranslation();
+  const [mode, setMode] = useState<"M" | "W">("W");
+  const [markDate, setMarkDate] = useState(Date.now());
+  const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
   const [customers, setCustomers] = useState<Map<string, Customer>>();
   const [products, setProducts] = useState<Map<string, Product>>();
+  const [target, setTarget] = useState<Target>();
+  const [shift, setShift] = useState<string>();
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<Customer>();
+
   const customerData = useMemo(() => {
     return [...(customers?.keys() || [])];
   }, [customers]);
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<Customer>();
+
+  const { monthView, weekView, headers } = useMemo(() => {
+    let weekView = <></>,
+      monthView = <></>,
+      rows: {
+        date: string;
+        timestamp: number;
+      }[][] = [[]],
+      headers: {
+        label: string;
+        timestamp?: number;
+      }[] = weekdays.map((el) => ({ label: t(el) }));
+
+    const menuItemsByDate = new Map<string, Product[]>();
+    const _products = [...(products?.values() || [])];
+    const isWeekView = mode === "W";
+    const from = isWeekView
+      ? startOfWeek(markDate)
+      : firstMonday(markDate);
+    const to = isWeekView ? from + 6 * ONE_DAY : lastSunday(markDate);
+
+    if (target) {
+      for (let date = from; date <= to; date += ONE_DAY) {
+        target.shifts.forEach((shift) => {
+          menuItemsByDate.set(
+            `${shift}.${date}`,
+            _randomMenu(_products),
+          );
+        });
+      }
+    }
+
+    if (isWeekView) {
+      headers = weekdays.map((el, idx) => {
+        const timestamp = from + idx * ONE_DAY;
+        return {
+          label: `${dayjs(timestamp).format("DD/MM")} (${t(el)})`,
+          timestamp,
+        };
+      });
+      weekView = (
+        <Table.Tbody>
+          {target?.shifts.map((shift, idx) => (
+            <Table.Tr key={idx}>
+              <Table.Td>{shift}</Table.Td>
+              {headers.map((header, idx) => (
+                <Cell
+                  key={idx}
+                  products={
+                    menuItemsByDate.get(
+                      `${shift}.${header.timestamp || 0}`,
+                    ) || []
+                  }
+                />
+              ))}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      );
+    } else {
+      const weeks = Math.round((to - from) / ONE_WEEK);
+      rows = Array.from(
+        {
+          length: weeks,
+        },
+        (_, w) => {
+          return ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(
+            (_, idx) => {
+              const timestamp = from + w * ONE_WEEK + idx * ONE_DAY;
+              return {
+                timestamp,
+                date: dayjs(timestamp).format("DD/MM"),
+              };
+            },
+          );
+        },
+      );
+      monthView = (
+        <Table.Tbody>
+          {rows.map((cells, idx) => (
+            <Table.Tr key={idx}>
+              {cells.map((cell, idx) => (
+                <Cell
+                  key={idx}
+                  date={cell.date}
+                  products={
+                    menuItemsByDate.get(
+                      `${shift}.${cell.timestamp}`,
+                    ) || []
+                  }
+                />
+              ))}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      );
+    }
+    return { rows, headers, menuItemsByDate, weekView, monthView };
+  }, [products, mode, markDate, target, t, shift]);
+
   const targetData = useMemo(() => {
     return selectedCustomer?.others.targets.map((el) => el.name);
   }, [selectedCustomer]);
 
-  const _load = useCallback(() => {
-    loadAll<Product>({
-      key: "products",
-      action: Actions.GET_PRODUCTS,
-    }).then((products) => {
-      const _products = products.map((el) => {
-        if (typeof el.name === "string") {
-          const strings = el.name.split(".");
-          el.name =
-            strings.length > 1
-              ? strings.slice(0, -1).join(".")
-              : strings[0];
-        }
-        return el;
-      });
-      setProducts(new Map(_products.map((el) => [el.name, el])));
-      loadAll<Customer>({
-        key: "customers",
-        action: Actions.GET_CUSTOMERS,
-      }).then((customers) => {
-        setCustomers(new Map(customers.map((el) => [el.name, el])));
-        setSelectedCustomer(customers[0]);
-        setTarget(customers[0].others.targets[0]);
-      });
-    });
-  }, []);
-
-  const [target, setTarget] = useState<Target>();
-
   const _selectCustomer = useCallback(
     (name: string) => {
       if (customers?.has(name)) {
-        setSelectedCustomer(customers.get(name));
-        setTarget(undefined);
+        const customer = customers.get(name);
+        const target = customer?.others.targets[0];
+        setSelectedCustomer(customer);
+        setTarget(target);
+        setShift(target?.shifts[0]);
       }
     },
     [customers],
   );
 
   const _selectTarget = useCallback(
-    (name: string) => {
+    (name: string | null) => {
+      if (!name) {
+        return;
+      }
       if (targetData?.includes(name)) {
         const target = selectedCustomer?.others.targets.find(
           (el) => el.name === name,
         );
         setTarget(target);
+        setShift(target?.shifts[0]);
       }
     },
     [targetData, selectedCustomer],
   );
 
-  const [mode] = useState<"M" | "W">("M");
-  const [startOfWeek] = useState(_startOfWeek(Date.now()));
-  const [startOfMonth] = useState(_startOfMonth(Date.now()));
-  const [endOfMonth] = useState(_endOfMonth(Date.now()));
-
-  const headers = useMemo(() => {
-    if (mode === "W") {
-      // TODO: english
-      return ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(
-        (el, idx) => {
-          const date = startOfWeek + idx * ONE_DAY;
-          return `${dayjs(date).format("DD/MM")} (${el})`;
-        },
-      );
-    }
-    return ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-  }, [mode, startOfWeek]);
-
-  const rows = useMemo(() => {
-    const weeks = Math.floor((endOfMonth - startOfMonth) / ONE_WEEK);
-    return Array.from(
-      {
-        length: weeks,
-      },
-      (_, w) => {
-        return ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(
-          (el, idx) => {
-            const date = startOfMonth + w * ONE_WEEK + idx * ONE_DAY;
-            return `${dayjs(date).format("DD/MM")} (${el})`;
-          },
-        );
+  const _load = useCallback(() => {
+    Promise.all([getAllCustomers(), getAllProducts()]).then(
+      ([customers, products]) => {
+        setCustomers(new Map(customers.map((el) => [el.name, el])));
+        setProducts(new Map(products.map((el) => [el.name, el])));
       },
     );
-  }, [endOfMonth, startOfMonth]);
+  }, []);
+
+  const _setMode = useCallback(
+    (value: string) => {
+      if (value === W) {
+        setMode("W");
+      } else {
+        setMode("M");
+      }
+    },
+    [W],
+  );
+
+  const _shiftMarkDate = useCallback(
+    (diff = -1) => {
+      if (mode === "W") {
+        setMarkDate((el) => el + diff * ONE_WEEK);
+      } else {
+        setMarkDate((el) => {
+          const date = new Date(el);
+          date.setMonth(date.getMonth() + diff);
+          return date.getTime();
+        });
+      }
+    },
+    [mode],
+  );
 
   useOnMounted(_load);
 
   return (
     <Stack gap={10}>
-      <Flex gap={10} justify="start" align="center">
-        <Autocomplete
-          label={t("Customer")}
-          data={customerData}
-          onChange={_selectCustomer}
-        />
-        <Autocomplete
-          label={t("Customer target")}
-          data={targetData}
-          onChange={_selectTarget}
-        />
+      <Flex gap={10} w="100%" justify="space-between" align="end">
+        <Flex gap={10} justify="start" align="start">
+          <Autocomplete
+            label={t("Customer")}
+            data={customerData}
+            onChange={_selectCustomer}
+          />
+          <Select
+            value={target?.name}
+            label={t("Customer target")}
+            data={targetData}
+            onChange={_selectTarget}
+          />
+          {mode === "M" && target?.shifts?.length && (
+            <Radio.Group
+              label={t("shifts")}
+              value={shift}
+              onChange={setShift}
+            >
+              <Group>
+                {target?.shifts.map((shift, idx) => {
+                  return (
+                    <Radio
+                      disabled={target.shifts.length === 1}
+                      h="2.2rem"
+                      pt=".8rem"
+                      key={idx}
+                      value={shift}
+                      label={shift}
+                    />
+                  );
+                })}
+              </Group>
+            </Radio.Group>
+          )}
+        </Flex>
+        <Flex justify="center" align="center">
+          <UnstyledButton onClick={_shiftMarkDate.bind(null, -1)}>
+            <IconChevronLeft />
+          </UnstyledButton>
+          <SegmentedControl
+            value={mode === "W" ? W : M}
+            data={[W, M]}
+            onChange={_setMode}
+          />
+          <UnstyledButton onClick={_shiftMarkDate.bind(null, 1)}>
+            <IconChevronRight />
+          </UnstyledButton>
+        </Flex>
       </Flex>
       <Table withTableBorder withColumnBorders>
         <Table.Thead>
@@ -134,93 +275,13 @@ const MenuManagement = () => {
             {headers.map((el, idx) => {
               return (
                 <Table.Th ta="center" key={idx}>
-                  {el}
+                  {el.label}
                 </Table.Th>
               );
             })}
           </Table.Tr>
         </Table.Thead>
-        {mode === "W" && (
-          <Table.Tbody>
-            {target?.shifts.map((shift, idx) => {
-              return (
-                <Table.Tr key={idx}>
-                  <Table.Td>{shift}</Table.Td>
-                  {headers.map((el, idx) => {
-                    return (
-                      <Table.Td key={idx} py={12}>
-                        {_randomMenu([
-                          ...(products?.values() || []),
-                        ]).map((product) => {
-                          return (
-                            <Box
-                              fz={12}
-                              // c="white"
-                              pl={8}
-                              key={product.id}
-                              bg="orange.4"
-                              my={3}
-                              style={{
-                                userSelect: "none",
-                                cursor: "pointer",
-                                borderRadius: "5px",
-                              }}
-                            >
-                              {product.name}
-                            </Box>
-                          );
-                        })}
-                      </Table.Td>
-                    );
-                  })}
-                </Table.Tr>
-              );
-            })}
-          </Table.Tbody>
-        )}
-        {mode === "M" && (
-          <Table.Tbody>
-            {rows.map((cells, idx) => {
-              return (
-                <Table.Tr key={idx}>
-                  {cells.map((cell, idx) => {
-                    return (
-                      <Table.Td
-                        key={idx}
-                        style={{
-                          verticalAlign: "top",
-                        }}
-                      >
-                        <Box mb={2}>{cell}</Box>
-                        {_randomMenu([
-                          ...(products?.values() || []),
-                        ]).map((product, idx) => {
-                          return (
-                            <Box
-                              w="100%"
-                              fz={12}
-                              pl={8}
-                              mt={4}
-                              key={idx}
-                              bg="orange.4"
-                              style={{
-                                userSelect: "none",
-                                cursor: "pointer",
-                                borderRadius: "5px",
-                              }}
-                            >
-                              {product?.name || "--"}
-                            </Box>
-                          );
-                        })}
-                      </Table.Td>
-                    );
-                  })}
-                </Table.Tr>
-              );
-            })}
-          </Table.Tbody>
-        )}
+        {mode === "W" ? weekView : monthView}
       </Table>
     </Stack>
   );
@@ -236,23 +297,6 @@ function _randomMenu(products: Product[]) {
       return products[Math.floor(Math.random() * total)];
     },
   );
-}
-
-function _startOfMonth(timestamp: number) {
-  const date = new Date(timestamp);
-  date.setUTCDate(1);
-  return _startOfWeek(date.getTime());
-}
-
-function _endOfMonth(timestamp: number) {
-  let date = new Date(timestamp);
-  date.setUTCMonth(date.getUTCMonth() + 1);
-  date = new Date(date.getTime() - ONE_DAY);
-  return _startOfWeek(date.getTime() + ONE_WEEK) - ONE_DAY;
-}
-
-function _startOfWeek(timestamp: number) {
-  return timestamp - (timestamp % ONE_WEEK) - 3 * ONE_DAY;
 }
 
 export default MenuManagement;
