@@ -18,5 +18,4 @@ export const reservationSchema = z.object({
   children: z.number().int(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
 });

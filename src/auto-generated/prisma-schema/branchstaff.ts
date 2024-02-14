@@ -6,5 +6,4 @@ export const branchStaffSchema = z.object({
   staffId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
 });

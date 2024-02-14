@@ -15,7 +15,9 @@ const productSchema = response.shape.products.transform(
 
 const schema = response.omit({ cursor: true, hasMore: true });
 
-export type Product = z.infer<typeof productSchema>;
+export type Product = z.infer<typeof productSchema> & {
+  typeName?: string;
+};
 
 export async function getAllProducts(): Promise<Product[]> {
   const key = "domain.product.getAllProducts";

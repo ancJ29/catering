@@ -10,9 +10,8 @@ export const userSchema = z.object({
   clientRoleId: z.string().nullish(),
   role: userRoleEnum.nullish(),
   active: z.boolean(),
-  phone: z.string().nullish(),
-  email: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
+  chainIds: z.string().array(),
+  branchIds: z.string().array(),
 });

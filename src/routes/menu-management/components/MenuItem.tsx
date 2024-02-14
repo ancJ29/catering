@@ -1,9 +1,8 @@
 import { Product } from "@/services/domain";
-import { Box, useMantineTheme } from "@mantine/core";
+import { Box } from "@mantine/core";
 
-const MenuItem = ({ product }: { product: Product }) => {
-  const theme = useMantineTheme();
-  return (
+const MenuItem = ({ product }: { product?: Product }) => {
+  return product ? (
     <Box
       w="100%"
       fz={10}
@@ -11,7 +10,7 @@ const MenuItem = ({ product }: { product: Product }) => {
       c="white"
       pl={8}
       mt={4}
-      bg={theme.colors.teal[6]}
+      bg="teal.6"
       style={{
         userSelect: "none",
         borderRadius: "5px",
@@ -19,6 +18,8 @@ const MenuItem = ({ product }: { product: Product }) => {
     >
       {product?.name || "--"}
     </Box>
+  ) : (
+    <></>
   );
 };
 

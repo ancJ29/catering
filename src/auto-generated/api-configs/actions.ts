@@ -1,23 +1,21 @@
 import {
   ActionType,
+  branchSchema,
+  chainSchema,
   departmentSchema,
   menuSchema,
   messageSchema,
   messageTemplateSchema,
   productSchema,
   reservationSchema,
+  tableSchema,
+  userSchema,
 } from "@/auto-generated/prisma-schema";
-import { branchSchema } from "@/auto-generated/prisma-schema/branch";
-import { chainSchema } from "@/auto-generated/prisma-schema/chain";
 import {
   ReservationStatus,
   UserRole,
 } from "@/auto-generated/prisma-schema/enums";
 import { z } from "zod";
-import {
-  xCustomerSchema,
-  xDepartmentSchema,
-} from "./custom-prisma-schema";
 import {
   ActionGroups,
   Actions,
@@ -30,7 +28,6 @@ import {
   emailSchema,
   futureDateSchema,
   getSchema,
-  idAndNameSchema,
   listResponse,
   phoneSchema,
 } from "./schema";
@@ -63,29 +60,6 @@ export const configs = {
       }),
       response: z.object({
         token: z.string(),
-      }),
-    },
-  },
-  [Actions.GET_METADATA]: {
-    name: Actions.GET_METADATA,
-    group: ActionGroups.METADATA,
-    public: true,
-    type: ActionType.READ,
-    schema: {
-      request: z.any(),
-      response: z.object({
-        departments: idAndNameSchema.array(),
-        roles: idAndNameSchema.array(),
-        enums: idAndNameSchema
-          .extend({
-            targetTable: z.string().nullish(),
-          })
-          .array(),
-        dictionaries: z.object({
-          version: z.string(),
-          en: z.record(z.string(), z.string()),
-          vi: z.record(z.string(), z.string()),
-        }),
       }),
     },
   },
@@ -223,6 +197,65 @@ export const configs = {
       }),
     },
   },
+  [Actions.GET_TABLES]: {
+    name: Actions.GET_TABLES,
+    group: ActionGroups.BRANCH_MANAGEMENT,
+    // policy: Policy.SAME_BRANCH,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        branchId: z.string(),
+      }),
+      response: listResponse.extend({
+        tables: tableSchema.array(),
+      }),
+    },
+  },
+  [Actions.ADD_TABLES]: {
+    name: Actions.ADD_TABLES,
+    group: ActionGroups.BRANCH_MANAGEMENT,
+    type: ActionType.WRITE,
+    // policy: Policy.SAME_BRANCH,
+    schema: {
+      request: z.object({
+        branchId: z.string(),
+        tables: z.array(
+          tableSchema
+            .pick({
+              name: true,
+            })
+            .required(),
+        ),
+      }),
+    },
+  },
+  [Actions.UPDATE_TABLE]: {
+    name: Actions.UPDATE_TABLE,
+    group: ActionGroups.BRANCH_MANAGEMENT,
+    type: ActionType.WRITE,
+    // policy: Policy.SAME_BRANCH,
+    schema: {
+      request: tableSchema
+        .pick({
+          id: true,
+          name: true,
+        })
+        .required(),
+    },
+  },
+  [Actions.DELETE_TABLE]: {
+    name: Actions.DELETE_TABLE,
+    group: ActionGroups.BRANCH_MANAGEMENT,
+    type: ActionType.WRITE,
+    // policy: Policy.SAME_BRANCH,
+    schema: {
+      request: tableSchema
+        .pick({
+          id: true,
+        })
+        .required(),
+    },
+  },
   [Actions.GET_MESSAGES]: {
     name: Actions.GET_MESSAGES,
     group: ActionGroups.MESSAGE_MANAGEMENT,
@@ -289,7 +322,7 @@ export const configs = {
     group: ActionGroups.RESERVATION_MANAGEMENT,
     type: ActionType.READ,
     // policy: Policy.SAME_BRANCH,
-    // decorator: RequestDecorator.ADD_BRANCH_IDS_AND_CHAIN_IDS,
+    decorator: RequestDecorator.ADD_BRANCH_IDS_AND_CHAIN_IDS,
     schema: {
       request: getSchema.extend({
         contactName: z.string().optional(),
@@ -424,30 +457,21 @@ export const configs = {
     schema: {
       request: getSchema.extend({
         name: z.string().optional(),
+        chainIds: z.string().array().optional(),
+        branchIds: z.string().array().optional(),
       }),
       response: listResponse.extend({
-        users: z
-          .object({
-            id: z.string(),
-            phone: z.string().nullish(),
-            email: z.string().nullish(),
-            userName: z.string(),
-            fullName: z.string(),
-            active: z.boolean(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
-            departments: z
-              .object({
-                id: z.string(),
-                name: z.string(),
-              })
-              .array(),
-            roles: z
-              .object({
-                id: z.string(),
-                name: z.string(),
-              })
-              .array(),
+        users: userSchema
+          .pick({
+            id: true,
+            userName: true,
+            fullName: true,
+            role: true,
+            active: true,
+            createdAt: true,
+            updatedAt: true,
+            chainIds: true,
+            branchIds: true,
           })
           .array(),
       }),
@@ -466,15 +490,15 @@ export const configs = {
         userName: z.string(),
         fullName: z.string(),
         password: z.string(),
-        email: emailSchema.optional(),
-        phone: phoneSchema.optional(),
-        roleId: z.string(),
-        departmentIds: z.string().array().default([]),
+        role: z.nativeEnum(UserRole),
+        branchIds: z.string().array().optional(),
+        chainIds: z.string().array().optional(),
       }),
       response: z.object({
         id: z.string(),
         userName: z.string(),
         fullName: z.string(),
+        role: z.nativeEnum(UserRole).nullable(),
       }),
     },
   },
@@ -513,11 +537,15 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
-        type: z.string().optional(),
         name: z.string().optional(),
       }),
       response: listResponse.extend({
-        departments: xDepartmentSchema.array(),
+        departments: z
+          .object({
+            id: z.string(),
+            name: z.string(),
+          })
+          .array(),
       }),
     },
   },
@@ -532,7 +560,6 @@ export const configs = {
           clientId: true,
           createdAt: true,
           updatedAt: true,
-          others: true,
         })
         .partial({
           code: true,
@@ -550,7 +577,6 @@ export const configs = {
           clientId: true,
           code: true,
           supId: true,
-          others: true,
           createdAt: true,
           updatedAt: true,
         })
@@ -572,31 +598,6 @@ export const configs = {
     schema: {
       request: z.object({
         id: z.string(),
-      }),
-    },
-  },
-  [Actions.GET_CUSTOMERS]: {
-    name: Actions.GET_CUSTOMERS,
-    group: ActionGroups.CUSTOMER_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema,
-      response: listResponse.extend({
-        customers: xCustomerSchema.array(),
-      }),
-    },
-  },
-  [Actions.GET_PRODUCTS]: {
-    name: Actions.GET_PRODUCTS,
-    group: ActionGroups.PRODUCT_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        take: z.number().min(1).max(1000).optional().default(20),
-        name: z.string().optional(),
-      }),
-      response: listResponse.extend({
-        products: productSchema.array(),
       }),
     },
   },

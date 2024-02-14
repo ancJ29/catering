@@ -1,4 +1,12 @@
 .bdr {
+  &-box {
+    border: 1px solid var(--border-color);
+  }
+
+  &-r {
+    border-right: 1px solid var(--border-color);
+  }
+
   &-t {
     border-top: 1px solid var(--border-color);
   }
@@ -82,11 +90,21 @@
 
 .font {
   &-bold {
-    font-weight: bold;
+    font-weight: bold !important;
   }
 
   &-600 {
     font-weight: 600 !important;
+  }
+
+  &-900 {
+    font-weight: 900 !important;
+  }
+}
+
+.fz {
+  &-2rem {
+    font-size: 2rem !important;
   }
 }
 
@@ -96,28 +114,17 @@
   white-space: nowrap;
 }
 
-.btnIcon {
-  background: none;
+.hover {
+  &-bg {
+    &:hover {
+      background-color: var(--hover-background-color) !important;
+    }
+  }
+}
 
+.btn-icon {
   &:hover {
-    background: var(--hover-background-color);
-  }
-}
-
-.flex {
-  display: flex;
-}
-
-.h {
-  &-16 {
-    height: 16px;
-  }
-}
-
-.flx {
-  &-ct {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // https://mantine.dev/styles/css-variables/
+    background: var(--mantine-color-default-hover);
   }
 }

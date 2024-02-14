@@ -17,6 +17,7 @@ export default ({ mode }: { mode: string }) => {
       },
     },
     define: {
+      "import.meta.env.LOG_LEVEL": JSON.stringify(env.LOG_LEVEL),
       "import.meta.env.CLIENT_ID": JSON.stringify(env.CLIENT_ID),
       "import.meta.env.BASE_URL": JSON.stringify(env.BASE_URL),
     },

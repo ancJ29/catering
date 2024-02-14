@@ -1,7 +1,9 @@
+import useTranslation from "@/hooks/useTranslation";
 import { Box } from "@mantine/core";
 import classes from "./DataGrid.module.scss";
 
 const EmptyTable = ({ noResultText }: { noResultText?: string }) => {
+  const t = useTranslation();
   return (
     <Box className={classes.tableEmpty}>
       <svg
@@ -48,7 +50,7 @@ const EmptyTable = ({ noResultText }: { noResultText?: string }) => {
       </svg>
       <Box mt={1}>
         {noResultText ||
-          "No results found. Please try another search."}
+          t("No results found. Please try another search.")}
       </Box>
     </Box>
   );

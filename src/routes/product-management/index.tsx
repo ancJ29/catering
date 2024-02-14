@@ -1,38 +1,27 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
+import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  Product as _Product,
-  getAllProducts,
-} from "@/services/domain";
+import { Product, getAllProducts } from "@/services/domain";
 import useMetaDataStore from "@/stores/meta-data.store";
-import { unique } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { configs } from "./_configs";
-
-type Product = _Product & {
-  typeName?: string;
-};
 
 const ProductManagement = () => {
   const t = useTranslation();
   const { enumMap } = useMetaDataStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [data, setData] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
-  const [names, setNames] = useState([""]);
+  const [loaded, setLoaded] = useState(false);
 
   const _reload = useCallback(() => {
-    if (products.length > 0) {
+    if (loaded || enumMap.size === 0) {
       return;
     }
-    if (enumMap.size === 0) {
-      return;
-    }
-    getAllProducts().then((products: Product[]) => {
-      const _products = products.map((el) => {
+    setLoaded(true);
+    return getAllProducts().then((products: Product[]) => {
+      return products.map((el) => {
         const type = enumMap.get(el.type as string);
         el.typeName = type ? t(type) : `${type}.s`;
         if (typeof el.name === "string") {
@@ -44,37 +33,35 @@ const ProductManagement = () => {
         }
         return el;
       });
-      setProducts(_products);
-      setData(_products);
-      setNames(unique(_products.map((el) => el.name as string)));
     });
-  }, [enumMap, products.length, t]);
+  }, [enumMap, loaded, t]);
+
+  const {
+    data,
+    names,
+    filter: _filter,
+    change,
+  } = useFilterData<Product>({
+    reload: _reload,
+  });
 
   const filter = useCallback(
     (keyword: string) => {
       setPage(1);
-      if (!keyword) {
-        setData(products);
-        return;
-      }
-      const _keyword = keyword.toLowerCase();
-      setData(
-        products.filter((c) =>
-          (c.name as string)?.toLocaleLowerCase().includes(_keyword),
-        ),
-      );
+      _filter(keyword);
     },
-    [products],
+    [_filter],
   );
-
-  useEffect(() => {
-    _reload();
-  }, [_reload]);
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"center"}>
-        <Autocomplete w={"20vw"} onEnter={filter} data={names} />
+        <Autocomplete
+          w={"20vw"}
+          onEnter={filter}
+          data={names}
+          onChange={change}
+        />
       </Flex>
       <DataGrid
         page={page}

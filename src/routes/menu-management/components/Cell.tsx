@@ -1,17 +1,87 @@
-import { Product } from "@/services/domain";
-import { Box, Table } from "@mantine/core";
+import { Actions } from "@/auto-generated/api-configs";
+import useTranslation from "@/hooks/useTranslation";
+import callApi from "@/services/api";
+import { Customer, Product } from "@/services/domain";
+import { Box, Modal, Table, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
+import dayjs from "dayjs";
+import { useCallback, useMemo } from "react";
+import EditModal from "./EditModal";
 import MenuItem from "./MenuItem";
 
 type CellProps = {
+  targetName: string;
+  shift: string;
   date?: string;
-  products: Product[];
-  onClick?: () => void;
+  timestamp?: number;
+  productIds: string[];
+  customer?: Customer;
+  allProducts: Map<string, Product>;
+  onReload: () => void;
 };
 
-const Cell = ({ date, products, onClick }: CellProps) => {
-  return (
+function stopMouseEvent(e: React.MouseEvent<HTMLDivElement>) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+const Cell = ({
+  targetName,
+  allProducts,
+  shift,
+  date,
+  timestamp,
+  customer,
+  productIds,
+  onReload,
+}: CellProps) => {
+  const t = useTranslation();
+  const [opened, { open, close }] = useDisclosure(false);
+  const title = useMemo(() => {
+    if (!customer) {
+      return "";
+    }
+    const date = dayjs(timestamp).format("YYYY-MM-DD");
+    return `${date}: ${customer.name} > ${targetName} > ${shift}`;
+  }, [customer, shift, targetName, timestamp]);
+
+  const save = useCallback(
+    (productIds: string[]) => {
+      if (!timestamp || !customer) {
+        close();
+        return;
+      }
+      modals.openConfirmModal({
+        title: `${t("Update menu")}`,
+        children: (
+          <Text size="sm">
+            {t("Are you sure you want to save menu?")}
+          </Text>
+        ),
+        labels: { confirm: "OK", cancel: t("Cancel") },
+        onConfirm: async () => {
+          await callApi<unknown, unknown>({
+            action: Actions.PUSH_DAILY_MENU,
+            params: {
+              date: new Date(timestamp),
+              targetName,
+              shift,
+              customerId: customer.id || "",
+              productIds,
+            },
+          });
+          close();
+          onReload();
+        },
+      });
+    },
+    [timestamp, customer, t, close, targetName, shift, onReload],
+  );
+
+  return customer ? (
     <Table.Td
-      onClick={onClick}
+      onClick={open}
       height={150}
       style={{
         cursor: "pointer",
@@ -21,10 +91,26 @@ const Cell = ({ date, products, onClick }: CellProps) => {
       <Box fz={16} fw={900} mb={2} w="100%" ta="right">
         {date}
       </Box>
-      {products.map((product: Product, idx) => (
-        <MenuItem key={idx} product={product} />
+      {productIds.map((productId, idx) => (
+        <MenuItem key={idx} product={allProducts.get(productId)} />
       ))}
+      <Modal
+        opened={opened}
+        onClick={stopMouseEvent}
+        onClose={close}
+        title={title}
+        fullScreen
+        classNames={{ title: "font-900 fz-2rem text-main" }}
+      >
+        <EditModal
+          productIds={productIds}
+          allProducts={allProducts}
+          onSave={save}
+        />
+      </Modal>
     </Table.Td>
+  ) : (
+    <></>
   );
 };
 

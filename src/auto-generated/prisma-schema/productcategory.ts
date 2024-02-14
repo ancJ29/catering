@@ -6,5 +6,4 @@ export const productCategorySchema = z.object({
   categoryId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
 });

@@ -1,5 +1,6 @@
 import {
-  actionStatusEnum,
+  branchSchema,
+  chainSchema,
   clientEnumSchema,
   departmentSchema,
   userSchema,
@@ -16,17 +17,11 @@ export const addResponse = z.object({
 });
 
 export const listResponse = z.object({
-  cursor: z.string().optional(),
-  hasMore: z.boolean().optional(),
+  cursor: z.string(),
 });
 
 export const successResponse = z.object({
   success: z.boolean(),
-});
-
-export const idAndNameSchema = z.object({
-  id: z.string(),
-  name: z.string(),
 });
 
 export const dateSchema = z
@@ -65,6 +60,8 @@ export const payloadSchema = userSchema
   })
   .extend({
     actionNames: z.string().array().optional(),
+    branchIds: z.string().array(),
+    chainIds: z.string().array(),
     departmentIds: z.string().array().optional(),
     clientRole: enumSchema.optional(),
     departments: departmentSchema
@@ -81,19 +78,21 @@ export const payloadSchema = userSchema
       })
       .array()
       .optional(),
+    branches: branchSchema
+      .pick({
+        id: true,
+        name: true,
+        shortName: true,
+        address: true,
+        chainId: true,
+      })
+      .array()
+      .optional(),
+    chains: chainSchema
+      .pick({
+        id: true,
+        name: true,
+      })
+      .array()
+      .optional(),
   });
-
-export const contextSchema = z.object({
-  ctxId: z.string(),
-  clientId: z.number().optional(),
-  ipAddress: z.string().optional(),
-  userAgent: z.string().optional(),
-  user: payloadSchema.optional(),
-  source: z.union([z.literal("http"), z.literal("internal")]),
-  isValidated: z.boolean().optional(),
-  action: z.string(),
-  params: z.record(z.string(), z.unknown()).optional(),
-  status: actionStatusEnum.optional(),
-});
-
-export const genericSchema = z.record(z.string(), z.unknown());

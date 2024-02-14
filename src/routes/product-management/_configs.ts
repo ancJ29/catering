@@ -7,7 +7,7 @@ export const configs = (
     {
       key: "name",
       sortable: true,
-      header: t("Product Name"),
+      header: t("Cuisine name"),
       width: "30%",
     },
     {

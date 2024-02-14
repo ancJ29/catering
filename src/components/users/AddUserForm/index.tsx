@@ -60,10 +60,12 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
   const data = useMetaDataStore();
   const [options] = useState({
     departmentIdByName: data.departmentIdByName,
-    departments: [...data.departmentIdByName.keys()],
-    roles: [...data.roleIdByName.keys()].map((name) => t(name)),
+    departments: Array.from(data.departmentIdByName.keys()),
+    roles: Array.from(data.roleIdByName.keys()).map((name) =>
+      t(name),
+    ),
     roleIdByName: new Map(
-      [...data.roleIdByName.entries()].map(([name, id]) => [
+      Array.from(data.roleIdByName.entries()).map(([name, id]) => [
         t(name),
         id,
       ]),

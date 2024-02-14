@@ -12,5 +12,4 @@ export const messageTemplateSchema = z.object({
   type: messageTypeEnum,
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
 });
