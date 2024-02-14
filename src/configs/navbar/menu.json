@@ -17,6 +17,12 @@
         "url": "/customer-management"
       },
       {
+        "key": "supplier",
+        "label": "Supplier Management",
+        "icon": "truck",
+        "url": "/supplier-management"
+      },
+      {
         "key": "catering",
         "label": "Catering Management",
         "icon": "cooker",

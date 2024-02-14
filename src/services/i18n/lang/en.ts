@@ -67,9 +67,18 @@ export default {
   "Save": "Save",
   "Metadata Management": "Metadata Management",
   "Material Management": "Material Management",
+  "Supplier Management": "Supplier Management",
+  "Supplier name": "Supplier",
+  "Supplier code": "Code",
+  "Supplier contact": "Contact",
+  "Supplier email": "Email",
+  "Supplier phone": "Phone",
   "Material name": "Material",
   "Material code": "Code",
   "Material type": "Type",
   "Material group": "Group",
   "Unit": "Unit",
+  "Update user successfully": "Update user successfully",
+  "Are you sure you want to update user?":
+    "Are you sure you want to update user?",
 } satisfies Dictionary;

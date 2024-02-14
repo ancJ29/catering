@@ -67,9 +67,18 @@ export default {
   "Save": "Lưu",
   "Metadata Management": "Quản lý danh mục",
   "Material Management": "Quản lý nguyên liệu",
+  "Supplier Management": "Quản lý nhà cung cấp",
+  "Supplier name": "Nhà cung cấp",
+  "Supplier code": "Mã",
+  "Supplier contact": "Liên hệ",
+  "Supplier email": "Email",
+  "Supplier phone": "Điện thoại",
   "Material name": "Nguyên liệu",
   "Material code": "Mã",
   "Material type": "Loại",
   "Material group": "Nhóm",
   "Unit": "Đơn vị",
+  "Update user successfully": "Cập nhật người dùng thành công",
+  "Are you sure you want to update user?":
+    "Bạn có chắc chắn muốn cập nhật người dùng?",
 } satisfies Dictionary;

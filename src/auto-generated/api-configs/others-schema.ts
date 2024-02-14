@@ -24,6 +24,13 @@ export const dailyMenuOthersSchema = z.object({
   shift: z.string(),
 });
 
+export const supplierOthersSchema = z.object({
+  contact: z.string().nullish(),
+  email: z.string().nullish(),
+  phone: z.string().nullish(),
+  address: z.string().nullish(),
+});
+
 export const materialOthersSchema = z.object({
   id: z.number(),
   group: z.enum([

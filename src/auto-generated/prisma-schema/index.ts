@@ -22,7 +22,6 @@ export * from "./supplier";
 export * from "./contact";
 export * from "./userdepartment";
 export * from "./customercontact";
-export * from "./suppliercontact";
 export * from "./reservation";
 export * from "./message";
 export * from "./messagetemplate";

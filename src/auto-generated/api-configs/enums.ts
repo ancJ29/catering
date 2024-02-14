@@ -12,6 +12,7 @@ export enum ActionGroups {
   PRODUCT_MANAGEMENT = "Product management",
   MENU_MANAGEMENT = "Menu management",
   MATERIAL_MANAGEMENT = "Material management",
+  SUPPLIER_MANAGEMENT = "Supplier management",
 }
 
 export enum Actions {
@@ -56,6 +57,7 @@ export enum Actions {
   // UPDATE_MENU = "update-menu",
   // DELETE_MENU = "delete-menu",
   GET_MATERIALS = "get-materials",
+  GET_SUPPLIERS = "get-suppliers",
 }
 
 export enum Permissions {
@@ -78,6 +80,7 @@ export enum Permissions {
   PRODUCT_FULL_ACCESS = "product-full-access",
   MENU_FULL_ACCESS = "menu-full-access",
   MATERIAL_FULL_ACCESS = "material-full-access",
+  SUPPLIER_FULL_ACCESS = "supplier-full-access",
 }
 
 export enum Policy {}

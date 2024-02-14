@@ -1,47 +1,36 @@
 import { Actions } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
-import AddUserForm from "@/components/users/AddUserForm";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import { GenericObject } from "@/types";
-import {
-  Button,
-  Flex,
-  Modal,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Button, Flex, Stack, Text, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
 import { User, configs } from "./_configs";
+import AddUserForm from "./components/AddUserForm";
+import EditUserForm from "./components/EditUserForm";
 
 const UserManagement = () => {
   const t = useTranslation();
-  const [opened, { open, close }] = useDisclosure(false);
   const [users, setUsers] = useState<User[]>([]);
   const [data, setData] = useState<User[]>([]);
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
   const [filter, setFilter] = useState({ keyword: "" });
 
-  const _reload = useCallback(
-    async (noCache?: boolean) => {
-      loadAll<User>({
-        key: "users",
-        noCache,
-        action: Actions.GET_USERS,
-      }).then((users) => {
-        setUsers(users);
-        setData(users);
-      });
-      close();
-    },
-    [close],
-  );
+  const _reload = useCallback(async (noCache?: boolean) => {
+    loadAll<User>({
+      key: "users",
+      noCache,
+      action: Actions.GET_USERS,
+    }).then((users) => {
+      setUsers(users);
+      setData(users);
+    });
+    modals.closeAll();
+  }, []);
 
   const search = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -107,6 +96,39 @@ const UserManagement = () => {
     [filter.keyword, users],
   );
 
+  const addUser = useCallback(() => {
+    modals.open({
+      title: t("Add user"),
+      classNames: { title: "font-bold" },
+      centered: true,
+      size: "lg",
+      children: (
+        <AddUserForm
+          onClose={modals.closeAll}
+          onSuccess={_reload.bind(null, true)}
+        />
+      ),
+    });
+  }, [_reload, t]);
+
+  const viewUser = useCallback(
+    (user: User) => {
+      modals.open({
+        title: user.fullName,
+        classNames: { title: "font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <EditUserForm
+            onSuccess={_reload.bind(null, true)}
+            user={user}
+          />
+        ),
+      });
+    },
+    [_reload],
+  );
+
   return (
     <Stack gap={10}>
       <Flex w={"100%"} justify="end" align="center" gap={12}>
@@ -132,11 +154,12 @@ const UserManagement = () => {
             {t("Search")}
           </Button>
         </form>
-        <Button w={100} onClick={open}>
+        <Button w={100} onClick={addUser}>
           {t("Add")}
         </Button>
       </Flex>
       <DataGrid
+        onRowClick={viewUser}
         hasOrderColumn
         columns={dataGridConfigs}
         data={data}
@@ -145,20 +168,6 @@ const UserManagement = () => {
           deletable: (user) => user?.active === true,
         }}
       />
-      <Modal
-        opened={opened}
-        onClose={close}
-        title={t("Add user")}
-        centered
-        size="lg"
-        classNames={{ title: "font-bold" }}
-      >
-        <div className="bdr-t"></div>
-        <AddUserForm
-          onClose={close}
-          onSuccess={() => _reload(true)}
-        />
-      </Modal>
     </Stack>
   );
 };

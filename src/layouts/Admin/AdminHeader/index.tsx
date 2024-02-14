@@ -29,7 +29,7 @@ const AdminHeader = ({
         <Center>
           {burger}
           <Title pl="xs" size="1.2rem">
-            <Logo title={title} />
+            <Logo title={title?.toUpperCase()} />
           </Title>
         </Center>
         <Flex align="center">

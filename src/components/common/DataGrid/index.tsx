@@ -52,6 +52,7 @@ function DataGrid<
   actionHandlers,
   onSort,
   onChangePage,
+  onRowClick,
 }: DataGridProps<T>) {
   const [configs, setConfig] = useState(columns);
   const [rows, setRows] = useState<T[]>(data || []);
@@ -125,8 +126,10 @@ function DataGrid<
       hasActionColumn,
       hasUpdateColumn,
       onSort: sortHandler,
+      onRowClick,
     });
   }, [
+    onRowClick,
     actionHandlers,
     configs,
     hasActionColumn,
@@ -241,12 +244,14 @@ function _contentBuilder<
     hasActionColumn = false,
     hasOrderColumn = false,
     onSort,
+    onRowClick,
   }: {
     orderFrom?: number;
     hasUpdateColumn?: boolean;
     hasOrderColumn?: boolean;
     hasActionColumn?: boolean;
     onSort?: (column: DataGridColumnProps) => void;
+    onRowClick?: (row: T) => void;
     actionHandlers?: DataGridActionProps<T>;
   } = {},
 ) {
@@ -263,7 +268,11 @@ function _contentBuilder<
       />
       {rows.length > 0 ? (
         rows.map((row, index) => (
-          <Box key={index} className={classes.dataRow}>
+          <Box
+            key={index}
+            className={classes.dataRow}
+            onClick={onRowClick?.bind(null, row)}
+          >
             <OrderCell
               hasOrderColumn={hasOrderColumn}
               key={`no.${index}`}
@@ -312,12 +321,12 @@ function LastUpdated({
         flexGrow: !hasActionColumn ? 1 : undefined,
       }}
     >
-      <div>
+      <div className="fz-dot8rem">
         <b>{t("Last modifier")}</b>:&nbsp;
         {(lastModifiedBy as string) || "-"}
         <br />
         <b>{t("Last updated")}</b>:&nbsp;
-        {dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}
+        <span>{dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}</span>
       </div>
     </Box>
   ) : (

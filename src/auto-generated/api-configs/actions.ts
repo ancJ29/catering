@@ -16,6 +16,7 @@ import {
   xDailyMenuSchema,
   xDepartmentSchema,
   xMaterialSchema,
+  xSupplierSchema,
 } from "./custom-prisma-schema";
 import {
   ActionGroups,
@@ -435,6 +436,7 @@ export const configs = {
             active: z.boolean(),
             createdAt: z.date(),
             updatedAt: z.date(),
+            lastModifiedBy: z.string().optional(),
             departments: z
               .object({
                 id: z.string(),
@@ -490,8 +492,8 @@ export const configs = {
         id: z.string(),
         userName: z.string(),
         fullName: z.string(),
-        branchIds: z.string().array(),
-        chainIds: z.string().array(),
+        email: emailSchema.optional(),
+        phone: phoneSchema.optional(),
       }),
     },
   },
@@ -680,6 +682,19 @@ export const configs = {
       }),
       response: listResponse.extend({
         materials: xMaterialSchema.array(),
+      }),
+    },
+  },
+  [Actions.GET_SUPPLIERS]: {
+    name: "get-suppliers",
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        name: z.string().optional(),
+      }),
+      response: listResponse.extend({
+        suppliers: xSupplierSchema.array(),
       }),
     },
   },
