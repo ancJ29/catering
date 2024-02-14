@@ -2,12 +2,14 @@ import {
   customerSchema,
   dailyMenuSchema,
   departmentSchema,
+  materialSchema,
 } from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 import {
   customerOthersSchema,
   dailyMenuOthersSchema,
   departmentOthersSchema,
+  materialOthersSchema,
 } from "./others-schema";
 
 export const xCustomerSchema = customerSchema
@@ -24,6 +26,14 @@ export const xDepartmentSchema = departmentSchema
   })
   .extend({
     others: departmentOthersSchema,
+  });
+
+export const xMaterialSchema = materialSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: materialOthersSchema,
   });
 
 export const xDailyMenuSchema = dailyMenuSchema

@@ -8,6 +8,7 @@ export * from "./permission";
 export * from "./permissionaction";
 export * from "./role";
 export * from "./product";
+export * from "./material";
 export * from "./menu";
 export * from "./menuproduct";
 export * from "./category";

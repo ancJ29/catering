@@ -5,7 +5,7 @@ const baseMenuItem = z.object({
   key: z.string(),
   label: z.string(),
   icon: z.string().optional(),
-  url: z.string(),
+  url: z.string().optional(),
 });
 
 type MenuItem = z.infer<typeof baseMenuItem> & {

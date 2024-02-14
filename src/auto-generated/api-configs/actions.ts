@@ -15,6 +15,7 @@ import {
   xCustomerSchema,
   xDailyMenuSchema,
   xDepartmentSchema,
+  xMaterialSchema,
 } from "./custom-prisma-schema";
 import {
   ActionGroups,
@@ -667,6 +668,19 @@ export const configs = {
           productIds: z.string().array(),
         }),
       response: addResponse,
+    },
+  },
+  [Actions.GET_MATERIALS]: {
+    name: "get-materials",
+    group: ActionGroups.MATERIAL_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        name: z.string().optional(),
+      }),
+      response: listResponse.extend({
+        materials: xMaterialSchema.array(),
+      }),
     },
   },
 } satisfies Record<Actions, ActionConfig>;

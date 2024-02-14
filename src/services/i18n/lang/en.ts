@@ -65,4 +65,11 @@ export default {
   "Username": "Username",
   "YES": "YES",
   "Save": "Save",
+  "Metadata Management": "Metadata Management",
+  "Material Management": "Material Management",
+  "Material name": "Material",
+  "Material code": "Code",
+  "Material type": "Type",
+  "Material group": "Group",
+  "Unit": "Unit",
 } satisfies Dictionary;

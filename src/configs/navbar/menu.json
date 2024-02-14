@@ -3,44 +3,49 @@
     "key": "dashboard",
     "label": "Dashboard",
     "icon": "layout-dashboard",
-    "url": "/dashboard",
+    "url": "/dashboard"
+  },
+  {
+    "key": "metadata",
+    "label": "Metadata Management",
+    "icon": "clipboard-list",
     "subs": [
       {
-        "key": "sub-dashboard",
-        "label": "Dashboard",
-        "icon": "layout-dashboard",
-        "url": "/dashboard-1"
+        "key": "customer",
+        "label": "Customer Management",
+        "icon": "building-bank",
+        "url": "/customer-management"
+      },
+      {
+        "key": "catering",
+        "label": "Catering Management",
+        "icon": "cooker",
+        "url": "/catering-management"
+      },
+      {
+        "key": "product",
+        "label": "Product Management",
+        "icon": "soup",
+        "url": "/product-management"
+      },
+      {
+        "key": "material",
+        "label": "Material Management",
+        "icon": "cheese",
+        "url": "/material-management"
+      },
+      {
+        "key": "user",
+        "label": "User Management",
+        "icon": "user-square",
+        "url": "/user-management"
       }
     ]
-  },
-  {
-    "key": "customer",
-    "label": "Customer Management",
-    "icon": "building-bank",
-    "url": "/customer-management"
-  },
-  {
-    "key": "catering",
-    "label": "Catering Management",
-    "icon": "cooker",
-    "url": "/catering-management"
   },
   {
     "key": "menu-management",
     "label": "Menu Management",
     "icon": "chef-hat",
     "url": "/menu-management"
-  },
-  {
-    "key": "product",
-    "label": "Product Management",
-    "icon": "soup",
-    "url": "/product-management"
-  },
-  {
-    "key": "user",
-    "label": "User Management",
-    "icon": "user-square",
-    "url": "/user-management"
   }
 ]

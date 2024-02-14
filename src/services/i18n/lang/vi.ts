@@ -65,4 +65,11 @@ export default {
   "Username": "Tên đăng nhập",
   "YES": "Có",
   "Save": "Lưu",
+  "Metadata Management": "Quản lý danh mục",
+  "Material Management": "Quản lý nguyên liệu",
+  "Material name": "Nguyên liệu",
+  "Material code": "Mã",
+  "Material type": "Loại",
+  "Material group": "Nhóm",
+  "Unit": "Đơn vị",
 } satisfies Dictionary;

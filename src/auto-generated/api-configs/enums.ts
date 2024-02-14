@@ -11,6 +11,7 @@ export enum ActionGroups {
   PROFILE_MANAGEMENT = "Profile management",
   PRODUCT_MANAGEMENT = "Product management",
   MENU_MANAGEMENT = "Menu management",
+  MATERIAL_MANAGEMENT = "Material management",
 }
 
 export enum Actions {
@@ -54,6 +55,7 @@ export enum Actions {
   PUSH_DAILY_MENU = "push-daily-menu",
   // UPDATE_MENU = "update-menu",
   // DELETE_MENU = "delete-menu",
+  GET_MATERIALS = "get-materials",
 }
 
 export enum Permissions {
@@ -75,6 +77,7 @@ export enum Permissions {
   DEPARTMENT_READ_ONLY = "department-read-only",
   PRODUCT_FULL_ACCESS = "product-full-access",
   MENU_FULL_ACCESS = "menu-full-access",
+  MATERIAL_FULL_ACCESS = "material-full-access",
 }
 
 export enum Policy {}

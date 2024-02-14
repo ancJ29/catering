@@ -36,8 +36,8 @@ const Navbar = ({
                 onShowFullNavbar();
                 return;
               } else {
-                setActive(item.url);
-                navigate(item.url);
+                setActive(item.url || "");
+                navigate(item.url || "");
                 onClick && onClick();
               }
             }}
@@ -97,13 +97,13 @@ const Navbar = ({
                         label={t(sub.label)}
                         display={display ? "none" : "flex"}
                         onClick={() => {
-                          setActive(sub.url);
-                          navigate(sub.url);
+                          setActive(sub.url || "");
+                          navigate(sub.url || "");
                           onClick && onClick();
                         }}
                         leftSection={
                           <Image
-                            src={`/img/menu/${item.icon}.svg`}
+                            src={`/img/menu/${sub.icon}.svg`}
                             radius="md"
                             h={20}
                             w={20}
