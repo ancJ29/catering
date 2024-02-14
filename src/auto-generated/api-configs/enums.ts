@@ -1,6 +1,8 @@
 export enum ActionGroups {
+  METADATA = "Metadata",
   AUTHENTICATIONS = "Authentications",
   DEPARTMENT_MANAGEMENT = "Department management",
+  CUSTOMER_MANAGEMENT = "Customer management",
   BRANCH_MANAGEMENT = "Branch management",
   CHAIN_MANAGEMENT = "Chain management",
   MESSAGE_MANAGEMENT = "Message management",
@@ -13,6 +15,7 @@ export enum ActionGroups {
 
 export enum Actions {
   LOGIN = "login",
+  GET_METADATA = "get-metadata",
   GET_CHAINS = "get-chains",
   ADD_CHAIN = "add-chain",
   UPDATE_CHAIN = "update-chain",
@@ -21,10 +24,6 @@ export enum Actions {
   ADD_BRANCH = "add-branch",
   UPDATE_BRANCH = "update-branch",
   DELETE_BRANCH = "delete-branch",
-  GET_TABLES = "get-tables",
-  ADD_TABLES = "add-tables",
-  UPDATE_TABLE = "update-table",
-  DELETE_TABLE = "delete-table",
   GET_MESSAGES = "get-messages",
   GET_ALL_MESSAGE_TEMPLATES = "get-all-message-templates",
   ADD_MESSAGE_TEMPLATE = "add-message-template",
@@ -44,12 +43,15 @@ export enum Actions {
   ADD_DEPARTMENT = "add-department",
   UPDATE_DEPARTMENT = "update-department",
   DELETE_DEPARTMENT = "delete-department",
-  // GET_PRODUCTS = "get-products",
+  GET_CUSTOMERS = "get-customers",
+  GET_PRODUCTS = "get-products",
   ADD_PRODUCT = "add-product",
   // UPDATE_PRODUCT = "update-product",
   // DELETE_PRODUCT = "delete-product",
   // GET_MENUS = "get-menus",
   ADD_MENU = "add-menu",
+  GET_DAILY_MENU = "get-daily-menu",
+  PUSH_DAILY_MENU = "push-daily-menu",
   // UPDATE_MENU = "update-menu",
   // DELETE_MENU = "delete-menu",
 }
@@ -68,19 +70,15 @@ export enum Permissions {
   RESERVATION_OPERATION = "reservation-operation",
   MESSAGE_FULL_ACCESS = "message-full-access",
   DEPARTMENT_FULL_ACCESS = "department-full-access",
+  CUSTOMER_FULL_ACCESS = "customer-full-access",
   DEPARTMENT_OPERATION = "department-operation",
   DEPARTMENT_READ_ONLY = "department-read-only",
   PRODUCT_FULL_ACCESS = "product-full-access",
   MENU_FULL_ACCESS = "menu-full-access",
 }
 
-export enum Policy {
-  SAME_CHAIN = "Same chain",
-  SAME_BRANCH = "Same branch",
-  SAME_CHAIN_IF_CHAIN_MANAGER = "Same chain if chain manager",
-  SAME_BRANCH_IF_BRANCH_MANAGER = "Same branch if branch manager",
-}
+export enum Policy {}
+// TODO: add policies
 
-export enum RequestDecorator {
-  ADD_BRANCH_IDS_AND_CHAIN_IDS = "add-branch-ids-and-chain-ids",
-}
+export enum RequestDecorator {}
+// TODO: add request decorators

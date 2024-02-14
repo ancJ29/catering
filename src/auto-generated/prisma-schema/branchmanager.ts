@@ -6,4 +6,5 @@ export const branchManagerSchema = z.object({
   managerId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

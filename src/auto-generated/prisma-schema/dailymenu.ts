@@ -13,16 +13,14 @@ const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
   z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)]),
 );
 
-export const customerSchema = z.object({
+export const dailyMenuSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
-  type: z.string().nullish(),
-  name: z.string(),
-  code: z.string(),
-  contactId: z.string().nullish(),
-  memo: z.string().nullish(),
-  others: jsonSchema,
+  date: z.date(),
+  menuId: z.string(),
+  customerId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
+  others: jsonSchema,
 });

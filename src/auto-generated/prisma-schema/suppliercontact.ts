@@ -6,5 +6,6 @@ export const supplierContactSchema = z.object({
   contactId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
   customerId: z.string().nullish(),
 });

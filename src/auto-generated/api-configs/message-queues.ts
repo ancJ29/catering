@@ -1,5 +1,5 @@
-import { GenericObject } from "@/types";
 import { z } from "zod";
+import { contextSchema } from "./schema";
 
 export enum MESSAGE_QUEUE_CHANNEL {
   RESERVATION_ADDED = "reservation-added",
@@ -13,18 +13,20 @@ export const messageQueueSchemaConfigs = {
     }),
   },
   [MESSAGE_QUEUE_CHANNEL.REQUEST_HANDLER_TRIGGER]: {
-    schema: z.object({
-      userId: z.string().optional(),
-      action: z.string(),
+    schema: contextSchema.extend({
       params: z
         .record(z.string(), z.unknown())
-        .transform((v: GenericObject) => {
+        .transform((v) => {
           // masking credentials
           if ("password" in v) {
             v.password = "********";
           }
+          if ("currentPassword" in v) {
+            v.currentPassword = "********";
+          }
           return v;
-        }),
+        })
+        .optional(),
     }),
   },
 } satisfies Record<MESSAGE_QUEUE_CHANNEL, { schema: z.AnyZodObject }>;

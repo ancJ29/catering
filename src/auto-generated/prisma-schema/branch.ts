@@ -10,4 +10,5 @@ export const branchSchema = z.object({
   address: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

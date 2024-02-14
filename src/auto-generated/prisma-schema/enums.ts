@@ -34,35 +34,6 @@ export const ActionStatus = {
   FAILED: "FAILED" as ActionStatus,
 };
 
-export const userRoleEnum = z.nativeEnum({
-  ADMIN: "ADMIN",
-  STAFF: "STAFF",
-  CHAIN_MANAGER: "CHAIN_MANAGER",
-  MANAGER: "MANAGER",
-  OWNER: "OWNER",
-} as {
-  ADMIN: "ADMIN";
-  STAFF: "STAFF";
-  CHAIN_MANAGER: "CHAIN_MANAGER";
-  MANAGER: "MANAGER";
-  OWNER: "OWNER";
-});
-
-export type UserRole =
-  | "ADMIN"
-  | "STAFF"
-  | "CHAIN_MANAGER"
-  | "MANAGER"
-  | "OWNER";
-
-export const UserRole = {
-  ADMIN: "ADMIN" as UserRole,
-  STAFF: "STAFF" as UserRole,
-  CHAIN_MANAGER: "CHAIN_MANAGER" as UserRole,
-  MANAGER: "MANAGER" as UserRole,
-  OWNER: "OWNER" as UserRole,
-};
-
 export const genderEnum = z.nativeEnum({
   MALE: "MALE",
   FEMALE: "FEMALE",
