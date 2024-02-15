@@ -83,11 +83,14 @@ export default {
   "Supplier address": "Address",
   "Supplier material": "Material",
   "Material name": "Material",
-  "Material price": "Price",
+  "Material unit": "Unit",
+  "Material price": "Price (including VAT)",
   "Material code": "Code",
   "Material type": "Type",
   "Material group": "Group",
   "Unit": "Unit",
+  "Please input price for all materials":
+    "Please input price for all materials",
   "Update user successfully": "Update user successfully",
   "Are you sure you want to update user?":
     "Are you sure you want to update user?",

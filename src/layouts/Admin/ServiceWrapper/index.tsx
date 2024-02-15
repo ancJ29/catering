@@ -2,7 +2,9 @@ import useTranslation from "@/hooks/useTranslation";
 import { AppShell, Box, Burger, Button } from "@mantine/core";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import { IconArrowUp } from "@tabler/icons-react";
-import { BrowserView, isMobile } from "react-device-detect";
+import { useEffect } from "react";
+import { BrowserView } from "react-device-detect";
+import { useLocation } from "react-router-dom";
 import AdminHeader from "../AdminHeader";
 import Navbar from "../Navbar";
 
@@ -13,18 +15,21 @@ type Props = {
 
 const ServiceWrapper = ({ title, children }: Props) => {
   const t = useTranslation();
-  const [open, { toggle }] = useDisclosure(false);
+  const location = useLocation();
+  const [opened, { toggle, close, open }] = useDisclosure(false);
   const [scroll, scrollTo] = useWindowScroll();
+
+  useEffect(close, [close, location.key]);
 
   return (
     <AppShell
       mih="100vh"
       header={{ height: "4.5rem" }}
       navbar={{
-        width: open ? 300 : 60,
+        width: opened ? 300 : 60,
         breakpoint: "sm",
         collapsed: {
-          mobile: !open,
+          mobile: !opened,
           desktop: false,
         },
       }}
@@ -32,17 +37,13 @@ const ServiceWrapper = ({ title, children }: Props) => {
       <AppShell.Header withBorder={false}>
         <AdminHeader
           title={t(title)}
-          burger={<Burger opened={open} onClick={toggle} size="sm" />}
+          burger={
+            <Burger opened={opened} onClick={toggle} size="sm" />
+          }
         />
       </AppShell.Header>
       <AppShell.Navbar>
-        {
-          <Navbar
-            display={!open}
-            onClick={() => isMobile && toggle()}
-            onShowFullNavbar={() => !open && toggle()}
-          />
-        }
+        {<Navbar display={!opened} onOpenNavbar={open} />}
       </AppShell.Navbar>
       <AppShell.Main>
         <Box

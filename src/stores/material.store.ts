@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 type MaterialStore = {
   materials: Map<string, Material>;
-  reload: (noCache?: boolean) => void;
+  reload: (noCache?: boolean) => Promise<void>;
 };
 
 export default create<MaterialStore>((set, get) => ({

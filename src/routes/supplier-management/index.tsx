@@ -1,26 +1,32 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
-import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { type Supplier } from "@/services/domain";
+import { Supplier } from "@/services/domain";
 import useSupplierStore from "@/stores/supplier.store";
+import { GenericObject } from "@/types";
 import { Button, Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { configs } from "./_configs";
 import AddSupplierForm from "./components/AddSupplierForm";
 import UpdateSupplierForm from "./components/UpdateSupplierForm";
 
-const reload = () => window.location.reload();
-
 const SupplierManagement = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const supplierStore = useSupplierStore();
-  const dataGridConfigs = useMemo(() => configs(t, reload), [t]);
   const [page, setPage] = useState(1);
+  const dataGridConfigs = useMemo(
+    () => configs(t, navigate),
+    [t, navigate],
+  );
 
-  useOnMounted(supplierStore.reload);
+  const reload = useCallback(async () => {
+    await supplierStore.reload();
+    return Array.from(supplierStore.suppliers.values());
+  }, [supplierStore]);
 
   const {
     data,
@@ -28,7 +34,7 @@ const SupplierManagement = () => {
     filter: _filter,
     change,
   } = useFilterData<Supplier>({
-    reload: () => Array.from(supplierStore.suppliers.values()),
+    reload,
   });
 
   const filter = useCallback(
@@ -39,15 +45,23 @@ const SupplierManagement = () => {
     [_filter],
   );
 
-  const addSupplier = useCallback(() => {
-    modals.open({
-      title: t("Add supplier"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddSupplierForm onSuccess={reload} />,
-    });
-  }, [t]);
+  const addSupplier = useCallback(
+    (values?: GenericObject) => {
+      modals.open({
+        title: t("Add supplier"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <AddSupplierForm
+            initialValues={values}
+            reOpen={addSupplier}
+          />
+        ),
+      });
+    },
+    [t],
+  );
 
   const updateSupplier = useCallback((supplier: Supplier) => {
     modals.open({
@@ -56,7 +70,10 @@ const SupplierManagement = () => {
       centered: true,
       size: "lg",
       children: (
-        <UpdateSupplierForm supplier={supplier} onSuccess={reload} />
+        <UpdateSupplierForm
+          supplier={supplier}
+          reOpen={updateSupplier}
+        />
       ),
     });
   }, []);
@@ -70,7 +87,7 @@ const SupplierManagement = () => {
           data={names}
           onChange={change}
         />
-        <Button w={100} onClick={addSupplier}>
+        <Button w={100} onClick={() => addSupplier()}>
           {t("Add")}
         </Button>
       </Flex>

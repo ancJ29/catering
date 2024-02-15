@@ -19,6 +19,22 @@ export type Supplier = z.infer<typeof supplierSchema> & {
   typeName?: string;
 };
 
+export async function getSupplierById(
+  id: string,
+): Promise<Supplier | undefined> {
+  let suppliers = await loadAll<Supplier>({
+    key: "suppliers",
+    action: Actions.GET_SUPPLIERS,
+    params: { id },
+    noCache: true,
+  });
+  suppliers = suppliers.map((supplier) => {
+    supplier.name = supplier.name.replace(/\.[0-9]+$/g, "");
+    return supplier;
+  });
+  return suppliers.length ? suppliers[0] : undefined;
+}
+
 export async function getAllSuppliers(
   noCache = false,
 ): Promise<Supplier[]> {
@@ -33,6 +49,7 @@ export async function getAllSuppliers(
   let suppliers = await loadAll<Supplier>({
     key: "suppliers",
     action: Actions.GET_SUPPLIERS,
+    take: 300,
   });
   suppliers = suppliers.map((supplier) => {
     supplier.name = supplier.name.replace(/\.[0-9]+$/g, "");

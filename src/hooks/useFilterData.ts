@@ -19,7 +19,7 @@ export default function useFilterData<T extends { name: string }>({
     setData(Array.from(records.values()));
   }, [records]);
 
-  useOnMounted(async () => {
+  const _load = useCallback(async () => {
     if (records.size) {
       return;
     }
@@ -27,7 +27,9 @@ export default function useFilterData<T extends { name: string }>({
       const data = await reload();
       data && setRecords(new Map(data.map((c) => [c.name, c])));
     }
-  });
+  }, [records.size, reload]);
+
+  useOnMounted(_load);
 
   const filter = useCallback(
     (keyword: string) => {

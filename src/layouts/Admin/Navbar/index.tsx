@@ -7,12 +7,10 @@ import classes from "./navbar.module.scss";
 
 const Navbar = ({
   display = false,
-  onClick,
-  onShowFullNavbar,
+  onOpenNavbar,
 }: {
   display?: boolean;
-  onClick?: () => void;
-  onShowFullNavbar: () => void;
+  onOpenNavbar: () => void;
 }) => {
   const t = useTranslation();
   const navigate = useNavigate();
@@ -33,12 +31,11 @@ const Navbar = ({
             key={index}
             onClick={() => {
               if (item.subs) {
-                onShowFullNavbar();
+                onOpenNavbar();
                 return;
               } else {
                 setActive(item.url || "");
                 navigate(item.url || "");
-                onClick && onClick();
               }
             }}
           >
@@ -100,9 +97,10 @@ const Navbar = ({
                         label={t(sub.label)}
                         display={display ? "none" : "flex"}
                         onClick={() => {
-                          setActive(sub.url || "");
-                          navigate(sub.url || "");
-                          onClick && onClick();
+                          if (sub.url) {
+                            setActive(sub.url);
+                            navigate(sub.url);
+                          }
                         }}
                         leftSection={
                           <Image

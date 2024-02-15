@@ -2,13 +2,11 @@ import { Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { stopMouseEvent } from "@/utils";
 import { Badge, Flex, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import { IconShoppingCart } from "@tabler/icons-react";
-import MaterialManagement from "./components/MaterialManagement";
 
 export const configs = (
   t: (key: string) => string,
-  reload: () => void,
+  navigate: (to: string) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -45,20 +43,8 @@ export const configs = (
             p={10}
             onClick={(e) => {
               stopMouseEvent(e);
-              modals.open({
-                title: supplier.name,
-                classNames: {
-                  title:
-                    "c-catering-font-900 c-catering-fz-2rem c-catering-text-main",
-                },
-                fullScreen: true,
-                children: (
-                  <MaterialManagement
-                    supplier={supplier}
-                    onSuccess={reload}
-                  />
-                ),
-              });
+              const url = `/supplier-management/material/${supplier.id}`;
+              navigate(url);
             }}
           >
             <Flex align="center" p={4}>

@@ -84,11 +84,14 @@ export default {
   "Supplier address": "Địa chỉ",
   "Supplier material": "Nguyên liệu",
   "Material name": "Nguyên liệu",
-  "Material price": "Giá",
+  "Material unit": "Đơn vị",
+  "Material price": "Giá (VAT)",
   "Material code": "Mã",
   "Material type": "Loại",
   "Material group": "Nhóm",
   "Unit": "Đơn vị",
+  "Please input price for all materials":
+    "Vui lòng nhập giá cho tất cả nguyên liệu",
   "Update user successfully": "Cập nhật người dùng thành công",
   "Are you sure you want to update user?":
     "Bạn có chắc chắn muốn cập nhật người dùng?",

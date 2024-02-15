@@ -430,7 +430,9 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
+        take: z.number().min(1).max(300).optional().default(20),
         name: z.string().optional(),
+        id: z.string().optional(),
       }),
       response: listResponse.extend({
         suppliers: xSupplierSchema
@@ -464,6 +466,12 @@ export const configs = {
         })
         .partial({
           code: true,
+        }).refine((v) => {
+          v.others.email = v.others.email?.trim();
+          v.others.phone = v.others.phone?.trim();
+          v.others.contact = v.others.contact?.trim();
+          v.others.address = v.others.address?.trim();
+          return v;
         }),
       response: addResponse,
     },
@@ -478,6 +486,12 @@ export const configs = {
         createdAt: true,
         updatedAt: true,
         lastModifiedBy: true,
+      }).refine((v) => {
+        v.others.email = v.others.email?.trim();
+        v.others.phone = v.others.phone?.trim();
+        v.others.contact = v.others.contact?.trim();
+        v.others.address = v.others.address?.trim();
+        return v;
       }),
     },
   },

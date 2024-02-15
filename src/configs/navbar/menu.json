@@ -1,11 +1,5 @@
 [
   {
-    "key": "dashboard",
-    "label": "Dashboard",
-    "icon": "layout-dashboard",
-    "url": "/dashboard"
-  },
-  {
     "key": "metadata",
     "label": "Metadata Management",
     "icon": "clipboard-list",

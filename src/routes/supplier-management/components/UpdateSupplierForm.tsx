@@ -3,9 +3,11 @@ import {
   configs as actionConfigs,
   emailSchema,
 } from "@/auto-generated/api-configs";
+import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import { Supplier } from "@/services/domain";
+import { GenericObject } from "@/types";
 import { isVietnamesePhoneNumber } from "@/utils";
 import { Button, Text, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
@@ -16,20 +18,19 @@ import { z } from "zod";
 const { request } = actionConfigs[Actions.UPDATE_SUPPLIER].schema;
 type Request = z.infer<typeof request>;
 
-export type Form = Request;
 const w = "100%";
 
 export type AddSupplierFormProps = {
-  onSuccess: () => void;
+  reOpen?: (values: Supplier) => void;
   supplier: Supplier;
 };
 
 const AddSupplierForm = ({
   supplier,
-  onSuccess,
+  reOpen,
 }: AddSupplierFormProps) => {
   const t = useTranslation();
-  const form = useForm<Form>({
+  const form = useForm<GenericObject>({
     validate: _validate(t),
     initialValues: {
       id: supplier.id,
@@ -45,7 +46,7 @@ const AddSupplierForm = ({
   });
 
   const submit = useCallback(
-    (values: Form) => {
+    (values: GenericObject) => {
       modals.openConfirmModal({
         title: t("Add user"),
         children: (
@@ -54,29 +55,29 @@ const AddSupplierForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          const updated = request.parse(values);
+          reOpen &&
+            reOpen({
+              ...supplier,
+              ...updated,
+              others: updated.others,
+            });
+        },
         onConfirm: async () => {
-          const res = await callApi<Request, { id: string }>({
+          await callApi<Request, { id: string }>({
             action: Actions.UPDATE_SUPPLIER,
-            params: {
-              id: values.id,
-              name: values.name,
-              code: values.code,
-              others: {
-                email: values.others.email?.trim(),
-                phone: values.others.phone?.trim(),
-                contact: values.others.contact?.trim(),
-                address: values.others.address?.trim(),
-              },
-            },
+            params: request.parse(values),
             options: {
               toastMessage: t("Update supplier successfully"),
+              reloadOnSuccess: true,
             },
           });
-          res && onSuccess();
         },
       });
     },
-    [onSuccess, t],
+    [reOpen, supplier, t],
   );
 
   return (
@@ -111,10 +112,13 @@ const AddSupplierForm = ({
         placeholder={t("Supplier email")}
         {...form.getInputProps("others.email")}
       />
-      <TextInput
+      <PhoneInput
         w={w}
         label={t("Supplier phone")}
         placeholder={t("Supplier phone")}
+        onChangeValue={(phone) =>
+          form.setFieldValue("others.phone", phone)
+        }
         {...form.getInputProps("others.phone")}
       />
       <TextInput

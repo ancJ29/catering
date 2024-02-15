@@ -29,6 +29,7 @@ type callApiProps<T> = {
     noLoading?: boolean;
     forceReload?: boolean;
     toastMessage?: string;
+    reloadOnSuccess?: boolean | { delay: number };
   };
 };
 
@@ -80,6 +81,13 @@ export default async function callApi<T, R>({
       });
     key && cache.set(key, data as GenericObject);
     logger.debug("[api-v2-success]", key, action, _params, data);
+    if (options.reloadOnSuccess) {
+      let timeout = 100;
+      if (typeof options.reloadOnSuccess !== "boolean") {
+        timeout = options.reloadOnSuccess.delay;
+      }
+      setTimeout(() => window.location.reload(), timeout);
+    }
     return data;
   } catch (error) {
     // TODO: translate error message

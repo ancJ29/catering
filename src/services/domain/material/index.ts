@@ -19,7 +19,9 @@ export type Material = z.infer<typeof materialSchema> & {
   typeName?: string;
 };
 
-export async function getAllMaterials(noCache = false): Promise<Material[]> {
+export async function getAllMaterials(
+  noCache = false,
+): Promise<Material[]> {
   const key = "domain.material.getAllMaterials";
   if (!noCache && cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
