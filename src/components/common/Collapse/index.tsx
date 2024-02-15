@@ -26,7 +26,7 @@ const Collapse = ({ title, children, open = false }: Props) => {
         justify="space-between"
         w="100%"
         onClick={toggle}
-        className="cursor-pointer"
+        className="c-catering-cursor-pointer"
       >
         <Text fz={16} fw="bold" mb={5}>
           {title}
@@ -34,7 +34,7 @@ const Collapse = ({ title, children, open = false }: Props) => {
         {icon}
       </Group>
       <CollapseMantine in={opened}>
-        <div className="bdr-t"></div>
+        <div className="c-catering-bdr-t"></div>
         {children}
       </CollapseMantine>
     </>

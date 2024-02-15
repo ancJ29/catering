@@ -10,7 +10,7 @@ import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
 import { User, configs } from "./_configs";
 import AddUserForm from "./components/AddUserForm";
-import EditUserForm from "./components/EditUserForm";
+import UpdateUserForm from "./components/UpdateUserForm";
 
 const UserManagement = () => {
   const t = useTranslation();
@@ -99,27 +99,22 @@ const UserManagement = () => {
   const addUser = useCallback(() => {
     modals.open({
       title: t("Add user"),
-      classNames: { title: "font-bold" },
+      classNames: { title: "c-catering-font-bold" },
       centered: true,
       size: "lg",
-      children: (
-        <AddUserForm
-          onClose={modals.closeAll}
-          onSuccess={_reload.bind(null, true)}
-        />
-      ),
+      children: <AddUserForm onSuccess={_reload.bind(null, true)} />,
     });
   }, [_reload, t]);
 
-  const viewUser = useCallback(
+  const updateUser = useCallback(
     (user: User) => {
       modals.open({
         title: user.fullName,
-        classNames: { title: "font-bold" },
+        classNames: { title: "c-catering-font-bold" },
         centered: true,
         size: "lg",
         children: (
-          <EditUserForm
+          <UpdateUserForm
             onSuccess={_reload.bind(null, true)}
             user={user}
           />
@@ -159,7 +154,7 @@ const UserManagement = () => {
         </Button>
       </Flex>
       <DataGrid
-        onRowClick={viewUser}
+        onRowClick={updateUser}
         hasOrderColumn
         columns={dataGridConfigs}
         data={data}

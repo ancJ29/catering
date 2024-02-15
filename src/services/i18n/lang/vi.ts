@@ -4,8 +4,15 @@ export default {
   "__App_Title__": "C-Catering",
   "Active": "Đang hoạt động",
   "Add user successfully": "Thêm người dùng thành công",
+  "Add supplier successfully": "Thêm nhà cung cấp thành công",
+  "Update supplier successfully": "Cập nhật nhà cung cấp thành công",
   "Add user": "Thêm người dùng",
+  "Update changes": "Cập nhật",
+  "Your changes have been saved": "Thông tin đã được cập nhật",
+  "Are you sure to save changes?":
+    "Bạn có chắc chắn muốn cập nhật thông tin?",
   "Add": "Thêm",
+  "Remove": "Xóa",
   "Are you sure you want to add new user?":
     "Bạn có chắc chắn muốn thêm người dùng mới?",
   "Are you sure you want to deactivate this user?":
@@ -43,6 +50,7 @@ export default {
   "Password updated": "Đã cập nhật mật khẩu",
   "Password": "Mật khẩu",
   "Phone": "Số điện thoại",
+  "Add supplier": "Thêm nhà cung cấp",
   "Please copy and keep password safe before create new user":
     "Vui lòng sao chép và lưu mật khẩu trước khi tạo người dùng mới",
   "Please enter email": "Vui lòng nhập địa chỉ email",
@@ -73,7 +81,10 @@ export default {
   "Supplier contact": "Liên hệ",
   "Supplier email": "Email",
   "Supplier phone": "Điện thoại",
+  "Supplier address": "Địa chỉ",
+  "Supplier material": "Nguyên liệu",
   "Material name": "Nguyên liệu",
+  "Material price": "Giá",
   "Material code": "Mã",
   "Material type": "Loại",
   "Material group": "Nhóm",

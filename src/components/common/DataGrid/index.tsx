@@ -33,8 +33,8 @@ const limitOptions = [10, 20, 50, 100].map((el) => ({
 }));
 
 type GenericObjectWithModificationInformation = GenericObject & {
-  updatedAt: Date;
-  lastModifiedBy?: string | null | undefined;
+  updatedAt?: Date | null;
+  lastModifiedBy?: string | null;
 };
 
 function DataGrid<
@@ -284,8 +284,8 @@ function _contentBuilder<
             <LastUpdated
               hasUpdateColumn={hasUpdateColumn}
               hasActionColumn={hasActionColumn}
-              lastModifiedBy={row.lastModifiedBy as string}
-              updatedAt={row.updatedAt}
+              lastModifiedBy={row.lastModifiedBy ?? ""}
+              updatedAt={row.updatedAt ?? undefined}
             />
             <Actions
               key={index + 1}
@@ -311,7 +311,7 @@ function LastUpdated({
   hasUpdateColumn?: boolean;
   hasActionColumn?: boolean;
   lastModifiedBy: string;
-  updatedAt: Date;
+  updatedAt?: Date;
 }) {
   const t = useTranslation();
   return hasUpdateColumn ? (
@@ -321,12 +321,16 @@ function LastUpdated({
         flexGrow: !hasActionColumn ? 1 : undefined,
       }}
     >
-      <div className="fz-dot8rem">
+      <div className="c-catering-fz-dot8rem">
         <b>{t("Last modifier")}</b>:&nbsp;
         {(lastModifiedBy as string) || "-"}
         <br />
         <b>{t("Last updated")}</b>:&nbsp;
-        <span>{dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}</span>
+        <span>
+          {updatedAt
+            ? dayjs(updatedAt).format("DD/MM/YYYY HH:mm")
+            : "-"}
+        </span>
       </div>
     </Box>
   ) : (

@@ -2,6 +2,7 @@ import { Actions } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import { Customer, Product } from "@/services/domain";
+import { stopMouseEvent } from "@/utils";
 import { Box, Modal, Table, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
@@ -20,11 +21,6 @@ type CellProps = {
   allProducts: Map<string, Product>;
   onReload: () => void;
 };
-
-function stopMouseEvent(e: React.MouseEvent<HTMLDivElement>) {
-  e.preventDefault();
-  e.stopPropagation();
-}
 
 const Cell = ({
   targetName,
@@ -100,7 +96,10 @@ const Cell = ({
         onClose={close}
         title={title}
         fullScreen
-        classNames={{ title: "font-900 fz-2rem text-main" }}
+        classNames={{
+          title:
+            "c-catering-font-900 c-catering-fz-2rem c-catering-text-main",
+        }}
       >
         <EditModal
           productIds={productIds}

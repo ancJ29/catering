@@ -5,11 +5,7 @@ import {
   messageSchema,
   messageTemplateSchema,
   productSchema,
-  reservationSchema,
 } from "@/auto-generated/prisma-schema";
-import { branchSchema } from "@/auto-generated/prisma-schema/branch";
-import { chainSchema } from "@/auto-generated/prisma-schema/chain";
-import { ReservationStatus } from "@/auto-generated/prisma-schema/enums";
 import { z } from "zod";
 import {
   xCustomerSchema,
@@ -28,7 +24,6 @@ import {
   addResponse,
   dateSchema,
   emailSchema,
-  futureDateSchema,
   getSchema,
   idAndNameSchema,
   listResponse,
@@ -86,140 +81,6 @@ export const configs = {
           en: z.record(z.string(), z.string()),
           vi: z.record(z.string(), z.string()),
         }),
-      }),
-    },
-  },
-  [Actions.GET_CHAINS]: {
-    name: Actions.GET_CHAINS,
-    group: ActionGroups.CHAIN_MANAGEMENT,
-    public: true,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema,
-      response: listResponse.extend({
-        chains: chainSchema
-          .extend({
-            totalBranches: z.number(),
-          })
-          .array(),
-      }),
-    },
-  },
-  [Actions.ADD_CHAIN]: {
-    name: Actions.ADD_CHAIN,
-    group: ActionGroups.CHAIN_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: chainSchema
-        .pick({
-          name: true,
-        })
-        .required(),
-      response: addResponse,
-    },
-  },
-  [Actions.UPDATE_CHAIN]: {
-    name: Actions.UPDATE_CHAIN,
-    group: ActionGroups.CHAIN_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_CHAIN,
-    schema: {
-      request: chainSchema
-        .pick({
-          id: true,
-          name: true,
-        })
-        .required()
-        .extend({
-          chainId: z.string().optional(),
-        })
-        .transform((data) => {
-          if (!data.chainId) {
-            data.chainId = data.id;
-          }
-          return data;
-        }),
-    },
-  },
-  [Actions.DELETE_CHAIN]: {
-    name: Actions.DELETE_CHAIN,
-    group: ActionGroups.CHAIN_MANAGEMENT,
-    type: ActionType.DELETE,
-    schema: {
-      request: z.object({
-        id: z.string(),
-      }),
-    },
-  },
-  [Actions.GET_BRANCHES]: {
-    name: Actions.GET_BRANCHES,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    public: true,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        chainId: z.string().optional(),
-        name: z.string().optional(),
-      }),
-      response: listResponse.extend({
-        branches: branchSchema.array(),
-      }),
-    },
-  },
-  [Actions.ADD_BRANCH]: {
-    name: Actions.ADD_BRANCH,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_CHAIN,
-    schema: {
-      request: z
-        .object({
-          chainId: z.string(),
-          name: z.string(),
-          address: z.string(),
-          shortName: z.string(),
-        })
-        .extend({
-          email: emailSchema,
-          phone: phoneSchema,
-        }),
-      response: addResponse,
-    },
-  },
-  [Actions.UPDATE_BRANCH]: {
-    name: Actions.UPDATE_BRANCH,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: z
-        .object({
-          id: z.string(),
-          name: z.string(),
-          address: z.string(),
-          shortname: z.string(),
-        })
-        .extend({
-          email: emailSchema,
-          phone: phoneSchema,
-          branchId: z.string().optional(),
-        })
-        .transform((data) => {
-          if (!data.branchId) {
-            data.branchId = data.id;
-          }
-          return data;
-        }),
-    },
-  },
-  [Actions.DELETE_BRANCH]: {
-    name: Actions.DELETE_BRANCH,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.DELETE,
-    // policy: Policy.SAME_CHAIN,
-    schema: {
-      request: z.object({
-        id: z.string(),
       }),
     },
   },
@@ -282,128 +143,6 @@ export const configs = {
       request: z.object({
         code: z.string(),
       }),
-    },
-  },
-  [Actions.GET_RESERVATIONS]: {
-    name: Actions.GET_RESERVATIONS,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    type: ActionType.READ,
-    // policy: Policy.SAME_BRANCH,
-    // decorator: RequestDecorator.ADD_BRANCH_IDS_AND_CHAIN_IDS,
-    schema: {
-      request: getSchema.extend({
-        contactName: z.string().optional(),
-        phone: z.string().optional(),
-        departmentIds: z.string().array().optional(),
-        statuses: z.nativeEnum(ReservationStatus).array().optional(),
-        from: dateSchema.optional(),
-        to: dateSchema.optional(),
-      }),
-      response: listResponse.extend({
-        reservations: reservationSchema.array(),
-      }),
-    },
-  },
-  [Actions.ADD_RESERVATION]: {
-    name: Actions.ADD_RESERVATION,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          contactName: true,
-          note: true,
-        })
-        .extend({
-          phone: phoneSchema,
-          date: futureDateSchema.describe(
-            "date must be greater than current time",
-          ),
-          adults: z.number().positive(),
-          children: z.number().positive().optional(),
-          status: z
-            .nativeEnum(ReservationStatus)
-            .refine((e) => e !== ReservationStatus.CANCELLED)
-            .describe("Except Cancelled Status"),
-        }),
-    },
-  },
-  [Actions.ADD_RESERVATION_BY_END_USER]: {
-    name: Actions.ADD_RESERVATION_BY_END_USER,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    public: true,
-    type: ActionType.WRITE,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          contactName: true,
-          note: true,
-        })
-        .extend({
-          phone: phoneSchema,
-          date: futureDateSchema.describe(
-            "date must be greater than current time",
-          ),
-          adults: z.number().positive(),
-          children: z.number().positive().optional(),
-        }),
-      response: z.object({
-        reservationCode: z.string(),
-        contactName: z.string(),
-        departmentId: z.string(),
-      }),
-    },
-  },
-  [Actions.UPDATE_RESERVATION]: {
-    name: Actions.UPDATE_RESERVATION,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          contactName: true,
-          code: true,
-        })
-        .extend({
-          note: z.string().optional(),
-          date: futureDateSchema
-            .describe("date must be greater than current time")
-            .optional(),
-          phone: z
-            .string()
-            .regex(/^(84\d{9}|842\d{10})$/)
-            .optional(),
-          adults: z.number().positive().optional(),
-          children: z.number().positive().optional(),
-          status: z
-            .nativeEnum(ReservationStatus)
-            .refine((e) => !e || e !== ReservationStatus.CANCELLED)
-            .describe("Except Cancelled Status")
-            .optional(),
-        }),
-    },
-  },
-  [Actions.CONFIRM_RESERVATION_BY_CODE]: {
-    name: Actions.CONFIRM_RESERVATION_BY_CODE,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    public: true,
-    type: ActionType.WRITE,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          code: true,
-          contactName: true,
-          note: true,
-        })
-        .extend({
-          reservationCode: z.string(),
-        }),
     },
   },
   [Actions.CHANGE_PASSWORD]: {
@@ -694,7 +433,67 @@ export const configs = {
         name: z.string().optional(),
       }),
       response: listResponse.extend({
-        suppliers: xSupplierSchema.array(),
+        suppliers: xSupplierSchema
+          .extend({
+            supplierMaterials: z
+              .object({
+                price: z.number().nonnegative(),
+                material: z.object({
+                  id: z.string(),
+                  name: z.string(),
+                }),
+              })
+              .array(),
+          })
+          .array(),
+      }),
+    },
+  },
+  [Actions.ADD_SUPPLIER]: {
+    name: "add-supplier",
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xSupplierSchema
+        .omit({
+          id: true,
+          clientId: true,
+          createdAt: true,
+          updatedAt: true,
+          lastModifiedBy: true,
+        })
+        .partial({
+          code: true,
+        }),
+      response: addResponse,
+    },
+  },
+  [Actions.UPDATE_SUPPLIER]: {
+    name: "update-supplier",
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xSupplierSchema.omit({
+        clientId: true,
+        createdAt: true,
+        updatedAt: true,
+        lastModifiedBy: true,
+      }),
+    },
+  },
+  [Actions.UPDATE_SUPPLIER_MATERIAL]: {
+    name: "update-supplier-material",
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        supplierId: z.string(),
+        materials: z
+          .object({
+            materialId: z.string(),
+            price: z.number().nonnegative(),
+          })
+          .array(),
       }),
     },
   },

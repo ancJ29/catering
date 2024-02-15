@@ -57,6 +57,7 @@ export default function useFilterData<T extends { name: string }>({
   return {
     data,
     names,
+    records,
     filter,
     change,
     setRecords,

@@ -159,6 +159,8 @@ export const dictionaries: {
     "Average cost price": "Average cost price",
     "Ratio": "Ratio (%)",
     "Update menu": "Update menu",
+    "Are you sure you want to add new supplier?":
+      "Are you sure you want to add new supplier?",
     "Are you sure you want to save menu?":
       "Are you sure you want to save menu?",
   },
@@ -219,6 +221,8 @@ export const dictionaries: {
     "Average cost price": "Giá cost (TB)",
     "Ratio": "Tỷ lệ (%)",
     "Update menu": "Cập nhật thực đơn",
+    "Are you sure you want to add new supplier?":
+      "Bạn có chắc chắn muốn thêm nhà cung cấp mới?",
     "Are you sure you want to save menu?":
       "Bạn có chắc chắn muốn lưu thực đơn?",
     /* cspell:enable */

@@ -1,134 +1,96 @@
-.bdr {
-  &-box {
-    border: 1px solid var(--border-color);
-  }
-
-  &-r {
-    border-right: 1px solid var(--border-color);
-  }
-
-  &-t {
-    border-top: 1px solid var(--border-color);
-  }
-
-  &-b {
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  &-f {
-    border: 1px solid var(--border-color);
-  }
-}
-
-.p {
-  &-0 {
-    padding: 0;
-  }
-}
-
-.w {
-  &-full {
-    width: 100%;
-  }
-}
-
-.bg {
-  &-main {
-    background-color: var(--main-color);
-  }
-}
-
-.text {
-  &-main {
-    color: var(--main-color);
-  }
-
-  &-white {
-    color: white;
-  }
-
-  &-hight-light {
-    color: var(--highlight-color);
-  }
-
-  &-16 {
-    font-size: 16px;
-  }
-}
-
-.cursor {
-  &-pointer {
-    cursor: pointer;
-  }
-
-  &-initial {
-    cursor: initial;
-  }
-}
-
-.align {
-  &-center {
+.c-catering {
+  &-form-wrapper {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    gap: 1rem;
+    margin: 1rem;
   }
 
-  &-stretch {
-    align-items: stretch;
-  }
-}
+  &-bdr {
+    &-box {
+      border: 1px solid var(--border-color);
+    }
 
-.justify {
-  &-center {
-    justify-content: center;
-  }
-}
+    &-r {
+      border-right: 1px solid var(--border-color);
+    }
 
-.justify {
-  &-center {
-    justify-content: center;
-  }
-}
+    &-t {
+      border-top: 1px solid var(--border-color);
+    }
 
-.font {
-  &-bold {
-    font-weight: bold !important;
-  }
+    &-b {
+      border-bottom: 1px solid var(--border-color);
+    }
 
-  &-600 {
-    font-weight: 600 !important;
-  }
-
-  &-900 {
-    font-weight: 900 !important;
-  }
-}
-
-.fz {
-  &-dot8rem {
-    font-size: 0.8rem !important;
-  }
-
-  &-2rem {
-    font-size: 2rem !important;
-  }
-}
-
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.hover {
-  &-bg {
-    &:hover {
-      background-color: var(--hover-background-color) !important;
+    &-f {
+      border: 1px solid var(--border-color);
     }
   }
-}
 
-.btn-icon {
-  &:hover {
-    // https://mantine.dev/styles/css-variables/
-    background: var(--mantine-color-default-hover);
+  &-p {
+    &-0 {
+      padding: 0;
+    }
+  }
+
+  &-w {
+    &-full {
+      width: 100%;
+    }
+  }
+
+  &-text {
+    &-main {
+      color: var(--main-color);
+    }
+  }
+
+  &-cursor {
+    &-pointer {
+      cursor: pointer;
+    }
+  }
+
+  &-font {
+    &-bold {
+      font-weight: bold !important;
+    }
+
+    &-900 {
+      font-weight: 900 !important;
+    }
+  }
+
+  &-fz {
+    &-dot8rem {
+      font-size: 0.8rem !important;
+    }
+
+    &-2rem {
+      font-size: 2rem !important;
+    }
+  }
+
+  &-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-hover {
+    &-bg {
+      &:hover {
+        background-color: var(--hover-background-color) !important;
+      }
+    }
+  }
+
+  &-btn-icon {
+    &:hover {
+      // https://mantine.dev/styles/css-variables/
+      background: var(--mantine-color-default-hover);
+    }
   }
 }

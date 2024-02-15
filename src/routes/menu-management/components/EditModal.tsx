@@ -37,7 +37,7 @@ const _menuItemConfigs = (
             <UnstyledButton
               onClick={removeProduct.bind(null, product.id)}
             >
-              <IconCircleMinus className="btn-icon" />
+              <IconCircleMinus className="c-catering-btn-icon" />
             </UnstyledButton>
           </Flex>
         );
@@ -138,11 +138,11 @@ const EditModal = ({
             columns={menuItemConfigs}
             data={menuItem}
           />
-          <Box h="20vh" className="bdr-box" p={8}>
+          <Box h="20vh" className="c-catering-bdr-box" p={8}>
             TODO: Detail prices
           </Box>
         </Grid.Col>
-        <Grid.Col span={4} className="bdr-box">
+        <Grid.Col span={4} className="c-catering-bdr-box">
           <Flex justify="end" align={"center"} mb="1rem">
             <Autocomplete
               w={"20vw"}
@@ -162,7 +162,7 @@ const EditModal = ({
                     borderRadius: "5px",
                   }}
                   bg={existed ? "primary.4" : undefined}
-                  className="hover-bg"
+                  className="c-catering-hover-bg"
                   key={product.id}
                   w="100%"
                   p={10}

@@ -7,7 +7,6 @@ import Autocomplete from "@/components/common/Autocomplete";
 import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import logger from "@/services/logger";
 import useMetaDataStore from "@/stores/meta-data.store";
 import {
   convertToInternationalFormat,
@@ -30,7 +29,6 @@ import { notifications } from "@mantine/notifications";
 import { IconCopy } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
 import { z } from "zod";
-import classes from "./UserForm.module.scss";
 
 const { request } = actionConfigs[Actions.ADD_USER].schema;
 type Request = z.infer<typeof request>;
@@ -53,11 +51,10 @@ const initialValues: Form = {
 const w = "100%";
 
 type AddUserFormProps = {
-  onClose: () => void;
   onSuccess: () => void;
 };
 
-const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
+const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
   const t = useTranslation();
   const data = useMetaDataStore();
   const [options] = useState({
@@ -75,44 +72,12 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
   });
 
   const form = useForm<Form>({
+    validate: _validate(t),
     initialValues: {
       ...initialValues,
       password: randomPassword(),
     },
-    validate: _validate(t),
   });
-
-  const addUser = useCallback(
-    async (values: Form) => {
-      const departmentId = values.department
-        ? options.departmentIdByName.get(values.department)
-        : "";
-      const res = await callApi<Request, { id: string }>({
-        action: Actions.ADD_USER,
-        params: {
-          password: Math.random().toString(36).slice(-8),
-          userName: values.userName.trim(),
-          fullName: values.fullName.trim(),
-          roleId: options.roleIdByName.get(values.role) || "",
-          departmentIds: [departmentId || ""].filter(Boolean),
-          email: values.email?.trim() || undefined,
-          phone:
-            convertToInternationalFormat(
-              values.phone?.trim() || undefined,
-            ) || undefined,
-        },
-        options: {
-          toastMessage: t("Add user successfully"),
-        },
-      });
-      if (res?.id) {
-        onSuccess();
-        onClose();
-      }
-      logger.debug(values);
-    },
-    [onClose, onSuccess, options, t],
-  );
 
   const submit = useCallback(
     (values: Form) => {
@@ -124,10 +89,33 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
-        onConfirm: () => addUser(values),
+        onConfirm: async () => {
+          const departmentId = values.department
+            ? options.departmentIdByName.get(values.department)
+            : "";
+          const res = await callApi<Request, { id: string }>({
+            action: Actions.ADD_USER,
+            params: {
+              password: Math.random().toString(36).slice(-8),
+              userName: values.userName.trim(),
+              fullName: values.fullName.trim(),
+              roleId: options.roleIdByName.get(values.role) || "",
+              departmentIds: [departmentId || ""].filter(Boolean),
+              email: values.email?.trim() || undefined,
+              phone:
+                convertToInternationalFormat(
+                  values.phone?.trim() || undefined,
+                ) || undefined,
+            },
+            options: {
+              toastMessage: t("Add user successfully"),
+            },
+          });
+          res?.id && onSuccess();
+        },
       });
     },
-    [addUser, t],
+    [onSuccess, options, t],
   );
 
   const copyPassword = useCallback(() => {
@@ -139,7 +127,7 @@ const AddUserForm = ({ onSuccess, onClose }: AddUserFormProps) => {
 
   return (
     <form
-      className={classes.wrapper}
+      className="c-catering-form-wrapper"
       onSubmit={form.onSubmit(submit)}
     >
       <TextInput

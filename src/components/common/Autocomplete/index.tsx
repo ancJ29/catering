@@ -41,7 +41,7 @@ const Autocomplete = ({
   return (
     <MantineAutocomplete
       classNames={{
-        input: "truncate",
+        input: "c-catering-truncate",
       }}
       leftSection={<IconFilter size={14} />}
       data={_data}

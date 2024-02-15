@@ -340,7 +340,7 @@ const MenuManagement = () => {
         </Flex>
         <Flex justify="center" align="center">
           <UnstyledButton onClick={_shiftMarkDate.bind(null, -1)}>
-            <IconChevronLeft className="btn-icon" />
+            <IconChevronLeft className="c-catering-btn-icon" />
           </UnstyledButton>
           <SegmentedControl
             value={mode === "W" ? W : M}
@@ -348,7 +348,7 @@ const MenuManagement = () => {
             onChange={_setMode}
           />
           <UnstyledButton onClick={_shiftMarkDate.bind(null, 1)}>
-            <IconChevronRight className="btn-icon" />
+            <IconChevronRight className="c-catering-btn-icon" />
           </UnstyledButton>
         </Flex>
       </Flex>

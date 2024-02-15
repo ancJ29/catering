@@ -34,7 +34,7 @@ const AdminHeader = ({
         </Center>
         <Flex align="center">
           <NavLink
-            className="text-main"
+            className="c-catering-text-main"
             style={{ display: "flex" }}
             to="/profile"
           >

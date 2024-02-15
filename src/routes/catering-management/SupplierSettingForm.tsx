@@ -34,7 +34,7 @@ const SupplierSettingForm = ({
         title={title}
         centered
         size="lg"
-        classNames={{ title: "font-bold" }}
+        classNames={{ title: "c-catering-font-bold" }}
       >
         <Box h={"50dvh"}>TODO</Box>
       </Modal>

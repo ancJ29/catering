@@ -46,7 +46,7 @@ const Navbar = ({
               label={t(item.label)}
               color="#fff"
               c="black"
-              classNames={{ tooltip: "bdr-f" }}
+              classNames={{ tooltip: "c-catering-bdr-f" }}
             >
               <Flex
                 display={!display ? "none" : "flex"}
@@ -62,13 +62,16 @@ const Navbar = ({
                 />
               </Flex>
             </Tooltip>
-            <Flex className="w-full p-0" direction="column">
+            <Flex
+              className="c-catering-p-0 c-catering-w-full"
+              direction="column"
+            >
               <NavLink
                 fz={14}
                 display={display ? "none" : "flex"}
                 label={t(item.label)}
                 classNames={{
-                  children: "p-0",
+                  children: "c-catering-p-0",
                 }}
                 className={
                   active === item.url ? classes.active : classes.item

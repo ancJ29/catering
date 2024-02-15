@@ -46,7 +46,7 @@ const MultiSelect = ({
       checkIconPosition="right"
       rightSection={<IconChevronDown size={16} />}
       classNames={{
-        input: "truncate h-16",
+        input: "c-catering-truncate h-16",
         label: classes.label,
       }}
       value={value}

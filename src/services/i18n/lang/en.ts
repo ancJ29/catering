@@ -4,8 +4,14 @@ export default {
   "__App_Title__": "C-Catering",
   "Active": "Active",
   "Add user successfully": "Add user successfully",
+  "Add supplier successfully": "Add supplier successfully",
+  "Update supplier successfully": "Update supplier successfully",
   "Add user": "Add user",
+  "Update changes": "Update changes",
+  "Your changes have been saved": "Your changes have been saved",
+  "Are you sure to save changes?": "Are you sure to save changes?",
   "Add": "Add",
+  "Remove": "Remove",
   "Are you sure you want to add new user?":
     "Are you sure you want to add new user?",
   "Are you sure you want to deactivate this user?":
@@ -43,6 +49,7 @@ export default {
   "Password updated": "Password updated",
   "Password": "Password",
   "Phone": "Phone",
+  "Add supplier": "Add supplier",
   "Please copy and keep password safe before create new user":
     "Please copy and keep password safe before create new user",
   "Please enter email": "Please enter email",
@@ -73,7 +80,10 @@ export default {
   "Supplier contact": "Contact",
   "Supplier email": "Email",
   "Supplier phone": "Phone",
+  "Supplier address": "Address",
+  "Supplier material": "Material",
   "Material name": "Material",
+  "Material price": "Price",
   "Material code": "Code",
   "Material type": "Type",
   "Material group": "Group",

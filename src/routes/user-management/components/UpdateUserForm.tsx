@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   configs as actionConfigs,
   Actions,
@@ -19,7 +18,6 @@ import { modals } from "@mantine/modals";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import { User } from "../_configs";
-import classes from "./UserForm.module.scss";
 
 const { request } = actionConfigs[Actions.UPDATE_USER].schema;
 type Request = z.infer<typeof request>;
@@ -64,31 +62,6 @@ const EditUserForm = ({
     },
   });
 
-  const updateUser = useCallback(
-    async (values: Form) => {
-      const res = await callApi<Request, { id: string }>({
-        action: Actions.UPDATE_USER,
-        params: {
-          id: user.id,
-          userName: values.userName.trim(),
-          fullName: values.fullName.trim(),
-          email: values.email?.trim() || undefined,
-          phone:
-            convertToInternationalFormat(
-              values.phone?.trim() || undefined,
-            ) || undefined,
-        },
-        options: {
-          toastMessage: t("Update user successfully"),
-        },
-      });
-      if (res) {
-        onSuccess();
-      }
-    },
-    [t, user.id, onSuccess],
-  );
-
   const submit = useCallback(
     (values: Form) => {
       modals.openConfirmModal({
@@ -99,15 +72,33 @@ const EditUserForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
-        onConfirm: () => updateUser(values),
+        onConfirm: async () => {
+          const res = await callApi<Request, { id: string }>({
+            action: Actions.UPDATE_USER,
+            params: {
+              id: user.id,
+              userName: values.userName.trim(),
+              fullName: values.fullName.trim(),
+              email: values.email?.trim() || undefined,
+              phone:
+                convertToInternationalFormat(
+                  values.phone?.trim() || undefined,
+                ) || undefined,
+            },
+            options: {
+              toastMessage: t("Update user successfully"),
+            },
+          });
+          res && onSuccess();
+        },
       });
     },
-    [updateUser, t],
+    [t, user.id, onSuccess],
   );
 
   return (
     <form
-      className={classes.wrapper}
+      className="c-catering-form-wrapper"
       onSubmit={form.onSubmit(submit)}
     >
       <TextInput

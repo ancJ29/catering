@@ -52,39 +52,6 @@ export const Gender = {
   OTHER: "OTHER" as Gender,
 };
 
-export const reservationStatusEnum = z.nativeEnum({
-  PENDING: "PENDING",
-  CONFIRMED: "CONFIRMED",
-  RESERVED: "RESERVED",
-  CANCELLED: "CANCELLED",
-  ARRIVED: "ARRIVED",
-  COMPLETED: "COMPLETED",
-} as {
-  PENDING: "PENDING";
-  CONFIRMED: "CONFIRMED";
-  RESERVED: "RESERVED";
-  CANCELLED: "CANCELLED";
-  ARRIVED: "ARRIVED";
-  COMPLETED: "COMPLETED";
-});
-
-export type ReservationStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "RESERVED"
-  | "CANCELLED"
-  | "ARRIVED"
-  | "COMPLETED";
-
-export const ReservationStatus = {
-  PENDING: "PENDING" as ReservationStatus,
-  CONFIRMED: "CONFIRMED" as ReservationStatus,
-  RESERVED: "RESERVED" as ReservationStatus,
-  CANCELLED: "CANCELLED" as ReservationStatus,
-  ARRIVED: "ARRIVED" as ReservationStatus,
-  COMPLETED: "COMPLETED" as ReservationStatus,
-};
-
 export const messageStatusEnum = z.nativeEnum({
   PENDING: "PENDING",
   SENT: "SENT",

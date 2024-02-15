@@ -38,7 +38,7 @@ const Select = ({
       checkIconPosition="right"
       rightSection={<IconChevronDown size={16} />}
       classNames={{
-        input: "truncate",
+        input: "c-catering-truncate",
         label: classes.label,
       }}
       {...props}
