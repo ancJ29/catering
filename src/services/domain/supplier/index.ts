@@ -19,9 +19,11 @@ export type Supplier = z.infer<typeof supplierSchema> & {
   typeName?: string;
 };
 
-export async function getAllSuppliers(): Promise<Supplier[]> {
+export async function getAllSuppliers(
+  noCache = false,
+): Promise<Supplier[]> {
   const key = "domain.supplier.getAllSuppliers";
-  if (cache.has(key)) {
+  if (!noCache && cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
     if (res.success) {
       logger.debug("cache hit", key);

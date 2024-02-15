@@ -14,7 +14,7 @@ export const configs = (
     {
       key: "name",
       header: t("Supplier name"),
-      width: "30%",
+      width: "20%",
     },
     {
       key: "code",
@@ -24,7 +24,7 @@ export const configs = (
     {
       key: "contact",
       header: t("Supplier contact"),
-      width: "10%",
+      width: "20%",
       renderCell: (_, row) => {
         const email = row.others?.email;
         const phone = row.others?.phone;

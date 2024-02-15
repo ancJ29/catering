@@ -1,8 +1,10 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
+import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { getAllSuppliers, type Supplier } from "@/services/domain";
+import { type Supplier } from "@/services/domain";
+import useSupplierStore from "@/stores/supplier.store";
 import { Button, Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
@@ -14,8 +16,11 @@ const reload = () => window.location.reload();
 
 const SupplierManagement = () => {
   const t = useTranslation();
+  const supplierStore = useSupplierStore();
   const dataGridConfigs = useMemo(() => configs(t, reload), [t]);
   const [page, setPage] = useState(1);
+
+  useOnMounted(supplierStore.reload);
 
   const {
     data,
@@ -23,7 +28,7 @@ const SupplierManagement = () => {
     filter: _filter,
     change,
   } = useFilterData<Supplier>({
-    reload: getAllSuppliers,
+    reload: () => Array.from(supplierStore.suppliers.values()),
   });
 
   const filter = useCallback(

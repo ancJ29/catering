@@ -5,7 +5,7 @@ import useOnMounted from "./useOnMounted";
 export default function useFilterData<T extends { name: string }>({
   reload,
 }: {
-  reload?: () => Promise<T[] | undefined> | undefined;
+  reload?: () => Promise<T[] | undefined> | T[] | undefined;
 } = {}) {
   const [records, setRecords] = useState<Map<string, T>>(new Map());
   const [data, setData] = useState<T[]>([]);
@@ -19,14 +19,13 @@ export default function useFilterData<T extends { name: string }>({
     setData(Array.from(records.values()));
   }, [records]);
 
-  useOnMounted(() => {
+  useOnMounted(async () => {
     if (records.size) {
       return;
     }
     if (reload) {
-      reload()?.then((data) => {
-        data && setRecords(new Map(data.map((c) => [c.name, c])));
-      });
+      const data = await reload();
+      data && setRecords(new Map(data.map((c) => [c.name, c])));
     }
   });
 

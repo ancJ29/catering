@@ -1,16 +1,20 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
+import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { Material, getAllMaterials } from "@/services/domain";
+import { Material } from "@/services/domain";
+import useMaterialStore from "@/stores/material.store";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { configs } from "./_configs";
 
 const MaterialManagement = () => {
   const t = useTranslation();
-  const dataGridConfigs = useMemo(() => configs(t), [t]);
+  const materialStore = useMaterialStore();
   const [page, setPage] = useState(1);
+  const dataGridConfigs = useMemo(() => configs(t), [t]);
+  useOnMounted(materialStore.reload);
 
   const {
     data,
@@ -18,7 +22,7 @@ const MaterialManagement = () => {
     filter: _filter,
     change,
   } = useFilterData<Material>({
-    reload: getAllMaterials,
+    reload: () => Array.from(materialStore.materials.values()),
   });
 
   const filter = useCallback(

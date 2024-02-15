@@ -3,14 +3,12 @@ import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
+import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import {
-  getAllMaterials,
-  Material,
-  Supplier,
-} from "@/services/domain";
+import { Material, Supplier } from "@/services/domain";
 import logger from "@/services/logger";
+import useMaterialStore from "@/stores/material.store";
 import { DataGridColumnProps } from "@/types";
 import {
   Box,
@@ -130,16 +128,14 @@ const MaterialManagement = ({
   onSuccess: () => void;
 }) => {
   const t = useTranslation();
+  const materialStore = useMaterialStore();
   const [changed, setChanged] = useState(false);
+  useOnMounted(materialStore.reload);
+
   const { data, records, names, filter, change } =
     useFilterData<Material>({
-      reload: getAllMaterials,
+      reload: () => Array.from(materialStore.materials.values()),
     });
-  const materialById = useMemo(() => {
-    return new Map(
-      Array.from(records.values()).map((m) => [m.id, m]),
-    );
-  }, [records]);
   const [materials, setMaterials] = useState<SupplierMaterial[]>(
     supplier.supplierMaterials.map((sm: SupplierMaterial) => {
       return {
@@ -160,7 +156,7 @@ const MaterialManagement = ({
     (materialId: string) => {
       setChanged(true);
       setMaterials((prev) => {
-        const material = materialById.get(materialId);
+        const material = materialStore.materials.get(materialId);
         if (!material) {
           return prev;
         }
@@ -176,7 +172,7 @@ const MaterialManagement = ({
         ];
       });
     },
-    [materialById],
+    [materialStore.materials],
   );
 
   const removeMaterial = useCallback((materialId: string) => {
@@ -203,10 +199,10 @@ const MaterialManagement = ({
   );
 
   const configs = useMemo(() => {
-    return materialById.size
-      ? _configs(removeMaterial, t, materialById, setPrice)
+    return materialStore.materials.size
+      ? _configs(removeMaterial, t, materialStore.materials, setPrice)
       : [];
-  }, [materialById, removeMaterial, t, setPrice]);
+  }, [materialStore.materials, removeMaterial, t, setPrice]);
 
   const save = useCallback(() => {
     modals.openConfirmModal({
