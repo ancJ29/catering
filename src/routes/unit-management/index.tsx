@@ -4,6 +4,7 @@ import {
 } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
+import logger from "@/services/logger";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { cloneDeep } from "@/utils";
 import {
@@ -82,10 +83,15 @@ const UnitManagement = () => {
         <Text size="sm">{t("Are you sure to save changes?")}</Text>
       ),
       labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        await callApi<Request, unknown>({
+      onConfirm: () => {
+        logger.info("save", updated);
+        callApi<Request, unknown>({
           action: Actions.UPDATE_UNITS,
           params: updated,
+          options: {
+            toastMessage: t("Your changes have been saved"),
+            reloadOnSuccess: true,
+          },
         });
       },
     });
@@ -249,7 +255,7 @@ function _rows(
         prev[idx].units[kdx - 1] = value.toString();
       }
       if (key === "converters") {
-        prev[idx].converters[kdx - 1] = parseInt(value.toString());
+        prev[idx].converters[kdx - 2] = parseInt(value.toString());
       }
       return [...prev];
     });

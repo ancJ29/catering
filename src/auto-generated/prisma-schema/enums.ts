@@ -6,9 +6,9 @@ export const actionTypeEnum = z.nativeEnum({
   WRITE: "WRITE",
   DELETE: "DELETE",
 } as {
-  READ: "READ";
-  WRITE: "WRITE";
-  DELETE: "DELETE";
+  "READ": "READ",
+  "WRITE": "WRITE",
+  "DELETE": "DELETE",
 });
 
 export type ActionType = "READ" | "WRITE" | "DELETE";
@@ -23,8 +23,8 @@ export const actionStatusEnum = z.nativeEnum({
   SUCCESS: "SUCCESS",
   FAILED: "FAILED",
 } as {
-  SUCCESS: "SUCCESS";
-  FAILED: "FAILED";
+  "SUCCESS": "SUCCESS",
+  "FAILED": "FAILED",
 });
 
 export type ActionStatus = "SUCCESS" | "FAILED";
@@ -39,9 +39,9 @@ export const genderEnum = z.nativeEnum({
   FEMALE: "FEMALE",
   OTHER: "OTHER",
 } as {
-  MALE: "MALE";
-  FEMALE: "FEMALE";
-  OTHER: "OTHER";
+  "MALE": "MALE",
+  "FEMALE": "FEMALE",
+  "OTHER": "OTHER",
 });
 
 export type Gender = "MALE" | "FEMALE" | "OTHER";
@@ -57,9 +57,9 @@ export const messageStatusEnum = z.nativeEnum({
   SENT: "SENT",
   FAILED: "FAILED",
 } as {
-  PENDING: "PENDING";
-  SENT: "SENT";
-  FAILED: "FAILED";
+  "PENDING": "PENDING",
+  "SENT": "SENT",
+  "FAILED": "FAILED",
 });
 
 export type MessageStatus = "PENDING" | "SENT" | "FAILED";
@@ -77,19 +77,14 @@ export const messageTypeEnum = z.nativeEnum({
   SLACK: "SLACK",
   ZALO: "ZALO",
 } as {
-  SMS: "SMS";
-  EMAIL: "EMAIL";
-  PHONE: "PHONE";
-  SLACK: "SLACK";
-  ZALO: "ZALO";
+  "SMS": "SMS",
+  "EMAIL": "EMAIL",
+  "PHONE": "PHONE",
+  "SLACK": "SLACK",
+  "ZALO": "ZALO",
 });
 
-export type MessageType =
-  | "SMS"
-  | "EMAIL"
-  | "PHONE"
-  | "SLACK"
-  | "ZALO";
+export type MessageType = "SMS" | "EMAIL" | "PHONE" | "SLACK" | "ZALO";
 
 export const MessageType = {
   SMS: "SMS" as MessageType,
