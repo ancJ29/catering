@@ -5,7 +5,7 @@
   border-radius: 8px;
 }
 
-.headerRow {
+.header {
   display: flex;
   background-color: var(--main-color);
   font-weight: bold;
@@ -15,8 +15,7 @@
   user-select: none;
 }
 
-.headerCell,
-.dataCell {
+.cell {
   padding: 8px 0;
 }
 

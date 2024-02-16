@@ -1,7 +1,17 @@
+.container {
+  border: 1px solid var(--input-highlight-color);
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
 .header {
   position: sticky;
-  background-color: white;
+  background-color: var(--main-color);
+  color: white;
   top: 0;
+  padding: 0 0.6rem;
+  user-select: none;
   transition: box-shadow 150ms ease;
 
   &::after {
@@ -16,4 +26,10 @@
 
 .scrolled {
   box-shadow: var(--mantine-shadow-sm);
+}
+
+.row {
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  padding: 0.5rem 0.3rem;
 }

@@ -364,7 +364,7 @@ function Headers<T>({
   onSort?: (column: DataGridColumnProps) => void;
 }) {
   return (
-    <div className={classes.headerRow}>
+    <div className={classes.header}>
       {hasOrderColumn && <OrderHeader />}
       {columns.map((column, idx) => {
         const Icon = column.sortable
@@ -373,7 +373,7 @@ function Headers<T>({
         return (
           <Box
             key={idx}
-            className={classes.headerCell}
+            className={classes.cell}
             w={column.width}
             // bg="red.1"
             style={column.headerStyle || column.style}
@@ -492,7 +492,7 @@ function Cell<T extends GenericObject>({
 
 function OrderHeader() {
   return (
-    <Box ta="left" className={classes.headerCell} w={50}>
+    <Box ta="left" className={classes.cell} w={50}>
       #
     </Box>
   );
@@ -508,7 +508,7 @@ function OrderCell({
   return hasOrderColumn ? (
     <Box
       key={`no.${index}`}
-      className={classes.dataCell}
+      className={classes.cell}
       ta="left"
       pl={10}
       w={50}

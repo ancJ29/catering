@@ -27,6 +27,7 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -57,11 +58,13 @@ const UnitManagement = () => {
 
   const { units } = useMetaDataStore();
   const [counter, setCounter] = useState(0);
-  const [list, setList] = useState<Unit[] | undefined>(
-    cloneDeep(units),
-  );
+  const [list, setList] = useState<Unit[] | undefined>();
   const [updated, setUpdated] = useState<Unit[]>();
   const [additionColumn, setAdditionColumn] = useState(0);
+
+  useEffect(() => {
+    units.length && setList(cloneDeep(units));
+  }, [units]);
 
   const columns = useMemo(() => {
     return _columns(additionColumn, units, t);
@@ -164,11 +167,11 @@ const UnitManagement = () => {
       </Box>
       <ScrollArea
         h="80vh"
+        className={classes.container}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       >
         <Table key={counter}>
           <Table.Thead
-            bg={"white"}
             className={cx(classes.header, {
               [classes.scrolled]: scrolled,
             })}
@@ -204,10 +207,7 @@ function _headers(
                   onClick={() => setAdditionColumn((c) => c + 1)}
                 >
                   <Tooltip label={t("Add column")}>
-                    <IconCodePlus
-                      size={20}
-                      className="c-catering-btn-icon"
-                    />
+                    <IconCodePlus size={20} />
                   </Tooltip>
                 </UnstyledButton>
                 <UnstyledButton
@@ -215,10 +215,7 @@ function _headers(
                   onClick={() => setAdditionColumn((c) => c - 1)}
                 >
                   <Tooltip label={t("Remove column")}>
-                    <IconCodeMinus
-                      size={20}
-                      className="c-catering-btn-icon"
-                    />
+                    <IconCodeMinus size={20} />
                   </Tooltip>
                 </UnstyledButton>
               </Flex>
@@ -261,7 +258,7 @@ function _rows(
     });
   }
   return list.map((element, idx) => (
-    <Table.Tr key={element.name}>
+    <Table.Tr key={element.name} className={classes.row}>
       <Table.Td>{idx + 1}</Table.Td>
       <Table.Td>
         <TextInput

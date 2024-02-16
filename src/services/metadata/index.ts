@@ -9,6 +9,8 @@ const { response } = actionConfigs[Actions.GET_METADATA].schema;
 type Response = z.infer<typeof response>;
 
 export async function getMetadata() {
+  window.dispatchEvent(new Event("start-loading"));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
   // prettier-ignore
   return axios.request<Response>({
     method: "POST",
@@ -20,5 +22,7 @@ export async function getMetadata() {
       "Content-Type": "application/json",
       "x-client-id": import.meta.env.CLIENT_ID || "0",
     },
-  }).then((res) => res.data);
+  }).then((res) => res.data).finally(() => {
+    window.dispatchEvent(new Event("clear-loading"));
+  });
 }
