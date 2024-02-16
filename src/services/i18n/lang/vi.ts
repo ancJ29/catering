@@ -13,6 +13,12 @@ export default {
     "Bạn có chắc chắn muốn cập nhật thông tin?",
   "Add": "Thêm",
   "Remove": "Xóa",
+  "Reset": "Khôi phục",
+  "Reset changes": "Khôi phục thay đổi",
+  "Are you sure you want to reset changes?":
+    "Bạn có chắc chắn muốn khôi phục?",
+  "Remove column": "Xóa cột",
+  "Add column": "Thêm cột",
   "Are you sure you want to add new user?":
     "Bạn có chắc chắn muốn thêm người dùng mới?",
   "Are you sure you want to deactivate this user?":
@@ -76,6 +82,9 @@ export default {
   "Metadata Management": "Quản lý danh mục",
   "Material Management": "Quản lý nguyên liệu",
   "Supplier Management": "Quản lý nhà cung cấp",
+  "Unit": "Đơn vị",
+  "Converter": "Chuyển đổi",
+  "Unit Management": "Quản lý đơn vị",
   "Supplier name": "Nhà cung cấp",
   "Supplier code": "Mã",
   "Supplier contact": "Liên hệ",
@@ -89,7 +98,6 @@ export default {
   "Material code": "Mã",
   "Material type": "Loại",
   "Material group": "Nhóm",
-  "Unit": "Đơn vị",
   "Please input price for all materials":
     "Vui lòng nhập giá cho tất cả nguyên liệu",
   "Update user successfully": "Cập nhật người dùng thành công",

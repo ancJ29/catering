@@ -267,16 +267,16 @@ function _contentBuilder<
         hasUpdateColumn={hasUpdateColumn}
       />
       {rows.length > 0 ? (
-        rows.map((row, index) => (
+        rows.map((row, idx) => (
           <Box
-            key={index}
+            key={idx}
             className={classes.dataRow}
             onClick={onRowClick?.bind(null, row)}
           >
             <OrderCell
               hasOrderColumn={hasOrderColumn}
-              key={`no.${index}`}
-              index={orderFrom + index}
+              key={`no.${idx}`}
+              index={orderFrom + idx}
             />
             {columns.map((column) => (
               <Cell key={column.key} row={row} column={column} />
@@ -288,7 +288,7 @@ function _contentBuilder<
               updatedAt={row.updatedAt ?? undefined}
             />
             <Actions
-              key={index + 1}
+              key={idx + 1}
               row={row}
               hasActionColumn={hasActionColumn}
               actionHandlers={actionHandlers}
@@ -366,13 +366,13 @@ function Headers<T>({
   return (
     <div className={classes.headerRow}>
       {hasOrderColumn && <OrderHeader />}
-      {columns.map((column, index) => {
+      {columns.map((column, idx) => {
         const Icon = column.sortable
           ? sortIcon(column.sorting || false)
           : "div";
         return (
           <Box
-            key={index}
+            key={idx}
             className={classes.headerCell}
             w={column.width}
             // bg="red.1"

@@ -28,10 +28,10 @@ const MultiSelect = ({
 }: Props) => {
   const t = useTranslation();
 
-  const data = options.map(({ value, label }, index) => ({
+  const data = options.map(({ value, label }, idx) => ({
     value: value.toString(),
     label: translation ? t(label) : label,
-    isLastOption: index === options.length - 1,
+    isLastOption: idx === options.length - 1,
   }));
 
   const customPlaceholder = useMemo(

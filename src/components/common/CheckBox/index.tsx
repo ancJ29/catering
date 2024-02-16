@@ -16,14 +16,14 @@ const CheckBox = ({
   const indeterminate =
     options.some((value) => value.checked) && !allChecked;
 
-  const items = options.map((value, index) => (
+  const items = options.map((value, idx) => (
     <CheckBoxMantine
       label={value.label}
       key={value.key}
       checked={value.checked}
       onChange={(event) =>
         handlers.setItemProp(
-          index,
+          idx,
           "checked",
           event.currentTarget.checked,
         )

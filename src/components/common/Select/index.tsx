@@ -18,16 +18,16 @@ const Select = ({
 }: ISelectProps) => {
   const data = useMemo(() => {
     if (_data) {
-      return _data.map((el, index) => ({
+      return _data.map((el, idx) => ({
         value: el,
         label: el,
-        isLastOption: index === _data?.length - 1,
+        isLastOption: idx === _data?.length - 1,
       }));
     }
-    return options?.map(({ value, label }, index) => ({
+    return options?.map(({ value, label }, idx) => ({
       value: value.toString(),
       label,
-      isLastOption: index === options?.length - 1,
+      isLastOption: idx === options?.length - 1,
     }));
   }, [options, _data]);
 

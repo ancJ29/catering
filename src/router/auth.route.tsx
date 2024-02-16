@@ -15,31 +15,20 @@ type Config = {
   };
 };
 
-const ServiceWrapper = lazy(
-  () => import("@/layouts/Admin/ServiceWrapper"),
-);
+// prettier-ignore
+const ServiceWrapper = lazy(() => import("@/layouts/Admin/ServiceWrapper"));
+// prettier-ignore
 const componentMap: Record<string, LazyExoticComponent> = {
   Dashboard: lazy(() => import("@/routes/dashboard")),
   Profile: lazy(() => import("@/routes/profile")),
   UserManagement: lazy(() => import("@/routes/user-management")),
-  CustomerManagement: lazy(
-    () => import("@/routes/customer-management"),
-  ),
-  CateringManagement: lazy(
-    () => import("@/routes/catering-management"),
-  ),
-  ProductManagement: lazy(
-    () => import("@/routes/product-management"),
-  ),
-  MaterialManagement: lazy(
-    () => import("@/routes/material-management"),
-  ),
-  SupplierManagement: lazy(
-    () => import("@/routes/supplier-management"),
-  ),
-  SupplierMaterialManagement: lazy(
-    () => import("@/routes/supplier-management/material"),
-  ),
+  CustomerManagement: lazy(() => import("@/routes/customer-management")),
+  CateringManagement: lazy(() => import("@/routes/catering-management")),
+  ProductManagement: lazy(() => import("@/routes/product-management")),
+  MaterialManagement: lazy(() => import("@/routes/material-management")),
+  UnitManagement: lazy(() => import("@/routes/unit-management")),
+  SupplierManagement: lazy(() => import("@/routes/supplier-management")),
+  SupplierMaterialManagement: lazy(() => import("@/routes/supplier-management/material")),
   MenuManagement: lazy(() => import("@/routes/menu-management")),
 };
 
@@ -68,6 +57,16 @@ const configs: Config[] = [
       element: ServiceWrapper as Wrapper,
       props: {
         title: "Menu Management",
+      },
+    },
+  },
+  {
+    path: "/unit-management",
+    element: "UnitManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Unit Management",
       },
     },
   },

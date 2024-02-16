@@ -5,6 +5,12 @@
     "icon": "clipboard-list",
     "subs": [
       {
+        "key": "unit",
+        "label": "Unit Management",
+        "icon": "atom",
+        "url": "/unit-management"
+      },
+      {
         "key": "customer",
         "label": "Customer Management",
         "icon": "building-bank",

@@ -10,6 +10,7 @@
     "toastify",
     "usehooks",
     "zustand",
+    "clsx",
     "ndyenchi",
   ],
   "editor.formatOnSave": true,

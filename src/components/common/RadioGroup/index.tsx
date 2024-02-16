@@ -36,9 +36,9 @@ const RadioGroup = ({
       classNames={{ label: classes.label }}
     >
       <Group className={classNameBox} mt="xs">
-        {options.map(({ label, value }, index) => (
+        {options.map(({ label, value }, idx) => (
           <Radio
-            key={index}
+            key={idx}
             label={label}
             value={value}
             classNames={{

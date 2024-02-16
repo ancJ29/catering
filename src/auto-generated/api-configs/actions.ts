@@ -5,6 +5,7 @@ import {
   messageSchema,
   messageTemplateSchema,
   productSchema,
+  unitSchema,
 } from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 import {
@@ -71,6 +72,14 @@ export const configs = {
       response: z.object({
         departments: idAndNameSchema.array(),
         roles: idAndNameSchema.array(),
+        units: unitSchema
+          .pick({
+            id: true,
+            name: true,
+            units: true,
+            converters: true,
+          })
+          .array(),
         enums: idAndNameSchema
           .extend({
             targetTable: z.string().nullish(),
@@ -82,6 +91,23 @@ export const configs = {
           vi: z.record(z.string(), z.string()),
         }),
       }),
+    },
+  },
+  [Actions.UPDATE_UNITS]: {
+    name: Actions.UPDATE_UNITS,
+    group: ActionGroups.METADATA,
+    type: ActionType.WRITE,
+    schema: {
+      request: unitSchema
+        .pick({
+          name: true,
+          units: true,
+          converters: true,
+        })
+        .extend({
+          id: z.string().optional(),
+        })
+        .array(),
     },
   },
   [Actions.GET_MESSAGES]: {
@@ -466,7 +492,8 @@ export const configs = {
         })
         .partial({
           code: true,
-        }).refine((v) => {
+        })
+        .refine((v) => {
           v.others.email = v.others.email?.trim();
           v.others.phone = v.others.phone?.trim();
           v.others.contact = v.others.contact?.trim();
@@ -486,12 +513,6 @@ export const configs = {
         createdAt: true,
         updatedAt: true,
         lastModifiedBy: true,
-      }).refine((v) => {
-        v.others.email = v.others.email?.trim();
-        v.others.phone = v.others.phone?.trim();
-        v.others.contact = v.others.contact?.trim();
-        v.others.address = v.others.address?.trim();
-        return v;
       }),
     },
   },

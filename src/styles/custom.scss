@@ -93,4 +93,11 @@
       background: var(--mantine-color-default-hover);
     }
   }
+
+  &-flex {
+    &-align-center {
+      display: flex;
+      align-items: center;
+    }
+  }
 }

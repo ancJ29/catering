@@ -80,6 +80,8 @@ export const materialOthersSchema = z.object({
     // cspell:enable
   ]),
   unit: z.string(),
+  units: z.string().array().optional(),
+  converters: z.number().array().optional(),
   purchasingUnit: z.string().optional(),
   converter: z.number().optional().default(1),
   expiryDays: z.number().default(7),

@@ -12,6 +12,12 @@ export default {
   "Are you sure to save changes?": "Are you sure to save changes?",
   "Add": "Add",
   "Remove": "Remove",
+  "Reset": "Reset",
+  "Reset changes": "Reset changes",
+  "Are you sure you want to reset changes?":
+    "Are you sure you want to reset changes?",
+  "Remove column": "Remove column",
+  "Add column": "Add column",
   "Are you sure you want to add new user?":
     "Are you sure you want to add new user?",
   "Are you sure you want to deactivate this user?":
@@ -75,6 +81,9 @@ export default {
   "Metadata Management": "Metadata Management",
   "Material Management": "Material Management",
   "Supplier Management": "Supplier Management",
+  "Unit": "Unit",
+  "Converter": "Converter",
+  "Unit Management": "Unit Management",
   "Supplier name": "Supplier",
   "Supplier code": "Code",
   "Supplier contact": "Contact",
@@ -88,7 +97,6 @@ export default {
   "Material code": "Code",
   "Material type": "Type",
   "Material group": "Group",
-  "Unit": "Unit",
   "Please input price for all materials":
     "Please input price for all materials",
   "Update user successfully": "Update user successfully",

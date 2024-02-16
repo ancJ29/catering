@@ -26,9 +26,9 @@ const Navbar = ({
   return (
     <Box className={classes.links}>
       {menu.length &&
-        menu.map((item, index) => (
+        menu.map((item, idx) => (
           <Flex
-            key={index}
+            key={idx}
             onClick={() => {
               if (item.subs) {
                 onOpenNavbar();
@@ -83,7 +83,7 @@ const Navbar = ({
                 }
               >
                 {item.subs?.length &&
-                  item.subs?.map((sub, index) => {
+                  item.subs?.map((sub, idx) => {
                     return (
                       <NavLink
                         className={
@@ -93,7 +93,7 @@ const Navbar = ({
                         }
                         py={"1rem"}
                         pl={"2rem"}
-                        key={index}
+                        key={idx}
                         label={t(sub.label)}
                         display={display ? "none" : "flex"}
                         onClick={() => {

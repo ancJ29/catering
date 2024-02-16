@@ -15,6 +15,7 @@ export enum ActionGroups {
 export enum Actions {
   LOGIN = "login",
   GET_METADATA = "get-metadata",
+  UPDATE_UNITS = "update-units",
   GET_MESSAGES = "get-messages",
   GET_ALL_MESSAGE_TEMPLATES = "get-all-message-templates",
   ADD_MESSAGE_TEMPLATE = "add-message-template",

@@ -1,5 +1,9 @@
 import { GenericObject, OptionProps } from "@/types";
 
+export function cloneDeep<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export function uniqueByKey<T, K extends keyof T>(
   arr: T[],
   key: string,
@@ -32,8 +36,8 @@ export function buildOptions<T extends GenericObject>(
     label: "name",
   },
 ): OptionProps[] {
-  return data.map((item, index) => ({
-    value: (item[keys.value] || index.toString()) as string,
+  return data.map((item, idx) => ({
+    value: (item[keys.value] || idx.toString()) as string,
     label: (item[keys.label] || "") as string,
   }));
 }

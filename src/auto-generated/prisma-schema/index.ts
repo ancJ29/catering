@@ -6,6 +6,7 @@ export * from "./client";
 export * from "./clientenum";
 export * from "./permission";
 export * from "./permissionaction";
+export * from "./unit";
 export * from "./role";
 export * from "./product";
 export * from "./material";
