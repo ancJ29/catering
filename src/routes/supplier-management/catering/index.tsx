@@ -46,8 +46,8 @@ const SupplierCateringManagement = () => {
     set([supplier]);
     setSupplier(supplier);
     setCaterings(
-      supplier.others.caterings
-        ?.map((c) => {
+      (supplier.others.caterings || [])
+        .map((c) => {
           if (!cateringById.has(c.cateringId)) {
             return;
           }
@@ -140,7 +140,7 @@ const SupplierCateringManagement = () => {
     });
   }, [caterings, fee, load, supplier, supplierId, t]);
 
-  if (!cateringById.size || !data.length) {
+  if (!caterings || !data.length) {
     return <></>;
   }
   return (

@@ -91,11 +91,11 @@ export default async function callApi<T, R>({
     return data;
   } catch (error) {
     // TODO: translate error message
-    options?.toastMessage &&
-      notifications.show({
-        color: "red.5",
-        message: "Unknown error!!!",
-      });
+    // options?.toastMessage &&
+    //   notifications.show({
+    //     color: "red.5",
+    //     message: "Unknown error!!!",
+    //   });
     logger.error("[api-v2-error]", error);
   } finally {
     _decreaseCounter(start);
