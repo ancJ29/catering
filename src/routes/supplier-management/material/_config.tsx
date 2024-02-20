@@ -1,5 +1,4 @@
 import { Material } from "@/services/domain";
-import logger from "@/services/logger";
 import { DataGridColumnProps } from "@/types";
 import { Button, NumberInput } from "@mantine/core";
 import { useState } from "react";
@@ -61,7 +60,7 @@ export const configs = (
       textAlign: "center",
       renderCell: (_, sm: SupplierMaterial) => {
         const material = materialById.get(sm.material.id);
-        return material?.others?.purchasingUnit || "N/A";
+        return material?.others?.unit?.name || "N/A";
       },
     },
     {
@@ -112,7 +111,6 @@ export const configs = (
 };
 
 function _price(value: string | number) {
-  logger.info("value", value, typeof value);
   let price = parseInt(
     value.toString().replace(/\./g, "").replace(/,/g, "."),
   );

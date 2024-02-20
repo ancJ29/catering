@@ -1,14 +1,21 @@
 import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
+import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import { Material, getSupplierById } from "@/services/domain";
-import logger from "@/services/logger";
+import {
+  Material,
+  Supplier,
+  getSupplierById,
+} from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
+import useMetaDataStore from "@/stores/meta-data.store";
 import useSupplierStore from "@/stores/supplier.store";
+import { OptionProps } from "@/types";
+import { unique } from "@/utils";
 import {
   Box,
   Button,
@@ -28,11 +35,41 @@ const SupplierMaterialManagement = () => {
   const { supplierId } = useParams();
   const t = useTranslation();
   const { set } = useSupplierStore();
+  const { materialGroupByType } = useMetaDataStore();
+  const [supplier, setSupplier] = useState<Supplier>();
   const [prices] = useState<Map<string, number>>(new Map());
   const { reload: reloadMaterial, materials: materialById } =
     useMaterialStore();
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
+  const [group, setGroup] = useState<string | null>("");
+  const [type, setType] = useState<string | null>("");
+
+  const [groupOptions, typeOptions] = useMemo(() => {
+    const typeOptions = unique(
+      Array.from(materialById.values()).map((m) => m.others.type),
+    ).map((m) => ({
+      label: t(`materials.type.${m}`),
+      value: m as string,
+    }));
+    let groupOptions: OptionProps[] = [];
+    if (type) {
+      if (type in materialGroupByType) {
+        groupOptions = materialGroupByType[type].map((g) => ({
+          label: t(`materials.group.${g}`),
+          value: g,
+        }));
+      }
+    } else {
+      groupOptions = unique(
+        Array.from(materialById.values()).map((m) => m.others.group),
+      ).map((m) => ({
+        label: t(`materials.group.${m}`),
+        value: m as string,
+      }));
+    }
+    return [groupOptions, typeOptions];
+  }, [materialById, type, materialGroupByType, t]);
 
   const load = useCallback(async () => {
     if (!supplierId) {
@@ -44,6 +81,7 @@ const SupplierMaterialManagement = () => {
       return;
     }
     set([supplier]);
+    setSupplier(supplier);
     setMaterials(
       supplier?.supplierMaterials.map((sm: SupplierMaterial) => ({
         price: sm.price,
@@ -64,8 +102,13 @@ const SupplierMaterialManagement = () => {
     return [];
   }, [materialById]);
 
-  const { data, records, names, filter, change } =
-    useFilterData<Material>({ reload });
+  const {
+    data: _data,
+    records,
+    names,
+    filter,
+    change,
+  } = useFilterData<Material>({ reload });
 
   const addMaterial = useCallback(
     (materialId: string, materials: Map<string, Material>) => {
@@ -90,6 +133,18 @@ const SupplierMaterialManagement = () => {
     [],
   );
 
+  const data = useMemo(() => {
+    return _data.filter((m) => {
+      if (group && m.others.group !== group) {
+        return false;
+      }
+      if (type && m.others.type !== type) {
+        return false;
+      }
+      return true;
+    });
+  }, [_data, group, type]);
+
   const removeMaterial = useCallback((materialId: string) => {
     setChanged(true);
     setMaterials((prev) => {
@@ -103,7 +158,6 @@ const SupplierMaterialManagement = () => {
       : [];
 
     function setPrice(materialId: string, price: number) {
-      logger.info("setPrice", materialId, price);
       setChanged(true);
       prices.set(materialId, price);
     }
@@ -151,15 +205,39 @@ const SupplierMaterialManagement = () => {
     });
   }, [load, materials, prices, supplierId, t]);
 
-  if (!materials || !records.size || !data.length) {
+  const changeType = useCallback((value: string | null) => {
+    setType((type) => {
+      if (type !== value) {
+        setGroup("");
+        return value || "";
+      }
+      return type;
+    });
+  }, []);
+
+  const clear = useCallback(() => {
+    setGroup("");
+    setType("");
+    filter("");
+    setChanged(false);
+  }, [filter]);
+
+  if (!materials || !_data.length) {
     return <></>;
   }
   return (
     <Box>
-      <Box w="100%" ta="right" pb={10}>
-        <Button disabled={!changed} onClick={save}>
-          {t("Save")}
-        </Button>
+      <Box w="100%" pb={10}>
+        <Flex w="100%" align="center" justify="space-between">
+          <Text className="c-catering-font-bold" size="2rem">
+            {supplier?.name || "N/A"}
+            {" - "}
+            {t("Supplier supplied material")}
+          </Text>
+          <Button disabled={!changed} onClick={save}>
+            {t("Save")}
+          </Button>
+        </Flex>
         <Grid mt={10}>
           <Grid.Col span={9}>
             {records.size && (
@@ -173,13 +251,41 @@ const SupplierMaterialManagement = () => {
           </Grid.Col>
           <Grid.Col span={3} className="c-catering-bdr-box">
             <Flex justify="end" align={"center"} mb="1rem">
+              <Select
+                key={type}
+                value={type}
+                label={t("Material type")}
+                w={"20vw"}
+                options={typeOptions}
+                onChange={changeType}
+              />
+            </Flex>
+            {type && (
+              <Flex justify="end" align={"center"} mb="1rem">
+                <Select
+                  key={type}
+                  label={t("Material group")}
+                  value={group}
+                  w={"20vw"}
+                  options={groupOptions}
+                  onChange={setGroup}
+                />
+              </Flex>
+            )}
+            <Flex justify="end" align={"center"} mb="1rem">
               <Autocomplete
+                label={t("Material name")}
                 w={"20vw"}
                 onEnter={filter}
                 data={names}
                 onChange={change}
               />
             </Flex>
+            <Box ta="right">
+              <Button disabled={!type} onClick={clear}>
+                {t("Clear")}
+              </Button>
+            </Box>
             <ScrollArea h="80vh">
               {data.map((material) => {
                 const existed = materials.some(

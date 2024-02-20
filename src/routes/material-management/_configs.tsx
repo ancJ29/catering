@@ -50,7 +50,7 @@ export const configs = (
       textAlign: "right",
       header: t("Unit"),
       renderCell: (_, row) => {
-        return row.others.unit || "N/A";
+        return row.others?.unit?.name || "N/A";
       },
     },
     {

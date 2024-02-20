@@ -12,7 +12,8 @@ import {
   departmentOthersSchema,
   materialOthersSchema,
   supplierOthersSchema,
-} from "./others-schema";
+} from "./others";
+import { stringSchema } from "./schema";
 
 export const xCustomerSchema = customerSchema
   .omit({
@@ -56,8 +57,8 @@ export const xDailyMenuSchema = dailyMenuSchema
       menuProducts: z.array(
         z.object({
           product: z.object({
-            id: z.string(),
-            name: z.string(),
+            id: stringSchema,
+            name: stringSchema,
           }),
         }),
       ),

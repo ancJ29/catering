@@ -42,6 +42,7 @@ export enum Actions {
   // UPDATE_MENU = "update-menu",
   // DELETE_MENU = "delete-menu",
   GET_MATERIALS = "get-materials",
+  PUSH_MATERIAL = "push-material",
   GET_SUPPLIERS = "get-suppliers",
   ADD_SUPPLIER = "add-supplier",
   UPDATE_SUPPLIER = "update-supplier",

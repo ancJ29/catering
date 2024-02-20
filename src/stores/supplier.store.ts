@@ -3,7 +3,6 @@ import {
   getSupplierById,
   type Supplier,
 } from "@/services/domain";
-import logger from "@/services/logger";
 import { create } from "zustand";
 
 type SupplierStore = {
@@ -38,7 +37,6 @@ export default create<SupplierStore>((set, get) => ({
     if (!noCache && get().loadedAll) {
       return;
     }
-    logger.info("Reloading suppliers");
     const data = await getAllSuppliers(noCache);
     set(() => ({
       loadedAll: true,

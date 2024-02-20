@@ -1,38 +1,45 @@
+import { unitSchema } from "@/auto-generated/prisma-schema";
 import { z } from "zod";
-import { dateSchema } from "./schema";
+import {
+  booleanSchema,
+  dateSchema,
+  nullishStringSchema,
+  numberSchema,
+  stringSchema,
+} from "./schema";
 
 export const departmentOthersSchema = z.object({
-  iCenter: z.boolean().default(true),
-  totalSupplier: z.number().default(0),
+  iCenter: booleanSchema.default(true),
+  totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),
 });
 
 export const customerOthersSchema = z.object({
-  cateringId: z.string(),
-  cateringName: z.string(),
+  cateringId: stringSchema,
+  cateringName: stringSchema,
   type: z.enum(["company"]),
   targets: z
     .object({
-      name: z.string(),
-      shifts: z.string().array(),
+      name: stringSchema,
+      shifts: stringSchema.array(),
     })
     .array(),
 });
 
 export const dailyMenuOthersSchema = z.object({
-  targetName: z.string(),
-  shift: z.string(),
+  targetName: stringSchema,
+  shift: stringSchema,
 });
 
 export const supplierOthersSchema = z.object({
-  contact: z.string().nullish(),
-  email: z.string().nullish(),
-  phone: z.string().nullish(),
-  address: z.string().nullish(),
+  contact: nullishStringSchema,
+  email: nullishStringSchema,
+  phone: nullishStringSchema,
+  address: nullishStringSchema,
 });
 
 export const materialOthersSchema = z.object({
-  id: z.number(),
+  id: numberSchema,
   group: z.enum([
     // cspell:disable
     "D", // Bánh sữa
@@ -79,10 +86,50 @@ export const materialOthersSchema = z.object({
     "DP", // "Đồng Phục",
     // cspell:enable
   ]),
-  unit: z.string(),
-  units: z.string().array().optional(),
-  converters: z.number().array().optional(),
-  purchasingUnit: z.string().optional(),
-  converter: z.number().optional().default(1),
-  expiryDays: z.number().default(7),
+  unit: unitSchema
+    .pick({
+      name: true,
+      units: true,
+      converters: true,
+    })
+    .extend({
+      unitId: stringSchema,
+    })
+    .optional(),
+  expiryDays: numberSchema.default(7),
 });
+
+export const materialGroupByType = [
+  ["BS", "D"],
+  ["BS", "M"],
+  /* cspell:disable-next-line */
+  ["BTBDKD", "L"],
+  ["KH", "K"],
+  /* cspell:disable-next-line */
+  ["CCDC", "X"],
+  ["GB", "O"],
+  ["GB", "E"],
+  ["VG", "V"],
+  /* cspell:disable-next-line */
+  ["NTNV", "Ư"],
+  ["GA", "F"],
+  ["GA", "G"],
+  ["RCQ", "R"],
+  ["TCT", "C"],
+  ["TCT", "S"],
+  ["TCT", "B"],
+  ["TCT", "G"],
+  ["TCT", "H"],
+  ["TCT", "T"],
+  ["TTB", "I"],
+  ["VPP", "N"],
+  ["YT", "Y"],
+  ["DC", "Z"],
+  ["DP", "P"],
+].reduce((acc, [type, group]) => {
+  if (!acc[type]) {
+    acc[type] = [];
+  }
+  acc[type].push(group);
+  return acc;
+}, {} as Record<string, string[]>);

@@ -2,7 +2,7 @@ import { Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { stopMouseEvent } from "@/utils";
 import { Badge, Flex, Text } from "@mantine/core";
-import { IconShoppingCart } from "@tabler/icons-react";
+import { IconBrandItch, IconShoppingCart } from "@tabler/icons-react";
 
 export const configs = (
   t: (key: string) => string,
@@ -20,15 +20,53 @@ export const configs = (
       width: "10%",
     },
     {
+      key: "pic",
+      header: t("Supplier PIC"),
+      width: "10%",
+      renderCell: (_, row) => {
+        return `${row.others?.contact || "-"}`;
+      },
+    },
+    {
       key: "contact",
       header: t("Supplier contact"),
-      width: "20%",
+      width: "15%",
       renderCell: (_, row) => {
-        const email = row.others?.email;
-        const phone = row.others?.phone;
-        return `${row.others?.contact || "-"} ${email || ""}${
-          email && phone ? " " : ""
-        }${phone || ""}`;
+        const email = row.others?.email || "Email: N/A";
+        const phone = row.others?.phone || "Phone: N/A";
+        return (
+          <>
+            {email}
+            <br />
+            {phone}
+          </>
+        );
+      },
+    },
+    {
+      key: "catering",
+      header: t("Supplier total catering"),
+      width: "10%",
+      renderCell: () => {
+        const total = Math.floor(Math.random() * 10) > 5 ? 1 : 0;
+        return (
+          <Badge
+            color={total > 0 ? "orange.6" : "gray"}
+            p={10}
+            onClick={(e) => {
+              stopMouseEvent(e);
+              alert("Not implemented yet");
+            }}
+          >
+            <Flex align="center" p={4}>
+              <IconBrandItch size={20} />
+              &nbsp;
+              <Text fw={800} fz="1rem">
+                ({total})
+              </Text>
+            </Flex>
+          </Badge>
+        );
       },
     },
     {
@@ -49,6 +87,7 @@ export const configs = (
           >
             <Flex align="center" p={4}>
               <IconShoppingCart size={20} />
+              &nbsp;
               <Text fw={800} fz="1rem">
                 ({total})
               </Text>

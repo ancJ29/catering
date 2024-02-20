@@ -1,4 +1,12 @@
 const { execSync } = require("child_process");
+const { rmSync, cpSync } = require("fs");
+
 execSync("cd ../api && yarn sync:schema");
-execSync("cp -r ../schema/auto-generated/ ./src/auto-generated/");
+
+rmSync("./src/auto-generated/", { recursive: true });
+
+cpSync("../schema/auto-generated/", "./src/auto-generated/", {
+  recursive: true,
+});
+
 execSync("yarn static:fix");

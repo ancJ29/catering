@@ -4,7 +4,6 @@ import {
 } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import logger from "@/services/logger";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { cloneDeep } from "@/utils";
 import {
@@ -56,7 +55,7 @@ const UnitManagement = () => {
   // https://ui.mantine.dev/component/table-scroll-area/
   const [scrolled, setScrolled] = useState(false);
 
-  const { units } = useMetaDataStore();
+  const { units, loadMetaData } = useMetaDataStore();
   const [counter, setCounter] = useState(0);
   const [list, setList] = useState<Unit[] | undefined>();
   const [updated, setUpdated] = useState<Unit[]>();
@@ -87,18 +86,22 @@ const UnitManagement = () => {
       ),
       labels: { confirm: "OK", cancel: t("Cancel") },
       onConfirm: () => {
-        logger.info("save", updated);
+        const _updated = updated?.filter((el) => !!el.name);
         callApi<Request, unknown>({
           action: Actions.UPDATE_UNITS,
-          params: updated,
+          params: updated?.filter((el) => !!el.name),
           options: {
             toastMessage: t("Your changes have been saved"),
-            reloadOnSuccess: true,
           },
+        }).then(() => {
+          setList(_updated);
+          setCounter(counter + 1);
+          setUpdated(undefined);
+          loadMetaData();
         });
       },
     });
-  }, [t, updated]);
+  }, [counter, loadMetaData, t, updated]);
 
   const reset = useCallback(() => {
     modals.openConfirmModal({
@@ -112,6 +115,7 @@ const UnitManagement = () => {
       onConfirm: () => {
         setAdditionColumn(0);
         setList(cloneDeep(units));
+        setUpdated(undefined);
         setCounter(counter + 1);
       },
     });
@@ -143,6 +147,8 @@ const UnitManagement = () => {
   return (
     <Stack gap={10}>
       <Box ta="right" pr={10}>
+        <div>list: {list?.[0].name}</div>
+        <div>updated: {updated?.[0].name || "-"}</div>
         <Button variant="outline" ml={10} w={100} onClick={addRow}>
           {t("Add")}
         </Button>

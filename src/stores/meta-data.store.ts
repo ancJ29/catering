@@ -12,6 +12,7 @@ type OmitUnitType =
 type Unit = Omit<z.infer<typeof unitSchema>, OmitUnitType>;
 
 type MetaDataStore = {
+  materialGroupByType: Record<string, string[]>;
   dictionaries: Record<string, Dictionary>;
   kitchenType?: string;
   units: Unit[];
@@ -22,6 +23,7 @@ type MetaDataStore = {
 };
 
 export default create<MetaDataStore>((set) => ({
+  materialGroupByType: {},
   dictionaries: JSON.parse(
     localStorage.getItem("____dictionaries____") || "{}",
   ),
@@ -52,6 +54,7 @@ export default create<MetaDataStore>((set) => ({
         data.departments.map((e) => [e.name, e.id]),
       ),
       roleIdByName: new Map(data.roles.map((e) => [e.name, e.id])),
+      materialGroupByType: data.materialGroupByType,
       dictionaries: {
         en: data.dictionaries.en,
         vi: data.dictionaries.vi,

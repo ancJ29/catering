@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { materialOthersSchema } from "./others-schema";
+import { materialOthersSchema } from "./others";
+
+const version = "1.0.1707194823913";
 
 type MaterialType = z.infer<typeof materialOthersSchema.shape.type>;
 type MaterialGroup = z.infer<typeof materialOthersSchema.shape.group>;
@@ -97,12 +99,13 @@ const materialDictionaries: {
     /* cspell:enable */
   },
 };
+
 export const dictionaries: {
   version: string;
   en: Record<string, string>;
   vi: Record<string, string>;
 } = {
-  version: "1.0.1707194823903",
+  version,
   en: {
     ...materialDictionaries.en,
     "additional-food": "Additional food",
@@ -146,6 +149,16 @@ export const dictionaries: {
     "Stopped": "Stopped",
     "Sun": "Sun",
     "Supplier Settings": "Supplier Settings",
+    "Supplier name": "Supplier",
+    "Supplier code": "Code",
+    "Supplier contact": "Contact",
+    "Supplier PIC": "PIC",
+    "Supplier email": "Email",
+    "Supplier phone": "Phone",
+    "Supplier address": "Address",
+    "Supplier material": "Material",
+    "Supplier total catering": "Total catering",
+    "Supplier supplied material": "Supplied material",
     "Thu": "Thu",
     "Tue": "Tue",
     "vegetable": "Vegetable",
@@ -208,6 +221,16 @@ export const dictionaries: {
     "Stopped": "Tạm ngưng",
     "Sun": "CN",
     "Supplier Settings": "Cài đặt nhà cung cấp",
+    "Supplier name": "Nhà cung cấp",
+    "Supplier code": "Mã",
+    "Supplier contact": "Liên hệ",
+    "Supplier PIC": "Người đại diện",
+    "Supplier email": "Email",
+    "Supplier phone": "Điện thoại",
+    "Supplier address": "Địa chỉ",
+    "Supplier material": "Nguyên liệu",
+    "Supplier total catering": "Bếp",
+    "Supplier supplied material": "Nguyên liệu cung cấp",
     "Thu": "T5",
     "Tue": "T3",
     "vegetable": "Rau củ xào/ luộc",

@@ -1,11 +1,15 @@
+import {
+  optionalStringSchema,
+  stringSchema,
+} from "@/auto-generated/api-configs";
 import menu from "@/configs/navbar/menu.json";
 import z from "zod";
 
 const baseMenuItem = z.object({
-  key: z.string(),
-  label: z.string(),
-  icon: z.string().optional(),
-  url: z.string().optional(),
+  key: stringSchema,
+  label: stringSchema,
+  icon: optionalStringSchema,
+  url: optionalStringSchema,
 });
 
 type MenuItem = z.infer<typeof baseMenuItem> & {
