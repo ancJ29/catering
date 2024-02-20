@@ -1,12 +1,9 @@
+import IconBadge from "@/components/common/IconBadge";
 import { Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { stopMouseEvent } from "@/utils";
-import { Badge, Flex, Text } from "@mantine/core";
-import { IconBrandItch, IconShoppingCart } from "@tabler/icons-react";
 
 export const configs = (
   t: (key: string) => string,
-  navigate: (to: string) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -48,25 +45,11 @@ export const configs = (
       header: t("Supplier total catering"),
       width: "10%",
       renderCell: (_, supplier: Supplier) => {
-        const total = supplier.others?.caterings?.length || 0;
         return (
-          <Badge
-            color={total > 0 ? "orange.6" : "gray"}
-            p={10}
-            onClick={(e) => {
-              stopMouseEvent(e);
-              const url = `/supplier-management/catering/${supplier.id}`;
-              navigate(url);
-            }}
-          >
-            <Flex align="center" p={4}>
-              <IconBrandItch size={20} />
-              &nbsp;
-              <Text fw={800} fz="1rem">
-                ({total})
-              </Text>
-            </Flex>
-          </Badge>
+          <IconBadge
+            total={supplier.others?.caterings?.length || 0}
+            navigateUrl={`/supplier-management/catering/${supplier.id}`}
+          />
         );
       },
     },
@@ -75,25 +58,11 @@ export const configs = (
       header: t("Supplier material"),
       width: "10%",
       renderCell: (_, supplier: Supplier) => {
-        const total = supplier.supplierMaterials.length;
         return (
-          <Badge
-            color={total > 0 ? "orange.6" : "gray"}
-            p={10}
-            onClick={(e) => {
-              stopMouseEvent(e);
-              const url = `/supplier-management/material/${supplier.id}`;
-              navigate(url);
-            }}
-          >
-            <Flex align="center" p={4}>
-              <IconShoppingCart size={20} />
-              &nbsp;
-              <Text fw={800} fz="1rem">
-                ({total})
-              </Text>
-            </Flex>
-          </Badge>
+          <IconBadge
+            total={supplier.supplierMaterials.length || 0}
+            navigateUrl={`/supplier-management/material/${supplier.id}`}
+          />
         );
       },
     },

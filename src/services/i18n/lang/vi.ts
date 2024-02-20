@@ -14,6 +14,7 @@ export default {
   "Add": "Thêm",
   "Remove": "Xóa",
   "Reset": "Khôi phục",
+  "Clear": "Xóa",
   "Reset changes": "Khôi phục thay đổi",
   "Are you sure you want to reset changes?":
     "Bạn có chắc chắn muốn khôi phục?",
@@ -85,12 +86,6 @@ export default {
   "Unit": "Đơn vị",
   "Converter": "Chuyển đổi",
   "Unit Management": "Quản lý đơn vị",
-  "Material name": "Nguyên liệu",
-  "Material unit": "Đơn vị",
-  "Material price": "Giá (VAT)",
-  "Material code": "Mã",
-  "Material type": "Loại",
-  "Material group": "Nhóm",
   "Please input price for all materials":
     "Vui lòng nhập giá cho tất cả nguyên liệu",
   "Update user successfully": "Cập nhật người dùng thành công",

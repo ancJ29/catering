@@ -6,7 +6,7 @@ import {
   Autocomplete as MantineAutocomplete,
 } from "@mantine/core";
 import { IconFilter } from "@tabler/icons-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 interface IAutocompleteProps extends AutocompleteProps {
   options?: OptionProps[];
@@ -23,11 +23,13 @@ const Autocomplete = ({
   onChange,
   ...props
 }: IAutocompleteProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const _data = useMemo(
     () => data || options?.map((el) => el.label),
     [options, data],
   );
   const [currentValue, setCurrentValue] = useState<string>("");
+
   const _onChange = useCallback(
     (value: string) => {
       onChange && onChange(value);
@@ -36,10 +38,16 @@ const Autocomplete = ({
     [onChange],
   );
 
-  const _onEnter = useOnEnter(onEnter.bind(null, currentValue));
+  const enterHandler = useCallback(() => {
+    onEnter.bind(null, currentValue)();
+    inputRef.current?.blur();
+  }, [currentValue, onEnter]);
+
+  const _onEnter = useOnEnter(enterHandler);
 
   return (
     <MantineAutocomplete
+      ref={inputRef}
       classNames={{
         input: "c-catering-truncate",
       }}

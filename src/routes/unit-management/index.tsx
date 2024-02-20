@@ -300,7 +300,7 @@ function _rows(
         <Button
           size="compact-xs"
           variant="light"
-          color="red"
+          color="error"
           ml={10}
           w={100}
           onClick={() => {

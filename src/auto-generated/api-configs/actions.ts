@@ -449,7 +449,19 @@ export const configs = {
     schema: {
       request: getSchema,
       response: listResponse.extend({
-        materials: xMaterialSchema.array(),
+        materials: xMaterialSchema
+          .extend({
+            supplierMaterials: z
+              .object({
+                price: numberSchema.nonnegative(),
+                supplier: z.object({
+                  id: stringSchema,
+                  name: stringSchema,
+                }),
+              })
+              .array(),
+          })
+          .array(),
       }),
     },
   },
@@ -469,6 +481,22 @@ export const configs = {
         .partial({
           id: true,
         }),
+    },
+  },
+  [Actions.UPDATE_MATERIAL_SUPPLIER]: {
+    name: Actions.UPDATE_MATERIAL_SUPPLIER,
+    group: ActionGroups.MATERIAL_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        materialId: stringSchema,
+        suppliers: z
+          .object({
+            supplierId: stringSchema,
+            price: numberSchema.nonnegative(),
+          })
+          .array(),
+      }),
     },
   },
   [Actions.GET_SUPPLIERS]: {

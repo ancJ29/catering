@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { materialOthersSchema } from "./others";
 
-const version = "1.0.1707194823913";
+const version = "1.0.1707194823924";
 
 type MaterialType = z.infer<typeof materialOthersSchema.shape.type>;
 type MaterialGroup = z.infer<typeof materialOthersSchema.shape.group>;
@@ -113,6 +113,7 @@ export const dictionaries: {
     "appetizer": "Appetizer",
     "Catering Management": "Catering Management",
     "Catering name": "Catering",
+    "Catering address": "Address",
     "Central catering": "Central catering",
     "client-accounting": "Accounting",
     "client-admin": "Admin",
@@ -130,6 +131,13 @@ export const dictionaries: {
     "Customer type": "Target",
     "dessert": "Dessert",
     "Fri": "Fri",
+    "Material name": "Material",
+    "Material unit": "Unit",
+    "Material price": "Price (including VAT)",
+    "Material PO unit": "Unit (PO)",
+    "Material code": "Code",
+    "Material type": "Type",
+    "Material group": "Group",
     "In operation": "In operation",
     "Inventory check date": "Inventory check date",
     "main-dish": "Main dish",
@@ -159,8 +167,11 @@ export const dictionaries: {
     "Supplier material": "Material",
     "Supplier total catering": "Total catering",
     "Supplier supplied material": "Supplied material",
+    "Supplier supplied catering": "Supplied catering",
+    "Supplier catering addition fee": "Addition fee",
     "Thu": "Thu",
     "Tue": "Tue",
+    "Total suppliers": "Suppliers",
     "vegetable": "Vegetable",
     "vegetarian-main-dish": "Vegetarian main dish",
     "vegetarian-noodles": "Vegetarian noodle",
@@ -185,6 +196,8 @@ export const dictionaries: {
     "appetizer": "Món khai vị",
     "Catering Management": "Quản lý bếp",
     "Catering name": "Bếp",
+    "Catering address": "Địa chỉ",
+    "Supplier catering addition fee": "Phụ thu",
     "Central catering": "Bếp trung tâm",
     "client-accounting": "Kế toán",
     "client-admin": "Quản trị",
@@ -202,6 +215,13 @@ export const dictionaries: {
     "Customer type": "Đối tượng",
     "dessert": "Tráng miệng",
     "Fri": "T6",
+    "Material name": "Nguyên liệu",
+    "Material unit": "Đơn vị",
+    "Material price": "Giá (VAT)",
+    "Material PO unit": "Đơn vị (PO)",
+    "Material code": "Mã",
+    "Material type": "Loại",
+    "Material group": "Nhóm",
     "In operation": "Đang hoạt động",
     "Inventory check date": "Ngày kiểm kê",
     "main-dish": "Mặn chính",
@@ -231,8 +251,10 @@ export const dictionaries: {
     "Supplier material": "Nguyên liệu",
     "Supplier total catering": "Bếp",
     "Supplier supplied material": "Nguyên liệu cung cấp",
+    "Supplier supplied catering": "Phạm vi cung cấp",
     "Thu": "T5",
     "Tue": "T3",
+    "Total suppliers": "Nhà cung cấp",
     "vegetable": "Rau củ xào/ luộc",
     "vegetarian-main-dish": "Chay chính",
     "vegetarian-noodles": "Món nước chay",

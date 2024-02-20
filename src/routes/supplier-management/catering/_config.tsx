@@ -16,7 +16,7 @@ export const configs = (
     {
       key: "name",
       header: t("Catering name"),
-      width: "35%",
+      width: "25%",
       textAlign: "left",
       renderCell(_, row: Catering) {
         return <span>{row.name || "-"}</span>;
@@ -25,14 +25,14 @@ export const configs = (
     {
       key: "address",
       header: t("Catering address"),
-      width: "35%",
+      width: "25%",
       renderCell(_, row: Catering) {
         return <span>{row?.others.address || "N/A"}</span>;
       },
     },
     {
       key: "addition-fee",
-      width: "300px",
+      width: "200px",
       header: t("Supplier catering addition fee"),
       renderCell(_, row: Catering) {
         const Component = () => {
@@ -69,6 +69,8 @@ export const configs = (
           <Button
             mr={10}
             size="compact-xs"
+            variant="light"
+            color="error"
             onClick={removeCatering.bind(null, row.id)}
           >
             {t("Remove")}

@@ -1,16 +1,11 @@
-import {
-  getAllSuppliers,
-  getSupplierById,
-  type Supplier,
-} from "@/services/domain";
+import { getAllSuppliers, type Supplier } from "@/services/domain";
 import { create } from "zustand";
 
 type SupplierStore = {
   loadedAll: boolean;
   suppliers: Map<string, Supplier>;
-  load: (id: string) => Promise<void>;
-  reload: (noCache?: boolean) => Promise<void>;
   set: (suppliers: Supplier[]) => void;
+  reload: (noCache?: boolean) => Promise<void>;
 };
 
 export default create<SupplierStore>((set, get) => ({
@@ -22,16 +17,6 @@ export default create<SupplierStore>((set, get) => ({
       suppliers.forEach((e) => s.set(e.id, e));
       return { suppliers: s };
     });
-  },
-  load: async (id: string) => {
-    if (!id || get().suppliers.has(id)) {
-      return;
-    }
-    const supplier = await getSupplierById(id);
-    supplier &&
-      set(({ suppliers }) => ({
-        suppliers: new Map(suppliers).set(id, supplier),
-      }));
   },
   reload: async (noCache = false) => {
     if (!noCache && get().loadedAll) {

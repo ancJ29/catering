@@ -1,3 +1,5 @@
+import IconBadge from "@/components/common/IconBadge";
+import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 
 export const configs = (
@@ -55,11 +57,16 @@ export const configs = (
     },
     {
       key: "suppliers",
+      header: t("Total suppliers"),
       width: "10%",
       textAlign: "right",
-      header: t("Suppliers"),
-      renderCell: () => {
-        return "TODO";
+      renderCell: (_, row: Material) => {
+        return (
+          <IconBadge
+            total={row.supplierMaterials?.length || 0}
+            navigateUrl={`/material-management/supplier/${row.id}`}
+          />
+        );
       },
     },
   ];

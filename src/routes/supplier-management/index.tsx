@@ -7,43 +7,25 @@ import useSupplierStore from "@/stores/supplier.store";
 import { GenericObject } from "@/types";
 import { Button, Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { useCallback, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
 import AddSupplierForm from "./components/AddSupplierForm";
 import UpdateSupplierForm from "./components/UpdateSupplierForm";
 
 const SupplierManagement = () => {
   const t = useTranslation();
-  const navigate = useNavigate();
   const supplierStore = useSupplierStore();
-  const [page, setPage] = useState(1);
-  const dataGridConfigs = useMemo(
-    () => configs(t, navigate),
-    [t, navigate],
-  );
+  const dataGridConfigs = useMemo(() => configs(t), [t]);
 
   const reload = useCallback(async () => {
     await supplierStore.reload();
     return Array.from(supplierStore.suppliers.values());
   }, [supplierStore]);
 
-  const {
-    data,
-    names,
-    filter: _filter,
-    change,
-  } = useFilterData<Supplier>({
-    reload,
-  });
-
-  const filter = useCallback(
-    (keyword: string) => {
-      setPage(1);
-      _filter(keyword);
-    },
-    [_filter],
-  );
+  const { data, names, page, filter, setPage, change } =
+    useFilterData<Supplier>({
+      reload,
+    });
 
   const addSupplier = useCallback(
     (values?: GenericObject) => {

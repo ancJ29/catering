@@ -65,6 +65,19 @@ export const theme = createTheme({
   primaryColor: "primary",
   defaultRadius: "sm",
   colors: {
+    // https://mantine.dev/colors-generator/?color=F21616
+    error: [
+      "#ffe9e9",
+      "#ffd1d1",
+      "#fba0a1",
+      "#f76d6d",
+      "#f34141",
+      "#f22625",
+      "#f21616",
+      "#d8070b",
+      "#c10008",
+      "#a90003",
+    ],
     // https://mantine.dev/colors-generator/?color=754610
     xOrange: [
       // primary: [

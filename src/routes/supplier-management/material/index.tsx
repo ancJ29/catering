@@ -10,12 +10,11 @@ import {
   Material,
   Supplier,
   getSupplierById,
+  typeAndGroupOptions,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { OptionProps } from "@/types";
-import { unique } from "@/utils";
 import {
   Box,
   Button,
@@ -40,37 +39,14 @@ const SupplierMaterialManagement = () => {
     useMaterialStore();
   const [supplier, setSupplier] = useState<Supplier>();
   const [prices] = useState<Map<string, number>>(new Map());
-
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
   const [group, setGroup] = useState<string | null>("");
   const [type, setType] = useState<string | null>("");
 
-  const [groupOptions, typeOptions] = useMemo(() => {
-    const typeOptions = unique(
-      Array.from(materialById.values()).map((m) => m.others.type),
-    ).map((m) => ({
-      label: t(`materials.type.${m}`),
-      value: m as string,
-    }));
-    let groupOptions: OptionProps[] = [];
-    if (type) {
-      if (type in materialGroupByType) {
-        groupOptions = materialGroupByType[type].map((g) => ({
-          label: t(`materials.group.${g}`),
-          value: g,
-        }));
-      }
-    } else {
-      groupOptions = unique(
-        Array.from(materialById.values()).map((m) => m.others.group),
-      ).map((m) => ({
-        label: t(`materials.group.${m}`),
-        value: m as string,
-      }));
-    }
-    return [groupOptions, typeOptions];
-  }, [materialById, type, materialGroupByType, t]);
+  const [typeOptions, groupOptions] = useMemo(() => {
+    return typeAndGroupOptions(materialGroupByType, type, t);
+  }, [materialGroupByType, t, type]);
 
   const load = useCallback(async () => {
     if (!supplierId) {
@@ -81,6 +57,7 @@ const SupplierMaterialManagement = () => {
     if (!supplier) {
       return;
     }
+    setChanged(false);
     set([supplier]);
     setSupplier(supplier);
     setMaterials(
@@ -105,11 +82,22 @@ const SupplierMaterialManagement = () => {
 
   const {
     data: _data,
-    records,
     names,
     filter,
     change,
   } = useFilterData<Material>({ reload });
+
+  const data = useMemo(() => {
+    return _data.filter((m) => {
+      if (group && m.others.group !== group) {
+        return false;
+      }
+      if (type && m.others.type !== type) {
+        return false;
+      }
+      return true;
+    });
+  }, [_data, group, type]);
 
   const addMaterial = useCallback(
     (materialId: string, materials: Map<string, Material>) => {
@@ -134,18 +122,6 @@ const SupplierMaterialManagement = () => {
     [],
   );
 
-  const data = useMemo(() => {
-    return _data.filter((m) => {
-      if (group && m.others.group !== group) {
-        return false;
-      }
-      if (type && m.others.type !== type) {
-        return false;
-      }
-      return true;
-    });
-  }, [_data, group, type]);
-
   const removeMaterial = useCallback((materialId: string) => {
     setChanged(true);
     setMaterials((prev) => {
@@ -155,7 +131,7 @@ const SupplierMaterialManagement = () => {
 
   const dataGridConfigs = useMemo(() => {
     return materialById.size
-      ? configs(removeMaterial, t, materialById, setPrice)
+      ? configs(t, materialById, setPrice, removeMaterial)
       : [];
 
     function setPrice(materialId: string, price: number) {
@@ -201,7 +177,6 @@ const SupplierMaterialManagement = () => {
             toastMessage: t("Your changes have been saved"),
           },
         });
-        setChanged(false);
         load();
       },
     });
@@ -242,7 +217,7 @@ const SupplierMaterialManagement = () => {
         </Flex>
         <Grid mt={10}>
           <Grid.Col span={9}>
-            {records.size && (
+            {materialById.size && (
               <DataGrid
                 hasUpdateColumn={false}
                 hasOrderColumn
@@ -260,6 +235,7 @@ const SupplierMaterialManagement = () => {
                 w={"20vw"}
                 options={typeOptions}
                 onChange={changeType}
+                mb={10}
               />
             </Flex>
             {type && (

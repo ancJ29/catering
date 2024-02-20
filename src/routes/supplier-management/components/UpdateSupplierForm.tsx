@@ -66,9 +66,14 @@ const AddSupplierForm = ({
             });
         },
         onConfirm: async () => {
+          const params = request.parse(values);
+          params.others = {
+            ...supplier.others,
+            ...params.others,
+          };
           await callApi<Request, { id: string }>({
             action: Actions.UPDATE_SUPPLIER,
-            params: request.parse(values),
+            params,
             options: {
               toastMessage: t("Update supplier successfully"),
               reloadOnSuccess: true,

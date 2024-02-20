@@ -5,10 +5,13 @@ import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import { Supplier, getSupplierById } from "@/services/domain";
-import useCateringStore from "@/stores/catering.store";
+import {
+  Material,
+  Supplier,
+  getMaterialById,
+} from "@/services/domain";
+import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { GenericObject } from "@/types";
 import {
   Box,
   Button,
@@ -18,90 +21,112 @@ import {
   Text,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Catering, configs } from "./_config";
+import { SupplierMaterial, configs } from "./_config";
 
-const SupplierCateringManagement = () => {
-  const { reload: reloadCatering, caterings: cateringById } =
-    useCateringStore();
-  const { supplierId } = useParams();
+const MaterialSupplierManagement = () => {
+  const { materialId } = useParams();
+  const { set } = useMaterialStore();
+  const { reload: reloadSuppliers, suppliers: supplierById } =
+    useSupplierStore();
   const t = useTranslation();
-  const { set } = useSupplierStore();
-  const [supplier, setSupplier] = useState<Supplier>();
   const [changed, setChanged] = useState(false);
-  const [caterings, setCaterings] = useState<Catering[]>([]);
-  const [fee] = useState<Map<string, number>>(new Map());
+  const [material, setMaterial] = useState<Material>();
+  const [prices] = useState<Map<string, number>>(new Map());
+  const [suppliers, setSuppliers] = useState<SupplierMaterial[]>([]);
 
   const load = useCallback(async () => {
-    if (!supplierId) {
+    await reloadSuppliers();
+    if (!materialId) {
       return;
     }
-    await reloadCatering();
-    const supplier = await getSupplierById(supplierId);
-    if (!supplier) {
-      return;
+    setChanged(false);
+    const material = await getMaterialById(materialId);
+    if (material) {
+      setMaterial(material);
+      set([material]);
     }
-    set([supplier]);
-    setSupplier(supplier);
-    setCaterings(
-      (supplier.others.caterings || [])
-        .map((c) => {
-          if (!cateringById.has(c.cateringId)) {
-            return;
-          }
-          return {
-            ...cateringById.get(c.cateringId),
-            price: c.additionalFee,
-          };
-        })
-        .filter(Boolean) as Catering[],
+    setSuppliers(
+      (
+        material?.supplierMaterials.map((sm: SupplierMaterial) => ({
+          price: sm.price,
+          supplier: {
+            id: sm.supplier.id,
+            name: sm.supplier.name,
+          },
+        })) || []
+      ).sort((a, b) => a.price - b.price),
     );
-  }, [supplierId, reloadCatering, set, cateringById]);
+  }, [reloadSuppliers, materialId, set]);
 
   useOnMounted(load);
 
   const reload = useCallback(() => {
-    if (cateringById.size) {
-      return Array.from(cateringById.values());
+    if (supplierById.size) {
+      return Array.from(supplierById.values());
     }
     return [];
-  }, [cateringById]);
+  }, [supplierById]);
 
-  const { data, records, names, filter, change } =
-    useFilterData<Catering>({ reload });
+  const { data, names, filter, change } = useFilterData<Supplier>({
+    reload,
+  });
 
-  const addCatering = useCallback(
-    (cateringId: string, cateringById: Map<string, Catering>) => {
+  const addSupplier = useCallback(
+    (supplierId: string, suppliers: Map<string, Supplier>) => {
       setChanged(true);
-      setCaterings((prev) => {
-        const catering = cateringById.get(cateringId);
-        if (!catering) {
+      setSuppliers((prev) => {
+        const supplier = suppliers.get(supplierId);
+        if (!supplier) {
           return prev;
         }
-        return [...(prev || []), catering];
+        return [
+          ...(prev || []),
+          {
+            price: 0,
+            supplier: {
+              id: supplier.id,
+              name: supplier.name,
+            },
+          },
+        ];
       });
     },
     [],
   );
 
-  const removeCatering = useCallback((cateringId: string) => {
+  const removeSupplier = useCallback((supplierId: string) => {
     setChanged(true);
-    setCaterings((prev) => {
-      return prev?.filter((c) => c.id !== cateringId);
+    setSuppliers((prev) => {
+      return prev?.filter((sm) => sm.supplier.id !== supplierId);
     });
   }, []);
 
   const dataGridConfigs = useMemo(() => {
-    return configs(t, removeCatering, setFee);
-    function setFee(cateringId: string, _fee: number) {
-      fee.set(cateringId, _fee);
-      setChanged(true);
+    if (!material) {
+      return [];
     }
-  }, [fee, removeCatering, t]);
+    return configs(t, material, prices, setPrice, removeSupplier);
+    function setPrice(supplierId: string, price: number) {
+      prices.set(supplierId, price);
+    }
+  }, [material, prices, t, removeSupplier]);
 
   const save = useCallback(() => {
+    if (
+      suppliers?.some((sm) => {
+        return sm.price <= 0 && !prices.get(sm.supplier.id);
+      })
+    ) {
+      notifications.show({
+        color: "red.5",
+        message: t("Please input price for all materials"),
+      });
+      return;
+    }
     modals.openConfirmModal({
       title: t("Update changes"),
       children: (
@@ -109,37 +134,30 @@ const SupplierCateringManagement = () => {
       ),
       labels: { confirm: "OK", cancel: t("Cancel") },
       onConfirm: async () => {
-        if (!supplier) {
+        if (!suppliers) {
           return;
         }
-        const _supplier: GenericObject = supplier;
-        delete _supplier.id;
         await callApi<unknown, { success: boolean }>({
-          action: Actions.UPDATE_SUPPLIER,
+          action: Actions.UPDATE_MATERIAL_SUPPLIER,
           params: {
-            ..._supplier,
-            id: supplierId,
-            others: {
-              ...supplier.others,
-              caterings: caterings.map((c) => {
-                return {
-                  cateringId: c.id,
-                  additionalFee: fee.get(c.id) ?? c.price ?? 0,
-                };
-              }),
-            },
+            materialId,
+            suppliers: suppliers.map((sm) => {
+              return {
+                supplierId: sm.supplier.id,
+                price: prices.get(sm.supplier.id) ?? sm.price,
+              };
+            }),
           },
           options: {
             toastMessage: t("Your changes have been saved"),
           },
         });
-        setChanged(false);
         load();
       },
     });
-  }, [caterings, fee, load, supplier, supplierId, t]);
+  }, [load, materialId, prices, suppliers, t]);
 
-  if (!caterings || !data.length) {
+  if (!supplierById || !material) {
     return <></>;
   }
   return (
@@ -147,9 +165,7 @@ const SupplierCateringManagement = () => {
       <Box w="100%" pb={10}>
         <Flex w="100%" align="center" justify="space-between">
           <Text className="c-catering-font-bold" size="2rem">
-            {supplier?.name || "N/A"}
-            {" - "}
-            {t("Supplier supplied catering")}
+            {material?.name || "-"} - {t("Suppliers")}
           </Text>
           <Button disabled={!changed} onClick={save}>
             {t("Save")}
@@ -157,12 +173,12 @@ const SupplierCateringManagement = () => {
         </Flex>
         <Grid mt={10}>
           <Grid.Col span={9}>
-            {records.size && (
+            {supplierById.size && (
               <DataGrid
                 hasUpdateColumn={false}
                 hasOrderColumn
                 columns={dataGridConfigs}
-                data={caterings}
+                data={suppliers}
               />
             )}
           </Grid.Col>
@@ -176,9 +192,9 @@ const SupplierCateringManagement = () => {
               mb={10}
             />
             <ScrollArea h="80vh">
-              {data.map((catering) => {
-                const existed = caterings.some(
-                  (c) => c.id === catering.id,
+              {data.map((supplier) => {
+                const existed = suppliers.some(
+                  (sm) => sm.supplier.id === supplier.id,
                 );
                 const Icon = existed
                   ? IconCircleMinus
@@ -191,22 +207,22 @@ const SupplierCateringManagement = () => {
                     }}
                     bg={existed ? "primary.4" : undefined}
                     className="c-catering-hover-bg"
-                    key={catering.id}
+                    key={supplier.id}
                     w="100%"
                     p={10}
                     mb={4}
                     onClick={() => {
                       if (existed) {
-                        removeCatering(catering.id);
+                        removeSupplier(supplier.id);
                       } else {
-                        addCatering(catering.id, cateringById);
+                        addSupplier(supplier.id, supplierById);
                       }
                     }}
                   >
                     <Flex gap={5}>
                       <Icon />
                       <span style={{ fontSize: ".8rem" }}>
-                        {catering.name}
+                        {supplier.name}
                       </span>
                     </Flex>
                   </Box>
@@ -220,4 +236,4 @@ const SupplierCateringManagement = () => {
   );
 };
 
-export default SupplierCateringManagement;
+export default MaterialSupplierManagement;

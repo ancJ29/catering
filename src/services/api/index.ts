@@ -76,7 +76,8 @@ export default async function callApi<T, R>({
   const start = Date.now();
   try {
     const data = await _fetch<R>(action, _params);
-    !isVercel && options.toastMessage &&
+    !isVercel &&
+      options.toastMessage &&
       notifications.show({
         color: "red.500",
         message: options.toastMessage,
@@ -93,7 +94,8 @@ export default async function callApi<T, R>({
     return data;
   } catch (error) {
     // TODO: translate error message
-    !isVercel && options?.toastMessage &&
+    !isVercel &&
+      options?.toastMessage &&
       notifications.show({
         color: "red.5",
         message: "Unknown error!!!",

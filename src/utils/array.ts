@@ -70,3 +70,7 @@ export function isSubArray<T extends string | number>(
 export function unique<T>(arr: T[]) {
   return [...new Set(arr)];
 }
+
+export function lastElement<T>(arr: T[]) {
+  return arr[arr.length - 1];
+}

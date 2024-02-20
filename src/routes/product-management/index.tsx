@@ -12,7 +12,6 @@ const ProductManagement = () => {
   const t = useTranslation();
   const { enumMap } = useMetaDataStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const [page, setPage] = useState(1);
   const [loaded, setLoaded] = useState(false);
 
   const _reload = useCallback(() => {
@@ -36,22 +35,10 @@ const ProductManagement = () => {
     });
   }, [enumMap, loaded, t]);
 
-  const {
-    data,
-    names,
-    filter: _filter,
-    change,
-  } = useFilterData<Product>({
-    reload: _reload,
-  });
-
-  const filter = useCallback(
-    (keyword: string) => {
-      setPage(1);
-      _filter(keyword);
-    },
-    [_filter],
-  );
+  const { data, names, page, setPage, filter, change } =
+    useFilterData<Product>({
+      reload: _reload,
+    });
 
   return (
     <Stack gap={10}>

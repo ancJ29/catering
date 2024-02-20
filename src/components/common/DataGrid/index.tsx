@@ -72,11 +72,16 @@ function DataGrid<
       rows.sort((a, b) => {
         let _a = "",
           _b = "";
-        if (column.key in a) {
-          _a = a[column.key]?.toString() || "";
-        }
-        if (column.key in b) {
-          _b = b[column.key]?.toString() || "";
+        if (column.sortValue) {
+          _a = column.sortValue(a);
+          _b = column.sortValue(b);
+        } else {
+          if (column.key in a) {
+            _a = a[column.key]?.toString() || "";
+          }
+          if (column.key in b) {
+            _b = b[column.key]?.toString() || "";
+          }
         }
         return column.sorting === "asc"
           ? _a.localeCompare(_b)
@@ -163,6 +168,7 @@ function DataGrid<
       {isPaginated && (
         <Flex justify="end" align="center" mb={12} mx={4} gap={4}>
           <PaginationBar
+            page={page}
             key={limit}
             limit={limit}
             setLimit={(limit) => {
@@ -188,10 +194,12 @@ function DataGrid<
 
 function PaginationBar({
   limit,
+  page,
   lastPage,
   setPage,
   setLimit,
 }: {
+  page: number;
   limit: number;
   lastPage: number;
   setLimit: (limit: number) => void;
@@ -224,7 +232,11 @@ function PaginationBar({
         />
       </Flex>
       {lastPage > 1 && (
-        <Pagination total={lastPage} onChange={setPage} />
+        <Pagination
+          value={page}
+          total={lastPage}
+          onChange={setPage}
+        />
       )}
     </Flex>
   );

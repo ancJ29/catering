@@ -1,5 +1,6 @@
 import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { positivePrice } from "@/utils";
 import { Button, NumberInput } from "@mantine/core";
 import { useState } from "react";
 
@@ -12,10 +13,10 @@ export type SupplierMaterial = {
 };
 
 export const configs = (
-  removeMaterial: (materialId: string) => void,
   t: (key: string) => string,
   materialById: Map<string, Material>,
   setPrice: (materialId: string, price: number) => void,
+  removeMaterial: (materialId: string) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -40,9 +41,9 @@ export const configs = (
               suffix=" đ"
               step={1000}
               onChange={(value) => {
-                const price = _price(value);
+                const price = positivePrice(value);
                 setInternalPrice(price);
-                setPrice(sm.material.id, _price(price));
+                setPrice(sm.material.id, price);
               }}
               thousandSeparator="."
               decimalSeparator=","
@@ -96,11 +97,16 @@ export const configs = (
     {
       key: "remove",
       style: { flexGrow: 1 },
+      textAlign: {
+        cell: "right",
+      },
       renderCell(_, sm: SupplierMaterial) {
         return (
           <Button
             mr={10}
             size="compact-xs"
+            variant="light"
+            color="error"
             onClick={removeMaterial.bind(null, sm.material.id)}
           >
             {t("Remove")}
@@ -110,13 +116,3 @@ export const configs = (
     },
   ];
 };
-
-function _price(value: string | number) {
-  let price = parseInt(
-    value.toString().replace(/\./g, "").replace(/,/g, "."),
-  );
-  if (isNaN(price) || price < 0) {
-    price = 0;
-  }
-  return price;
-}

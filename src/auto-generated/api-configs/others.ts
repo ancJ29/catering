@@ -121,7 +121,7 @@ export const materialGroupByType = [
   /* cspell:disable-next-line */
   ["NTNV", "Ư"],
   ["GA", "F"],
-  ["GA", "G"],
+  ["GA", "A"],
   ["RCQ", "R"],
   ["TCT", "C"],
   ["TCT", "S"],

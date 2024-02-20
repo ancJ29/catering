@@ -7,6 +7,9 @@ export default function useFilterData<T extends { name: string }>({
 }: {
   reload?: () => Promise<T[] | undefined> | T[] | undefined;
 } = {}) {
+  const [counter, setCounter] = useState(1);
+  const [page, setPage] = useState(1);
+  const [keyword, setKeyword] = useState("");
   const [records, setRecords] = useState<Map<string, T>>(new Map());
   const [data, setData] = useState<T[]>([]);
   const [names, setNames] = useState([""]);
@@ -32,17 +35,19 @@ export default function useFilterData<T extends { name: string }>({
   useOnMounted(_load);
 
   const filter = useCallback(
-    (keyword: string) => {
-      if (!keyword) {
-        setData(Array.from(records.values()));
-        return;
-      }
-      const _keyword = keyword.toLowerCase();
+    (keyword: string, targets?: T[]) => {
+      setKeyword(keyword);
+      const _targets = targets || Array.from(records.values());
+      const _keyword = keyword ? keyword.toLowerCase() : "";
       setData(
-        Array.from(records.values()).filter((c) =>
-          c.name?.toLocaleLowerCase().includes(_keyword),
-        ),
+        _targets.filter((c) => {
+          if (!keyword) {
+            return true;
+          }
+          return c.name.toLowerCase().includes(_keyword);
+        }),
       );
+      setPage(1);
     },
     [records],
   );
@@ -50,17 +55,30 @@ export default function useFilterData<T extends { name: string }>({
   const change = useCallback(
     (value: string) => {
       logger.debug("change", value, records.has(value));
-      records.has(value) && setData([records.get(value) as T]);
+      if (records.has(value)) {
+        records.has(value) && filter(value);
+      }
     },
-    [records],
+    [filter, records],
   );
 
+  const clear = useCallback(() => {
+    setData(Array.from(records.values()));
+    setPage(1);
+    setCounter((c) => c + 1);
+  }, [records]);
+
   return {
+    keyword,
+    counter,
+    page,
     data,
     names,
     records,
     filter,
     change,
+    clear,
     setRecords,
+    setPage,
   };
 }

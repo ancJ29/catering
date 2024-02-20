@@ -13,6 +13,7 @@ export default {
   "Add": "Add",
   "Remove": "Remove",
   "Reset": "Reset",
+  "Clear": "Clear",
   "Reset changes": "Reset changes",
   "Are you sure you want to reset changes?":
     "Are you sure you want to reset changes?",
@@ -84,12 +85,6 @@ export default {
   "Unit": "Unit",
   "Converter": "Converter",
   "Unit Management": "Unit Management",
-  "Material name": "Material",
-  "Material unit": "Unit",
-  "Material price": "Price (including VAT)",
-  "Material code": "Code",
-  "Material type": "Type",
-  "Material group": "Group",
   "Please input price for all materials":
     "Please input price for all materials",
   "Update user successfully": "Update user successfully",
