@@ -1,0 +1,1 @@
+import{c as i}from"./index-970177b3.js";import{a5 as l}from"./index-344213bf.js";const p=l((e,r)=>({materials:new Map,reload:async(a=!1)=>{if(!a&&r().materials.size)return;const s=await i(a);e(()=>({materials:new Map(s.map(t=>[t.id,t]))}))}}));export{p as u};

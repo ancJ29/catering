@@ -48,7 +48,7 @@ export const configs = (
       header: t("Supplier total catering"),
       width: "10%",
       renderCell: (_, supplier: Supplier) => {
-        const total = Math.floor(Math.random() * 10) > 5 ? 1 : 0;
+        const total = supplier.others?.caterings?.length || 0;
         return (
           <Badge
             color={total > 0 ? "orange.6" : "gray"}

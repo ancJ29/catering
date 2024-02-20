@@ -1,0 +1,1 @@
+import{c as e}from"./createReactComponent-9318f0fb.js";var c=e("circle-minus","IconCircleMinus",[["path",{d:"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0",key:"svg-0"}],["path",{d:"M9 12l6 0",key:"svg-1"}]]);export{c as I};

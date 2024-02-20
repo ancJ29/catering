@@ -6,7 +6,6 @@ import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import { Supplier, getSupplierById } from "@/services/domain";
-import logger from "@/services/logger";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { GenericObject } from "@/types";
@@ -46,10 +45,6 @@ const SupplierCateringManagement = () => {
     }
     set([supplier]);
     setSupplier(supplier);
-    logger.info(
-      "supplier",
-      JSON.stringify(supplier.others.caterings, null, 2),
-    );
     setCaterings(
       supplier.others.caterings
         ?.map((c) => {
@@ -120,7 +115,7 @@ const SupplierCateringManagement = () => {
         const _supplier: GenericObject = supplier;
         delete _supplier.others;
         delete _supplier.id;
-        const res = await callApi<unknown, { success: boolean }>({
+        await callApi<unknown, { success: boolean }>({
           action: Actions.UPDATE_SUPPLIER,
           params: {
             ..._supplier,
@@ -137,15 +132,12 @@ const SupplierCateringManagement = () => {
           },
           options: {
             toastMessage: t("Your changes have been saved"),
+            reloadOnSuccess: true,
           },
         });
-        if (res?.success) {
-          setChanged(false);
-          load();
-        }
       },
     });
-  }, [caterings, fee, load, supplier, supplierId, t]);
+  }, [caterings, fee, supplier, supplierId, t]);
 
   if (!cateringById.size || !data.length) {
     return <></>;

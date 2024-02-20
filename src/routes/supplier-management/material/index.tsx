@@ -186,7 +186,7 @@ const SupplierMaterialManagement = () => {
         if (!materials) {
           return;
         }
-        const res = await callApi<unknown, { success: boolean }>({
+        await callApi<unknown, { success: boolean }>({
           action: Actions.UPDATE_SUPPLIER_MATERIAL,
           params: {
             supplierId,
@@ -199,13 +199,12 @@ const SupplierMaterialManagement = () => {
           },
           options: {
             toastMessage: t("Your changes have been saved"),
+            reloadOnSuccess: true,
           },
         });
-        res?.success && load();
-        setChanged(false);
       },
     });
-  }, [load, materials, prices, supplierId, t]);
+  }, [materials, prices, supplierId, t]);
 
   const changeType = useCallback((value: string | null) => {
     setType((type) => {
