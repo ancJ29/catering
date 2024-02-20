@@ -48,6 +48,8 @@ const dateKeys = new Map<string, boolean>(
   }),
 );
 
+const isVercel = window.location.href.includes("vercel.app");
+
 export default async function callApi<T, R>({
   params,
   action,
@@ -74,10 +76,11 @@ export default async function callApi<T, R>({
   const start = Date.now();
   try {
     const data = await _fetch<R>(action, _params);
-    notifications.show({
-      color: "red.500",
-      message: options.toastMessage || "Success !!!",
-    });
+    !isVercel && options.toastMessage &&
+      notifications.show({
+        color: "red.500",
+        message: options.toastMessage,
+      });
     key && cache.set(key, data as GenericObject);
     logger.debug("[api-v2-success]", key, action, _params, data);
     if (options.reloadOnSuccess) {
@@ -90,11 +93,11 @@ export default async function callApi<T, R>({
     return data;
   } catch (error) {
     // TODO: translate error message
-    // options?.toastMessage &&
-    //   notifications.show({
-    //     color: "red.5",
-    //     message: "Unknown error!!!",
-    //   });
+    !isVercel && options?.toastMessage &&
+      notifications.show({
+        color: "red.5",
+        message: "Unknown error!!!",
+      });
     logger.error("[api-v2-error]", error);
   } finally {
     _decreaseCounter(start);
