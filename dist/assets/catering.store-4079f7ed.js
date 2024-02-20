@@ -1,1 +1,0 @@
-import{d as n}from"./index-cd542a3f.js";import{a5 as i,V as o}from"./index-44f46734.js";const g=i((a,r)=>({caterings:new Map,reload:async()=>{if(r().caterings.size)return;const t=o.getState().kitchenType;if(t){const s=await n(t);a(()=>({caterings:new Map(s.map(e=>[e.id,e]))}))}}}));export{g as u};
