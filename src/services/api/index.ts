@@ -74,11 +74,10 @@ export default async function callApi<T, R>({
   const start = Date.now();
   try {
     const data = await _fetch<R>(action, _params);
-    options.toastMessage &&
-      notifications.show({
-        color: "red.500",
-        message: options.toastMessage,
-      });
+    notifications.show({
+      color: "red.500",
+      message: options.toastMessage || "Success !!!",
+    });
     key && cache.set(key, data as GenericObject);
     logger.debug("[api-v2-success]", key, action, _params, data);
     if (options.reloadOnSuccess) {
