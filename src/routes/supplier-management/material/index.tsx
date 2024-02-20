@@ -36,10 +36,11 @@ const SupplierMaterialManagement = () => {
   const t = useTranslation();
   const { set } = useSupplierStore();
   const { materialGroupByType } = useMetaDataStore();
-  const [supplier, setSupplier] = useState<Supplier>();
-  const [prices] = useState<Map<string, number>>(new Map());
   const { reload: reloadMaterial, materials: materialById } =
     useMaterialStore();
+  const [supplier, setSupplier] = useState<Supplier>();
+  const [prices] = useState<Map<string, number>>(new Map());
+
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
   const [group, setGroup] = useState<string | null>("");
@@ -201,6 +202,7 @@ const SupplierMaterialManagement = () => {
           },
         });
         res?.success && load();
+        setChanged(false);
       },
     });
   }, [load, materials, prices, supplierId, t]);

@@ -100,6 +100,7 @@ export const configs = (
         return (
           <Button
             mr={10}
+            size="compact-xs"
             onClick={removeMaterial.bind(null, sm.material.id)}
           >
             {t("Remove")}

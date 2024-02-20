@@ -5,7 +5,7 @@ import {
   AutocompleteProps,
   Autocomplete as MantineAutocomplete,
 } from "@mantine/core";
-import { IconChevronDown, IconFilter } from "@tabler/icons-react";
+import { IconFilter } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 
 interface IAutocompleteProps extends AutocompleteProps {
@@ -48,7 +48,6 @@ const Autocomplete = ({
       onKeyDown={_onEnter}
       onChange={_onChange}
       disabled={disabled ?? (_data?.length || 0) < 1}
-      rightSection={<IconChevronDown size={14} />}
       {...props}
     />
   );

@@ -23,9 +23,10 @@ const App = () => {
     if (loaded) {
       return;
     }
-    loadMetaData();
     loadToken();
-    setLoaded(true);
+    loadMetaData().then(() => {
+      setLoaded(true);
+    });
   }, [loadToken, loaded, loadMetaData, user?.id]);
 
   useEffect(() => {

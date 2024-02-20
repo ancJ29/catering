@@ -47,7 +47,7 @@ export const configs = (
       key: "catering",
       header: t("Supplier total catering"),
       width: "10%",
-      renderCell: () => {
+      renderCell: (_, supplier: Supplier) => {
         const total = Math.floor(Math.random() * 10) > 5 ? 1 : 0;
         return (
           <Badge
@@ -55,7 +55,8 @@ export const configs = (
             p={10}
             onClick={(e) => {
               stopMouseEvent(e);
-              alert("Not implemented yet");
+              const url = `/supplier-management/catering/${supplier.id}`;
+              navigate(url);
             }}
           >
             <Flex align="center" p={4}>

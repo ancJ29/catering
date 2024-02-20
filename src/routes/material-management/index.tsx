@@ -11,10 +11,10 @@ import { configs } from "./_configs";
 
 const MaterialManagement = () => {
   const t = useTranslation();
-  const materialStore = useMaterialStore();
+  const { materials, reload } = useMaterialStore();
   const [page, setPage] = useState(1);
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  useOnMounted(materialStore.reload);
+  useOnMounted(reload);
 
   const {
     data,
@@ -22,7 +22,7 @@ const MaterialManagement = () => {
     filter: _filter,
     change,
   } = useFilterData<Material>({
-    reload: () => Array.from(materialStore.materials.values()),
+    reload: () => Array.from(materials.values()),
   });
 
   const filter = useCallback(

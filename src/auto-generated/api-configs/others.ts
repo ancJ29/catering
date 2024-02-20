@@ -12,6 +12,7 @@ export const departmentOthersSchema = z.object({
   iCenter: booleanSchema.default(true),
   totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),
+  address: nullishStringSchema,
 });
 
 export const customerOthersSchema = z.object({
@@ -36,6 +37,13 @@ export const supplierOthersSchema = z.object({
   email: nullishStringSchema,
   phone: nullishStringSchema,
   address: nullishStringSchema,
+  caterings: z
+    .object({
+      cateringId: stringSchema,
+      additionalFee: numberSchema,
+    })
+    .array()
+    .optional(),
 });
 
 export const materialOthersSchema = z.object({

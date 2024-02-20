@@ -10,7 +10,6 @@ type Response = z.infer<typeof response>;
 
 export async function getMetadata() {
   window.dispatchEvent(new Event("start-loading"));
-  await new Promise((resolve) => setTimeout(resolve, 1500));
   // prettier-ignore
   return axios.request<Response>({
     method: "POST",

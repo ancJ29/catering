@@ -1,32 +1,25 @@
-import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
+import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { loadAll } from "@/services/data-loaders";
-import useMetaDataStore from "@/stores/meta-data.store";
+import useCateringStore from "@/stores/catering.store";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo } from "react";
 import { Department, configs } from "./_configs";
 
 const CateringManagement = () => {
   const t = useTranslation();
-  const { kitchenType } = useMetaDataStore();
+  const { reload: reloadCatering, caterings } = useCateringStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
-  const _reload = useCallback(() => {
-    if (!kitchenType) {
-      return;
-    }
-    return loadAll<Department>({
-      key: "departments",
-      action: Actions.GET_DEPARTMENTS,
-      params: { type: kitchenType },
-    });
-  }, [kitchenType]);
+  useOnMounted(reloadCatering);
 
+  const reload = useCallback(() => {
+    return Array.from(caterings.values());
+  }, [caterings]);
   const { data, names, filter, change } = useFilterData<Department>({
-    reload: _reload,
+    reload,
   });
 
   return (
