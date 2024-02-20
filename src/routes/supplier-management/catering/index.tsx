@@ -132,12 +132,13 @@ const SupplierCateringManagement = () => {
           },
           options: {
             toastMessage: t("Your changes have been saved"),
-            reloadOnSuccess: true,
           },
         });
+        setChanged(false);
+        load();
       },
     });
-  }, [caterings, fee, supplier, supplierId, t]);
+  }, [caterings, fee, load, supplier, supplierId, t]);
 
   if (!cateringById.size || !data.length) {
     return <></>;
@@ -176,7 +177,9 @@ const SupplierCateringManagement = () => {
             />
             <ScrollArea h="80vh">
               {data.map((catering) => {
-                const existed = false;
+                const existed = caterings.some(
+                  (c) => c.id === catering.id,
+                );
                 const Icon = existed
                   ? IconCircleMinus
                   : IconCirclePlus;

@@ -199,12 +199,13 @@ const SupplierMaterialManagement = () => {
           },
           options: {
             toastMessage: t("Your changes have been saved"),
-            reloadOnSuccess: true,
           },
         });
+        setChanged(false);
+        load();
       },
     });
-  }, [materials, prices, supplierId, t]);
+  }, [load, materials, prices, supplierId, t]);
 
   const changeType = useCallback((value: string | null) => {
     setType((type) => {
