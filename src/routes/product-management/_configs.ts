@@ -1,3 +1,4 @@
+import { Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 
 export const configs = (
@@ -21,6 +22,9 @@ export const configs = (
       sortable: true,
       header: t("Product type"),
       width: "20%",
+      renderCell: (_, product: Product) => {
+        return t(`products.type.${product.others.type}`);
+      },
     },
     {
       key: "enabled",

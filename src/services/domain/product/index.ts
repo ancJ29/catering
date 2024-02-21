@@ -15,11 +15,11 @@ const productSchema = response.shape.products.transform(
 
 const schema = response.omit({ cursor: true, hasMore: true });
 
-export type Product = z.infer<typeof productSchema> & {
-  typeName?: string;
-};
+export type Product = z.infer<typeof productSchema>;
 
-export async function getAllProducts(): Promise<Product[]> {
+export async function getAllProducts(
+  noCache = false,
+): Promise<Product[]> {
   const key = "domain.product.getAllProducts";
   if (cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
@@ -31,6 +31,7 @@ export async function getAllProducts(): Promise<Product[]> {
   let products = await loadAll<Product>({
     key: "products",
     action: Actions.GET_PRODUCTS,
+    noCache,
   });
   products = products.map((product) => {
     product.name = product.name.replace(/\.[0-9]+$/g, "");

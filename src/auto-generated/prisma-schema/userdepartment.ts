@@ -6,5 +6,4 @@ export const userDepartmentSchema = z.object({
   departmentId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
 });

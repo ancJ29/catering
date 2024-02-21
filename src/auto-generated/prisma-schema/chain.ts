@@ -1,9 +1,8 @@
 import * as z from "zod";
 
-export const menuProductSchema = z.object({
+export const chainSchema = z.object({
   id: z.string(),
-  menuId: z.string(),
-  productId: z.string(),
+  name: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
