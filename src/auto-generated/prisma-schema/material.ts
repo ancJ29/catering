@@ -13,13 +13,12 @@ const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
   z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)]),
 );
 
-export const productSchema = z.object({
+export const materialSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
   name: z.string(),
   code: z.string(),
-  description: z.string().nullish(),
-  enabled: z.boolean(),
+  sku: z.string().nullish(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

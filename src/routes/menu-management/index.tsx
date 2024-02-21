@@ -11,7 +11,6 @@ import {
   getDailyMenu,
 } from "@/services/domain";
 import logger from "@/services/logger";
-import useMetaDataStore from "@/stores/meta-data.store";
 import {
   ONE_DAY,
   ONE_WEEK,
@@ -38,7 +37,6 @@ import { Target, weekdays } from "./_configs";
 import Cell from "./components/Cell";
 
 const MenuManagement = () => {
-  const { enumMap } = useMetaDataStore();
   const t = useTranslation();
   const [mode, setMode] = useState<"M" | "W">("W");
   const [markDate, setMarkDate] = useState(Date.now());
@@ -120,25 +118,10 @@ const MenuManagement = () => {
     Promise.all([getAllCustomers(), getAllProducts()]).then(
       ([customers, products]) => {
         setCustomers(new Map(customers.map((el) => [el.name, el])));
-        setProducts(
-          new Map(
-            products.map((el) => {
-              const type = enumMap.get(el.type as string);
-              el.typeName = type ? t(type) : `${type}.s`;
-              if (typeof el.name === "string") {
-                const strings = el.name.split(".");
-                el.name =
-                  strings.length > 1
-                    ? strings.slice(0, -1).join(".")
-                    : strings[0];
-              }
-              return [el.id, el];
-            }),
-          ),
-        );
+        setProducts(new Map(products.map((el) => [el.id, el])));
       },
     );
-  }, [enumMap, t]);
+  }, []);
 
   const _getDailyMenu = useCallback(
     (noCache = false) => {

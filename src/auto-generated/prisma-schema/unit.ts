@@ -1,12 +1,11 @@
 import * as z from "zod";
 
-export const categorySchema = z.object({
+export const unitSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
   name: z.string(),
-  code: z.string(),
-  description: z.string().nullish(),
-  enabled: z.boolean(),
+  units: z.string().array(),
+  converters: z.number().int().array(),
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),

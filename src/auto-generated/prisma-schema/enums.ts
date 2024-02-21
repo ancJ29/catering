@@ -34,35 +34,6 @@ export const ActionStatus = {
   FAILED: "FAILED" as ActionStatus,
 };
 
-export const userRoleEnum = z.nativeEnum({
-  ADMIN: "ADMIN",
-  STAFF: "STAFF",
-  CHAIN_MANAGER: "CHAIN_MANAGER",
-  MANAGER: "MANAGER",
-  OWNER: "OWNER",
-} as {
-  ADMIN: "ADMIN";
-  STAFF: "STAFF";
-  CHAIN_MANAGER: "CHAIN_MANAGER";
-  MANAGER: "MANAGER";
-  OWNER: "OWNER";
-});
-
-export type UserRole =
-  | "ADMIN"
-  | "STAFF"
-  | "CHAIN_MANAGER"
-  | "MANAGER"
-  | "OWNER";
-
-export const UserRole = {
-  ADMIN: "ADMIN" as UserRole,
-  STAFF: "STAFF" as UserRole,
-  CHAIN_MANAGER: "CHAIN_MANAGER" as UserRole,
-  MANAGER: "MANAGER" as UserRole,
-  OWNER: "OWNER" as UserRole,
-};
-
 export const genderEnum = z.nativeEnum({
   MALE: "MALE",
   FEMALE: "FEMALE",
@@ -79,39 +50,6 @@ export const Gender = {
   MALE: "MALE" as Gender,
   FEMALE: "FEMALE" as Gender,
   OTHER: "OTHER" as Gender,
-};
-
-export const reservationStatusEnum = z.nativeEnum({
-  PENDING: "PENDING",
-  CONFIRMED: "CONFIRMED",
-  RESERVED: "RESERVED",
-  CANCELLED: "CANCELLED",
-  ARRIVED: "ARRIVED",
-  COMPLETED: "COMPLETED",
-} as {
-  PENDING: "PENDING";
-  CONFIRMED: "CONFIRMED";
-  RESERVED: "RESERVED";
-  CANCELLED: "CANCELLED";
-  ARRIVED: "ARRIVED";
-  COMPLETED: "COMPLETED";
-});
-
-export type ReservationStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "RESERVED"
-  | "CANCELLED"
-  | "ARRIVED"
-  | "COMPLETED";
-
-export const ReservationStatus = {
-  PENDING: "PENDING" as ReservationStatus,
-  CONFIRMED: "CONFIRMED" as ReservationStatus,
-  RESERVED: "RESERVED" as ReservationStatus,
-  CANCELLED: "CANCELLED" as ReservationStatus,
-  ARRIVED: "ARRIVED" as ReservationStatus,
-  COMPLETED: "COMPLETED" as ReservationStatus,
 };
 
 export const messageStatusEnum = z.nativeEnum({

@@ -1,21 +1,21 @@
 import {
   ActionType,
-  branchSchema,
-  chainSchema,
   departmentSchema,
   menuSchema,
   messageSchema,
   messageTemplateSchema,
   productSchema,
-  reservationSchema,
-  tableSchema,
-  userSchema,
+  unitSchema,
 } from "@/auto-generated/prisma-schema";
-import {
-  ReservationStatus,
-  UserRole,
-} from "@/auto-generated/prisma-schema/enums";
 import { z } from "zod";
+import {
+  xCustomerSchema,
+  xDailyMenuSchema,
+  xDepartmentSchema,
+  xMaterialSchema,
+  xProductSchema,
+  xSupplierSchema,
+} from "./custom-prisma-schema";
 import {
   ActionGroups,
   Actions,
@@ -24,16 +24,21 @@ import {
 } from "./enums";
 import {
   addResponse,
+  booleanSchema,
   dateSchema,
   emailSchema,
-  futureDateSchema,
   getSchema,
+  idAndNameSchema,
   listResponse,
+  numberSchema,
+  optionalBooleanSchema,
+  optionalStringSchema,
   phoneSchema,
+  stringSchema,
 } from "./schema";
 
 export type ActionConfig = {
-  name: string;
+  name: Actions;
   group: string;
   system?: boolean; // default false
   decorator?: RequestDecorator | RequestDecorator[];
@@ -54,206 +59,65 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: z.object({
-        userName: z.string(),
-        password: z.string(),
-        remember: z.boolean().optional(),
+        userName: stringSchema,
+        password: stringSchema,
+        remember: optionalBooleanSchema,
       }),
       response: z.object({
-        token: z.string(),
+        token: stringSchema,
       }),
     },
   },
-  [Actions.GET_CHAINS]: {
-    name: Actions.GET_CHAINS,
-    group: ActionGroups.CHAIN_MANAGEMENT,
+  [Actions.GET_METADATA]: {
+    name: Actions.GET_METADATA,
+    group: ActionGroups.METADATA,
     public: true,
     type: ActionType.READ,
     schema: {
-      request: getSchema,
-      response: listResponse.extend({
-        chains: chainSchema
-          .extend({
-            totalBranches: z.number(),
+      request: z.any(),
+      response: z.object({
+        materialGroupByType: z.record(
+          stringSchema,
+          stringSchema.array(),
+        ),
+        departments: idAndNameSchema.array(),
+        roles: idAndNameSchema.array(),
+        units: unitSchema
+          .pick({
+            id: true,
+            name: true,
+            units: true,
+            converters: true,
           })
           .array(),
+        enums: idAndNameSchema
+          .extend({
+            targetTable: stringSchema.nullish(),
+          })
+          .array(),
+        dictionaries: z.object({
+          version: stringSchema,
+          en: z.record(stringSchema),
+          vi: z.record(stringSchema),
+        }),
       }),
     },
   },
-  [Actions.ADD_CHAIN]: {
-    name: Actions.ADD_CHAIN,
-    group: ActionGroups.CHAIN_MANAGEMENT,
+  [Actions.UPDATE_UNITS]: {
+    name: Actions.UPDATE_UNITS,
+    group: ActionGroups.METADATA,
     type: ActionType.WRITE,
     schema: {
-      request: chainSchema
+      request: unitSchema
         .pick({
           name: true,
-        })
-        .required(),
-      response: addResponse,
-    },
-  },
-  [Actions.UPDATE_CHAIN]: {
-    name: Actions.UPDATE_CHAIN,
-    group: ActionGroups.CHAIN_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_CHAIN,
-    schema: {
-      request: chainSchema
-        .pick({
-          id: true,
-          name: true,
-        })
-        .required()
-        .extend({
-          chainId: z.string().optional(),
-        })
-        .transform((data) => {
-          if (!data.chainId) {
-            data.chainId = data.id;
-          }
-          return data;
-        }),
-    },
-  },
-  [Actions.DELETE_CHAIN]: {
-    name: Actions.DELETE_CHAIN,
-    group: ActionGroups.CHAIN_MANAGEMENT,
-    type: ActionType.DELETE,
-    schema: {
-      request: z.object({
-        id: z.string(),
-      }),
-    },
-  },
-  [Actions.GET_BRANCHES]: {
-    name: Actions.GET_BRANCHES,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    public: true,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        chainId: z.string().optional(),
-        name: z.string().optional(),
-      }),
-      response: listResponse.extend({
-        branches: branchSchema.array(),
-      }),
-    },
-  },
-  [Actions.ADD_BRANCH]: {
-    name: Actions.ADD_BRANCH,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_CHAIN,
-    schema: {
-      request: z
-        .object({
-          chainId: z.string(),
-          name: z.string(),
-          address: z.string(),
-          shortName: z.string(),
+          units: true,
+          converters: true,
         })
         .extend({
-          email: emailSchema,
-          phone: phoneSchema,
-        }),
-      response: addResponse,
-    },
-  },
-  [Actions.UPDATE_BRANCH]: {
-    name: Actions.UPDATE_BRANCH,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: z
-        .object({
-          id: z.string(),
-          name: z.string(),
-          address: z.string(),
-          shortname: z.string(),
+          id: optionalStringSchema,
         })
-        .extend({
-          email: emailSchema,
-          phone: phoneSchema,
-          branchId: z.string().optional(),
-        })
-        .transform((data) => {
-          if (!data.branchId) {
-            data.branchId = data.id;
-          }
-          return data;
-        }),
-    },
-  },
-  [Actions.DELETE_BRANCH]: {
-    name: Actions.DELETE_BRANCH,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.DELETE,
-    // policy: Policy.SAME_CHAIN,
-    schema: {
-      request: z.object({
-        id: z.string(),
-      }),
-    },
-  },
-  [Actions.GET_TABLES]: {
-    name: Actions.GET_TABLES,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    // policy: Policy.SAME_BRANCH,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        branchId: z.string(),
-      }),
-      response: listResponse.extend({
-        tables: tableSchema.array(),
-      }),
-    },
-  },
-  [Actions.ADD_TABLES]: {
-    name: Actions.ADD_TABLES,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: z.object({
-        branchId: z.string(),
-        tables: z.array(
-          tableSchema
-            .pick({
-              name: true,
-            })
-            .required(),
-        ),
-      }),
-    },
-  },
-  [Actions.UPDATE_TABLE]: {
-    name: Actions.UPDATE_TABLE,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: tableSchema
-        .pick({
-          id: true,
-          name: true,
-        })
-        .required(),
-    },
-  },
-  [Actions.DELETE_TABLE]: {
-    name: Actions.DELETE_TABLE,
-    group: ActionGroups.BRANCH_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: tableSchema
-        .pick({
-          id: true,
-        })
-        .required(),
+        .array(),
     },
   },
   [Actions.GET_MESSAGES]: {
@@ -262,8 +126,8 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
-        from: z.string().optional(),
-        templateId: z.string().optional(),
+        from: optionalStringSchema,
+        templateId: optionalStringSchema,
       }),
       response: listResponse.extend({
         messages: messageSchema.array(),
@@ -293,7 +157,7 @@ export const configs = {
           type: true,
         })
         .extend({
-          config: z.record(z.string(), z.string()),
+          config: z.record(stringSchema),
         }),
     },
   },
@@ -303,7 +167,7 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: z.object({
-        code: z.string(),
+        code: stringSchema,
       }),
     },
   },
@@ -313,130 +177,8 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: z.object({
-        code: z.string(),
+        code: stringSchema,
       }),
-    },
-  },
-  [Actions.GET_RESERVATIONS]: {
-    name: Actions.GET_RESERVATIONS,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    type: ActionType.READ,
-    // policy: Policy.SAME_BRANCH,
-    decorator: RequestDecorator.ADD_BRANCH_IDS_AND_CHAIN_IDS,
-    schema: {
-      request: getSchema.extend({
-        contactName: z.string().optional(),
-        phone: z.string().optional(),
-        departmentIds: z.string().array().optional(),
-        statuses: z.nativeEnum(ReservationStatus).array().optional(),
-        from: dateSchema.optional(),
-        to: dateSchema.optional(),
-      }),
-      response: listResponse.extend({
-        reservations: reservationSchema.array(),
-      }),
-    },
-  },
-  [Actions.ADD_RESERVATION]: {
-    name: Actions.ADD_RESERVATION,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          contactName: true,
-          note: true,
-        })
-        .extend({
-          phone: phoneSchema,
-          date: futureDateSchema.describe(
-            "date must be greater than current time",
-          ),
-          adults: z.number().positive(),
-          children: z.number().positive().optional(),
-          status: z
-            .nativeEnum(ReservationStatus)
-            .refine((e) => e !== ReservationStatus.CANCELLED)
-            .describe("Except Cancelled Status"),
-        }),
-    },
-  },
-  [Actions.ADD_RESERVATION_BY_END_USER]: {
-    name: Actions.ADD_RESERVATION_BY_END_USER,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    public: true,
-    type: ActionType.WRITE,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          contactName: true,
-          note: true,
-        })
-        .extend({
-          phone: phoneSchema,
-          date: futureDateSchema.describe(
-            "date must be greater than current time",
-          ),
-          adults: z.number().positive(),
-          children: z.number().positive().optional(),
-        }),
-      response: z.object({
-        reservationCode: z.string(),
-        contactName: z.string(),
-        departmentId: z.string(),
-      }),
-    },
-  },
-  [Actions.UPDATE_RESERVATION]: {
-    name: Actions.UPDATE_RESERVATION,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    type: ActionType.WRITE,
-    // policy: Policy.SAME_BRANCH,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          contactName: true,
-          code: true,
-        })
-        .extend({
-          note: z.string().optional(),
-          date: futureDateSchema
-            .describe("date must be greater than current time")
-            .optional(),
-          phone: z
-            .string()
-            .regex(/^(84\d{9}|842\d{10})$/)
-            .optional(),
-          adults: z.number().positive().optional(),
-          children: z.number().positive().optional(),
-          status: z
-            .nativeEnum(ReservationStatus)
-            .refine((e) => !e || e !== ReservationStatus.CANCELLED)
-            .describe("Except Cancelled Status")
-            .optional(),
-        }),
-    },
-  },
-  [Actions.CONFIRM_RESERVATION_BY_CODE]: {
-    name: Actions.CONFIRM_RESERVATION_BY_CODE,
-    group: ActionGroups.RESERVATION_MANAGEMENT,
-    public: true,
-    type: ActionType.WRITE,
-    schema: {
-      request: reservationSchema
-        .pick({
-          departmentId: true,
-          code: true,
-          contactName: true,
-          note: true,
-        })
-        .extend({
-          reservationCode: z.string(),
-        }),
     },
   },
   [Actions.CHANGE_PASSWORD]: {
@@ -445,8 +187,8 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: z.object({
-        currentPassword: z.string(),
-        password: z.string(),
+        currentPassword: stringSchema,
+        password: stringSchema,
       }),
     },
   },
@@ -455,23 +197,31 @@ export const configs = {
     group: ActionGroups.USER_MANAGEMENT,
     type: ActionType.READ,
     schema: {
-      request: getSchema.extend({
-        name: z.string().optional(),
-        chainIds: z.string().array().optional(),
-        branchIds: z.string().array().optional(),
-      }),
+      request: getSchema,
       response: listResponse.extend({
-        users: userSchema
-          .pick({
-            id: true,
-            userName: true,
-            fullName: true,
-            role: true,
-            active: true,
-            createdAt: true,
-            updatedAt: true,
-            chainIds: true,
-            branchIds: true,
+        users: z
+          .object({
+            id: stringSchema,
+            phone: stringSchema.nullish(),
+            email: stringSchema.nullish(),
+            userName: stringSchema,
+            fullName: stringSchema,
+            active: booleanSchema,
+            createdAt: z.date(),
+            updatedAt: z.date(),
+            lastModifiedBy: optionalStringSchema,
+            departments: z
+              .object({
+                id: stringSchema,
+                name: stringSchema,
+              })
+              .array(),
+            roles: z
+              .object({
+                id: stringSchema,
+                name: stringSchema,
+              })
+              .array(),
           })
           .array(),
       }),
@@ -487,18 +237,18 @@ export const configs = {
     // ],
     schema: {
       request: z.object({
-        userName: z.string(),
-        fullName: z.string(),
-        password: z.string(),
-        role: z.nativeEnum(UserRole),
-        branchIds: z.string().array().optional(),
-        chainIds: z.string().array().optional(),
+        userName: stringSchema,
+        fullName: stringSchema,
+        password: stringSchema,
+        email: emailSchema.optional(),
+        phone: phoneSchema.optional(),
+        roleId: stringSchema,
+        departmentIds: stringSchema.array().default([]),
       }),
       response: z.object({
-        id: z.string(),
-        userName: z.string(),
-        fullName: z.string(),
-        role: z.nativeEnum(UserRole).nullable(),
+        id: stringSchema,
+        userName: stringSchema,
+        fullName: stringSchema,
       }),
     },
   },
@@ -512,12 +262,11 @@ export const configs = {
     // ],
     schema: {
       request: z.object({
-        id: z.string(),
-        userName: z.string(),
-        fullName: z.string(),
-        role: z.nativeEnum(UserRole),
-        branchIds: z.string().array(),
-        chainIds: z.string().array(),
+        id: stringSchema,
+        userName: stringSchema,
+        fullName: stringSchema,
+        email: emailSchema.optional(),
+        phone: phoneSchema.optional(),
       }),
     },
   },
@@ -527,7 +276,7 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: z.object({
-        ids: z.array(z.string()),
+        ids: z.array(stringSchema),
       }),
     },
   },
@@ -537,15 +286,10 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
-        name: z.string().optional(),
+        type: optionalStringSchema,
       }),
       response: listResponse.extend({
-        departments: z
-          .object({
-            id: z.string(),
-            name: z.string(),
-          })
-          .array(),
+        departments: xDepartmentSchema.array(),
       }),
     },
   },
@@ -560,6 +304,7 @@ export const configs = {
           clientId: true,
           createdAt: true,
           updatedAt: true,
+          others: true,
         })
         .partial({
           code: true,
@@ -577,6 +322,7 @@ export const configs = {
           clientId: true,
           code: true,
           supId: true,
+          others: true,
           createdAt: true,
           updatedAt: true,
         })
@@ -597,12 +343,36 @@ export const configs = {
     type: ActionType.DELETE,
     schema: {
       request: z.object({
-        id: z.string(),
+        id: stringSchema,
+      }),
+    },
+  },
+  [Actions.GET_CUSTOMERS]: {
+    name: Actions.GET_CUSTOMERS,
+    group: ActionGroups.CUSTOMER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema,
+      response: listResponse.extend({
+        customers: xCustomerSchema.array(),
+      }),
+    },
+  },
+  [Actions.GET_PRODUCTS]: {
+    name: Actions.GET_PRODUCTS,
+    group: ActionGroups.PRODUCT_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        take: numberSchema.min(1).max(1000).optional().default(20),
+      }),
+      response: listResponse.extend({
+        products: xProductSchema.array(),
       }),
     },
   },
   [Actions.ADD_PRODUCT]: {
-    name: "add-product",
+    name: Actions.ADD_PRODUCT,
     group: ActionGroups.PRODUCT_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
@@ -618,13 +388,41 @@ export const configs = {
           code: true,
         })
         .extend({
-          categoryId: z.string().optional(),
+          categoryId: optionalStringSchema,
         }),
       response: addResponse,
     },
   },
+  [Actions.GET_DAILY_MENU]: {
+    name: Actions.GET_DAILY_MENU,
+    group: ActionGroups.MENU_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: z.object({
+        from: dateSchema,
+        to: dateSchema,
+        customerId: stringSchema,
+      }),
+      response: xDailyMenuSchema.array(),
+    },
+  },
+  [Actions.PUSH_DAILY_MENU]: {
+    name: Actions.PUSH_DAILY_MENU,
+    group: ActionGroups.MENU_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        productIds: stringSchema.array(),
+        date: dateSchema,
+        customerId: stringSchema,
+        targetName: stringSchema,
+        shift: stringSchema,
+      }),
+      response: addResponse,
+    },
+  },
   [Actions.ADD_MENU]: {
-    name: "add-menu",
+    name: Actions.ADD_MENU,
     group: ActionGroups.MENU_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
@@ -640,9 +438,146 @@ export const configs = {
           code: true,
         })
         .extend({
-          productIds: z.string().array(),
+          productIds: stringSchema.array(),
         }),
       response: addResponse,
+    },
+  },
+  [Actions.GET_MATERIALS]: {
+    name: Actions.GET_MATERIALS,
+    group: ActionGroups.MATERIAL_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema,
+      response: listResponse.extend({
+        materials: xMaterialSchema
+          .extend({
+            supplierMaterials: z
+              .object({
+                price: numberSchema.nonnegative(),
+                supplier: z.object({
+                  id: stringSchema,
+                  name: stringSchema,
+                }),
+              })
+              .array(),
+          })
+          .array(),
+      }),
+    },
+  },
+  [Actions.PUSH_MATERIAL]: {
+    name: Actions.PUSH_MATERIAL,
+    group: ActionGroups.MATERIAL_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: xMaterialSchema
+        .pick({
+          id: true,
+          name: true,
+          code: true,
+          sku: true,
+          others: true,
+        })
+        .partial({
+          id: true,
+        }),
+    },
+  },
+  [Actions.UPDATE_MATERIAL_SUPPLIER]: {
+    name: Actions.UPDATE_MATERIAL_SUPPLIER,
+    group: ActionGroups.MATERIAL_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        materialId: stringSchema,
+        suppliers: z
+          .object({
+            supplierId: stringSchema,
+            price: numberSchema.nonnegative(),
+          })
+          .array(),
+      }),
+    },
+  },
+  [Actions.GET_SUPPLIERS]: {
+    name: Actions.GET_SUPPLIERS,
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        take: numberSchema.min(1).max(300).optional().default(20),
+      }),
+      response: listResponse.extend({
+        suppliers: xSupplierSchema
+          .extend({
+            supplierMaterials: z
+              .object({
+                price: numberSchema.nonnegative(),
+                material: z.object({
+                  id: stringSchema,
+                  name: stringSchema,
+                }),
+              })
+              .array(),
+          })
+          .array(),
+      }),
+    },
+  },
+  [Actions.ADD_SUPPLIER]: {
+    name: Actions.ADD_SUPPLIER,
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xSupplierSchema
+        .omit({
+          id: true,
+          clientId: true,
+          createdAt: true,
+          updatedAt: true,
+          lastModifiedBy: true,
+        })
+        .partial({
+          code: true,
+        })
+        .refine((v) => {
+          v.others.email = v.others.email?.trim();
+          v.others.phone = v.others.phone?.trim();
+          v.others.contact = v.others.contact?.trim();
+          v.others.address = v.others.address?.trim();
+          return v;
+        }),
+      response: addResponse,
+    },
+  },
+  [Actions.UPDATE_SUPPLIER]: {
+    name: Actions.UPDATE_SUPPLIER,
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xSupplierSchema.omit({
+        clientId: true,
+        createdAt: true,
+        updatedAt: true,
+        lastModifiedBy: true,
+      }),
+    },
+  },
+  [Actions.UPDATE_SUPPLIER_MATERIAL]: {
+    name: Actions.UPDATE_SUPPLIER_MATERIAL,
+    group: ActionGroups.SUPPLIER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        supplierId: stringSchema,
+        materials: z
+          .object({
+            materialId: stringSchema,
+            price: numberSchema.nonnegative(),
+          })
+          .array(),
+      }),
     },
   },
 } satisfies Record<Actions, ActionConfig>;

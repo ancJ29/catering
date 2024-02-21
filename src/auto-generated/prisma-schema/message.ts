@@ -13,4 +13,5 @@ export const messageSchema = z.object({
   sentAt: z.date().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

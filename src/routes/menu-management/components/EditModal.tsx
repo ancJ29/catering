@@ -24,7 +24,10 @@ const _menuItemConfigs = (
     {
       key: "typeName",
       header: t("Product type"),
-      width: "15%",
+      width: "10%",
+      renderCell: (_, product: Product) => {
+        return t(`products.type.${product.others.type}`);
+      },
     },
     {
       key: "name",

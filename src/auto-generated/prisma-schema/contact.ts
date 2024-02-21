@@ -13,4 +13,5 @@ export const contactSchema = z.object({
   address: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
 });

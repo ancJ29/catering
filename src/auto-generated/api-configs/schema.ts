@@ -1,33 +1,55 @@
 import {
-  branchSchema,
-  chainSchema,
+  actionStatusEnum,
   clientEnumSchema,
   departmentSchema,
   userSchema,
 } from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 
+export const unknownSchema = z.unknown();
+
+export const booleanSchema = z.boolean();
+
+export const stringSchema = z.string();
+
+export const numberSchema = z.number();
+
+export const optionalBooleanSchema = booleanSchema.optional();
+
+export const optionalStringSchema = stringSchema.optional();
+
+export const optionalNumberSchema = numberSchema.optional();
+
+export const nullishStringSchema = stringSchema.nullish();
+
 export const getSchema = z.object({
-  cursor: z.string().optional(),
-  take: z.number().min(1).max(100).optional().default(20),
+  id: optionalStringSchema,
+  name: optionalStringSchema,
+  cursor: optionalStringSchema,
+  take: numberSchema.min(1).max(100).optional().default(20),
 });
 
 export const addResponse = z.object({
-  id: z.string(),
+  id: stringSchema,
 });
 
 export const listResponse = z.object({
-  cursor: z.string(),
+  cursor: optionalStringSchema,
+  hasMore: optionalBooleanSchema,
 });
 
 export const successResponse = z.object({
-  success: z.boolean(),
+  success: booleanSchema,
 });
 
-export const dateSchema = z
-  .number()
+export const idAndNameSchema = z.object({
+  id: stringSchema,
+  name: stringSchema,
+});
+
+export const dateSchema = numberSchema
+  .or(stringSchema)
   .or(z.date())
-  .or(z.string())
   .transform((val) => new Date(val));
 
 export const futureDateSchema = dateSchema.refine(
@@ -35,8 +57,10 @@ export const futureDateSchema = dateSchema.refine(
 );
 
 // 028-3933-9999 / 0912-345-678 → 842839339999
-export const emailSchema = z.string().email();
-export const phoneSchema = z.string().regex(/^(84\d{9}|842\d{10})$/);
+export const emailSchema = stringSchema.email();
+export const phoneSchema = stringSchema.regex(
+  /^(84\d{9}|842\d{10})$/,
+);
 
 const enumSchema = clientEnumSchema
   .pick({
@@ -59,10 +83,8 @@ export const payloadSchema = userSchema
     role: true,
   })
   .extend({
-    actionNames: z.string().array().optional(),
-    branchIds: z.string().array(),
-    chainIds: z.string().array(),
-    departmentIds: z.string().array().optional(),
+    actionNames: stringSchema.array().optional(),
+    departmentIds: stringSchema.array().optional(),
     clientRole: enumSchema.optional(),
     departments: departmentSchema
       .pick({
@@ -78,21 +100,19 @@ export const payloadSchema = userSchema
       })
       .array()
       .optional(),
-    branches: branchSchema
-      .pick({
-        id: true,
-        name: true,
-        shortName: true,
-        address: true,
-        chainId: true,
-      })
-      .array()
-      .optional(),
-    chains: chainSchema
-      .pick({
-        id: true,
-        name: true,
-      })
-      .array()
-      .optional(),
   });
+
+export const genericSchema = z.record(stringSchema, unknownSchema);
+
+export const contextSchema = z.object({
+  ctxId: stringSchema,
+  clientId: optionalNumberSchema,
+  ipAddress: optionalStringSchema,
+  userAgent: optionalStringSchema,
+  user: payloadSchema.optional(),
+  source: z.union([z.literal("http"), z.literal("internal")]),
+  isValidated: optionalBooleanSchema,
+  action: stringSchema,
+  params: genericSchema.optional(),
+  status: actionStatusEnum.optional(),
+});
