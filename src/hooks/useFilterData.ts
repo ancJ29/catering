@@ -41,8 +41,11 @@ export default function useFilterData<
 
   const reload = useCallback(
     (keyword = "") => {
+      if (typeof keyword !== "string") {
+        logger.warn("useFilterData: invalid keyword", keyword);
+      }
       logger.trace("useFilterData: reload", keyword || "<empty>");
-      setKeyword((keyword || "").trim());
+      setKeyword((keyword || ""));
       const _keyword = typeof keyword === "string" ? keyword.toLowerCase() : "";
       const _filteredData = filter
         ? xRecords.filter((el) => filter(el, condition))
