@@ -41,12 +41,14 @@ export default function useFilterData<
 
   const reload = useCallback(
     (keyword = "") => {
+      let _keyword = "";
       if (typeof keyword !== "string") {
         logger.warn("useFilterData: invalid keyword", keyword);
+      } else {
+        _keyword = keyword.toLowerCase();
+        setKeyword(keyword || "");
       }
       logger.trace("useFilterData: reload", keyword || "<empty>");
-      setKeyword((keyword || ""));
-      const _keyword = typeof keyword === "string" ? keyword.toLowerCase() : "";
       const _filteredData = filter
         ? xRecords.filter((el) => filter(el, condition))
         : xRecords;
@@ -107,7 +109,9 @@ export default function useFilterData<
       }
       logger.trace("useFilterData: setCondition", key, value);
       if (resetKeywordOnFilterChanged) {
-        typeof value === "string" ? setKeyword(keyword || "") : setKeyword("");
+        typeof keyword === "string"
+          ? setKeyword(keyword || "")
+          : setKeyword("");
       }
       setCondition((prev) => {
         if (!prev) {
