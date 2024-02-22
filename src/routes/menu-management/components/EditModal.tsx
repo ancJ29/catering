@@ -1,9 +1,12 @@
+import Selector from "@/components/c-catering/Selector";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
+import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Product } from "@/services/domain";
-import { DataGridColumnProps } from "@/types";
+import { DataGridColumnProps, OptionProps } from "@/types";
+import { unique } from "@/utils";
 import {
   Box,
   Button,
@@ -13,8 +16,26 @@ import {
   Text,
   UnstyledButton,
 } from "@mantine/core";
-import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
+import { IconCircleMinus } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
+
+export type FilterType = {
+  type: string;
+};
+
+export const defaultCondition: FilterType = {
+  type: "",
+};
+
+export function filter(p: Product, x?: FilterType) {
+  if (!x) {
+    return true;
+  }
+  if (x.type && p.others.type !== x.type) {
+    return false;
+  }
+  return true;
+}
 
 const _menuItemConfigs = (
   t: (key: string) => string,
@@ -92,6 +113,16 @@ const EditModal = ({
       .filter(Boolean) as Product[];
   }, [allProducts, productIds]);
 
+  const typeOptions: OptionProps[] = useMemo(() => {
+    const types = unique(
+      Array.from(allProducts.values()).map((p) => p.others.type),
+    );
+    return types.map((type) => ({
+      label: t(`products.type.${type}`),
+      value: type,
+    }));
+  }, [allProducts, t]);
+
   const addProduct = useCallback((id: string) => {
     setProductIds((prev) => [...prev, id]);
   }, []);
@@ -106,11 +137,25 @@ const EditModal = ({
   );
 
   const dataLoader = useCallback(() => {
-    return Array.from(allProducts.values());
+    return Array.from(allProducts.values()).filter((p) => !p.enabled);
   }, [allProducts]);
 
-  const { names, data, onKeywordChanged, reload } =
-    useFilterData<Product>({ dataLoader });
+  const {
+    condition,
+    counter,
+    data,
+    filtered,
+    keyword,
+    names,
+    onKeywordChanged,
+    reload,
+    reset,
+    updateCondition,
+  } = useFilterData<Product, FilterType>({
+    dataLoader,
+    defaultCondition,
+    filter,
+  });
 
   const changed = useMemo(() => {
     const a = _productIds.sort().join(",");
@@ -141,47 +186,40 @@ const EditModal = ({
           </Box>
         </Grid.Col>
         <Grid.Col span={4} className="c-catering-bdr-box">
-          <Flex justify="end" align={"center"} mb="1rem">
-            <Autocomplete
-              w={"20vw"}
-              onEnter={reload}
-              data={names}
-              onChange={onKeywordChanged}
-            />
-          </Flex>
+          <Box key={counter}>
+            <Flex justify="end" align={"center"} mb="1rem">
+              <Select
+                label={t("Product type")}
+                w={"20vw"}
+                value={condition?.type || ""}
+                onChange={updateCondition.bind(null, "type", "")}
+                options={typeOptions}
+              />
+            </Flex>
+            <Flex justify="end" align={"center"} mb="1rem">
+              <Autocomplete
+                w={"20vw"}
+                onEnter={reload}
+                data={names}
+                defaultValue={keyword}
+                label={t("Cuisine name")}
+                onChange={onKeywordChanged}
+              />
+            </Flex>
+          </Box>
+          <Box ta="right" mb={10}>
+            <Button disabled={!filtered} onClick={reset}>
+              {t("Clear")}
+            </Button>
+          </Box>
           <ScrollArea h="80vh">
-            {data.map((p) => {
-              const existed = productIds.includes(p.id);
-              const Icon = existed ? IconCircleMinus : IconCirclePlus;
-              return (
-                <Box
-                  style={{
-                    cursor: "pointer",
-                    borderRadius: "5px",
-                  }}
-                  bg={existed ? "primary.4" : undefined}
-                  className="c-catering-hover-bg"
-                  key={p.id}
-                  w="100%"
-                  p={10}
-                  mb={4}
-                  onClick={() => {
-                    if (existed) {
-                      removeProduct(p.id);
-                    } else {
-                      addProduct(p.id);
-                    }
-                  }}
-                >
-                  <Flex gap={5}>
-                    <Icon />
-                    <Text>
-                      {p.name} ({p.code})
-                    </Text>
-                  </Flex>
-                </Box>
-              );
-            })}
+            <Selector
+              data={data}
+              selectedIds={productIds}
+              onAdd={addProduct}
+              onRemove={removeProduct}
+              labelGenerator={labelGenerator}
+            />
           </ScrollArea>
         </Grid.Col>
       </Grid>
@@ -190,3 +228,7 @@ const EditModal = ({
 };
 
 export default EditModal;
+
+function labelGenerator(p: Product) {
+  return `${p.name} - ${p.code}`;
+}

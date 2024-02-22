@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import Selector from "@/components/c-catering/Selector";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
@@ -22,7 +23,6 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SupplierMaterial, configs } from "./_config";
@@ -37,6 +37,10 @@ const MaterialSupplierManagement = () => {
   const [material, setMaterial] = useState<Material>();
   const [prices] = useState<Map<string, number>>(new Map());
   const [suppliers, setSuppliers] = useState<SupplierMaterial[]>([]);
+  const supplierIds = useMemo(
+    () => suppliers.map((sm) => sm.supplier.id),
+    [suppliers],
+  );
 
   const load = useCallback(async () => {
     await reloadSuppliers();
@@ -74,10 +78,10 @@ const MaterialSupplierManagement = () => {
     });
 
   const addSupplier = useCallback(
-    (supplierId: string, suppliers: Map<string, Supplier>) => {
+    (supplierId: string) => {
       setChanged(true);
       setSuppliers((prev) => {
-        const supplier = suppliers.get(supplierId);
+        const supplier = supplierById.get(supplierId);
         if (!supplier) {
           return prev;
         }
@@ -93,7 +97,7 @@ const MaterialSupplierManagement = () => {
         ];
       });
     },
-    [],
+    [supplierById],
   );
 
   const removeSupplier = useCallback((supplierId: string) => {
@@ -191,42 +195,12 @@ const MaterialSupplierManagement = () => {
               mb={10}
             />
             <ScrollArea h="80vh">
-              {data.map((supplier) => {
-                const existed = suppliers.some(
-                  (sm) => sm.supplier.id === supplier.id,
-                );
-                const Icon = existed
-                  ? IconCircleMinus
-                  : IconCirclePlus;
-                return (
-                  <Box
-                    style={{
-                      cursor: "pointer",
-                      borderRadius: "5px",
-                    }}
-                    bg={existed ? "primary.4" : undefined}
-                    className="c-catering-hover-bg"
-                    key={supplier.id}
-                    w="100%"
-                    p={10}
-                    mb={4}
-                    onClick={() => {
-                      if (existed) {
-                        removeSupplier(supplier.id);
-                      } else {
-                        addSupplier(supplier.id, supplierById);
-                      }
-                    }}
-                  >
-                    <Flex gap={5}>
-                      <Icon />
-                      <span style={{ fontSize: ".8rem" }}>
-                        {supplier.name}
-                      </span>
-                    </Flex>
-                  </Box>
-                );
-              })}
+              <Selector
+                data={data}
+                selectedIds={supplierIds}
+                onAdd={addSupplier}
+                onRemove={removeSupplier}
+              />
             </ScrollArea>
           </Grid.Col>
         </Grid>

@@ -43,6 +43,7 @@ const ProductManagement = () => {
     condition,
     counter,
     data,
+    filtered,
     keyword,
     names,
     page,
@@ -89,7 +90,9 @@ const ProductManagement = () => {
             data={names}
             onChange={onKeywordChanged}
           />
-          <Button onClick={reset}>{t("Clear")}</Button>
+          <Button disabled={!filtered} onClick={reset}>
+            {t("Clear")}
+          </Button>
         </Flex>
       </Flex>
 

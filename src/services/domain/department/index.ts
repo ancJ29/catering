@@ -25,7 +25,7 @@ export async function getAllDepartments(
   if (cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
     if (res.success) {
-      logger.debug("cache hit", key);
+      logger.trace("cache hit", key);
       return res.data.departments;
     }
   }

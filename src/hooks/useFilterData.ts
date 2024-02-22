@@ -24,6 +24,7 @@ export default function useFilterData<
   const [names, setNames] = useState<string[]>([]);
   const [xRecords, setXRecords] = useState<T[]>([]);
   const [records, setRecords] = useState<Map<string, T>>(new Map());
+  const [filtered, setFiltered] = useState(false);
   const [condition, setCondition] = useState<F | undefined>(
     defaultCondition,
   );
@@ -47,14 +48,14 @@ export default function useFilterData<
         ? xRecords.filter((el) => filter(el, condition))
         : xRecords;
       setNames(unique(_filteredData.map((el) => el.name)));
-      setData(
-        _filteredData.filter((el) => {
-          if (!keyword) {
-            return true;
-          }
-          return el.name.toLowerCase().includes(_keyword);
-        }),
-      );
+      const _data = _filteredData.filter((el) => {
+        if (!keyword) {
+          return true;
+        }
+        return el.name.toLowerCase().includes(_keyword);
+      });
+      setData(_data);
+      setFiltered(_data.length !== xRecords.length);
       setPage(1);
       setCounter((c) => c + 1);
     },
@@ -119,6 +120,7 @@ export default function useFilterData<
     condition,
     counter,
     data,
+    filtered,
     keyword,
     names,
     page,

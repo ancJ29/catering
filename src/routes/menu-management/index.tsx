@@ -173,7 +173,7 @@ const MenuManagement = () => {
           const key = `${selectedCustomer?.id}.${
             target.name
           }.${shift}.${new Date(date).getTime()}`;
-          logger.debug("dailyMenu has key", key, dailyMenu.has(key));
+          logger.trace("dailyMenu has key", key, dailyMenu.has(key));
           if (dailyMenu.has(key)) {
             const menu = dailyMenu.get(key);
             const _productIds = menu?.menu?.menuProducts?.map(

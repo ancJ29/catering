@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import Selector from "@/components/c-catering/Selector";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
@@ -25,7 +26,6 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -47,6 +47,10 @@ const SupplierMaterialManagement = () => {
   const [prices] = useState<Map<string, number>>(new Map());
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
+  const materialIds = useMemo(
+    () => materials?.map((sm) => sm.material.id) || [],
+    [materials],
+  );
 
   const load = useCallback(async () => {
     if (!supplierId) {
@@ -78,9 +82,12 @@ const SupplierMaterialManagement = () => {
   }, [materialById]);
 
   const {
+    counter,
     condition,
     data,
+    filtered,
     names,
+    keyword,
     onKeywordChanged,
     reload,
     reset,
@@ -101,10 +108,10 @@ const SupplierMaterialManagement = () => {
   }, [materialGroupByType, t, condition]);
 
   const addMaterial = useCallback(
-    (materialId: string, materials: Map<string, Material>) => {
+    (materialId: string) => {
       setChanged(true);
       setMaterials((prev) => {
-        const material = materials.get(materialId);
+        const material = materialById.get(materialId);
         if (!material) {
           return prev;
         }
@@ -120,7 +127,7 @@ const SupplierMaterialManagement = () => {
         ];
       });
     },
-    [],
+    [materialById],
   );
 
   const removeMaterial = useCallback((materialId: string) => {
@@ -183,6 +190,20 @@ const SupplierMaterialManagement = () => {
     });
   }, [load, materials, prices, supplierId, t]);
 
+  const labelGenerator = useCallback(
+    (material: Material) => {
+      const type = material.others.type;
+      return (
+        <span style={{ fontSize: ".8rem" }}>
+          {material.name}
+          &nbsp;
+          <span>({t(`materials.type.${type}`)})</span>
+        </span>
+      );
+    },
+    [t],
+  );
+
   if (!materials || !data.length) {
     return <></>;
   }
@@ -228,20 +249,20 @@ const SupplierMaterialManagement = () => {
                 mb={10}
               />
             </Flex>
-            {condition?.type && (
-              <Flex justify="end" align={"center"} mb="1rem">
-                <Select
-                  key={condition.type}
-                  label={t("Material group")}
-                  value={condition.group}
-                  w={"20vw"}
-                  options={groupOptions}
-                  onChange={updateCondition.bind(null, "group", "")}
-                />
-              </Flex>
-            )}
+            <Flex justify="end" align={"center"} mb="1rem">
+              <Select
+                key={condition?.group || ""}
+                label={t("Material group")}
+                value={condition?.group}
+                w={"20vw"}
+                options={groupOptions}
+                onChange={updateCondition.bind(null, "group", "")}
+              />
+            </Flex>
             <Flex justify="end" align={"center"} mb="1rem">
               <Autocomplete
+                key={counter}
+                defaultValue={keyword}
                 label={t("Material name")}
                 w={"20vw"}
                 onEnter={reload}
@@ -249,51 +270,19 @@ const SupplierMaterialManagement = () => {
                 onChange={onKeywordChanged}
               />
             </Flex>
-            <Box ta="right">
-              <Button disabled={!condition?.type} onClick={reset}>
+            <Box ta="right" mb={10}>
+              <Button disabled={!filtered} onClick={reset}>
                 {t("Clear")}
               </Button>
             </Box>
             <ScrollArea h="80vh">
-              {data.map((material) => {
-                const existed = materials.some(
-                  (sm) => sm.material.id === material.id,
-                );
-                const type = material.others.type;
-                const Icon = existed
-                  ? IconCircleMinus
-                  : IconCirclePlus;
-                return (
-                  <Box
-                    style={{
-                      cursor: "pointer",
-                      borderRadius: "5px",
-                    }}
-                    bg={existed ? "primary.4" : undefined}
-                    className="c-catering-hover-bg"
-                    key={material.id}
-                    w="100%"
-                    p={10}
-                    mb={4}
-                    onClick={() => {
-                      if (existed) {
-                        removeMaterial(material.id);
-                      } else {
-                        addMaterial(material.id, materialById);
-                      }
-                    }}
-                  >
-                    <Flex gap={5}>
-                      <Icon />
-                      <span style={{ fontSize: ".8rem" }}>
-                        {material.name}
-                        &nbsp;
-                        <span>({t(`materials.type.${type}`)})</span>
-                      </span>
-                    </Flex>
-                  </Box>
-                );
-              })}
+              <Selector
+                data={data}
+                selectedIds={materialIds}
+                onAdd={addMaterial}
+                onRemove={removeMaterial}
+                labelGenerator={labelGenerator}
+              />
             </ScrollArea>
           </Grid.Col>
         </Grid>

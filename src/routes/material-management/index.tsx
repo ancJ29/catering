@@ -31,6 +31,7 @@ const MaterialManagement = () => {
     condition,
     counter,
     data,
+    filtered,
     keyword,
     names,
     page,
@@ -84,7 +85,9 @@ const MaterialManagement = () => {
           data={names}
           onChange={onKeywordChanged}
         />
-        <Button onClick={reset}>{t("Clear")}</Button>
+        <Button disabled={!filtered} onClick={reset}>
+          {t("Clear")}
+        </Button>
       </Flex>
       <DataGrid
         page={page}

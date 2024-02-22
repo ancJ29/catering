@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import Selector from "@/components/c-catering/Selector";
 import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
@@ -18,7 +19,6 @@ import {
   Text,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Catering, configs } from "./_config";
@@ -33,6 +33,11 @@ const SupplierCateringManagement = () => {
   const [changed, setChanged] = useState(false);
   const [caterings, setCaterings] = useState<Catering[]>([]);
   const [fee] = useState<Map<string, number>>(new Map());
+
+  const cateringIds = useMemo(
+    () => caterings.map((c) => c.id),
+    [caterings],
+  );
 
   const load = useCallback(async () => {
     if (!supplierId) {
@@ -70,7 +75,7 @@ const SupplierCateringManagement = () => {
     useFilterData<Catering>({ dataLoader });
 
   const addCatering = useCallback(
-    (cateringId: string, cateringById: Map<string, Catering>) => {
+    (cateringId: string) => {
       setChanged(true);
       setCaterings((prev) => {
         const catering = cateringById.get(cateringId);
@@ -80,7 +85,7 @@ const SupplierCateringManagement = () => {
         return [...(prev || []), catering];
       });
     },
-    [],
+    [cateringById],
   );
 
   const removeCatering = useCallback((cateringId: string) => {
@@ -171,42 +176,12 @@ const SupplierCateringManagement = () => {
               mb={10}
             />
             <ScrollArea h="80vh">
-              {data.map((catering) => {
-                const existed = caterings.some(
-                  (c) => c.id === catering.id,
-                );
-                const Icon = existed
-                  ? IconCircleMinus
-                  : IconCirclePlus;
-                return (
-                  <Box
-                    style={{
-                      cursor: "pointer",
-                      borderRadius: "5px",
-                    }}
-                    bg={existed ? "primary.4" : undefined}
-                    className="c-catering-hover-bg"
-                    key={catering.id}
-                    w="100%"
-                    p={10}
-                    mb={4}
-                    onClick={() => {
-                      if (existed) {
-                        removeCatering(catering.id);
-                      } else {
-                        addCatering(catering.id, cateringById);
-                      }
-                    }}
-                  >
-                    <Flex gap={5}>
-                      <Icon />
-                      <span style={{ fontSize: ".8rem" }}>
-                        {catering.name}
-                      </span>
-                    </Flex>
-                  </Box>
-                );
-              })}
+              <Selector
+                data={data}
+                selectedIds={cateringIds}
+                onAdd={addCatering}
+                onRemove={removeCatering}
+              />
             </ScrollArea>
           </Grid.Col>
         </Grid>

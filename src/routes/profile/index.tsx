@@ -56,7 +56,7 @@ const Dashboard = () => {
         toastMessage: t("Password updated"),
       },
     });
-    logger.debug("change-password result", res);
+    logger.trace("change-password result", res);
     if (res) {
       form.reset();
     } else {

@@ -1,4 +1,4 @@
-import IconBadge from "@/components/common/IconBadge";
+import IconBadge from "@/components/c-catering/IconBadge";
 import { Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 
