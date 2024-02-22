@@ -40,10 +40,10 @@ export default function useFilterData<
   }, [dataLoader]);
 
   const reload = useCallback(
-    (keyword?: string) => {
+    (keyword = "") => {
       logger.trace("useFilterData: reload", keyword || "<empty>");
-      setKeyword(keyword || "");
-      const _keyword = keyword ? keyword.toLowerCase() : "";
+      setKeyword((keyword || "").trim());
+      const _keyword = typeof keyword === "string" ? keyword.toLowerCase() : "";
       const _filteredData = filter
         ? xRecords.filter((el) => filter(el, condition))
         : xRecords;
@@ -104,7 +104,7 @@ export default function useFilterData<
       }
       logger.trace("useFilterData: setCondition", key, value);
       if (resetKeywordOnFilterChanged) {
-        setKeyword(keyword);
+        typeof value === "string" ? setKeyword(keyword || "") : setKeyword("");
       }
       setCondition((prev) => {
         if (!prev) {
