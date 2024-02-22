@@ -26,7 +26,6 @@ import {
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
-import { type } from "os";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -251,7 +250,7 @@ const SupplierMaterialManagement = () => {
               />
             </Flex>
             <Box ta="right">
-              <Button disabled={!type} onClick={reset}>
+              <Button disabled={!condition?.type} onClick={reset}>
                 {t("Clear")}
               </Button>
             </Box>
