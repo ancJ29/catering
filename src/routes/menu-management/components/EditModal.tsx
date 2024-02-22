@@ -105,17 +105,12 @@ const EditModal = ({
     [removeProduct, t],
   );
 
-  const {
-    names,
-    data: products,
-    change,
-    filter,
-  } = useFilterData<Product>({
-    reload: () =>
-      new Promise((resolve) =>
-        resolve(Array.from(allProducts.values())),
-      ),
-  });
+  const dataLoader = useCallback(() => {
+    return Array.from(allProducts.values());
+  }, [allProducts]);
+
+  const { names, data, onKeywordChanged, reload } =
+    useFilterData<Product>({ dataLoader });
 
   const changed = useMemo(() => {
     const a = _productIds.sort().join(",");
@@ -149,14 +144,14 @@ const EditModal = ({
           <Flex justify="end" align={"center"} mb="1rem">
             <Autocomplete
               w={"20vw"}
-              onEnter={filter}
+              onEnter={reload}
               data={names}
-              onChange={change}
+              onChange={onKeywordChanged}
             />
           </Flex>
           <ScrollArea h="80vh">
-            {products.map((product) => {
-              const existed = productIds.includes(product.id);
+            {data.map((p) => {
+              const existed = productIds.includes(p.id);
               const Icon = existed ? IconCircleMinus : IconCirclePlus;
               return (
                 <Box
@@ -166,22 +161,22 @@ const EditModal = ({
                   }}
                   bg={existed ? "primary.4" : undefined}
                   className="c-catering-hover-bg"
-                  key={product.id}
+                  key={p.id}
                   w="100%"
                   p={10}
                   mb={4}
                   onClick={() => {
                     if (existed) {
-                      removeProduct(product.id);
+                      removeProduct(p.id);
                     } else {
-                      addProduct(product.id);
+                      addProduct(p.id);
                     }
                   }}
                 >
                   <Flex gap={5}>
                     <Icon />
                     <Text>
-                      {product.name} ({product.code})
+                      {p.name} ({p.code})
                     </Text>
                   </Flex>
                 </Box>

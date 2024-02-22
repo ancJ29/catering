@@ -15,20 +15,22 @@ const CateringManagement = () => {
 
   useOnMounted(reloadCatering);
 
-  const reload = useCallback(() => {
+  const dataLoader = useCallback(() => {
     return Array.from(caterings.values());
   }, [caterings]);
-  const { data, names, filter, change } = useFilterData<Department>({
-    reload,
-  });
+
+  const { data, names, onKeywordChanged, reload } =
+    useFilterData<Department>({
+      dataLoader,
+    });
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"center"}>
         <Autocomplete
-          onEnter={filter}
+          onEnter={reload}
           data={names}
-          onChange={change}
+          onChange={onKeywordChanged}
         />
       </Flex>
       <DataGrid

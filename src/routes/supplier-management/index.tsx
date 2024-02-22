@@ -14,18 +14,16 @@ import UpdateSupplierForm from "./components/UpdateSupplierForm";
 
 const SupplierManagement = () => {
   const t = useTranslation();
-  const supplierStore = useSupplierStore();
+  const { suppliers, reload: reloadSuppliers } = useSupplierStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
-  const reload = useCallback(async () => {
-    await supplierStore.reload();
-    return Array.from(supplierStore.suppliers.values());
-  }, [supplierStore]);
+  const dataLoader = useCallback(async () => {
+    await reloadSuppliers();
+    return Array.from(suppliers.values());
+  }, [suppliers, reloadSuppliers]);
 
-  const { data, names, page, filter, setPage, change } =
-    useFilterData<Supplier>({
-      reload,
-    });
+  const { data, names, page, onKeywordChanged, reload, setPage } =
+    useFilterData<Supplier>({ dataLoader });
 
   const addSupplier = useCallback(
     (values?: GenericObject) => {
@@ -65,9 +63,9 @@ const SupplierManagement = () => {
       <Flex justify="end" align={"center"} gap={10}>
         <Autocomplete
           w={"20vw"}
-          onEnter={filter}
+          onEnter={reload}
           data={names}
-          onChange={change}
+          onChange={onKeywordChanged}
         />
         <Button w={100} onClick={() => addSupplier()}>
           {t("Add")}

@@ -62,15 +62,12 @@ const SupplierCateringManagement = () => {
 
   useOnMounted(load);
 
-  const reload = useCallback(() => {
-    if (cateringById.size) {
-      return Array.from(cateringById.values());
-    }
-    return [];
+  const dataLoader = useCallback(() => {
+    return Array.from(cateringById.values());
   }, [cateringById]);
 
-  const { data, records, names, filter, change } =
-    useFilterData<Catering>({ reload });
+  const { data, names, onKeywordChanged, reload } =
+    useFilterData<Catering>({ dataLoader });
 
   const addCatering = useCallback(
     (cateringId: string, cateringById: Map<string, Catering>) => {
@@ -157,22 +154,20 @@ const SupplierCateringManagement = () => {
         </Flex>
         <Grid mt={10}>
           <Grid.Col span={9}>
-            {records.size && (
-              <DataGrid
-                hasUpdateColumn={false}
-                hasOrderColumn
-                columns={dataGridConfigs}
-                data={caterings}
-              />
-            )}
+            <DataGrid
+              hasUpdateColumn={false}
+              hasOrderColumn
+              columns={dataGridConfigs}
+              data={caterings}
+            />
           </Grid.Col>
           <Grid.Col span={3} className="c-catering-bdr-box">
             <Autocomplete
               mr={10}
               label={t("Catering name")}
-              onEnter={filter}
+              onEnter={reload}
               data={names}
-              onChange={change}
+              onChange={onKeywordChanged}
               mb={10}
             />
             <ScrollArea h="80vh">

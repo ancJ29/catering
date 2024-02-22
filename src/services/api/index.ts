@@ -68,7 +68,7 @@ export default async function callApi<T, R>({
     );
     key = cache.key;
     if (cache.data) {
-      logger.debug("[api-v2-cache-hit]", key, action, _params);
+      logger.trace("[api-v2-cache-hit]", key, action, _params);
       return cache.data;
     }
   }
@@ -83,7 +83,7 @@ export default async function callApi<T, R>({
         message: options.toastMessage,
       });
     key && cache.set(key, data as GenericObject);
-    logger.debug("[api-v2-success]", key, action, _params, data);
+    logger.trace("[api-v2-success]", key, action, _params, data);
     if (options.reloadOnSuccess) {
       let timeout = 100;
       if (typeof options.reloadOnSuccess !== "boolean") {
@@ -163,7 +163,7 @@ function _checkCache<R>(
   forceReload?: boolean,
 ) {
   const key = _key(action, params);
-  logger.debug("[api-v2-cache]", key, { action, params });
+  logger.trace("[api-v2-cache]", key, { action, params });
   if (forceReload) {
     cache.delete(key);
     return { key };

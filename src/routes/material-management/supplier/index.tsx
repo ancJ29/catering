@@ -64,16 +64,14 @@ const MaterialSupplierManagement = () => {
 
   useOnMounted(load);
 
-  const reload = useCallback(() => {
-    if (supplierById.size) {
-      return Array.from(supplierById.values());
-    }
-    return [];
+  const dataLoader = useCallback(() => {
+    return Array.from(supplierById.values());
   }, [supplierById]);
 
-  const { data, names, filter, change } = useFilterData<Supplier>({
-    reload,
-  });
+  const { data, names, onKeywordChanged, reload } =
+    useFilterData<Supplier>({
+      dataLoader,
+    });
 
   const addSupplier = useCallback(
     (supplierId: string, suppliers: Map<string, Supplier>) => {
@@ -160,6 +158,7 @@ const MaterialSupplierManagement = () => {
   if (!supplierById || !material) {
     return <></>;
   }
+
   return (
     <Box>
       <Box w="100%" pb={10}>
@@ -186,9 +185,9 @@ const MaterialSupplierManagement = () => {
             <Autocomplete
               mr={10}
               label={t("Catering name")}
-              onEnter={filter}
+              onEnter={reload}
               data={names}
-              onChange={change}
+              onChange={onKeywordChanged}
               mb={10}
             />
             <ScrollArea h="80vh">

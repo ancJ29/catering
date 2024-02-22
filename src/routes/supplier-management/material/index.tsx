@@ -26,9 +26,16 @@ import {
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
+import { type } from "os";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SupplierMaterial, configs } from "./_config";
+import {
+  FilterType,
+  SupplierMaterial,
+  configs,
+  defaultCondition,
+  filter,
+} from "./_config";
 
 const SupplierMaterialManagement = () => {
   const { supplierId } = useParams();
@@ -41,12 +48,6 @@ const SupplierMaterialManagement = () => {
   const [prices] = useState<Map<string, number>>(new Map());
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
-  const [group, setGroup] = useState<string | null>("");
-  const [type, setType] = useState<string | null>("");
-
-  const [typeOptions, groupOptions] = useMemo(() => {
-    return typeAndGroupOptions(materialGroupByType, type, t);
-  }, [materialGroupByType, t, type]);
 
   const load = useCallback(async () => {
     if (!supplierId) {
@@ -73,31 +74,32 @@ const SupplierMaterialManagement = () => {
 
   useOnMounted(load);
 
-  const reload = useCallback(() => {
-    if (materialById.size) {
-      return Array.from(materialById.values());
-    }
-    return [];
+  const dataLoader = useCallback(() => {
+    return Array.from(materialById.values());
   }, [materialById]);
 
   const {
-    data: _data,
+    condition,
+    data,
     names,
+    onKeywordChanged,
+    reload,
+    reset,
+    setCondition,
+    updateCondition,
+  } = useFilterData<Material, FilterType>({
+    dataLoader,
     filter,
-    change,
-  } = useFilterData<Material>({ reload });
+    defaultCondition,
+  });
 
-  const data = useMemo(() => {
-    return _data.filter((m) => {
-      if (group && m.others.group !== group) {
-        return false;
-      }
-      if (type && m.others.type !== type) {
-        return false;
-      }
-      return true;
-    });
-  }, [_data, group, type]);
+  const [typeOptions, groupOptions] = useMemo(() => {
+    return typeAndGroupOptions(
+      materialGroupByType,
+      condition?.type || "",
+      t,
+    );
+  }, [materialGroupByType, t, condition]);
 
   const addMaterial = useCallback(
     (materialId: string, materials: Map<string, Material>) => {
@@ -182,24 +184,7 @@ const SupplierMaterialManagement = () => {
     });
   }, [load, materials, prices, supplierId, t]);
 
-  const changeType = useCallback((value: string | null) => {
-    setType((type) => {
-      if (type !== value) {
-        setGroup("");
-        return value || "";
-      }
-      return type;
-    });
-  }, []);
-
-  const clear = useCallback(() => {
-    setGroup("");
-    setType("");
-    filter("");
-    setChanged(false);
-  }, [filter]);
-
-  if (!materials || !_data.length) {
+  if (!materials || !data.length) {
     return <></>;
   }
   return (
@@ -229,24 +214,30 @@ const SupplierMaterialManagement = () => {
           <Grid.Col span={3} className="c-catering-bdr-box">
             <Flex justify="end" align={"center"} mb="1rem">
               <Select
-                key={type}
-                value={type}
+                key={condition?.type || ""}
+                value={condition?.type || ""}
                 label={t("Material type")}
                 w={"20vw"}
                 options={typeOptions}
-                onChange={changeType}
+                onChange={(value) =>
+                  value !== condition?.type &&
+                  setCondition({
+                    type: value || "",
+                    group: "",
+                  })
+                }
                 mb={10}
               />
             </Flex>
-            {type && (
+            {condition?.type && (
               <Flex justify="end" align={"center"} mb="1rem">
                 <Select
-                  key={type}
+                  key={condition.type}
                   label={t("Material group")}
-                  value={group}
+                  value={condition.group}
                   w={"20vw"}
                   options={groupOptions}
-                  onChange={setGroup}
+                  onChange={updateCondition.bind(null, "group", "")}
                 />
               </Flex>
             )}
@@ -254,13 +245,13 @@ const SupplierMaterialManagement = () => {
               <Autocomplete
                 label={t("Material name")}
                 w={"20vw"}
-                onEnter={filter}
+                onEnter={reload}
                 data={names}
-                onChange={change}
+                onChange={onKeywordChanged}
               />
             </Flex>
             <Box ta="right">
-              <Button disabled={!type} onClick={clear}>
+              <Button disabled={!type} onClick={reset}>
                 {t("Clear")}
               </Button>
             </Box>

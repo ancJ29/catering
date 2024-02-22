@@ -1,84 +1,125 @@
 import logger from "@/services/logger";
+import { GenericObject } from "@/types";
+import { unique } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
-import useOnMounted from "./useOnMounted";
 
-export default function useFilterData<T extends { name: string }>({
-  reload,
+export default function useFilterData<
+  T extends { name: string },
+  F extends GenericObject | void = void,
+>({
+  defaultCondition,
+  filter,
+  dataLoader,
 }: {
-  reload?: () => Promise<T[] | undefined> | T[] | undefined;
+  defaultCondition?: F;
+  filter?: (el: T, filter?: F) => boolean;
+  dataLoader?: () => Promise<T[] | undefined> | T[] | undefined;
 } = {}) {
-  const [counter, setCounter] = useState(1);
   const [page, setPage] = useState(1);
-  const [keyword, setKeyword] = useState("");
-  const [records, setRecords] = useState<Map<string, T>>(new Map());
   const [data, setData] = useState<T[]>([]);
-  const [names, setNames] = useState([""]);
-
-  useEffect(() => {
-    if (!records.size) {
-      return;
-    }
-    setNames(Array.from(records.keys()));
-    setData(Array.from(records.values()));
-  }, [records]);
+  const [counter, setCounter] = useState(1);
+  const [keyword, setKeyword] = useState("");
+  const [names, setNames] = useState<string[]>([]);
+  const [xRecords, setXRecords] = useState<T[]>([]);
+  const [records, setRecords] = useState<Map<string, T>>(new Map());
+  const [condition, setCondition] = useState<F | undefined>(
+    defaultCondition,
+  );
 
   const _load = useCallback(async () => {
-    if (records.size) {
-      return;
+    if (dataLoader) {
+      const data = (await dataLoader()) || [];
+      setXRecords(data);
+      data && setRecords(new Map(data.map((el) => [el.name, el])));
+      setNames(unique(data.map((el) => el.name)));
+      logger.trace("useFilterData: loaded", data.length || 0);
     }
-    if (reload) {
-      const data = await reload();
-      data && setRecords(new Map(data.map((c) => [c.name, c])));
-    }
-  }, [records.size, reload]);
+  }, [dataLoader]);
 
-  useOnMounted(_load);
-
-  const filter = useCallback(
-    (keyword: string, targets?: T[]) => {
-      setKeyword(keyword);
-      const _targets = targets || Array.from(records.values());
+  const reload = useCallback(
+    (keyword?: string) => {
+      logger.trace("useFilterData: reload", keyword || "<empty>");
+      setKeyword(keyword || "");
       const _keyword = keyword ? keyword.toLowerCase() : "";
+      const _filteredData = filter
+        ? xRecords.filter((el) => filter(el, condition))
+        : xRecords;
+      setNames(unique(_filteredData.map((el) => el.name)));
       setData(
-        _targets.filter((c) => {
+        _filteredData.filter((el) => {
           if (!keyword) {
             return true;
           }
-          return c.name.toLowerCase().includes(_keyword);
+          return el.name.toLowerCase().includes(_keyword);
         }),
       );
       setPage(1);
+      setCounter((c) => c + 1);
     },
-    [records],
+    [xRecords, condition, filter],
   );
 
-  const change = useCallback(
+  const onKeywordChanged = useCallback(
     (value: string) => {
-      logger.debug("change", value, records.has(value));
       if (records.has(value)) {
-        records.has(value) && filter(value);
+        records.has(value) && reload(value);
       }
     },
-    [filter, records],
+    [reload, records],
   );
 
-  const clear = useCallback(() => {
-    setData(Array.from(records.values()));
+  const reset = useCallback(() => {
+    setData(xRecords);
+    setCondition(defaultCondition);
+    setKeyword("");
     setPage(1);
     setCounter((c) => c + 1);
-  }, [records]);
+  }, [xRecords, defaultCondition]);
+
+  useEffect(() => {
+    logger.trace("useFilterData: load...");
+    _load();
+  }, [_load]);
+
+  useEffect(() => {
+    logger.trace("useFilterData: keyword changed", keyword);
+    reload(keyword);
+  }, [reload, keyword, filter]);
+
+  useEffect(() => {
+    logger.trace("useFilterData: condition changed", condition);
+    setKeyword("");
+  }, [condition]);
+
+  const updateCondition = useCallback(
+    (key: string, _default: unknown, value: unknown) => {
+      logger.trace("useFilterData: updateCondition", key, value);
+      if (!defaultCondition || key in defaultCondition === false) {
+        return;
+      }
+      logger.trace("useFilterData: setCondition", key, value);
+      setCondition((prev) => {
+        if (!prev) {
+          return { [key]: value || _default } as F;
+        }
+        return { ...prev, [key]: value || _default } as F;
+      });
+    },
+    [defaultCondition],
+  );
 
   return {
-    keyword,
+    condition,
     counter,
-    page,
     data,
+    keyword,
     names,
-    records,
-    filter,
-    change,
-    clear,
-    setRecords,
+    page,
+    onKeywordChanged,
+    reload,
+    reset,
+    setCondition,
     setPage,
+    updateCondition,
   };
 }

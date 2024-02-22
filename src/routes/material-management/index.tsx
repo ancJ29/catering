@@ -8,110 +8,81 @@ import { Material, typeAndGroupOptions } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { Button, Flex, Stack } from "@mantine/core";
-import { useCallback, useMemo, useState } from "react";
-import { configs } from "./_configs";
+import { useCallback, useMemo } from "react";
+import {
+  FilterType,
+  configs,
+  defaultCondition,
+  filter,
+} from "./_configs";
 
 const MaterialManagement = () => {
   const t = useTranslation();
   const { materialGroupByType } = useMetaDataStore();
   const { materials, reload: reloadMaterial } = useMaterialStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const [type, setType] = useState<string>("");
-  const [group, setGroup] = useState<string>("");
-
   useOnMounted(reloadMaterial);
 
-  const reload = useCallback(() => {
+  const dataLoader = useCallback(() => {
     return Array.from(materials.values());
   }, [materials]);
 
   const {
-    records,
+    condition,
     counter,
+    data,
+    names,
     page,
-    data: _data,
-    filter,
-    change,
-    setPage,
-    clear: _clear,
-  } = useFilterData<Material>({
+    onKeywordChanged,
     reload,
+    reset,
+    setCondition,
+    setPage,
+    updateCondition,
+  } = useFilterData<Material, FilterType>({
+    dataLoader,
+    filter,
+    defaultCondition,
   });
 
   const [typeOptions, groupOptions] = useMemo(() => {
-    return typeAndGroupOptions(materialGroupByType, type, t);
-  }, [materialGroupByType, t, type]);
-
-  const [data, names] = useMemo(() => {
-    setPage(1);
-    const data = _data.filter((c) => {
-      if (type && c.others.type !== type) {
-        return false;
-      }
-      if (group && c.others.group !== group) {
-        return false;
-      }
-      return true;
-    });
-    const names = Array.from(records.values())
-      .filter((c) => {
-        if (type && c.others.type !== type) {
-          return false;
-        }
-        if (group && c.others.group !== group) {
-          return false;
-        }
-        return true;
-      })
-      .map((c) => c.name);
-    return [data, names];
-  }, [setPage, _data, records, type, group]);
-
-  const clear = useCallback(() => {
-    setType("");
-    setGroup("");
-    _clear();
-  }, [_clear]);
-
-  const onChangeType = useCallback(
-    (value: string | null) => {
-      if (value && value in materialGroupByType) {
-        setType(value);
-      } else {
-        setType("");
-      }
-    },
-    [materialGroupByType],
-  );
-  const onChangeGroup = useCallback((value: string | null) => {
-    setGroup(value || "");
-  }, []);
+    return typeAndGroupOptions(
+      materialGroupByType,
+      condition?.type || "",
+      t,
+    );
+  }, [materialGroupByType, t, condition]);
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"end"} gap={10} key={counter}>
         <Select
-          value={type || ""}
+          value={condition?.type || ""}
           label={t("Material type")}
           w={"20vw"}
           options={typeOptions}
-          onChange={onChangeType}
+          onChange={(value) => {
+            setCondition({
+              type: value || "",
+              group: "",
+            });
+          }}
         />
         <Select
-          value={group || ""}
+          value={condition?.group || ""}
           label={t("Material group")}
           w={"20vw"}
           options={groupOptions}
-          onChange={onChangeGroup}
+          onChange={updateCondition.bind(null, "group", "")}
         />
         <Autocomplete
           label={t("Material name")}
           w={"20vw"}
-          onEnter={filter}
+          onEnter={reload}
           data={names}
-          onChange={change}
+          onChange={onKeywordChanged}
         />
-        <Button onClick={clear}>{t("Clear")}</Button>
+        <Button onClick={reset}>{t("Clear")}</Button>
       </Flex>
       <DataGrid
         page={page}

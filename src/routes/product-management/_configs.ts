@@ -14,13 +14,13 @@ export const configs = (
     {
       key: "code",
       sortable: true,
-      header: t("Product code"),
+      header: t("Cuisine code"),
       width: "20%",
     },
     {
       key: "typeName",
       sortable: true,
-      header: t("Product type"),
+      header: t("Cuisine type"),
       width: "20%",
       renderCell: (_, product: Product) => {
         return t(`products.type.${product.others.type}`);
@@ -42,3 +42,26 @@ export const configs = (
     },
   ];
 };
+
+export type FilterType = {
+  type: string;
+  onSaleOnly: boolean;
+};
+
+export const defaultCondition: FilterType = {
+  type: "",
+  onSaleOnly: false,
+};
+
+export function filter(p: Product, x?: FilterType) {
+  if (!x) {
+    return true;
+  }
+  if (x.type && p.others.type !== x.type) {
+    return false;
+  }
+  if (x.onSaleOnly && !p.enabled) {
+    return false;
+  }
+  return true;
+}

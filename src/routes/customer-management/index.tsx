@@ -10,17 +10,19 @@ import { configs } from "./_configs";
 const CustomerManagement = () => {
   const t = useTranslation();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const { data, names, filter, change } = useFilterData<Customer>({
-    reload: getAllCustomers,
-  });
+
+  const { data, names, onKeywordChanged, reload } =
+    useFilterData<Customer>({
+      dataLoader: getAllCustomers,
+    });
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"center"}>
         <Autocomplete
-          onEnter={filter}
+          onEnter={reload}
           data={names}
-          onChange={change}
+          onChange={onKeywordChanged}
         />
       </Flex>
       <DataGrid

@@ -9,109 +9,85 @@ import userProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
 import { unique } from "@/utils";
 import { Button, Flex, Stack, Switch } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useCallback, useMemo, useState } from "react";
-import { configs } from "./_configs";
+import { useCallback, useMemo } from "react";
+import {
+  FilterType,
+  configs,
+  defaultCondition,
+  filter,
+} from "./_configs";
 
 const ProductManagement = () => {
   const t = useTranslation();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
   const { products, reload: reloadProducts } = userProductStore();
-  const [type, setType] = useState<string>("");
-  const [onSaleOnly, { toggle }] = useDisclosure(false);
+
+  useOnMounted(reloadProducts);
 
   const typeOptions: OptionProps[] = useMemo(() => {
     return unique(
-      Array.from(products.values()).map((p) => p.others.type),
+      Array.from(products.values()).map(
+        (p: Product) => p.others.type,
+      ),
     ).map((type) => ({
       value: type,
       label: t(`products.type.${type}`),
     }));
   }, [products, t]);
 
-  useOnMounted(reloadProducts);
-
-  const reload = useCallback(() => {
+  const dataLoader = useCallback(() => {
     return Array.from(products.values());
   }, [products]);
 
   const {
-    data: _data,
-    page,
+    condition,
     counter,
-    records,
+    data,
+    keyword,
+    names,
+    page,
+    onKeywordChanged,
+    reload,
+    reset,
     setPage,
+    updateCondition,
+  } = useFilterData<Product, FilterType>({
+    dataLoader,
     filter,
-    change,
-    clear: _clear,
-  } = useFilterData<Product>({ reload });
-
-  const [data, names] = useMemo(() => {
-    setPage(1);
-    const data = _data.filter((p) => {
-      if (type && p.others.type !== type) {
-        return false;
-      }
-      if (onSaleOnly && !p.enabled) {
-        return false;
-      }
-      return true;
-    });
-    const names = Array.from(records.values())
-      .filter((p) => {
-        if (type && p.others.type !== type) {
-          return false;
-        }
-        if (onSaleOnly && !p.enabled) {
-          return false;
-        }
-        return true;
-      })
-      .map((c) => c.name);
-    return [data, names];
-  }, [setPage, _data, records, type, onSaleOnly]);
-
-  const clear = useCallback(() => {
-    setType("");
-    _clear();
-  }, [_clear]);
-
-  const onChangeType = useCallback(
-    (value: string | null) => {
-      if (value && value !== type) {
-        setType(value);
-      } else {
-        setType("");
-      }
-    },
-    [type],
-  );
+    defaultCondition,
+  });
 
   return (
     <Stack gap={10}>
       <Flex justify="space-between" align="center">
         <Switch
           mt={20}
-          checked={onSaleOnly}
-          onChange={toggle}
+          checked={condition?.onSaleOnly ?? false}
+          onChange={updateCondition.bind(
+            null,
+            "onSaleOnly",
+            !(condition?.onSaleOnly ?? false),
+          )}
           label={t("On sale ONLY")}
         />
-        <Flex justify="end" align={"end"} gap={10} key={counter}>
+        <Flex justify="end" align={"end"} gap={10}>
           <Select
-            value={type || ""}
+            value={condition?.type || null}
             label={t("Product type")}
             w={"20vw"}
             options={typeOptions}
-            onChange={onChangeType}
+            onChange={(value) => updateCondition("type", "", value)}
           />
           <Autocomplete
+            key={counter}
+            defaultValue={keyword}
             label={t("Cuisine name")}
             w={"20vw"}
-            onEnter={filter}
+            onEnter={reload}
             data={names}
-            onChange={change}
+            onChange={onKeywordChanged}
           />
-          <Button onClick={clear}>{t("Clear")}</Button>
+          <Button onClick={reset}>{t("Clear")}</Button>
         </Flex>
       </Flex>
 

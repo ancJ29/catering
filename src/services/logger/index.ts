@@ -36,18 +36,12 @@ export default {
     if (logLevel > levels.debug) {
       return;
     }
-    logger.debug(
-      `[DEBUG] [${new Date().toLocaleString()}]:`,
-      ...args,
-    );
+    logger.log(`[DEBUG] [${new Date().toLocaleString()}]:`, ...args);
   },
   trace: (...args: unknown[]) => {
     if (logLevel > levels.trace) {
       return;
     }
-    logger.trace(
-      `[DEBUG] [${new Date().toLocaleString()}]:`,
-      ...args,
-    );
+    logger.log(`[DEBUG] [${new Date().toLocaleString()}]:`, ...args);
   },
 };
