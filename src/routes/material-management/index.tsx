@@ -31,6 +31,7 @@ const MaterialManagement = () => {
     condition,
     counter,
     data,
+    keyword,
     names,
     page,
     onKeywordChanged,
@@ -78,6 +79,7 @@ const MaterialManagement = () => {
         <Autocomplete
           label={t("Material name")}
           w={"20vw"}
+          defaultValue={keyword}
           onEnter={reload}
           data={names}
           onChange={onKeywordChanged}

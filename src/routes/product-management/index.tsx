@@ -66,7 +66,9 @@ const ProductManagement = () => {
           onChange={updateCondition.bind(
             null,
             "onSaleOnly",
+            false,
             !(condition?.onSaleOnly ?? false),
+            keyword,
           )}
           label={t("On sale ONLY")}
         />
@@ -76,7 +78,7 @@ const ProductManagement = () => {
             label={t("Product type")}
             w={"20vw"}
             options={typeOptions}
-            onChange={(value) => updateCondition("type", "", value)}
+            onChange={updateCondition.bind(null, "type", "")}
           />
           <Autocomplete
             key={counter}

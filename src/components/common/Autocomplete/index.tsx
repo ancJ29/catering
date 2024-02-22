@@ -5,7 +5,7 @@ import {
   AutocompleteProps,
   Autocomplete as MantineAutocomplete,
 } from "@mantine/core";
-import { IconFilter } from "@tabler/icons-react";
+import { IconFilter, IconX } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 interface IAutocompleteProps extends AutocompleteProps {
@@ -19,6 +19,7 @@ const Autocomplete = ({
   options,
   data,
   disabled,
+  defaultValue,
   onEnter = blank,
   onChange,
   ...props
@@ -45,13 +46,26 @@ const Autocomplete = ({
 
   const _onEnter = useOnEnter(enterHandler);
 
+  const onClear = useCallback(() => {
+    _onChange("");
+  }, [_onChange]);
+
+  const clearIcon = useMemo(() => {
+    return defaultValue || currentValue ? (
+      <IconX onClick={onClear} size={14} />
+    ) : undefined;
+  }, [currentValue, defaultValue, onClear]);
+
   return (
     <MantineAutocomplete
       ref={inputRef}
       classNames={{
         input: "c-catering-truncate",
       }}
+      defaultValue={defaultValue}
+      value={defaultValue ? undefined : currentValue}
       leftSection={<IconFilter size={14} />}
+      rightSection={clearIcon}
       data={_data}
       onKeyDown={_onEnter}
       onChange={_onChange}

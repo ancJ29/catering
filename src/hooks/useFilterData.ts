@@ -10,7 +10,9 @@ export default function useFilterData<
   defaultCondition,
   filter,
   dataLoader,
+  resetKeywordOnFilterChanged = true,
 }: {
+  resetKeywordOnFilterChanged?: boolean;
   defaultCondition?: F;
   filter?: (el: T, filter?: F) => boolean;
   dataLoader?: () => Promise<T[] | undefined> | T[] | undefined;
@@ -63,6 +65,8 @@ export default function useFilterData<
     (value: string) => {
       if (records.has(value)) {
         records.has(value) && reload(value);
+      } else if (!value) {
+        reload("");
       }
     },
     [reload, records],
@@ -84,28 +88,31 @@ export default function useFilterData<
   useEffect(() => {
     logger.trace("useFilterData: keyword changed", keyword);
     reload(keyword);
-  }, [reload, keyword, filter]);
-
-  useEffect(() => {
-    logger.trace("useFilterData: condition changed", condition);
-    setKeyword("");
-  }, [condition]);
+  }, [reload, keyword, filter, condition]);
 
   const updateCondition = useCallback(
-    (key: string, _default: unknown, value: unknown) => {
+    (
+      key: string,
+      _default: unknown,
+      value: unknown,
+      keyword = "",
+    ) => {
       logger.trace("useFilterData: updateCondition", key, value);
       if (!defaultCondition || key in defaultCondition === false) {
         return;
       }
       logger.trace("useFilterData: setCondition", key, value);
+      if (resetKeywordOnFilterChanged) {
+        setKeyword(keyword);
+      }
       setCondition((prev) => {
         if (!prev) {
-          return { [key]: value || _default } as F;
+          return { [key]: value ?? _default } as F;
         }
         return { ...prev, [key]: value || _default } as F;
       });
     },
-    [defaultCondition],
+    [defaultCondition, resetKeywordOnFilterChanged],
   );
 
   return {
