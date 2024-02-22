@@ -52,7 +52,7 @@ export default function useFilterData<
         if (!keyword) {
           return true;
         }
-        return el.name.toLowerCase().includes(_keyword);
+        return el.name?.toLowerCase().includes(_keyword);
       });
       setData(_data);
       setFiltered(_data.length !== xRecords.length);
