@@ -1,5 +1,6 @@
 import { Department } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { positivePrice } from "@/utils";
 import { Button, NumberInput } from "@mantine/core";
 import { useState } from "react";
 
@@ -39,19 +40,19 @@ export const configs = (
           const [fee, setInternalFee] = useState(row.price || 0);
           return (
             <NumberInput
+              value={fee}
+              thousandSeparator="."
+              decimalSeparator=","
               suffix=" đ"
               step={1000}
               onChange={(value) => {
-                const fee = _price(value);
+                const fee = positivePrice(value);
                 setInternalFee(fee);
                 setFee(row?.id || "", fee);
               }}
               onBlur={() => {
                 fee && setFee(row?.id || "", fee);
               }}
-              thousandSeparator="."
-              decimalSeparator=","
-              value={fee}
             />
           );
         };
@@ -80,13 +81,3 @@ export const configs = (
     },
   ];
 };
-
-function _price(value: string | number) {
-  let price = parseInt(
-    value.toString().replace(/\./g, "").replace(/,/g, "."),
-  );
-  if (isNaN(price) || price < 0) {
-    price = 0;
-  }
-  return price;
-}

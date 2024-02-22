@@ -6,6 +6,7 @@ import {
   DataGridProps,
   GenericObject,
 } from "@/types";
+import { formatTime } from "@/utils";
 import {
   Box,
   Flex,
@@ -20,7 +21,6 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import cls from "classnames";
-import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
@@ -338,11 +338,7 @@ function LastUpdated({
         {(lastModifiedBy as string) || "-"}
         <br />
         <b>{t("Last updated")}</b>:&nbsp;
-        <span>
-          {updatedAt
-            ? dayjs(updatedAt).format("DD/MM/YYYY HH:mm")
-            : "-"}
-        </span>
+        <span>{formatTime(updatedAt)}</span>
       </div>
     </Box>
   ) : (

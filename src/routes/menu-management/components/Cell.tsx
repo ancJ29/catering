@@ -1,12 +1,12 @@
 import { Actions } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import { Customer, Product } from "@/services/domain";
-import { stopMouseEvent } from "@/utils";
+import { Customer } from "@/services/domain";
+import useProductStore from "@/stores/product.store";
+import { formatTime, stopMouseEvent } from "@/utils";
 import { Box, Modal, Table, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import EditModal from "./EditModal";
 import MenuItem from "./MenuItem";
@@ -16,37 +16,42 @@ type CellProps = {
   shift: string;
   date?: string;
   timestamp?: number;
-  productIds: string[];
   customer?: Customer;
-  allProducts: Map<string, Product>;
+  quantity: Map<string, number>;
   onReload: () => void;
 };
 
 const Cell = ({
+  quantity,
   targetName,
-  allProducts,
   shift,
   date,
   timestamp,
   customer,
-  productIds,
   onReload,
 }: CellProps) => {
+  const { products: allProducts } = useProductStore();
   const t = useTranslation();
   const [opened, { open, close }] = useDisclosure(false);
   const title = useMemo(() => {
     if (!customer) {
       return "";
     }
-    const date = dayjs(timestamp).format("YYYY-MM-DD");
+
+    const date = formatTime(timestamp, "YYYY-MM-DD");
     return `${date}: ${customer.name} > ${targetName} > ${shift}`;
   }, [customer, shift, targetName, timestamp]);
 
   const save = useCallback(
-    (productIds: string[]) => {
+    (quantity: Map<string, number>) => {
       if (!timestamp || !customer) {
         close();
         return;
+      }
+      for (const [productId, count] of quantity) {
+        if (count === 0) {
+          quantity.delete(productId);
+        }
       }
       modals.openConfirmModal({
         title: `${t("Update menu")}`,
@@ -64,7 +69,7 @@ const Cell = ({
               targetName,
               shift,
               customerId: customer.id || "",
-              productIds,
+              quantity: Object.fromEntries(quantity),
             },
           });
           close();
@@ -87,7 +92,7 @@ const Cell = ({
       <Box fz={16} fw={900} mb={2} w="100%" ta="right">
         {date}
       </Box>
-      {productIds.map((productId, idx) => (
+      {Array.from(quantity.keys()).map((productId, idx) => (
         <MenuItem key={idx} product={allProducts.get(productId)} />
       ))}
       <Modal
@@ -102,7 +107,7 @@ const Cell = ({
         }}
       >
         <EditModal
-          productIds={productIds}
+          quantity={quantity}
           allProducts={allProducts}
           onSave={save}
         />

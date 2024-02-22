@@ -8,6 +8,7 @@ export default {
   "Update supplier successfully": "Update supplier successfully",
   "Add user": "Add user",
   "Update changes": "Update changes",
+  "Quantity": "Quantity",
   "Your changes have been saved": "Your changes have been saved",
   "Are you sure to save changes?": "Are you sure to save changes?",
   "Add": "Add",

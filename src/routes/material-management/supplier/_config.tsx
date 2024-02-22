@@ -69,6 +69,9 @@ export const configs = (
           );
           return (
             <NumberInput
+              value={price}
+              thousandSeparator="."
+              decimalSeparator=","
               suffix=" đ"
               step={1000}
               onChange={(value) => {
@@ -76,9 +79,6 @@ export const configs = (
                 setInternalPrice(price);
                 setPrice(sm.supplier.id, price);
               }}
-              thousandSeparator="."
-              decimalSeparator=","
-              value={price}
             />
           );
         };

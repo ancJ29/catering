@@ -5,6 +5,7 @@ import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Product } from "@/services/domain";
+import useProductStore from "@/stores/product.store";
 import { DataGridColumnProps, OptionProps } from "@/types";
 import { unique } from "@/utils";
 import {
@@ -12,6 +13,7 @@ import {
   Button,
   Flex,
   Grid,
+  NumberInput,
   ScrollArea,
   Text,
   UnstyledButton,
@@ -39,6 +41,8 @@ export function filter(p: Product, x?: FilterType) {
 
 const _menuItemConfigs = (
   t: (key: string) => string,
+  _quantity: Map<string, number>,
+  setQuantity: (productId: string, price: number) => void,
   removeProduct: (id: string) => void,
 ): DataGridColumnProps[] => {
   return [
@@ -47,13 +51,17 @@ const _menuItemConfigs = (
       header: t("Product type"),
       width: "10%",
       renderCell: (_, product: Product) => {
-        return t(`products.type.${product.others.type}`);
+        return (
+          <Text fz="sm">
+            {t(`products.type.${product.others.type}`)}
+          </Text>
+        );
       },
     },
     {
       key: "name",
       header: t("Cuisine name"),
-      width: "35%",
+      width: "15rem",
       renderCell(_, product) {
         return (
           <Flex justify="space-between" pr="2rem">
@@ -68,45 +76,117 @@ const _menuItemConfigs = (
       },
     },
     {
+      key: "quantity",
+      header: t("Quantity"),
+      width: "100px",
+      renderCell(_, product: Product) {
+        const Component = () => {
+          const [quantity, setInternalQuantity] = useState(
+            _quantity.get(product.id) || 0,
+          );
+          return (
+            <NumberInput
+              value={quantity}
+              thousandSeparator="."
+              decimalSeparator=","
+              onChange={(value) => {
+                let quantity = parseInt(value.toString());
+                if (isNaN(quantity) || quantity < 0) {
+                  quantity = 0;
+                }
+                setInternalQuantity(quantity);
+                setQuantity(product.id, quantity);
+              }}
+            />
+          );
+        };
+        return <Component />;
+      },
+    },
+    {
       key: "costPrice",
       header: t("Cost price"),
-      width: "10%",
+      width: "100px",
       renderCell() {
-        return "-";
+        const cost = Math.floor(Math.random() * 500) * 100;
+        return (
+          <Text w="100%" ta="right" c="red.6">
+            {cost.toLocaleString()}&nbsp;đ
+          </Text>
+        );
       },
     },
     {
       key: "avgCostPrice",
       header: t("Average cost price"),
-      width: "10%",
+      width: "100px",
       renderCell() {
-        return "-";
+        const cost = Math.floor(Math.random() * 500) * 100;
+        return (
+          <Text w="100%" ta="right" c="red.6">
+            {cost.toLocaleString()}&nbsp;đ
+          </Text>
+        );
       },
     },
     {
       key: "ratio",
       header: t("Ratio"),
-      width: "10%",
+      width: "70px",
       renderCell() {
-        return "-";
+        const ratio = Math.floor(Math.random() * 10000) / 100 + "%";
+        return (
+          <Text w="100%" ta="right" c="red.6">
+            {ratio}
+          </Text>
+        );
+      },
+    },
+    {
+      key: "action",
+      textAlign: {
+        cell: "right",
+      },
+      style: {
+        paddingRight: "1rem",
+        flexGrow: 1,
+      },
+      renderCell: (_, product: Product) => {
+        return (
+          <Flex justify="end" align="center" gap={10}>
+            <Button size="compact-xs">{t("BOM")}</Button>
+            <Button
+              size="compact-xs"
+              variant="light"
+              color="error"
+              onClick={removeProduct.bind(null, product.id)}
+            >
+              {t("Remove")}
+            </Button>
+          </Flex>
+        );
       },
     },
   ];
 };
 
 type EditModalProps = {
-  productIds: string[];
+  quantity: Map<string, number>;
   allProducts: Map<string, Product>;
-  onSave: (productIds: string[]) => void;
+  onSave: (quantity: Map<string, number>) => void;
 };
 
 const EditModal = ({
-  allProducts,
-  productIds: _productIds,
+  quantity: _quantity,
   onSave,
 }: EditModalProps) => {
   const t = useTranslation();
-  const [productIds, setProductIds] = useState(_productIds);
+  const { products: allProducts } = useProductStore();
+  const [productIds, setProductIds] = useState(
+    Array.from(_quantity.keys()),
+  );
+  const [changed, setChanged] = useState(false);
+  const [quantity] = useState<Map<string, number>>(_quantity);
   const menuItem: Product[] = useMemo(() => {
     return productIds
       .map((productId) => allProducts.get(productId))
@@ -124,17 +204,22 @@ const EditModal = ({
   }, [allProducts, t]);
 
   const addProduct = useCallback((id: string) => {
+    setChanged(true);
     setProductIds((prev) => [...prev, id]);
   }, []);
 
   const removeProduct = useCallback((id: string) => {
+    setChanged(true);
     setProductIds((prev) => prev.filter((i) => i !== id));
   }, []);
 
-  const menuItemConfigs = useMemo(
-    () => _menuItemConfigs(t, removeProduct),
-    [removeProduct, t],
-  );
+  const menuItemConfigs = useMemo(() => {
+    return _menuItemConfigs(t, _quantity, setQuantity, removeProduct);
+    function setQuantity(productId: string, price: number) {
+      setChanged(true);
+      quantity.set(productId, price);
+    }
+  }, [_quantity, quantity, removeProduct, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -157,24 +242,18 @@ const EditModal = ({
     filter,
   });
 
-  const changed = useMemo(() => {
-    const a = _productIds.sort().join(",");
-    const b = productIds.sort().join(",");
-    return a !== b;
-  }, [_productIds, productIds]);
-
   return (
     <Box>
       <Box w="100%" ta="right" pb={10}>
         <Button
           disabled={!changed}
-          onClick={onSave.bind(null, productIds)}
+          onClick={onSave.bind(null, quantity)}
         >
           {t("Save")}
         </Button>
       </Box>
       <Grid mt={10}>
-        <Grid.Col span={8}>
+        <Grid.Col span={9}>
           <DataGrid
             hasUpdateColumn={false}
             hasOrderColumn
@@ -185,7 +264,7 @@ const EditModal = ({
             TODO: Detail prices
           </Box>
         </Grid.Col>
-        <Grid.Col span={4} className="c-catering-bdr-box">
+        <Grid.Col span={3} className="c-catering-bdr-box">
           <Box key={counter}>
             <Flex justify="end" align={"center"} mb="1rem">
               <Select

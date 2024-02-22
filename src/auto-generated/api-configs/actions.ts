@@ -412,11 +412,11 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: z.object({
-        productIds: stringSchema.array(),
         date: dateSchema,
         customerId: stringSchema,
         targetName: stringSchema,
         shift: stringSchema,
+        quantity: z.record(stringSchema, numberSchema),
       }),
       response: addResponse,
     },

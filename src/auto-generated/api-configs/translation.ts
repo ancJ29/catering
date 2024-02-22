@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { materialOthersSchema, productOthersSchema } from "./others";
 
-const version = "1.0.1707194823926";
+const version = "1.0.1707194823931";
 
 type ProductType = z.infer<typeof productOthersSchema.shape.type>;
 type ProductKey = `products.type.${ProductType}`;
@@ -197,6 +197,7 @@ export const dictionaries: {
     "noodle-for-party": "Soup for party",
     "noodles": "Noodles",
     "On sale": "Available",
+    "BOM": "BOM",
     "On sale ONLY": "Available ONLY",
     "Product code": "Code",
     "Product type": "Type",
@@ -285,7 +286,8 @@ export const dictionaries: {
     "noodle-for-party": "Món nước (tiệc)",
     "noodles": "Món nước mặn",
     "On sale": "Cung cấp",
-    "On sale ONLY": "Chhỉ hiện món đang cung cấp",
+    "BOM": "Định lượng",
+    "On sale ONLY": "Chỉ hiện món đang cung cấp",
     "Product code": "Mã",
     "Product type": "Loại món",
     "rice": "Cơm",

@@ -2,19 +2,15 @@ import Autocomplete from "@/components/common/Autocomplete";
 import Select from "@/components/common/Select";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  Customer,
-  DailyMenu,
-  Product,
-  getAllCustomers,
-  getAllProducts,
-  getDailyMenu,
-} from "@/services/domain";
+import { Customer, DailyMenu, getDailyMenu } from "@/services/domain";
 import logger from "@/services/logger";
+import useCustomerStore from "@/stores/customer.store";
+import useProductStore from "@/stores/product.store";
 import {
   ONE_DAY,
   ONE_WEEK,
   firstMonday,
+  formatTime,
   lastSunday,
   startOfWeek,
 } from "@/utils";
@@ -31,25 +27,28 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from "@tabler/icons-react";
-import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Target, weekdays } from "./_configs";
 import Cell from "./components/Cell";
 
 const MenuManagement = () => {
   const t = useTranslation();
+  const { reload: loadAllProducts } = useProductStore();
+  const {
+    idByName: customerIdByName,
+    customers,
+    reload: loadAllCustomers,
+  } = useCustomerStore();
   const [mode, setMode] = useState<"M" | "W">("W");
   const [markDate, setMarkDate] = useState(Date.now());
   const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
-  const [customers, setCustomers] = useState<Map<string, Customer>>(
-    new Map(),
-  );
-  const [products, setProducts] = useState<Map<string, Product>>(
-    new Map(),
-  );
   const [dailyMenu, setDailyMenu] = useState<Map<string, DailyMenu>>(
     new Map(),
   );
+
+  useOnMounted(loadAllProducts);
+  useOnMounted(loadAllCustomers);
+
   const [target, setTarget] = useState<Target>();
   const [shift, setShift] = useState<string>();
   const [selectedCustomer, setSelectedCustomer] =
@@ -57,15 +56,16 @@ const MenuManagement = () => {
 
   const _selectCustomer = useCallback(
     (name: string) => {
-      if (customers?.has(name)) {
-        const customer = customers.get(name);
+      const id = customerIdByName.get(name);
+      const customer = id ? customers.get(id) : undefined;
+      if (customer) {
         const target = customer?.others.targets[0];
         setSelectedCustomer(customer);
         setTarget(target);
         setShift(target?.shifts[0]);
       }
     },
-    [customers],
+    [customerIdByName, customers],
   );
 
   const targetData = useMemo(() => {
@@ -114,15 +114,6 @@ const MenuManagement = () => {
     [mode],
   );
 
-  const _load = useCallback(() => {
-    Promise.all([getAllCustomers(), getAllProducts()]).then(
-      ([customers, products]) => {
-        setCustomers(new Map(customers.map((el) => [el.name, el])));
-        setProducts(new Map(products.map((el) => [el.id, el])));
-      },
-    );
-  }, []);
-
   const _getDailyMenu = useCallback(
     (noCache = false) => {
       if (!selectedCustomer?.id) {
@@ -159,8 +150,7 @@ const MenuManagement = () => {
         label: string;
         timestamp?: number;
       }[] = weekdays.map((el) => ({ label: t(el) }));
-
-    const menuItemsByDate = new Map<string, string[]>();
+    const quantityByDate = new Map<string, Map<string, number>>();
     const isWeekView = mode === "W";
     const from = isWeekView
       ? startOfWeek(markDate)
@@ -176,10 +166,10 @@ const MenuManagement = () => {
           logger.trace("dailyMenu has key", key, dailyMenu.has(key));
           if (dailyMenu.has(key)) {
             const menu = dailyMenu.get(key);
-            const _productIds = menu?.menu?.menuProducts?.map(
-              (el) => el.product.id,
+            quantityByDate.set(
+              key,
+              new Map(Object.entries(menu?.others.quantity || {})),
             );
-            menuItemsByDate.set(key, _productIds || []);
             continue;
           }
         }
@@ -190,7 +180,7 @@ const MenuManagement = () => {
       headers = weekdays.map((el, idx) => {
         const timestamp = from + idx * ONE_DAY;
         return {
-          label: `${dayjs(timestamp).format("DD/MM")} (${t(el)})`,
+          label: `${formatTime(timestamp, "DD/MM")} (${t(el)})`,
           timestamp,
         };
       });
@@ -199,24 +189,22 @@ const MenuManagement = () => {
           {target?.shifts.map((shift, idx) => (
             <Table.Tr key={idx}>
               <Table.Td>{shift}</Table.Td>
-              {headers.map((header, idx) => (
-                <Cell
-                  onReload={_getDailyMenu.bind(null, true)}
-                  allProducts={products}
-                  targetName={target.name}
-                  shift={shift}
-                  key={idx}
-                  customer={selectedCustomer}
-                  timestamp={header.timestamp}
-                  productIds={
-                    menuItemsByDate.get(
-                      `${selectedCustomer?.id}.${
-                        target.name
-                      }.${shift}.${header.timestamp || 0}`,
-                    ) || []
-                  }
-                />
-              ))}
+              {headers.map((header, idx) => {
+                const key = `${selectedCustomer?.id}.${
+                  target.name
+                }.${shift}.${header.timestamp || 0}`;
+                return (
+                  <Cell
+                    onReload={_getDailyMenu.bind(null, true)}
+                    targetName={target.name}
+                    shift={shift}
+                    key={idx}
+                    customer={selectedCustomer}
+                    timestamp={header.timestamp}
+                    quantity={quantityByDate.get(key) || new Map()}
+                  />
+                );
+              })}
             </Table.Tr>
           ))}
         </Table.Tbody>
@@ -233,7 +221,7 @@ const MenuManagement = () => {
               const timestamp = from + w * ONE_WEEK + idx * ONE_DAY;
               return {
                 timestamp,
-                date: dayjs(timestamp).format("DD/MM"),
+                date: formatTime(timestamp, "DD/MM"),
               };
             },
           );
@@ -243,44 +231,40 @@ const MenuManagement = () => {
         <Table.Tbody>
           {rows.map((cells, idx) => (
             <Table.Tr key={idx}>
-              {cells.map((cell, idx) => (
-                <Cell
-                  onReload={_load}
-                  allProducts={products}
-                  targetName={target?.name || ""}
-                  shift={shift || ""}
-                  customer={selectedCustomer}
-                  key={idx}
-                  date={cell.date}
-                  timestamp={cell.timestamp}
-                  productIds={
-                    menuItemsByDate.get(
-                      `${selectedCustomer?.id}.${target?.name}.${shift}.${cell.timestamp}`,
-                    ) || []
-                  }
-                />
-              ))}
+              {cells.map((cell, idx) => {
+                const key = `${selectedCustomer?.id}.${target?.name}.${shift}.${cell.timestamp}`;
+                return (
+                  <Cell
+                    onReload={_getDailyMenu.bind(null, true)}
+                    targetName={target?.name || ""}
+                    shift={shift || ""}
+                    customer={selectedCustomer}
+                    key={idx}
+                    date={cell.date}
+                    timestamp={cell.timestamp}
+                    quantity={quantityByDate.get(key) || new Map()}
+                  />
+                );
+              })}
             </Table.Tr>
           ))}
         </Table.Tbody>
       );
     }
-    return { rows, headers, menuItemsByDate, weekView, monthView };
+    return { rows, headers, weekView, monthView };
   }, [
-    mode,
-    markDate,
-    target,
-    t,
-    selectedCustomer,
     dailyMenu,
-    _getDailyMenu,
-    products,
-    _load,
+    markDate,
+    mode,
+    selectedCustomer,
     shift,
+    target,
+    _getDailyMenu,
+    t,
   ]);
 
   const customerData = useMemo(() => {
-    return Array.from(customers?.keys() || []);
+    return Array.from(customers.values()).map((el) => el.name);
   }, [customers]);
 
   const controlBar = useMemo(() => {
@@ -352,8 +336,6 @@ const MenuManagement = () => {
   ]);
 
   useEffect(_getDailyMenu, [_getDailyMenu]);
-
-  useOnMounted(_load);
 
   return (
     <Stack gap={10}>

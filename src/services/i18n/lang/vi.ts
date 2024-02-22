@@ -8,6 +8,7 @@ export default {
   "Update supplier successfully": "Cập nhật nhà cung cấp thành công",
   "Add user": "Thêm người dùng",
   "Update changes": "Cập nhật",
+  "Quantity": "Số lượng",
   "Your changes have been saved": "Thông tin đã được cập nhật",
   "Are you sure to save changes?":
     "Bạn có chắc chắn muốn cập nhật thông tin?",
