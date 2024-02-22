@@ -2,9 +2,14 @@ import Autocomplete from "@/components/common/Autocomplete";
 import Select from "@/components/common/Select";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { Customer, DailyMenu, getDailyMenu } from "@/services/domain";
+import {
+  Customer,
+  dailyMenuKey,
+  getDailyMenu,
+} from "@/services/domain";
 import logger from "@/services/logger";
 import useCustomerStore from "@/stores/customer.store";
+import useDailyMenuStore from "@/stores/daily-menu.store";
 import useProductStore from "@/stores/product.store";
 import {
   ONE_DAY,
@@ -12,6 +17,7 @@ import {
   firstMonday,
   formatTime,
   lastSunday,
+  startOfDay,
   startOfWeek,
 } from "@/utils";
 import {
@@ -28,91 +34,32 @@ import {
   IconChevronRight,
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Target, weekdays } from "./_configs";
+import BlankTableBody from "./components/BlankTableBody";
 import Cell from "./components/Cell";
 
 const MenuManagement = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
+  const { hash } = useLocation();
   const { reload: loadAllProducts } = useProductStore();
+  const { dailyMenu, push: pushDailyMenu } = useDailyMenuStore();
   const {
     idByName: customerIdByName,
     customers,
     reload: loadAllCustomers,
   } = useCustomerStore();
   const [mode, setMode] = useState<"M" | "W">("W");
-  const [markDate, setMarkDate] = useState(Date.now());
+  const [markDate, setMarkDate] = useState(startOfDay(Date.now()));
   const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
-  const [dailyMenu, setDailyMenu] = useState<Map<string, DailyMenu>>(
-    new Map(),
-  );
-
-  useOnMounted(loadAllProducts);
-  useOnMounted(loadAllCustomers);
-
   const [target, setTarget] = useState<Target>();
   const [shift, setShift] = useState<string>();
   const [selectedCustomer, setSelectedCustomer] =
     useState<Customer>();
 
-  const _selectCustomer = useCallback(
-    (name: string) => {
-      const id = customerIdByName.get(name);
-      const customer = id ? customers.get(id) : undefined;
-      if (customer) {
-        const target = customer?.others.targets[0];
-        setSelectedCustomer(customer);
-        setTarget(target);
-        setShift(target?.shifts[0]);
-      }
-    },
-    [customerIdByName, customers],
-  );
-
-  const targetData = useMemo(() => {
-    return selectedCustomer?.others.targets.map((el) => el.name);
-  }, [selectedCustomer]);
-
-  const _selectTarget = useCallback(
-    (name: string | null) => {
-      if (!name) {
-        return;
-      }
-      if (targetData?.includes(name)) {
-        const target = selectedCustomer?.others.targets.find(
-          (el) => el.name === name,
-        );
-        setTarget(target);
-        setShift(target?.shifts[0]);
-      }
-    },
-    [targetData, selectedCustomer],
-  );
-
-  const _setMode = useCallback(
-    (value: string) => {
-      if (value === W) {
-        setMode("W");
-      } else {
-        setMode("M");
-      }
-    },
-    [W],
-  );
-
-  const _shiftMarkDate = useCallback(
-    (diff = -1) => {
-      if (mode === "W") {
-        setMarkDate((el) => el + diff * ONE_WEEK);
-      } else {
-        setMarkDate((el) => {
-          const date = new Date(el);
-          date.setMonth(date.getMonth() + diff);
-          return date.getTime();
-        });
-      }
-    },
-    [mode],
-  );
+  useOnMounted(loadAllProducts);
+  useOnMounted(loadAllCustomers);
 
   const _getDailyMenu = useCallback(
     (noCache = false) => {
@@ -124,157 +71,85 @@ const MenuManagement = () => {
         customerId: selectedCustomer?.id,
         from: markDate - 4 * ONE_WEEK,
         to: markDate + 4 * ONE_WEEK,
-      }).then((data: DailyMenu[]) => {
-        setDailyMenu((dailyMenu) => {
-          data.forEach((el) => {
-            const { targetName, shift } = el.others;
-            const date = el.date.getTime();
-            const key = `${el.customerId}.${targetName}.${shift}.${date}`;
-            dailyMenu.set(key, el);
-          });
-          return new Map(dailyMenu);
-        });
-      });
+      }).then(pushDailyMenu);
     },
-    [markDate, selectedCustomer],
+    [markDate, pushDailyMenu, selectedCustomer?.id],
   );
 
-  const { monthView, weekView, headers } = useMemo(() => {
-    let weekView = <></>,
-      monthView = <></>,
-      rows: {
-        date: string;
-        timestamp: number;
-      }[][] = [[]],
-      headers: {
-        label: string;
-        timestamp?: number;
-      }[] = weekdays.map((el) => ({ label: t(el) }));
-    const quantityByDate = new Map<string, Map<string, number>>();
-    const isWeekView = mode === "W";
-    const from = isWeekView
-      ? startOfWeek(markDate)
-      : firstMonday(markDate);
-    const to = isWeekView ? from + 6 * ONE_DAY : lastSunday(markDate);
-
-    if (target) {
-      for (let date = from; date <= to; date += ONE_DAY) {
-        for (const shift of target.shifts) {
-          const key = `${selectedCustomer?.id}.${
-            target.name
-          }.${shift}.${new Date(date).getTime()}`;
-          logger.trace("dailyMenu has key", key, dailyMenu.has(key));
-          if (dailyMenu.has(key)) {
-            const menu = dailyMenu.get(key);
-            quantityByDate.set(
-              key,
-              new Map(Object.entries(menu?.others.quantity || {})),
-            );
-            continue;
-          }
-        }
-      }
-    }
-
-    if (isWeekView) {
-      headers = weekdays.map((el, idx) => {
-        const timestamp = from + idx * ONE_DAY;
-        return {
-          label: `${formatTime(timestamp, "DD/MM")} (${t(el)})`,
-          timestamp,
-        };
-      });
-      weekView = (
-        <Table.Tbody>
-          {target?.shifts.map((shift, idx) => (
-            <Table.Tr key={idx}>
-              <Table.Td>{shift}</Table.Td>
-              {headers.map((header, idx) => {
-                const key = `${selectedCustomer?.id}.${
-                  target.name
-                }.${shift}.${header.timestamp || 0}`;
-                return (
-                  <Cell
-                    onReload={_getDailyMenu.bind(null, true)}
-                    targetName={target.name}
-                    shift={shift}
-                    key={idx}
-                    customer={selectedCustomer}
-                    timestamp={header.timestamp}
-                    quantity={quantityByDate.get(key) || new Map()}
-                  />
-                );
-              })}
-            </Table.Tr>
-          ))}
-        </Table.Tbody>
-      );
-    } else {
-      const weeks = Math.round((to - from) / ONE_WEEK);
-      rows = Array.from(
-        {
-          length: weeks,
-        },
-        (_, w) => {
-          return ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(
-            (_, idx) => {
-              const timestamp = from + w * ONE_WEEK + idx * ONE_DAY;
-              return {
-                timestamp,
-                date: formatTime(timestamp, "DD/MM"),
-              };
-            },
-          );
-        },
-      );
-      monthView = (
-        <Table.Tbody>
-          {rows.map((cells, idx) => (
-            <Table.Tr key={idx}>
-              {cells.map((cell, idx) => {
-                const key = `${selectedCustomer?.id}.${target?.name}.${shift}.${cell.timestamp}`;
-                return (
-                  <Cell
-                    onReload={_getDailyMenu.bind(null, true)}
-                    targetName={target?.name || ""}
-                    shift={shift || ""}
-                    customer={selectedCustomer}
-                    key={idx}
-                    date={cell.date}
-                    timestamp={cell.timestamp}
-                    quantity={quantityByDate.get(key) || new Map()}
-                  />
-                );
-              })}
-            </Table.Tr>
-          ))}
-        </Table.Tbody>
-      );
-    }
-    return { rows, headers, weekView, monthView };
-  }, [
-    dailyMenu,
-    markDate,
-    mode,
-    selectedCustomer,
-    shift,
-    target,
-    _getDailyMenu,
-    t,
-  ]);
-
-  const customerData = useMemo(() => {
-    return Array.from(customers.values()).map((el) => el.name);
-  }, [customers]);
-
   const controlBar = useMemo(() => {
+    const customerData = Array.from(customers.values()).map(
+      (el) => el.name,
+    );
+
+    const targetData: string[] =
+      selectedCustomer?.others.targets.map((el) => el.name) || [];
+
+    const _selectCustomer = (
+      name: string,
+      clearOnNotFound = false,
+    ) => {
+      const id = customerIdByName.get(name);
+      const customer = id ? customers.get(id) : undefined;
+      if (customer) {
+        const target = customer?.others.targets[0];
+        setSelectedCustomer(customer);
+        setTarget(target);
+        setShift(target?.shifts[0]);
+      } else if (!name || clearOnNotFound) {
+        setSelectedCustomer(undefined);
+        setTarget(undefined);
+        setShift(undefined);
+      }
+    };
+
+    const _shiftMarkDate = (diff = -1) => {
+      if (mode === "W") {
+        setMarkDate((el) => el + diff * ONE_WEEK);
+      } else {
+        setMarkDate((el) => {
+          const date = new Date(el);
+          date.setMonth(date.getMonth() + diff);
+          return date.getTime();
+        });
+      }
+    };
+
+    const _selectTarget = (name: string | null) => {
+      if (!name) {
+        return;
+      }
+      if (targetData?.includes(name)) {
+        const target = selectedCustomer?.others.targets.find(
+          (el) => el.name === name,
+        );
+        setTarget(target);
+        setShift(target?.shifts[0]);
+      }
+    };
+
+    const _setMode = (value: string) => {
+      if (value === W) {
+        setMode("W");
+      } else {
+        setMode("M");
+      }
+    };
+    logger.debug(
+      "222 controlBar",
+      selectedCustomer?.name,
+      target?.name,
+      shift,
+    );
     return (
       <Flex gap={10} w="100%" justify="space-between" align="end">
         <Flex gap={10} justify="start" align="start">
           <Autocomplete
+            key={selectedCustomer?.name || ""}
             label={t("Customer")}
             data={customerData}
+            defaultValue={selectedCustomer?.name || ""}
             onChange={_selectCustomer}
+            onEnter={(value) => _selectCustomer(value, true)}
           />
           <Select
             value={target?.name}
@@ -321,21 +196,201 @@ const MenuManagement = () => {
       </Flex>
     );
   }, [
-    M,
-    W,
-    _selectCustomer,
-    _selectTarget,
-    _setMode,
-    _shiftMarkDate,
-    customerData,
-    mode,
-    shift,
+    customers,
+    selectedCustomer,
     t,
     target,
-    targetData,
+    mode,
+    shift,
+    W,
+    M,
+    customerIdByName,
+  ]);
+
+  const { monthView, weekView, headers } = useMemo(() => {
+    let weekView = <></>,
+      monthView = <></>,
+      rows: {
+        date: string;
+        timestamp: number;
+      }[][] = [[]],
+      headers: {
+        label: string;
+        timestamp?: number;
+      }[] = weekdays.map((el) => ({ label: t(el) }));
+    const quantityByDate = new Map<string, Map<string, number>>();
+    const isWeekView = mode === "W";
+    const from = isWeekView
+      ? startOfWeek(markDate)
+      : firstMonday(markDate);
+    const to = isWeekView ? from + 6 * ONE_DAY : lastSunday(markDate);
+
+    if (target) {
+      for (let date = from; date <= to; date += ONE_DAY) {
+        for (const shift of target.shifts) {
+          if (!selectedCustomer) {
+            continue;
+          }
+          const key = dailyMenuKey(
+            selectedCustomer?.id || "",
+            target.name,
+            shift,
+            date,
+          );
+          logger.trace("dailyMenu has key", key, dailyMenu.has(key));
+          if (dailyMenu.has(key)) {
+            const menu = dailyMenu.get(key);
+            quantityByDate.set(
+              key,
+              new Map(Object.entries(menu?.others.quantity || {})),
+            );
+            continue;
+          }
+        }
+      }
+    }
+
+    if (isWeekView) {
+      headers = weekdays.map((el, idx) => {
+        const timestamp = from + idx * ONE_DAY;
+        return {
+          label: `${formatTime(timestamp, "DD/MM")} (${t(el)})`,
+          timestamp,
+        };
+      });
+      weekView = (
+        <Table.Tbody>
+          {target?.shifts.map((shift, idx) => (
+            <Table.Tr key={idx}>
+              <Table.Td>{shift}</Table.Td>
+              {headers.map((header, idx) => {
+                let key = "";
+                if (selectedCustomer) {
+                  key = dailyMenuKey(
+                    selectedCustomer.id,
+                    target.name,
+                    shift,
+                    header.timestamp || 0,
+                  );
+                }
+                return (
+                  <Cell
+                    onReload={_getDailyMenu.bind(null, true)}
+                    targetName={target.name}
+                    shift={shift}
+                    key={idx}
+                    customer={selectedCustomer}
+                    timestamp={header.timestamp}
+                    quantity={quantityByDate.get(key) || new Map()}
+                  />
+                );
+              })}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      );
+    } else {
+      const weeks = Math.round((to - from) / ONE_WEEK);
+      rows = Array.from(
+        {
+          length: weeks,
+        },
+        (_, w) => {
+          return ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(
+            (_, idx) => {
+              const timestamp = from + w * ONE_WEEK + idx * ONE_DAY;
+              return {
+                timestamp,
+                date: formatTime(timestamp, "DD/MM"),
+              };
+            },
+          );
+        },
+      );
+      monthView = (
+        <Table.Tbody>
+          {rows.map((cells, idx) => (
+            <Table.Tr key={idx}>
+              {cells.map((cell, idx) => {
+                const key = dailyMenuKey(
+                  selectedCustomer?.id || "",
+                  target?.name || "",
+                  shift || "",
+                  cell.timestamp,
+                );
+                return (
+                  <Cell
+                    onReload={_getDailyMenu.bind(null, true)}
+                    targetName={target?.name || ""}
+                    shift={shift || ""}
+                    customer={selectedCustomer}
+                    key={idx}
+                    date={cell.date}
+                    timestamp={cell.timestamp}
+                    quantity={quantityByDate.get(key) || new Map()}
+                  />
+                );
+              })}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      );
+    }
+    return { rows, headers, weekView, monthView };
+  }, [
+    dailyMenu,
+    markDate,
+    mode,
+    selectedCustomer,
+    shift,
+    target,
+    _getDailyMenu,
+    t,
   ]);
 
   useEffect(_getDailyMenu, [_getDailyMenu]);
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (loaded || !customers.size) {
+      return;
+    }
+    setLoaded(true);
+    const data = hash
+      ? _parseHash(hash, customerIdByName, customers)
+      : undefined;
+    if (data) {
+      setMode(data.mode);
+      setMarkDate(data.markDate);
+      setSelectedCustomer(data.customer);
+      setTarget(data.target);
+      setShift(data.shift);
+    }
+  }, [customerIdByName, customers, hash, loaded]);
+
+  useEffect(() => {
+    if (loaded) {
+      navigate(
+        _hash(
+          mode,
+          markDate,
+          selectedCustomer?.name,
+          target?.name,
+          shift,
+        ),
+      );
+    }
+  }, [
+    hash,
+    loaded,
+    shift,
+    markDate,
+    mode,
+    navigate,
+    selectedCustomer,
+    target,
+  ]);
 
   return (
     <Stack gap={10}>
@@ -353,10 +408,82 @@ const MenuManagement = () => {
             })}
           </Table.Tr>
         </Table.Thead>
-        {mode === "W" ? weekView : monthView}
+        {selectedCustomer?.id ? (
+          mode === "W" ? (
+            weekView
+          ) : (
+            monthView
+          )
+        ) : (
+          <BlankTableBody mode={mode} />
+        )}
       </Table>
     </Stack>
   );
 };
 
 export default MenuManagement;
+
+function _parseHash(
+  hash: string,
+  customerIdByName: Map<string, string>,
+  customers: Map<string, Customer>,
+) {
+  const [mode, markDate, customerName, targetName, shift] = window
+    .atob(hash.slice(1))
+    .split(".")
+    .map(decodeURIComponent);
+
+  if (!customerName || isNaN(parseInt(markDate || "x"))) {
+    return;
+  }
+  if (mode != "M" && mode != "W") {
+    return;
+  }
+  const customerId = customerIdByName.get(customerName);
+  const customer = customers.get(customerId || "");
+  if (!customer) {
+    return;
+  }
+  const target = customer.others.targets.find(
+    (el) => el.name === targetName,
+  );
+  if (!target) {
+    return;
+  }
+  if (!shift && !target.shifts.includes(shift)) {
+    return;
+  }
+  return {
+    mode: mode as "M" | "W",
+    markDate: parseInt(markDate) * ONE_DAY,
+    customer,
+    target,
+    shift,
+  };
+}
+
+function _hash(
+  mode: string,
+  markDate: number,
+  customerName?: string,
+  targetName?: string,
+  shift?: string,
+) {
+  if (!customerName) {
+    return "";
+  }
+  const hash = window.btoa(
+    [
+      mode,
+      Math.floor(markDate / ONE_DAY),
+      customerName,
+      targetName,
+      shift,
+    ]
+      .filter(Boolean)
+      .map((el) => encodeURIComponent(el?.toString() || ""))
+      .join("."),
+  );
+  return "#" + hash;
+}

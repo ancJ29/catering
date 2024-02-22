@@ -16,9 +16,7 @@ import {
   NumberInput,
   ScrollArea,
   Text,
-  UnstyledButton,
 } from "@mantine/core";
-import { IconCircleMinus } from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 
 export type FilterType = {
@@ -62,18 +60,6 @@ const _menuItemConfigs = (
       key: "name",
       header: t("Cuisine name"),
       width: "15rem",
-      renderCell(_, product) {
-        return (
-          <Flex justify="space-between" pr="2rem">
-            <Text>{product.name}</Text>
-            <UnstyledButton
-              onClick={removeProduct.bind(null, product.id)}
-            >
-              <IconCircleMinus className="c-catering-btn-icon" />
-            </UnstyledButton>
-          </Flex>
-        );
-      },
     },
     {
       key: "quantity",

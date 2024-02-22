@@ -1,3 +1,4 @@
+import EmptyBox from "@/components/common/EmptyBox";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import {
@@ -25,7 +26,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
 import classes from "./DataGrid.module.scss";
-import Empty from "./Empty";
 
 const limitOptions = [10, 20, 50, 100].map((el) => ({
   value: el,
@@ -308,7 +308,7 @@ function _contentBuilder<
           </Box>
         ))
       ) : (
-        <Empty />
+        <EmptyBox />
       )}
     </div>
   );

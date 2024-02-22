@@ -1,11 +1,11 @@
 import useTranslation from "@/hooks/useTranslation";
 import { Box } from "@mantine/core";
-import classes from "./DataGrid.module.scss";
+import classes from "./EmptyBox.module.scss";
 
-const EmptyTable = ({ noResultText }: { noResultText?: string }) => {
+const EmptyBox = ({ noResultText }: { noResultText?: string }) => {
   const t = useTranslation();
   return (
-    <Box className={classes.tableEmpty}>
+    <Box className={classes.wrapper}>
       <svg
         width="120"
         height="100"
@@ -56,4 +56,4 @@ const EmptyTable = ({ noResultText }: { noResultText?: string }) => {
   );
 };
 
-export default EmptyTable;
+export default EmptyBox;

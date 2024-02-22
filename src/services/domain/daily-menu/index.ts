@@ -31,3 +31,32 @@ export async function getDailyMenu({
   });
   return dailyMenuList || [];
 }
+
+function _dailyMenuKey(
+  customerId: string,
+  targetName: string,
+  shift: string,
+  timestamp: number,
+): string;
+function _dailyMenuKey(m: DailyMenu): string;
+function _dailyMenuKey(
+  a?: string | DailyMenu,
+  b?: string,
+  c?: string,
+  d?: number,
+) {
+  if (typeof a === "string") {
+    return a ? `${a}.${b}.${c}.${d}` : "";
+  }
+  if (!a) {
+    return "";
+  }
+  return _dailyMenuKey(
+    a.customerId,
+    a.others.targetName,
+    a.others.shift,
+    a.date.getTime(),
+  );
+}
+
+export const dailyMenuKey = _dailyMenuKey;
