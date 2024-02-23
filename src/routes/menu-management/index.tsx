@@ -6,6 +6,7 @@ import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import {
   Customer,
+  DailyMenuStatus,
   dailyMenuKey,
   getDailyMenu,
 } from "@/services/domain";
@@ -284,17 +285,13 @@ const MenuManagement = () => {
       };
       const m = dailyMenu.get(key);
       modals.open({
-        title: (
-          <ModalTitle
-            title={title}
-            status={m?.others.status || _status()}
-          />
-        ),
+        title: <ModalTitle title={title} />,
         fullScreen: true,
         onClick: stopMouseEvent,
         onClose: modals.closeAll,
         children: (
           <EditModal
+            status={m?.others.status || _status()}
             quantity={
               new Map(Object.entries(m?.others.quantity || {}))
             }
@@ -567,14 +564,13 @@ function _hash(
 }
 
 function _status() {
-  return undefined;
-  // const list = [
-  //   "NEW",
-  //   "WAITING",
-  //   "CONFIRMED",
-  //   "PROCESSING",
-  //   "READY",
-  //   "DELIVERED",
-  // ] as DailyMenuStatus[];
-  // return list[Math.floor(Math.random() * list.length)];
+  const list = [
+    "NEW",
+    "WAITING",
+    "CONFIRMED",
+    "PROCESSING",
+    "READY",
+    "DELIVERED",
+  ] as DailyMenuStatus[];
+  return list[Math.floor(Math.random() * list.length)];
 }

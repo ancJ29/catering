@@ -5,6 +5,7 @@ import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
+  DailyMenuStatus,
   Product,
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
@@ -19,6 +20,7 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
+import Steppers from "../components/Steppers";
 import TabControll from "../components/TabControll";
 import {
   FilterType,
@@ -28,9 +30,11 @@ import {
 } from "./_config";
 
 const EditModal = ({
+  status = "NEW",
   quantity: originQuantity,
   onSave,
 }: {
+  status?: DailyMenuStatus;
   quantity: Map<string, number>;
   onSave: (quantity: Map<string, number>) => void;
 }) => {
@@ -113,6 +117,7 @@ const EditModal = ({
 
   return (
     <Box>
+      <Steppers status={status} />
       <Flex
         align="center"
         justify="space-between"
