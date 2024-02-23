@@ -1,7 +1,9 @@
+import useAuthStore from "@/stores/auth.store";
 import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
-  return <Navigate to="/customer-management" />;
+  const { user } = useAuthStore();
+  return <Navigate to={user?.dashboard || "/product-management"} />;
 };
 
 export default Dashboard;

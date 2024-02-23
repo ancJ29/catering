@@ -1,4 +1,7 @@
-import { payloadSchema } from "@/auto-generated/api-configs";
+import {
+  menuSchema,
+  payloadSchema,
+} from "@/auto-generated/api-configs";
 import { z } from "zod";
 
 export * from "./common";
@@ -19,3 +22,5 @@ export type CheckBoxOptions = {
 export type GenericObject = Record<string, unknown>;
 
 export type Dictionary = Record<string, string>;
+
+export type Menu = z.infer<typeof menuSchema>;

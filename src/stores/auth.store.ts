@@ -1,4 +1,5 @@
 import { payloadSchema } from "@/auto-generated/api-configs";
+import logger from "@/services/logger";
 import { Payload } from "@/types";
 import jwtDecode from "jwt-decode";
 import { z } from "zod";
@@ -28,6 +29,7 @@ export default create<AuthStore>((set, get) => ({
   setToken: (token: string, remember?: boolean) => {
     if (token) {
       const user = _decode(token);
+      logger.info("User logged in", user);
       set(() => (user ? { user, token } : { user: null, token: "" }));
       if (user) {
         remember

@@ -22,6 +22,8 @@ export const optionalNumberSchema = numberSchema.optional();
 
 export const nullishStringSchema = stringSchema.nullish();
 
+export const genericSchema = z.record(stringSchema, unknownSchema);
+
 export const getSchema = z.object({
   id: optionalStringSchema,
   name: optionalStringSchema,
@@ -74,6 +76,25 @@ export const emailOrPhoneSchema = {
   phone: phoneSchema,
 };
 
+const baseMenuItem = z.object({
+  key: stringSchema,
+  label: stringSchema,
+  icon: optionalStringSchema,
+  url: optionalStringSchema,
+  dashboard: stringSchema.array().optional(),
+  roles: stringSchema.array().optional(),
+});
+
+type MenuItem = z.infer<typeof baseMenuItem> & {
+  subs?: MenuItem[];
+};
+
+export const menuSchema: z.ZodType<MenuItem[]> = baseMenuItem
+  .extend({
+    subs: z.lazy(() => baseMenuItem.array().optional()),
+  })
+  .array();
+
 export const payloadSchema = userSchema
   .pick({
     id: true,
@@ -83,9 +104,12 @@ export const payloadSchema = userSchema
     role: true,
   })
   .extend({
+    roles: stringSchema.array(),
     actionNames: stringSchema.array().optional(),
     departmentIds: stringSchema.array().optional(),
     clientRole: enumSchema.optional(),
+    menu: menuSchema,
+    dashboard: stringSchema.optional(),
     departments: departmentSchema
       .pick({
         id: true,
@@ -101,8 +125,6 @@ export const payloadSchema = userSchema
       .array()
       .optional(),
   });
-
-export const genericSchema = z.record(stringSchema, unknownSchema);
 
 export const contextSchema = z.object({
   ctxId: stringSchema,
