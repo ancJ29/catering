@@ -1,7 +1,9 @@
+import { Actions } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import Select from "@/components/common/Select";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
+import callApi from "@/services/api";
 import {
   Customer,
   dailyMenuKey,
@@ -19,6 +21,7 @@ import {
   lastSunday,
   startOfDay,
   startOfWeek,
+  stopMouseEvent,
 } from "@/utils";
 import {
   Flex,
@@ -27,8 +30,10 @@ import {
   SegmentedControl,
   Stack,
   Table,
+  Text,
   UnstyledButton,
 } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -38,6 +43,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Target, weekdays } from "./_configs";
 import BlankTableBody from "./components/BlankTableBody";
 import Cell from "./components/Cell";
+import EditModal from "./modal";
 
 const MenuManagement = () => {
   const t = useTranslation();
@@ -208,6 +214,71 @@ const MenuManagement = () => {
   ]);
 
   const { monthView, weekView, headers } = useMemo(() => {
+    const openModal = (timestamp: number, shift: string) => {
+      const customerId = selectedCustomer?.id || "";
+      const targetName = target?.name || "";
+      if (!customerId || !targetName || !selectedCustomer) {
+        return;
+      }
+      const key = dailyMenuKey(
+        selectedCustomer?.id || "",
+        target?.name || "",
+        shift,
+        timestamp,
+      );
+      const date = formatTime(timestamp, "YYYY-MM-DD");
+      const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift}`;
+      const save = (quantity: Map<string, number>) => {
+        if (!timestamp || !selectedCustomer) {
+          modals.closeAll();
+          return;
+        }
+        for (const [productId, count] of quantity) {
+          if (count === 0) {
+            quantity.delete(productId);
+          }
+        }
+        modals.openConfirmModal({
+          title: `${t("Update menu")}`,
+          children: (
+            <Text size="sm">
+              {t("Are you sure you want to save menu?")}
+            </Text>
+          ),
+          labels: { confirm: "OK", cancel: t("Cancel") },
+          onConfirm: async () => {
+            await callApi<unknown, unknown>({
+              action: Actions.PUSH_DAILY_MENU,
+              params: {
+                date: new Date(timestamp),
+                targetName: target?.name || "",
+                shift,
+                customerId: selectedCustomer.id || "",
+                quantity: Object.fromEntries(quantity),
+              },
+            });
+            await _getDailyMenu(true);
+            modals.closeAll();
+          },
+        });
+      };
+      modals.open({
+        title,
+        fullScreen: true,
+        onClick: stopMouseEvent,
+        onClose: modals.closeAll,
+        classNames: {
+          title:
+            "c-catering-font-900 c-catering-fz-2rem c-catering-text-main",
+        },
+        children: (
+          <EditModal
+            quantity={quantityByDate.get(key) || new Map()}
+            onSave={save}
+          />
+        ),
+      });
+    };
     let weekView = <></>,
       monthView = <></>,
       rows: {
@@ -264,24 +335,21 @@ const MenuManagement = () => {
             <Table.Tr key={idx}>
               <Table.Td>{shift}</Table.Td>
               {headers.map((header, idx) => {
-                let key = "";
-                if (selectedCustomer) {
-                  key = dailyMenuKey(
-                    selectedCustomer.id,
-                    target.name,
-                    shift,
-                    header.timestamp || 0,
-                  );
-                }
+                const key = dailyMenuKey(
+                  selectedCustomer?.id || "",
+                  target.name,
+                  shift,
+                  header.timestamp || 0,
+                );
                 return (
                   <Cell
-                    onReload={_getDailyMenu.bind(null, true)}
-                    targetName={target.name}
-                    shift={shift}
                     key={idx}
-                    customer={selectedCustomer}
-                    timestamp={header.timestamp}
                     quantity={quantityByDate.get(key) || new Map()}
+                    onClick={openModal.bind(
+                      null,
+                      header.timestamp || 0,
+                      shift,
+                    )}
                   />
                 );
               })}
@@ -320,14 +388,14 @@ const MenuManagement = () => {
                 );
                 return (
                   <Cell
-                    onReload={_getDailyMenu.bind(null, true)}
-                    targetName={target?.name || ""}
-                    shift={shift || ""}
-                    customer={selectedCustomer}
                     key={idx}
                     date={cell.date}
-                    timestamp={cell.timestamp}
                     quantity={quantityByDate.get(key) || new Map()}
+                    onClick={openModal.bind(
+                      null,
+                      cell.timestamp,
+                      shift || "",
+                    )}
                   />
                 );
               })}
