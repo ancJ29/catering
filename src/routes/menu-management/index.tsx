@@ -9,7 +9,7 @@ import {
   dailyMenuKey,
   getDailyMenu,
 } from "@/services/domain";
-import logger from "@/services/logger";
+import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
 import useProductStore from "@/stores/product.store";
@@ -24,6 +24,7 @@ import {
   stopMouseEvent,
 } from "@/utils";
 import {
+  Button,
   Flex,
   Group,
   Radio,
@@ -57,16 +58,23 @@ const MenuManagement = () => {
     customers,
     reload: loadAllCustomers,
   } = useCustomerStore();
+  const {
+    caterings,
+    cateringIdByName,
+    reload: loadAllCaterings,
+  } = useCateringStore();
   const [mode, setMode] = useState<"M" | "W">("W");
   const [markDate, setMarkDate] = useState(startOfDay(Date.now()));
   const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
   const [target, setTarget] = useState<Target>();
   const [shift, setShift] = useState<string>();
+  const [cateringId, setCateringId] = useState<string>();
   const [selectedCustomer, setSelectedCustomer] =
     useState<Customer>();
 
   useOnMounted(loadAllProducts);
   useOnMounted(loadAllCustomers);
+  useOnMounted(loadAllCaterings);
 
   const _getDailyMenu = useCallback(
     (noCache = false) => {
@@ -84,12 +92,40 @@ const MenuManagement = () => {
   );
 
   const controlBar = useMemo(() => {
-    const customerData = Array.from(customers.values()).map(
-      (el) => el.name,
-    );
+    let cateringData: string[] = [];
+    if (selectedCustomer) {
+      const cateringId = selectedCustomer.others.cateringId;
+      const catering = caterings.get(cateringId);
+      cateringData = catering ? [catering.name] : [];
+    } else {
+      cateringData = Array.from(caterings.values()).map(
+        (c) => c.name,
+      );
+    }
+
+    const customerData = Array.from(customers.values())
+      .filter((c) => {
+        return cateringId ? c.others.cateringId === cateringId : true;
+      })
+      .map((el) => el.name);
 
     const targetData: string[] =
       selectedCustomer?.others.targets.map((el) => el.name) || [];
+
+    const cateringDefaultValue =
+      cateringData.length === 1 ? cateringData[0] : "";
+
+    const autoCompleteDefaultValue =
+      customerData?.length === 1
+        ? customerData[0]
+        : selectedCustomer?.name || "";
+
+    const _clearAll = () => {
+      setCateringId(undefined);
+      setSelectedCustomer(undefined);
+      setTarget(undefined);
+      setShift(undefined);
+    };
 
     const _selectCustomer = (
       name: string,
@@ -141,20 +177,43 @@ const MenuManagement = () => {
         setMode("M");
       }
     };
-    logger.debug(
-      "222 controlBar",
-      selectedCustomer?.name,
-      target?.name,
-      shift,
-    );
+
+    const _selectCatering = (value: string | null) => {
+      if (!value || !cateringIdByName.has(value)) {
+        _clearAll();
+        return;
+      }
+      const cateringId = cateringIdByName.get(value);
+      const catering = caterings.get(cateringId || "");
+      if (!catering) {
+        return;
+      }
+      setCateringId(cateringId);
+      const list = Array.from(customers.values()).filter((c) => {
+        return c.others.cateringId === cateringId;
+      });
+      if (list.length === 1) {
+        _selectCustomer(list[0].name);
+      }
+    };
+
     return (
       <Flex gap={10} w="100%" justify="space-between" align="end">
-        <Flex gap={10} justify="start" align="start">
+        <Flex gap={10} justify="start" align="end">
           <Autocomplete
-            key={selectedCustomer?.name || ""}
+            key={`1.${cateringDefaultValue}`}
+            label={t("Catering name")}
+            data={cateringData}
+            disabled={cateringData.length < 2}
+            defaultValue={cateringDefaultValue || undefined}
+            onChange={_selectCatering}
+          />
+          <Autocomplete
+            key={`2.${autoCompleteDefaultValue}`}
             label={t("Customer")}
             data={customerData}
-            defaultValue={selectedCustomer?.name || ""}
+            disabled={customerData.length < 2}
+            defaultValue={autoCompleteDefaultValue}
             onChange={_selectCustomer}
             onEnter={(value) => _selectCustomer(value, true)}
           />
@@ -164,6 +223,7 @@ const MenuManagement = () => {
             data={targetData}
             onChange={_selectTarget}
           />
+          <Button onClick={_clearAll}>{t("Clear")}</Button>
           {mode === "M" && target?.shifts?.length && (
             <Radio.Group
               label={t("shifts")}
@@ -205,13 +265,16 @@ const MenuManagement = () => {
   }, [
     customers,
     selectedCustomer,
+    caterings,
     t,
     target,
     mode,
     shift,
     W,
     M,
+    cateringId,
     customerIdByName,
+    cateringIdByName,
   ]);
 
   const { monthView, weekView, headers } = useMemo(() => {
@@ -228,7 +291,10 @@ const MenuManagement = () => {
         timestamp,
       );
       const date = formatTime(timestamp, "YYYY-MM-DD");
-      const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift}`;
+      const cateringId = selectedCustomer.others.cateringId;
+      const catering = caterings.get(cateringId || "");
+      const cateringName = catering?.name || "";
+      const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift} (${cateringName})`;
       const save = (quantity: Map<string, number>) => {
         if (!timestamp || !selectedCustomer) {
           modals.closeAll();
@@ -397,14 +463,15 @@ const MenuManagement = () => {
     }
     return { rows, headers, weekView, monthView };
   }, [
+    caterings,
     dailyMenu,
     markDate,
     mode,
     selectedCustomer,
     shift,
     target,
-    _getDailyMenu,
     t,
+    _getDailyMenu,
   ]);
 
   useEffect(_getDailyMenu, [_getDailyMenu]);
