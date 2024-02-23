@@ -72,6 +72,8 @@ export default {
   "Sign in to continue": "Đăng nhập để tiếp tục",
   "Sign in": "Đăng nhập",
   "Status": "Trạng thái",
+  "Detail": "Chi tiết",
+  "Modified": "Sửa đổi",
   "Suppliers": "Nhà cung cấp",
   "Type": "Type",
   "Update password": "Cập nhật mật khẩu",
@@ -79,6 +81,8 @@ export default {
   "Username or password is incorrect.":
     "Tên đăng nhập hoặc mật khẩu không chính xác.",
   "Username": "Tên đăng nhập",
+  "Total sets": "Tổng số phần ăn",
+  "Price per set": "Giá mỗi phần",
   "YES": "Có",
   "Save": "Lưu",
   "Metadata Management": "Quản lý danh mục",

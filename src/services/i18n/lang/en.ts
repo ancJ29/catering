@@ -71,6 +71,8 @@ export default {
   "Sign in to continue": "Sign in to continue to C-Catering",
   "Sign in": "Sign in",
   "Status": "Status",
+  "Detail": "Detail",
+  "Modified": "Modified",
   "Suppliers": "Suppliers",
   "Type": "Type",
   "Update password": "Update password",
@@ -78,6 +80,8 @@ export default {
   "Username or password is incorrect.":
     "Username or password is incorrect.",
   "Username": "Username",
+  "Total sets": "Total sets",
+  "Price per set": "Price per set",
   "YES": "YES",
   "Save": "Save",
   "Metadata Management": "Metadata Management",

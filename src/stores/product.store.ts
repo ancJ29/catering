@@ -1,9 +1,11 @@
 import { getAllProducts, type Product } from "@/services/domain";
+import { unique } from "@/utils";
 import { create } from "zustand";
 
 type ProductStore = {
   loadedAll: boolean;
   products: Map<string, Product>;
+  allTypes: string[];
   set: (products: Product[]) => void;
   reload: (noCache?: boolean) => Promise<void>;
 };
@@ -11,6 +13,7 @@ type ProductStore = {
 export default create<ProductStore>((set, get) => ({
   loadedAll: false,
   products: new Map(),
+  allTypes: [],
   set: (products) => {
     set(({ products: _products }) => {
       const s = new Map(_products);
@@ -23,7 +26,9 @@ export default create<ProductStore>((set, get) => ({
       return;
     }
     const data = await getAllProducts(noCache);
+    const allTypes = unique(data.map((e) => e.others.type));
     set(() => ({
+      allTypes,
       loadedAll: true,
       products: new Map(data.map((e) => [e.id, e])),
     }));
