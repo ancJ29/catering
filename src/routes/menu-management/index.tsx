@@ -248,15 +248,13 @@ const MenuManagement = () => {
       const catering = caterings.get(cateringId || "");
       const cateringName = catering?.name || "";
       const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift} (${cateringName})`;
-      const save = (quantity: Map<string, number>) => {
+      const save = (
+        productIds: string[],
+        quantity: Map<string, number>,
+      ) => {
         if (!timestamp || !selectedCustomer) {
           modals.closeAll();
           return;
-        }
-        for (const [productId, count] of quantity) {
-          if (count === 0) {
-            quantity.delete(productId);
-          }
         }
         modals.openConfirmModal({
           title: `${t("Update menu")}`,
@@ -275,7 +273,17 @@ const MenuManagement = () => {
                 shift,
                 status: "CONFIRMED",
                 customerId: selectedCustomer.id || "",
-                quantity: Object.fromEntries(quantity),
+                quantity: Object.fromEntries(
+                  productIds
+                    .map(
+                      (productId) =>
+                        [productId, quantity.get(productId) || 0] as [
+                          string,
+                          number,
+                        ],
+                    )
+                    .filter(([, count]) => count > 0),
+                ),
               },
             });
             await _getDailyMenu(true);

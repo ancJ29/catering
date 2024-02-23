@@ -36,7 +36,10 @@ const EditModal = ({
 }: {
   status?: DailyMenuStatus;
   quantity: Map<string, number>;
-  onSave: (quantity: Map<string, number>) => void;
+  onSave: (
+    productIds: string[],
+    quantity: Map<string, number>,
+  ) => void;
 }) => {
   const t = useTranslation();
   const [tab, setActiveTab] = useState<Mode>("detail");
@@ -128,7 +131,7 @@ const EditModal = ({
         <TabControll onChange={setActiveTab} />
         <Button
           disabled={!changed}
-          onClick={onSave.bind(null, quantity)}
+          onClick={onSave.bind(null, productIds, quantity)}
         >
           {t("Save")}
         </Button>
