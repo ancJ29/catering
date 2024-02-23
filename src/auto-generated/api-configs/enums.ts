@@ -32,6 +32,7 @@ export enum Actions {
   DELETE_DEPARTMENT = "delete-department",
   GET_CUSTOMERS = "get-customers",
   GET_PRODUCTS = "get-products",
+  GET_ALL_PRODUCTS = "get-all-products",
   ADD_PRODUCT = "add-product",
   // UPDATE_PRODUCT = "update-product",
   // DELETE_PRODUCT = "delete-product",
@@ -57,16 +58,19 @@ export enum Permissions {
   MESSAGE_FULL_ACCESS = "message-full-access",
   DEPARTMENT_FULL_ACCESS = "department-full-access",
   CUSTOMER_FULL_ACCESS = "customer-full-access",
+  CUSTOMER_READ_ONLY = "customer-read-only",
   DEPARTMENT_OPERATION = "department-operation",
   DEPARTMENT_READ_ONLY = "department-read-only",
   PRODUCT_FULL_ACCESS = "product-full-access",
+  PRODUCT_READ_ONLY = "product-read-only",
   MENU_FULL_ACCESS = "menu-full-access",
+  DAILY_MENU_OPERATION = "daily-menu-operation",
   MATERIAL_FULL_ACCESS = "material-full-access",
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
 }
 
-export enum Policy {}
+export enum Policy { }
 // TODO: add policies
 
-export enum RequestDecorator {}
+export enum RequestDecorator { }
 // TODO: add request decorators

@@ -2,18 +2,16 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import callApi from "@/services/api";
 import cache from "@/services/cache";
-import { loadAll } from "@/services/data-loaders";
 import logger from "@/services/logger";
 import { z } from "zod";
 
-const response = actionConfigs[Actions.GET_PRODUCTS].schema.response;
+const response = actionConfigs[Actions.GET_ALL_PRODUCTS].schema.response;
 
-const productSchema = response.shape.products.transform(
+const productSchema = response.transform(
   (array) => array[0],
 );
-
-const schema = response.omit({ cursor: true, hasMore: true });
 
 export type Product = z.infer<typeof productSchema>;
 
@@ -22,21 +20,16 @@ export async function getAllProducts(
 ): Promise<Product[]> {
   const key = "domain.product.getAllProducts";
   if (cache.has(key)) {
-    const res = schema.safeParse(cache.get(key));
+    const res = response.safeParse(cache.get(key));
     if (res.success) {
       logger.trace("cache hit", key);
-      return res.data.products;
+      return res.data;
     }
   }
-  let products = await loadAll<Product>({
-    key: "products",
-    action: Actions.GET_PRODUCTS,
-    noCache,
+  const products = await callApi<unknown, Product[]>({
+    action: Actions.GET_ALL_PRODUCTS,
+    params: {},
+    options: { noCache },
   });
-  products = products.map((product) => {
-    product.name = product.name.replace(/\.[0-9]+$/g, "");
-    return product;
-  });
-  cache.set(key, { products });
-  return products;
+  return products || [];
 }
