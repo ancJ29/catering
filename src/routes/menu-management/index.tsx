@@ -92,16 +92,9 @@ const MenuManagement = () => {
   );
 
   const controlBar = useMemo(() => {
-    let cateringData: string[] = [];
-    if (selectedCustomer) {
-      const cateringId = selectedCustomer.others.cateringId;
-      const catering = caterings.get(cateringId);
-      cateringData = catering ? [catering.name] : [];
-    } else {
-      cateringData = Array.from(caterings.values()).map(
-        (c) => c.name,
-      );
-    }
+    const cateringData = Array.from(caterings.values()).map(
+      (c) => c.name,
+    );
 
     const customerData = Array.from(customers.values())
       .filter((c) => {
@@ -112,8 +105,12 @@ const MenuManagement = () => {
     const targetData: string[] =
       selectedCustomer?.others.targets.map((el) => el.name) || [];
 
-    const cateringDefaultValue =
-      cateringData.length === 1 ? cateringData[0] : "";
+    let cateringDefaultValue = "";
+    if (selectedCustomer) {
+      const cateringId = selectedCustomer.others.cateringId;
+      const catering = caterings.get(cateringId);
+      cateringDefaultValue = catering?.name || "";
+    }
 
     const autoCompleteDefaultValue =
       customerData?.length === 1
@@ -180,7 +177,7 @@ const MenuManagement = () => {
 
     const _selectCatering = (value: string | null) => {
       if (!value || !cateringIdByName.has(value)) {
-        _clearAll();
+        !value && setCateringId(undefined);
         return;
       }
       const cateringId = cateringIdByName.get(value);
@@ -207,6 +204,7 @@ const MenuManagement = () => {
             disabled={cateringData.length < 2}
             defaultValue={cateringDefaultValue || undefined}
             onChange={_selectCatering}
+            onEnter={_selectCatering}
           />
           <Autocomplete
             key={`2.${autoCompleteDefaultValue}`}

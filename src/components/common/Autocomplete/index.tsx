@@ -35,8 +35,11 @@ const Autocomplete = ({
     (value: string) => {
       onChange && onChange(value);
       setCurrentValue(value);
+      if (_data?.includes(value)) {
+        inputRef.current?.blur();
+      }
     },
-    [onChange],
+    [_data, onChange],
   );
 
   const enterHandler = useCallback(() => {
