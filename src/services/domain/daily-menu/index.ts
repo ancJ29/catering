@@ -18,6 +18,8 @@ export type DailyMenuStatus = z.infer<
   typeof xDailyMenuSchema.shape.others.shape.status
 >;
 
+export type DailyMenuDetailMode = "detail" | "modified";
+
 export function dailyMenuStatusColor(
   status: DailyMenuStatus | undefined,
   level = 5,

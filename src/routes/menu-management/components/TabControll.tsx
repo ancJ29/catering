@@ -1,5 +1,6 @@
 import useTranslation from "@/hooks/useTranslation";
-import { Tabs } from "@mantine/core";
+import { type DailyMenuDetailMode as Mode } from "@/services/domain";
+import { Box, Tabs } from "@mantine/core";
 import {
   IconEditCircle,
   IconSettingsShare,
@@ -10,47 +11,49 @@ const TabControll = ({
   tab = "detail",
   onChange,
 }: {
-  tab?: string;
-  onChange: (tab: string) => void;
+  tab?: Mode;
+  onChange: (tab: Mode) => void;
 }) => {
   const t = useTranslation();
-  const [activeTab, setActiveTab] = useState<string>(tab);
+  const [activeTab, setActiveTab] = useState<Mode>(tab);
   const changeTab = useCallback(
     (tab: string | null) => {
-      if (tab) {
-        setActiveTab(tab);
-        onChange(tab);
+      if (["detail", "modified"].includes(tab || "")) {
+        setActiveTab(tab as Mode);
+        onChange(tab as Mode);
       }
     },
     [onChange],
   );
   const isDetail = activeTab === "detail";
   return (
-    <Tabs
-      mt={10}
-      variant="outline"
-      value={activeTab}
-      onChange={changeTab}
-    >
-      <Tabs.List>
-        <Tabs.Tab
-          value="detail"
-          leftSection={<IconSettingsShare size={12} />}
-          fw={isDetail ? 700 : undefined}
-          c={isDetail ? "primary" : ""}
-        >
-          {t("Detail")}
-        </Tabs.Tab>
-        <Tabs.Tab
-          value="modified"
-          leftSection={<IconEditCircle size={12} />}
-          fw={!isDetail ? 700 : undefined}
-          c={!isDetail ? "primary" : ""}
-        >
-          {t("Modified")}
-        </Tabs.Tab>
-      </Tabs.List>
-    </Tabs>
+    <Box ta="left">
+      <Tabs
+        mt={10}
+        variant="outline"
+        value={activeTab}
+        onChange={changeTab}
+      >
+        <Tabs.List>
+          <Tabs.Tab
+            value="detail"
+            leftSection={<IconSettingsShare size={12} />}
+            fw={isDetail ? 700 : undefined}
+            c={isDetail ? "primary" : ""}
+          >
+            {t("Detail")}
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="modified"
+            leftSection={<IconEditCircle size={12} />}
+            fw={!isDetail ? 700 : undefined}
+            c={!isDetail ? "primary" : ""}
+          >
+            {t("Modified")}
+          </Tabs.Tab>
+        </Tabs.List>
+      </Tabs>
+    </Box>
   );
 };
 export default TabControll;

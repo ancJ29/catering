@@ -4,7 +4,10 @@ import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import { Product } from "@/services/domain";
+import {
+  Product,
+  type DailyMenuDetailMode as Mode,
+} from "@/services/domain";
 import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
 import {
@@ -32,7 +35,7 @@ const EditModal = ({
   onSave: (quantity: Map<string, number>) => void;
 }) => {
   const t = useTranslation();
-  const [tab, setActiveTab] = useState<string>("detail");
+  const [tab, setActiveTab] = useState<Mode>("detail");
   const { allTypes, products: allProducts } = useProductStore();
   const [changed, setChanged] = useState(false);
   const [quantity] = useState<Map<string, number>>(originQuantity);
@@ -74,12 +77,18 @@ const EditModal = ({
   }, []);
 
   const configs = useMemo(() => {
-    return _configs(t, originQuantity, setQuantity, removeProduct);
+    return _configs(
+      t,
+      originQuantity,
+      tab,
+      setQuantity,
+      removeProduct,
+    );
     function setQuantity(productId: string, price: number) {
       setChanged(true);
       quantity.set(productId, price);
     }
-  }, [originQuantity, quantity, removeProduct, t]);
+  }, [originQuantity, quantity, tab, removeProduct, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -111,10 +120,7 @@ const EditModal = ({
         ta="right"
         pb={10}
       >
-        <Box ta="left">
-          <TabControll onChange={setActiveTab} />
-        </Box>
-
+        <TabControll onChange={setActiveTab} />
         <Button
           disabled={!changed}
           onClick={onSave.bind(null, quantity)}
@@ -202,6 +208,7 @@ const EditModal = ({
             </Box>
           )}
           <DataGrid
+            key={tab}
             hasUpdateColumn={false}
             hasOrderColumn
             columns={configs}

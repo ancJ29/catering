@@ -23,28 +23,16 @@ import {
   startOfWeek,
   stopMouseEvent,
 } from "@/utils";
-import {
-  Button,
-  Flex,
-  Group,
-  Radio,
-  SegmentedControl,
-  Stack,
-  Table,
-  Text,
-  UnstyledButton,
-} from "@mantine/core";
+import { Button, Flex, Stack, Table, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import {
-  IconChevronLeft,
-  IconChevronRight,
-} from "@tabler/icons-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Target, weekdays } from "./_configs";
 import BlankTableBody from "./components/BlankTableBody";
 import Cell from "./components/Cell";
+import DateControll from "./components/DateControll";
 import ModalTitle from "./components/ModalTitle";
+import RadioGroup from "./components/RadioGroup";
 import EditModal from "./modal";
 
 const MenuManagement = () => {
@@ -65,7 +53,6 @@ const MenuManagement = () => {
   } = useCateringStore();
   const [mode, setMode] = useState<"M" | "W">("W");
   const [markDate, setMarkDate] = useState(startOfDay(Date.now()));
-  const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
   const [target, setTarget] = useState<Target>();
   const [shift, setShift] = useState<string>();
   const [cateringId, setCateringId] = useState<string>();
@@ -167,14 +154,6 @@ const MenuManagement = () => {
       }
     };
 
-    const _setMode = (value: string) => {
-      if (value === W) {
-        setMode("W");
-      } else {
-        setMode("M");
-      }
-    };
-
     const _selectCatering = (value: string | null) => {
       if (!value || !cateringIdByName.has(value)) {
         !value && setCateringId(undefined);
@@ -221,58 +200,33 @@ const MenuManagement = () => {
             data={targetData}
             onChange={_selectTarget}
           />
-          <Button onClick={_clearAll}>{t("Clear")}</Button>
           {mode === "M" && target?.shifts?.length && (
-            <Radio.Group
-              label={t("shifts")}
-              value={shift}
-              onChange={setShift}
-            >
-              <Group>
-                {target?.shifts.map((shift, idx) => {
-                  return (
-                    <Radio
-                      disabled={target.shifts.length === 1}
-                      h="2.2rem"
-                      pt=".8rem"
-                      key={idx}
-                      value={shift}
-                      label={shift}
-                    />
-                  );
-                })}
-              </Group>
-            </Radio.Group>
+            <RadioGroup
+              shifts={target.shifts}
+              shift={shift || ""}
+              setShift={setShift}
+            />
           )}
+          <Button onClick={_clearAll}>{t("Clear")}</Button>
         </Flex>
-        <Flex justify="center" align="center">
-          <UnstyledButton onClick={_shiftMarkDate.bind(null, -1)}>
-            <IconChevronLeft className="c-catering-btn-icon" />
-          </UnstyledButton>
-          <SegmentedControl
-            value={mode === "W" ? W : M}
-            data={[W, M]}
-            onChange={_setMode}
-          />
-          <UnstyledButton onClick={_shiftMarkDate.bind(null, 1)}>
-            <IconChevronRight className="c-catering-btn-icon" />
-          </UnstyledButton>
-        </Flex>
+        <DateControll
+          mode={mode}
+          onShift={_shiftMarkDate}
+          onChangeMode={setMode}
+        />
       </Flex>
     );
   }, [
     customers,
     selectedCustomer,
     caterings,
-    t,
     target,
     mode,
     shift,
-    W,
-    M,
     cateringId,
     customerIdByName,
     cateringIdByName,
+    t,
   ]);
 
   const { monthView, weekView, headers } = useMemo(() => {

@@ -1,4 +1,7 @@
-import { Product } from "@/services/domain";
+import {
+  Product,
+  type DailyMenuDetailMode as Mode,
+} from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { Button, Flex, NumberInput, Text } from "@mantine/core";
 import { useState } from "react";
@@ -24,6 +27,7 @@ export function filter(p: Product, x?: FilterType) {
 export const _configs = (
   t: (key: string) => string,
   _quantity: Map<string, number>,
+  mode: Mode,
   setQuantity: (productId: string, price: number) => void,
   removeProduct: (id: string) => void,
 ): DataGridColumnProps[] => {
@@ -54,8 +58,20 @@ export const _configs = (
           const [quantity, setInternalQuantity] = useState(
             _quantity.get(product.id) || 0,
           );
+
           return (
             <NumberInput
+              fw={600}
+              styles={{
+                input: {
+                  color: mode === "detail" ? "black" : "",
+                  backgroundColor:
+                    mode === "modified"
+                      ? "var(--mantine-color-red-1)"
+                      : undefined,
+                },
+              }}
+              disabled={mode === "detail"}
               value={quantity}
               thousandSeparator="."
               decimalSeparator=","
@@ -124,7 +140,14 @@ export const _configs = (
       renderCell: (_, product: Product) => {
         return (
           <Flex justify="end" align="center" gap={10}>
-            <Button size="compact-xs">{t("BOM")}</Button>
+            <Button
+              size="compact-xs"
+              onClick={() => {
+                alert("Not implemented!!!");
+              }}
+            >
+              {t("BOM")}
+            </Button>
             <Button
               size="compact-xs"
               variant="light"
