@@ -43,6 +43,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Target, weekdays } from "./_configs";
 import BlankTableBody from "./components/BlankTableBody";
 import Cell from "./components/Cell";
+import ModalTitle from "./components/ModalTitle";
 import EditModal from "./modal";
 
 const MenuManagement = () => {
@@ -253,6 +254,7 @@ const MenuManagement = () => {
                 date: new Date(timestamp),
                 targetName: target?.name || "",
                 shift,
+                status: "CONFIRMED",
                 customerId: selectedCustomer.id || "",
                 quantity: Object.fromEntries(quantity),
               },
@@ -262,18 +264,22 @@ const MenuManagement = () => {
           },
         });
       };
+      const m = dailyMenu.get(key);
       modals.open({
-        title,
+        title: (
+          <ModalTitle
+            title={title}
+            status={m?.others.status || _status()}
+          />
+        ),
         fullScreen: true,
         onClick: stopMouseEvent,
         onClose: modals.closeAll,
-        classNames: {
-          title:
-            "c-catering-font-900 c-catering-fz-2rem c-catering-text-main",
-        },
         children: (
           <EditModal
-            quantity={quantityByDate.get(key) || new Map()}
+            quantity={
+              new Map(Object.entries(m?.others.quantity || {}))
+            }
             onSave={save}
           />
         ),
@@ -289,37 +295,11 @@ const MenuManagement = () => {
         label: string;
         timestamp?: number;
       }[] = weekdays.map((el) => ({ label: t(el) }));
-    const quantityByDate = new Map<string, Map<string, number>>();
     const isWeekView = mode === "W";
     const from = isWeekView
       ? startOfWeek(markDate)
       : firstMonday(markDate);
     const to = isWeekView ? from + 6 * ONE_DAY : lastSunday(markDate);
-
-    if (target) {
-      for (let date = from; date <= to; date += ONE_DAY) {
-        for (const shift of target.shifts) {
-          if (!selectedCustomer) {
-            continue;
-          }
-          const key = dailyMenuKey(
-            selectedCustomer?.id || "",
-            target.name,
-            shift,
-            date,
-          );
-          logger.trace("dailyMenu has key", key, dailyMenu.has(key));
-          if (dailyMenu.has(key)) {
-            const menu = dailyMenu.get(key);
-            quantityByDate.set(
-              key,
-              new Map(Object.entries(menu?.others.quantity || {})),
-            );
-            continue;
-          }
-        }
-      }
-    }
 
     if (isWeekView) {
       headers = weekdays.map((el, idx) => {
@@ -341,10 +321,15 @@ const MenuManagement = () => {
                   shift,
                   header.timestamp || 0,
                 );
+                const m = dailyMenu.get(key);
+                const quantity = new Map(
+                  Object.entries(m?.others.quantity || {}),
+                );
                 return (
                   <Cell
                     key={idx}
-                    quantity={quantityByDate.get(key) || new Map()}
+                    status={m?.others.status || _status()}
+                    quantity={quantity}
                     onClick={openModal.bind(
                       null,
                       header.timestamp || 0,
@@ -386,11 +371,17 @@ const MenuManagement = () => {
                   shift || "",
                   cell.timestamp,
                 );
+                const m = dailyMenu.get(key);
                 return (
                   <Cell
                     key={idx}
                     date={cell.date}
-                    quantity={quantityByDate.get(key) || new Map()}
+                    status={m?.others.status || _status()}
+                    quantity={
+                      new Map(
+                        Object.entries(m?.others.quantity || {}),
+                      )
+                    }
                     onClick={openModal.bind(
                       null,
                       cell.timestamp,
@@ -469,7 +460,7 @@ const MenuManagement = () => {
             {mode === "W" && <Table.Th w={60}>&nbsp;</Table.Th>}
             {headers.map((el, idx) => {
               return (
-                <Table.Th ta="center" key={idx}>
+                <Table.Th ta="center" key={idx} w="14.2857%">
                   {el.label}
                 </Table.Th>
               );
@@ -554,4 +545,17 @@ function _hash(
       .join("."),
   );
   return "#" + hash;
+}
+
+function _status() {
+  return undefined;
+  // const list = [
+  //   "NEW",
+  //   "WAITING",
+  //   "CONFIRMED",
+  //   "PROCESSING",
+  //   "READY",
+  //   "DELIVERED",
+  // ] as DailyMenuStatus[];
+  // return list[Math.floor(Math.random() * list.length)];
 }

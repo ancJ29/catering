@@ -24,18 +24,28 @@ const TabControll = ({
     },
     [onChange],
   );
+  const isDetail = activeTab === "detail";
   return (
-    <Tabs variant="pills" value={activeTab} onChange={changeTab}>
+    <Tabs
+      mt={10}
+      variant="outline"
+      value={activeTab}
+      onChange={changeTab}
+    >
       <Tabs.List>
         <Tabs.Tab
           value="detail"
           leftSection={<IconSettingsShare size={12} />}
+          fw={isDetail ? 700 : undefined}
+          c={isDetail ? "primary" : ""}
         >
           {t("Detail")}
         </Tabs.Tab>
         <Tabs.Tab
           value="modified"
           leftSection={<IconEditCircle size={12} />}
+          fw={!isDetail ? 700 : undefined}
+          c={!isDetail ? "primary" : ""}
         >
           {t("Modified")}
         </Tabs.Tab>

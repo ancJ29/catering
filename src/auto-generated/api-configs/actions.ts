@@ -22,6 +22,7 @@ import {
   Policy,
   RequestDecorator,
 } from "./enums";
+import { dailyMenuOthersSchema } from "./others";
 import {
   addResponse,
   booleanSchema,
@@ -417,6 +418,7 @@ export const configs = {
         targetName: stringSchema,
         shift: stringSchema,
         quantity: z.record(stringSchema, numberSchema),
+        status: dailyMenuOthersSchema.shape.status,
       }),
       response: addResponse,
     },

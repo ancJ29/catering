@@ -111,7 +111,10 @@ const EditModal = ({
         ta="right"
         pb={10}
       >
-        <TabControll onChange={setActiveTab} />
+        <Box ta="left">
+          <TabControll onChange={setActiveTab} />
+        </Box>
+
         <Button
           disabled={!changed}
           onClick={onSave.bind(null, quantity)}
@@ -136,13 +139,14 @@ const EditModal = ({
                       <Grid.Col key={`${type}.1`} span={10}>
                         {t(`products.type.${type}`)}
                       </Grid.Col>
-                      <Grid.Col key={`${type}.1`} span={2}>
+                      <Grid.Col key={`${type}.2`} span={2}>
                         {numberByTypes.get(type) || 0}
                       </Grid.Col>
                     </>
                   );
                 })}
               </Grid>
+
               <Flex
                 gap={10}
                 justify="start"
@@ -203,9 +207,6 @@ const EditModal = ({
             columns={configs}
             data={menuItem}
           />
-          <Box h="20vh" className="c-catering-bdr-box" p={8}>
-            TODO: Detail prices
-          </Box>
         </Grid.Col>
         <Grid.Col span={3} className="c-catering-bdr-box">
           <Box key={counter}>

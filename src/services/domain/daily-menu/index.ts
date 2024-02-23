@@ -1,6 +1,7 @@
 import {
   Actions,
   configs as actionConfigs,
+  xDailyMenuSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { ONE_WEEK } from "@/utils";
@@ -12,6 +13,28 @@ type Response = z.infer<typeof response>;
 const dailySchema = response.transform((array) => array[0]);
 
 export type DailyMenu = z.infer<typeof dailySchema>;
+
+export type DailyMenuStatus = z.infer<
+  typeof xDailyMenuSchema.shape.others.shape.status
+>;
+
+export function dailyMenuStatusColor(
+  status: DailyMenuStatus | undefined,
+  level = 5,
+) {
+  const colors: Record<DailyMenuStatus, string> = {
+    NEW: "",
+    WAITING: "red",
+    CONFIRMED: "cyan",
+    PROCESSING: "yellow",
+    READY: "lime",
+    DELIVERED: "blue",
+  };
+  if (!status || status === "NEW") {
+    return "";
+  }
+  return `${colors[status]}.${level}`;
+}
 
 export async function getDailyMenu({
   customerId,

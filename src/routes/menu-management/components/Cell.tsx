@@ -1,22 +1,34 @@
+import {
+  DailyMenuStatus,
+  dailyMenuStatusColor,
+} from "@/services/domain";
 import useProductStore from "@/stores/product.store";
 import { Box, Table } from "@mantine/core";
 
 type CellProps = {
   date?: string;
+  status?: DailyMenuStatus;
   quantity: Map<string, number>;
   onClick: () => void;
 };
 
-const Cell = ({ quantity, date, onClick }: CellProps) => {
+const Cell = ({
+  status = "NEW",
+  quantity,
+  date,
+  onClick,
+}: CellProps) => {
   const { products: allProducts } = useProductStore();
   return (
     <Table.Td
       onClick={onClick}
       height={150}
       style={{
+        position: "relative",
         cursor: "pointer",
         verticalAlign: "top",
       }}
+      bg={dailyMenuStatusColor(status, 1)}
     >
       <Box fz={16} fw={900} mb={2} w="100%" ta="right">
         {date}
@@ -44,6 +56,18 @@ const Cell = ({ quantity, date, onClick }: CellProps) => {
             {product?.name || "--"}
           </Box>
         ))}
+      <Box
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          padding: "1px",
+          width: "100%",
+          display: "flex",
+          justifyContent: "start",
+          alignItems: "center",
+        }}
+      ></Box>
     </Table.Td>
   );
 };
