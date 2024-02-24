@@ -1,3 +1,5 @@
+import { Md5 } from "ts-md5";
+
 export async function decode(str: unknown) {
   if (typeof str === "string") {
     const crypt = str.startsWith("xxx.");
@@ -20,16 +22,17 @@ async function decryptData(
   iv: string,
 ): Promise<string> {
   // Convert encrypted data, key, and iv to ArrayBuffer
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  // prettier-ignore
   const encryptedArrayBuffer = new Uint8Array(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     encryptedData.match(/[\da-f]{2}/gi)!.map((h) => parseInt(h, 16)),
   ).buffer;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const keyArrayBuffer = new Uint8Array(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     key.match(/[\da-f]{2}/gi)!.map((h) => parseInt(h, 16)),
   ).buffer;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ivArrayBuffer = new Uint8Array(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     iv.match(/[\da-f]{2}/gi)!.map((h) => parseInt(h, 16)),
   ).buffer;
 
@@ -55,4 +58,8 @@ async function decryptData(
   const decrypted = decoder.decode(decryptedArrayBuffer);
 
   return decrypted;
+}
+
+export function md5(str: string) {
+  return Md5.hashStr(str);
 }
