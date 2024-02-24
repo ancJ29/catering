@@ -1,78 +1,101 @@
 import useOnEnter from "@/hooks/useOnEnter";
 import { OptionProps } from "@/types";
-import { blank } from "@/utils";
 import {
-  AutocompleteProps,
   Autocomplete as MantineAutocomplete,
+  AutocompleteProps as MantineAutocompleteProps,
 } from "@mantine/core";
 import { IconFilter, IconX } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-interface IAutocompleteProps extends AutocompleteProps {
+export interface AutocompleteProps extends MantineAutocompleteProps {
   options?: OptionProps[];
   data?: string[];
   disabled?: boolean;
+  unFocusOnMatch?: boolean;
   onEnter?: (value: string) => void;
+  onMatch?: (value: string) => void;
+  onClear?: () => void;
 }
 
 const Autocomplete = ({
   options,
-  data,
+  data: _data,
   disabled,
   defaultValue,
-  onEnter = blank,
+  unFocusOnMatch = false,
+  onEnter,
   onChange,
+  onMatch,
+  onClear,
   ...props
-}: IAutocompleteProps) => {
+}: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const _data = useMemo(
-    () => data || options?.map((el) => el.label),
-    [options, data],
+  const data = useMemo(
+    () => _data || options?.map((el) => el.label),
+    [options, _data],
   );
+
+  const _dataMap = useMemo(() => {
+    if (onMatch && data?.length) {
+      return new Map<string, boolean>(
+        data?.map((el) => [el, true]) || [],
+      );
+    }
+    return new Map<string, boolean>();
+  }, [data, onMatch]);
+
   const [currentValue, setCurrentValue] = useState<string>("");
 
   const _onChange = useCallback(
     (value: string) => {
-      onChange && onChange(value);
       setCurrentValue(value);
-      if (_data?.includes(value)) {
-        inputRef.current?.blur();
+      if (onChange || onMatch) {
+        onChange && onChange(value);
+        if (_dataMap.has(value)) {
+          onMatch?.(value);
+          inputRef.current?.blur();
+        }
       }
     },
-    [_data, onChange],
+    [_dataMap, onChange, onMatch],
   );
 
   const enterHandler = useCallback(() => {
-    onEnter.bind(null, currentValue)();
-    inputRef.current?.blur();
+    if (onEnter) {
+      onEnter(currentValue);
+      setTimeout(() => {
+        inputRef.current?.blur();
+      }, 100);
+    }
   }, [currentValue, onEnter]);
 
   const _onEnter = useOnEnter(enterHandler);
 
-  const onClear = useCallback(() => {
+  const clear = useCallback(() => {
+    onClear && onClear();
     _onChange("");
-  }, [_onChange]);
+  }, [_onChange, onClear]);
 
   const clearIcon = useMemo(() => {
     return defaultValue || currentValue ? (
-      <IconX onClick={onClear} size={14} />
+      <IconX onClick={clear} size={14} />
     ) : undefined;
-  }, [currentValue, defaultValue, onClear]);
+  }, [currentValue, defaultValue, clear]);
 
   return (
     <MantineAutocomplete
-      ref={inputRef}
+      ref={unFocusOnMatch ? inputRef : undefined}
       classNames={{
         input: "c-catering-truncate",
       }}
       defaultValue={defaultValue}
       value={defaultValue ? undefined : currentValue}
       leftSection={<IconFilter size={14} />}
-      rightSection={clearIcon}
-      data={_data}
+      rightSection={disabled ? undefined : clearIcon}
+      data={data}
       onKeyDown={_onEnter}
       onChange={_onChange}
-      disabled={disabled ?? (_data?.length || 0) < 1}
+      disabled={disabled ?? (data?.length || 0) < 1}
       {...props}
     />
   );

@@ -1,6 +1,6 @@
 import { Actions } from "@/auto-generated/api-configs";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
-import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
@@ -88,7 +88,6 @@ const SupplierMaterialManagement = () => {
     filtered,
     names,
     keyword,
-    onKeywordChanged,
     reload,
     reset,
     setCondition,
@@ -260,14 +259,13 @@ const SupplierMaterialManagement = () => {
               />
             </Flex>
             <Flex justify="end" align={"center"} mb="1rem">
-              <Autocomplete
+              <AutocompleteForFilterData
                 key={counter}
                 defaultValue={keyword}
                 label={t("Material name")}
                 w={"20vw"}
-                onEnter={reload}
                 data={names}
-                onChange={onKeywordChanged}
+                onReload={reload}
               />
             </Flex>
             <Box ta="right" mb={10}>

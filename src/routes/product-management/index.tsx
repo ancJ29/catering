@@ -1,4 +1,3 @@
-import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
@@ -16,6 +15,7 @@ import {
   defaultCondition,
   filter,
 } from "./_configs";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 
 const ProductManagement = () => {
   const t = useTranslation();
@@ -47,7 +47,6 @@ const ProductManagement = () => {
     keyword,
     names,
     page,
-    onKeywordChanged,
     reload,
     reset,
     setPage,
@@ -81,14 +80,13 @@ const ProductManagement = () => {
             options={typeOptions}
             onChange={updateCondition.bind(null, "type", "")}
           />
-          <Autocomplete
+          <AutocompleteForFilterData
             key={counter}
+            w={"20vw"}
+            data={names}
             defaultValue={keyword}
             label={t("Cuisine name")}
-            w={"20vw"}
-            onEnter={reload}
-            data={names}
-            onChange={onKeywordChanged}
+            onReload={reload}
           />
           <Button disabled={!filtered} onClick={reset}>
             {t("Clear")}

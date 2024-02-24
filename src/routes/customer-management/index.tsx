@@ -1,4 +1,4 @@
-import Autocomplete from "@/components/common/Autocomplete";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
@@ -11,19 +11,14 @@ const CustomerManagement = () => {
   const t = useTranslation();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
-  const { data, names, onKeywordChanged, reload } =
-    useFilterData<Customer>({
-      dataLoader: getAllCustomers,
-    });
+  const { data, names, reload } = useFilterData<Customer>({
+    dataLoader: getAllCustomers,
+  });
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"center"}>
-        <Autocomplete
-          onEnter={reload}
-          data={names}
-          onChange={onKeywordChanged}
-        />
+        <AutocompleteForFilterData data={names} onReload={reload} />
       </Flex>
       <DataGrid
         hasOrderColumn

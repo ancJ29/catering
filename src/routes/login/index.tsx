@@ -1,4 +1,3 @@
-import LoginForm from "@/components/Login/Form";
 import TextCenter from "@/components/common/TextCenter";
 import useTranslation from "@/hooks/useTranslation";
 import AuthLayout from "@/layouts/Auth";
@@ -6,6 +5,7 @@ import useAuthStore from "@/stores/auth.store";
 import { Center, Title } from "@mantine/core";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginForm from "./form";
 
 const Login = () => {
   const t = useTranslation();

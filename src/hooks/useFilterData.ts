@@ -23,7 +23,6 @@ export default function useFilterData<
   const [keyword, setKeyword] = useState("");
   const [names, setNames] = useState<string[]>([]);
   const [xRecords, setXRecords] = useState<T[]>([]);
-  const [records, setRecords] = useState<Map<string, T>>(new Map());
   const [filtered, setFiltered] = useState(false);
   const [condition, setCondition] = useState<F | undefined>(
     defaultCondition,
@@ -33,7 +32,6 @@ export default function useFilterData<
     if (dataLoader) {
       const data = (await dataLoader()) || [];
       setXRecords(data);
-      data && setRecords(new Map(data.map((el) => [el.name, el])));
       setNames(unique(data.map((el) => el.name)));
       logger.trace("useFilterData: loaded", data.length || 0);
     }
@@ -65,17 +63,6 @@ export default function useFilterData<
       setCounter((c) => c + 1);
     },
     [xRecords, condition, filter],
-  );
-
-  const onKeywordChanged = useCallback(
-    (value: string) => {
-      if (records.has(value)) {
-        records.has(value) && reload(value);
-      } else if (!value) {
-        reload("");
-      }
-    },
-    [reload, records],
   );
 
   const reset = useCallback(() => {
@@ -131,7 +118,6 @@ export default function useFilterData<
     keyword,
     names,
     page,
-    onKeywordChanged,
     reload,
     reset,
     setCondition,

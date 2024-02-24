@@ -10,15 +10,17 @@ import {
 } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
 
+export type DateControllProps = {
+  mode: "W" | "M";
+  onChangeMode: (value: "W" | "M") => void;
+  onShift: (diff: 1 | -1) => void;
+};
+
 const DateControll = ({
   mode,
   onShift,
   onChangeMode,
-}: {
-  mode: "W" | "M";
-  onChangeMode: (value: "W" | "M") => void;
-  onShift: (diff: number) => void;
-}) => {
+}: DateControllProps) => {
   const t = useTranslation();
   const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
   const change = useCallback(

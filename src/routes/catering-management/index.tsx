@@ -1,4 +1,4 @@
-import Autocomplete from "@/components/common/Autocomplete";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -19,19 +19,14 @@ const CateringManagement = () => {
     return Array.from(caterings.values());
   }, [caterings]);
 
-  const { data, names, onKeywordChanged, reload } =
-    useFilterData<Department>({
-      dataLoader,
-    });
+  const { data, names, reload } = useFilterData<Department>({
+    dataLoader,
+  });
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"center"}>
-        <Autocomplete
-          onEnter={reload}
-          data={names}
-          onChange={onKeywordChanged}
-        />
+        <AutocompleteForFilterData data={names} onReload={reload} />
       </Flex>
       <DataGrid
         hasOrderColumn

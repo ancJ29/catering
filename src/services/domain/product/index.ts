@@ -7,11 +7,10 @@ import cache from "@/services/cache";
 import logger from "@/services/logger";
 import { z } from "zod";
 
-const response = actionConfigs[Actions.GET_ALL_PRODUCTS].schema.response;
+const response =
+  actionConfigs[Actions.GET_ALL_PRODUCTS].schema.response;
 
-const productSchema = response.transform(
-  (array) => array[0],
-);
+const productSchema = response.transform((array) => array[0]);
 
 export type Product = z.infer<typeof productSchema>;
 

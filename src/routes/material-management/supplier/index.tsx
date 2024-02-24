@@ -1,6 +1,6 @@
 import { Actions } from "@/auto-generated/api-configs";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
-import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -72,10 +72,9 @@ const MaterialSupplierManagement = () => {
     return Array.from(supplierById.values());
   }, [supplierById]);
 
-  const { data, names, onKeywordChanged, reload } =
-    useFilterData<Supplier>({
-      dataLoader,
-    });
+  const { data, names, reload } = useFilterData<Supplier>({
+    dataLoader,
+  });
 
   const addSupplier = useCallback(
     (supplierId: string) => {
@@ -186,13 +185,12 @@ const MaterialSupplierManagement = () => {
             )}
           </Grid.Col>
           <Grid.Col span={3} className="c-catering-bdr-box">
-            <Autocomplete
+            <AutocompleteForFilterData
               mr={10}
-              label={t("Catering name")}
-              onEnter={reload}
-              data={names}
-              onChange={onKeywordChanged}
               mb={10}
+              data={names}
+              label={t("Catering name")}
+              onReload={reload}
             />
             <ScrollArea h="80vh">
               <Selector

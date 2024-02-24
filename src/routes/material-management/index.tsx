@@ -1,4 +1,4 @@
-import Autocomplete from "@/components/common/Autocomplete";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
@@ -35,7 +35,6 @@ const MaterialManagement = () => {
     keyword,
     names,
     page,
-    onKeywordChanged,
     reload,
     reset,
     setCondition,
@@ -77,13 +76,12 @@ const MaterialManagement = () => {
           options={groupOptions}
           onChange={updateCondition.bind(null, "group", "")}
         />
-        <Autocomplete
+        <AutocompleteForFilterData
           label={t("Material name")}
           w={"20vw"}
-          defaultValue={keyword}
-          onEnter={reload}
           data={names}
-          onChange={onKeywordChanged}
+          defaultValue={keyword}
+          onReload={reload}
         />
         <Button disabled={!filtered} onClick={reset}>
           {t("Clear")}

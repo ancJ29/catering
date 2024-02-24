@@ -1,4 +1,3 @@
-import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
@@ -11,6 +10,7 @@ import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
 import AddSupplierForm from "./components/AddSupplierForm";
 import UpdateSupplierForm from "./components/UpdateSupplierForm";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 
 const SupplierManagement = () => {
   const t = useTranslation();
@@ -22,7 +22,7 @@ const SupplierManagement = () => {
     return Array.from(suppliers.values());
   }, [suppliers, reloadSuppliers]);
 
-  const { data, names, page, onKeywordChanged, reload, setPage } =
+  const { data, names, page, reload, setPage } =
     useFilterData<Supplier>({ dataLoader });
 
   const addSupplier = useCallback(
@@ -61,11 +61,10 @@ const SupplierManagement = () => {
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"center"} gap={10}>
-        <Autocomplete
+        <AutocompleteForFilterData
           w={"20vw"}
-          onEnter={reload}
           data={names}
-          onChange={onKeywordChanged}
+          onReload={reload}
         />
         <Button w={100} onClick={() => addSupplier()}>
           {t("Add")}

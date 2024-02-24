@@ -1,6 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
 import Selector from "@/components/c-catering/Selector";
-import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -22,6 +21,7 @@ import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Catering, configs } from "./_config";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 
 const SupplierCateringManagement = () => {
   const { reload: reloadCatering, caterings: cateringById } =
@@ -71,8 +71,9 @@ const SupplierCateringManagement = () => {
     return Array.from(cateringById.values());
   }, [cateringById]);
 
-  const { data, names, onKeywordChanged, reload } =
-    useFilterData<Catering>({ dataLoader });
+  const { data, names, reload } = useFilterData<Catering>({
+    dataLoader,
+  });
 
   const addCatering = useCallback(
     (cateringId: string) => {
@@ -167,13 +168,12 @@ const SupplierCateringManagement = () => {
             />
           </Grid.Col>
           <Grid.Col span={3} className="c-catering-bdr-box">
-            <Autocomplete
+            <AutocompleteForFilterData
               mr={10}
-              label={t("Catering name")}
-              onEnter={reload}
-              data={names}
-              onChange={onKeywordChanged}
               mb={10}
+              label={t("Catering name")}
+              data={names}
+              onReload={reload}
             />
             <ScrollArea h="80vh">
               <Selector

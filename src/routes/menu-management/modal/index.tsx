@@ -1,5 +1,5 @@
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
-import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
@@ -108,7 +108,6 @@ const EditModal = ({
     filtered,
     keyword,
     names,
-    onKeywordChanged,
     reload,
     reset,
     updateCondition,
@@ -235,13 +234,12 @@ const EditModal = ({
               />
             </Flex>
             <Flex justify="end" align={"center"} mb="1rem">
-              <Autocomplete
+              <AutocompleteForFilterData
                 w={"20vw"}
-                onEnter={reload}
                 data={names}
                 defaultValue={keyword}
                 label={t("Cuisine name")}
-                onChange={onKeywordChanged}
+                onReload={reload}
               />
             </Flex>
           </Box>

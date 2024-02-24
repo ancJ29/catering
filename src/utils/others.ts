@@ -7,3 +7,16 @@ export function positivePrice(value: string | number) {
   }
   return price;
 }
+
+export function removeHashFromUrl() {
+  window.location.hash?.length &&
+    window.history.pushState(
+      "",
+      document.title,
+      window.location.pathname + window.location.search,
+    );
+}
+
+export function addHashToUrl(hash: string) {
+  hash.length && (window.location.hash = hash);
+}

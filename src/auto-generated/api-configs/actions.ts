@@ -16,7 +16,12 @@ import {
   xProductSchema,
   xSupplierSchema,
 } from "./custom-prisma-schema";
-import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
+import {
+  ActionGroups,
+  Actions,
+  Policy,
+  RequestDecorator,
+} from "./enums";
 import { dailyMenuOthersSchema } from "./others";
 import {
   addResponse,
@@ -72,7 +77,10 @@ export const configs = {
     schema: {
       request: z.any(),
       response: z.object({
-        materialGroupByType: z.record(stringSchema, stringSchema.array()),
+        materialGroupByType: z.record(
+          stringSchema,
+          stringSchema.array(),
+        ),
         departments: idAndNameSchema.array(),
         roles: idAndNameSchema.array(),
         units: unitSchema

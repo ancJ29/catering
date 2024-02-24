@@ -1,15 +1,13 @@
 import useTranslation from "@/hooks/useTranslation";
 import { Group, Radio } from "@mantine/core";
 
-const RadioGroup = ({
-  shifts,
-  shift,
-  setShift,
-}: {
+export type RadioGroupProps = {
   shift: string;
   shifts: string[];
   setShift: (shift: string) => void;
-}) => {
+};
+
+const RadioGroup = ({ shifts, shift, setShift }: RadioGroupProps) => {
   const t = useTranslation();
   return (
     <Radio.Group
