@@ -1,16 +1,17 @@
+import { iv, key } from "@/configs/keys";
+import logger from "@/services/logger";
 import { Md5 } from "ts-md5";
 
 export async function decode(str: unknown) {
   if (typeof str === "string") {
-    const crypt = str.startsWith("xxx.");
+    /* cspell:disable-next-line */
+    const crypt = str.endsWith(".nW9h5wkTVY4pAfhb24NGtjE");
+    logger.debug("crypt", crypt);
     if (!crypt) {
       return JSON.parse(decodeURIComponent(atob(str)));
     }
     await new Promise((resolve) => setTimeout(resolve, 1));
-    const key =
-      "0c3f33016e4843732a15036782bd0260c81ecc220b397414ea025b4fb0c43362";
-    const iv = "f53afa7d52df781bc3c9b2e7a8574b9d";
-    const s = await decryptData(str.slice(4), key, iv);
+    const s = await decryptData(str.slice(0, -24), key, iv);
     return JSON.parse(decodeURIComponent(atob(s)));
   }
   return str;
