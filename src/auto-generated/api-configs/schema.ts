@@ -60,9 +60,7 @@ export const futureDateSchema = dateSchema.refine(
 
 // 028-3933-9999 / 0912-345-678 → 842839339999
 export const emailSchema = stringSchema.email();
-export const phoneSchema = stringSchema.regex(
-  /^(84\d{9}|842\d{10})$/,
-);
+export const phoneSchema = stringSchema.regex(/^(84\d{9}|842\d{10})$/);
 
 const enumSchema = clientEnumSchema
   .pick({

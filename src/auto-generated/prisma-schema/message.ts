@@ -1,4 +1,4 @@
-import * as z from "zod";
+import * as z from "zod"
 import { messageStatusEnum } from "./enums";
 
 export const messageSchema = z.object({
@@ -14,4 +14,4 @@ export const messageSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
-});
+})

@@ -1,22 +1,31 @@
 import Loader from "@/components/common/Loader";
 import { resolver, theme } from "@/configs/theme/mantine-theme";
-import useAxiosLoading from "@/hooks/useAxiosLoading";
 import authRoutes from "@/router/auth.route";
 import guestRoutes from "@/router/guest.route";
+import loadingStore from "@/services/api/loading-store";
 import useAuthStore from "@/stores/auth.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
 
 const App = () => {
   const [loaded, setLoaded] = useState(false);
   const { loadToken, user } = useAuthStore();
   const { loadMetaData } = useMetaDataStore();
-  const loading = useAxiosLoading();
+
+  const loading = useSyncExternalStore(
+    loadingStore.subscribe,
+    loadingStore.getSnapshot,
+  );
 
   useEffect(() => {
     // Note: Don't load twice

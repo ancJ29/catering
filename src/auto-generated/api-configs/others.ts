@@ -169,10 +169,13 @@ export const materialGroupByType = [
   ["YT", "Y"],
   ["DC", "Z"],
   ["DP", "P"],
-].reduce((acc, [type, group]) => {
-  if (!acc[type]) {
-    acc[type] = [];
-  }
-  acc[type].push(group);
-  return acc;
-}, {} as Record<string, string[]>);
+].reduce(
+  (acc, [type, group]) => {
+    if (!acc[type]) {
+      acc[type] = [];
+    }
+    acc[type].push(group);
+    return acc;
+  },
+  {} as Record<string, string[]>,
+);

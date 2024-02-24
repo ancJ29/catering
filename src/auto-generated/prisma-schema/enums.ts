@@ -4,70 +4,70 @@ import { z } from "zod";
 export const actionTypeEnum = z.nativeEnum({
   READ: "READ",
   WRITE: "WRITE",
-  DELETE: "DELETE",
+  DELETE: "DELETE"
 } as {
-  READ: "READ";
-  WRITE: "WRITE";
-  DELETE: "DELETE";
+  "READ": "READ",
+  "WRITE": "WRITE",
+  "DELETE": "DELETE",
 });
 
 export type ActionType = "READ" | "WRITE" | "DELETE";
 
 export const ActionType = {
-  READ: "READ" as ActionType,
-  WRITE: "WRITE" as ActionType,
-  DELETE: "DELETE" as ActionType,
+  "READ": "READ" as ActionType,
+  "WRITE": "WRITE" as ActionType,
+  "DELETE": "DELETE" as ActionType,
 };
 
 export const actionStatusEnum = z.nativeEnum({
   SUCCESS: "SUCCESS",
-  FAILED: "FAILED",
+  FAILED: "FAILED"
 } as {
-  SUCCESS: "SUCCESS";
-  FAILED: "FAILED";
+  "SUCCESS": "SUCCESS",
+  "FAILED": "FAILED",
 });
 
 export type ActionStatus = "SUCCESS" | "FAILED";
 
 export const ActionStatus = {
-  SUCCESS: "SUCCESS" as ActionStatus,
-  FAILED: "FAILED" as ActionStatus,
+  "SUCCESS": "SUCCESS" as ActionStatus,
+  "FAILED": "FAILED" as ActionStatus,
 };
 
 export const genderEnum = z.nativeEnum({
   MALE: "MALE",
   FEMALE: "FEMALE",
-  OTHER: "OTHER",
+  OTHER: "OTHER"
 } as {
-  MALE: "MALE";
-  FEMALE: "FEMALE";
-  OTHER: "OTHER";
+  "MALE": "MALE",
+  "FEMALE": "FEMALE",
+  "OTHER": "OTHER",
 });
 
 export type Gender = "MALE" | "FEMALE" | "OTHER";
 
 export const Gender = {
-  MALE: "MALE" as Gender,
-  FEMALE: "FEMALE" as Gender,
-  OTHER: "OTHER" as Gender,
+  "MALE": "MALE" as Gender,
+  "FEMALE": "FEMALE" as Gender,
+  "OTHER": "OTHER" as Gender,
 };
 
 export const messageStatusEnum = z.nativeEnum({
   PENDING: "PENDING",
   SENT: "SENT",
-  FAILED: "FAILED",
+  FAILED: "FAILED"
 } as {
-  PENDING: "PENDING";
-  SENT: "SENT";
-  FAILED: "FAILED";
+  "PENDING": "PENDING",
+  "SENT": "SENT",
+  "FAILED": "FAILED",
 });
 
 export type MessageStatus = "PENDING" | "SENT" | "FAILED";
 
 export const MessageStatus = {
-  PENDING: "PENDING" as MessageStatus,
-  SENT: "SENT" as MessageStatus,
-  FAILED: "FAILED" as MessageStatus,
+  "PENDING": "PENDING" as MessageStatus,
+  "SENT": "SENT" as MessageStatus,
+  "FAILED": "FAILED" as MessageStatus,
 };
 
 export const messageTypeEnum = z.nativeEnum({
@@ -75,26 +75,21 @@ export const messageTypeEnum = z.nativeEnum({
   EMAIL: "EMAIL",
   PHONE: "PHONE",
   SLACK: "SLACK",
-  ZALO: "ZALO",
+  ZALO: "ZALO"
 } as {
-  SMS: "SMS";
-  EMAIL: "EMAIL";
-  PHONE: "PHONE";
-  SLACK: "SLACK";
-  ZALO: "ZALO";
+  "SMS": "SMS",
+  "EMAIL": "EMAIL",
+  "PHONE": "PHONE",
+  "SLACK": "SLACK",
+  "ZALO": "ZALO",
 });
 
-export type MessageType =
-  | "SMS"
-  | "EMAIL"
-  | "PHONE"
-  | "SLACK"
-  | "ZALO";
+export type MessageType = "SMS" | "EMAIL" | "PHONE" | "SLACK" | "ZALO";
 
 export const MessageType = {
-  SMS: "SMS" as MessageType,
-  EMAIL: "EMAIL" as MessageType,
-  PHONE: "PHONE" as MessageType,
-  SLACK: "SLACK" as MessageType,
-  ZALO: "ZALO" as MessageType,
+  "SMS": "SMS" as MessageType,
+  "EMAIL": "EMAIL" as MessageType,
+  "PHONE": "PHONE" as MessageType,
+  "SLACK": "SLACK" as MessageType,
+  "ZALO": "ZALO" as MessageType,
 };

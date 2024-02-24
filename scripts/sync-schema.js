@@ -8,5 +8,3 @@ rmSync("./src/auto-generated/", { recursive: true });
 cpSync("../schema/auto-generated/", "./src/auto-generated/", {
   recursive: true,
 });
-
-execSync("yarn static:fix");

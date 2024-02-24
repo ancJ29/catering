@@ -5,5 +5,6 @@ export * from "./function";
 export * from "./object";
 export * from "./others";
 export * from "./phone-number";
+export * from "./store";
 export * from "./string";
 export * from "./time";

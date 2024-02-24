@@ -12,7 +12,7 @@ import axios, { type AxiosResponse } from "axios";
 import dayjs from "dayjs";
 import { ZodTypeDef, z } from "zod";
 import validator from "./_validator";
-
+import loadingStore from "./loading-store";
 type ActionConfig = {
   group: string;
   schema: {
@@ -34,7 +34,6 @@ type callApiProps<T> = {
 };
 
 const base = import.meta.env.BASE_URL;
-let counter = 0;
 const shouldValidateParams = import.meta.env.DEV;
 const shouldValidateResponse = import.meta.env.DEV;
 const dateKeys = new Map<string, boolean>(
@@ -72,7 +71,8 @@ export default async function callApi<T, R>({
       return cache.data;
     }
   }
-  !options?.noLoading && _increaseCounter();
+  !options?.noLoading && loadingStore.startLoading();
+
   const start = Date.now();
   try {
     const data = await _fetch<R>(action, _params);
@@ -102,26 +102,14 @@ export default async function callApi<T, R>({
       });
     logger.error("[api-v2-error]", error);
   } finally {
-    _decreaseCounter(start);
+    const THRESHOLD = 800;
+    const delay = Math.max(THRESHOLD - (Date.now() - start), 0);
+    if (delay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+    loadingStore.stopLoading();
   }
   return undefined;
-}
-
-async function _decreaseCounter(start: number) {
-  const THRESHOLD = 800;
-  const delay = Math.max(THRESHOLD - (Date.now() - start), 0);
-  if (delay > 0) {
-    await new Promise((resolve) => setTimeout(resolve, delay));
-  }
-  counter--;
-  if (counter < 1) {
-    window.dispatchEvent(new Event("clear-loading"));
-  }
-}
-
-async function _increaseCounter() {
-  counter < 1 && window.dispatchEvent(new Event("start-loading"));
-  counter++;
 }
 
 async function _fetch<R>(action: string, params: unknown) {

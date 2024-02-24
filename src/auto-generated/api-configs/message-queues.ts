@@ -2,12 +2,12 @@ import { z } from "zod";
 import { contextSchema, genericSchema, stringSchema } from "./schema";
 
 export enum MESSAGE_QUEUE_CHANNEL {
-  RESERVATION_ADDED = "reservation-added",
+  PRODUCT_ADDED = "product-added",
   REQUEST_HANDLER_TRIGGER = "request-handler-trigger",
 }
 
 export const messageQueueSchemaConfigs = {
-  [MESSAGE_QUEUE_CHANNEL.RESERVATION_ADDED]: {
+  [MESSAGE_QUEUE_CHANNEL.PRODUCT_ADDED]: {
     schema: z.object({
       id: stringSchema,
     }),

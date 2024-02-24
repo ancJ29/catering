@@ -7,3 +7,4 @@ index.html
 .vscode/
 .eslintrc.js
 .prettierrc
+src/auto-generated/

@@ -7,9 +7,9 @@ import { z } from "zod";
 
 const { response } = actionConfigs[Actions.GET_METADATA].schema;
 type Response = z.infer<typeof response>;
-
+const debug = false;
 export async function getMetadata() {
-  window.dispatchEvent(new Event("start-loading"));
+  debug && window.dispatchEvent(new Event("start-loading"));
   // prettier-ignore
   return axios.request<Response>({
     method: "POST",
@@ -22,6 +22,6 @@ export async function getMetadata() {
       "x-client-id": import.meta.env.CLIENT_ID || "0",
     },
   }).then((res) => res.data).finally(() => {
-    window.dispatchEvent(new Event("clear-loading"));
+    debug && window.dispatchEvent(new Event("clear-loading"));
   });
 }

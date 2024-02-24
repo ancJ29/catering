@@ -1,4 +1,4 @@
-import * as z from "zod";
+import * as z from "zod"
 import { genderEnum } from "./enums";
 
 export const contactSchema = z.object({
@@ -14,4 +14,4 @@ export const contactSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
-});
+})

@@ -1,4 +1,4 @@
-import * as z from "zod";
+import * as z from "zod"
 import { actionTypeEnum } from "./enums";
 
 export const actionSchema = z.object({
@@ -12,4 +12,4 @@ export const actionSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
-});
+})

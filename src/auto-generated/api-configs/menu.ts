@@ -2,7 +2,7 @@ import { Menu } from "@/types";
 
 export default [
   {
-    roles: ["client-owner"],
+    roles: ["client-owner", "client-sales"],
     key: "metadata",
     label: "Metadata Management",
     icon: "clipboard-list",
@@ -15,11 +15,12 @@ export default [
         url: "/unit-management",
       },
       {
-        roles: ["client-owner"],
+        roles: ["client-owner", "client-sales"],
         key: "customer",
         label: "Customer Management",
         icon: "building-bank",
         url: "/customer-management",
+        dashboard: ["client-owner"],
       },
       {
         roles: ["client-owner"],
@@ -60,6 +61,7 @@ export default [
   },
   {
     roles: ["client-owner", "client-sales"],
+    dashboard: ["client-sales"],
     key: "menu-management",
     label: "Menu Management",
     icon: "chef-hat",
