@@ -64,7 +64,7 @@ export default async function callApi<T, R>({
     options.toastMessage && _toast("Unknown error!!!", true, true);
   } finally {
     const elapsed = Date.now() - start;
-    options?.noLoading &&
+    !options?.noLoading &&
       loadingStore.stopLoading(Math.max(THRESHOLD - elapsed, 10));
     // TODO: elapsed > LIMIT && logger.warn("[api-v2-slow]", key, action, _params, elapsed);
   }
