@@ -4,6 +4,7 @@ import { Dictionary } from "@/types";
 export default {
   // prettier-ignore
   "__App_Title__": "C-Catering",
+  "Unknown error!!!": "Unknown error!!!",
   "Active": "Active",
   "Add column": "Add column",
   "Add supplier successfully": "Add supplier successfully",

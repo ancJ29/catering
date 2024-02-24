@@ -12,20 +12,18 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
   counter: 0,
 });
 
-const loadingStore = {
+export default {
   ...store,
   startLoading() {
     dispatch({ type: "increase" });
   },
-  stopLoading() {
-    dispatch({ type: "decrease" });
+  stopLoading(delay = 0) {
+    setTimeout(() => dispatch({ type: "decrease" }), delay);
   },
   getSnapshot() {
     return store.getSnapshot()?.counter > 0;
   },
 };
-
-export default loadingStore;
 
 function reducer(action: Action, state: State): State {
   switch (action.type) {

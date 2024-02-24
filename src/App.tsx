@@ -1,13 +1,15 @@
 import Loader from "@/components/common/Loader";
 import { resolver, theme } from "@/configs/theme/mantine-theme";
+import useTranslation from "@/hooks/useTranslation";
 import authRoutes from "@/router/auth.route";
 import guestRoutes from "@/router/guest.route";
-import loadingStore from "@/services/api/loading-store";
+import loadingStore from "@/services/api/store/loading";
+import notificationStore from "@/services/api/store/notification";
 import useAuthStore from "@/stores/auth.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
-import { Notifications } from "@mantine/notifications";
+import { Notifications, notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 import {
   useEffect,
@@ -18,6 +20,7 @@ import {
 import { RouteObject, useRoutes } from "react-router-dom";
 
 const App = () => {
+  const t = useTranslation();
   const [loaded, setLoaded] = useState(false);
   const { loadToken, user } = useAuthStore();
   const { loadMetaData } = useMetaDataStore();
@@ -25,6 +28,11 @@ const App = () => {
   const loading = useSyncExternalStore(
     loadingStore.subscribe,
     loadingStore.getSnapshot,
+  );
+
+  const signals = useSyncExternalStore(
+    notificationStore.subscribe,
+    notificationStore.getSnapshot,
   );
 
   useEffect(() => {
@@ -48,6 +56,15 @@ const App = () => {
   const routes = useMemo(() => {
     return _buildRoutes(loaded, !!user);
   }, [user, loaded]);
+
+  useEffect(() => {
+    signals.forEach(({ color, message, translate }) => {
+      notifications.show({
+        color,
+        message: translate ? t(message) : message,
+      });
+    });
+  }, [signals, t]);
 
   return (
     <MantineProvider theme={theme} cssVariablesResolver={resolver}>

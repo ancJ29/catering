@@ -4,6 +4,7 @@ import { Dictionary } from "@/types";
 export default {
   // prettier-ignore
   "__App_Title__": "C-Catering",
+  "Unknown error!!!": "Lỗi không xác định!!!",
   "Active": "Đang hoạt động",
   "Add column": "Thêm cột",
   "Add supplier successfully": "Thêm nhà cung cấp thành công",
