@@ -1,5 +1,10 @@
+import {
+  configs as actionConfigs,
+  Actions,
+} from "@/auto-generated/api-configs";
 import { unitSchema } from "@/auto-generated/prisma-schema";
-import { getMetadata } from "@/services/metadata";
+import logger from "@/services/logger";
+import request from "@/services/request";
 import { Dictionary } from "@/types";
 import { z } from "zod";
 import { create } from "zustand";
@@ -22,6 +27,9 @@ type MetaDataStore = {
   loadMetaData: () => Promise<void>;
 };
 
+const { response } = actionConfigs[Actions.GET_METADATA].schema;
+type Response = z.infer<typeof response>;
+
 export default create<MetaDataStore>((set) => ({
   materialGroupByType: {},
   dictionaries: JSON.parse(
@@ -32,7 +40,14 @@ export default create<MetaDataStore>((set) => ({
   departmentIdByName: new Map<string, string>(),
   roleIdByName: new Map<string, string>(),
   loadMetaData: async () => {
-    const data = await getMetadata();
+    const data: Response = await request({
+      action: Actions.GET_METADATA,
+    });
+    logger.info(
+      "loadMetaData",
+      typeof data,
+      data.dictionaries.version,
+    );
     const version = data.dictionaries.version;
     const cachedVersion = localStorage.getItem(
       "____dictionaries-version____",

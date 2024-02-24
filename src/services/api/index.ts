@@ -5,10 +5,15 @@ import {
 import { ActionType } from "@/auto-generated/prisma-schema";
 import cache from "@/services/cache";
 import logger from "@/services/logger";
+import request from "@/services/request";
+import useAuthStore from "@/stores/auth.store";
 import { GenericObject } from "@/types";
 import { _checkCache } from "./helpers/cache";
-import { _fetch } from "./helpers/fetch";
-import { _validateParams } from "./helpers/validate";
+import { _parseDateToUnix, _parseUnixToDate } from "./helpers/time";
+import {
+  _validateParams,
+  _validateResponse,
+} from "./helpers/validate";
 import loadingStore from "./store/loading";
 import notificationStore from "./store/notification";
 
@@ -84,4 +89,13 @@ function _reload(reloadOnSuccess: boolean | { delay: number }) {
       ? reloadOnSuccess.delay
       : 100;
   setTimeout(() => window.location.reload(), timeout);
+}
+
+async function _fetch<R>(action: string, params: unknown) {
+  const token = useAuthStore.getState().token;
+  const res = await request(
+    { action, params: _parseDateToUnix(params) },
+    token,
+  );
+  return _validateResponse(action, _parseUnixToDate(res) as R);
 }
