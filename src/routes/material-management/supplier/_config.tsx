@@ -1,8 +1,7 @@
+import NumberInput from "@/components/common/NumberInput";
 import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { positivePrice } from "@/utils";
-import { Button, NumberInput } from "@mantine/core";
-import { useState } from "react";
+import { Button } from "@mantine/core";
 
 export type SupplierMaterial = {
   price: number;
@@ -63,26 +62,14 @@ export const configs = (
         ).toString();
       },
       renderCell(_, sm: SupplierMaterial) {
-        const Component = () => {
-          const [price, setInternalPrice] = useState(
-            sm.price || prices.get(sm.supplier.id) || 0,
-          );
-          return (
-            <NumberInput
-              value={price}
-              thousandSeparator="."
-              decimalSeparator=","
-              suffix=" đ"
-              step={1000}
-              onChange={(value) => {
-                const price = positivePrice(value);
-                setInternalPrice(price);
-                setPrice(sm.supplier.id, price);
-              }}
-            />
-          );
-        };
-        return <Component />;
+        return (
+          <NumberInput
+            defaultValue={sm.price || prices.get(sm.supplier.id) || 0}
+            suffix=" đ"
+            step={1000}
+            onChange={(price) => setPrice(sm.supplier.id, price)}
+          />
+        );
       },
     },
     {

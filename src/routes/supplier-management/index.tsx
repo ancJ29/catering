@@ -1,3 +1,4 @@
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
@@ -10,8 +11,8 @@ import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
 import AddSupplierForm from "./components/AddSupplierForm";
 import UpdateSupplierForm from "./components/UpdateSupplierForm";
-import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 
+// TODO: refactor this component (ref: src/routes/menu-management/)
 const SupplierManagement = () => {
   const t = useTranslation();
   const { suppliers, reload: reloadSuppliers } = useSupplierStore();

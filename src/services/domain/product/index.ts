@@ -32,3 +32,13 @@ export async function getAllProducts(
   });
   return products || [];
 }
+
+export function productTypeOptions(
+  types: string[],
+  t: (_: string) => string,
+) {
+  return types.map((type) => ({
+    label: t(`products.type.${type}`),
+    value: type,
+  }));
+}

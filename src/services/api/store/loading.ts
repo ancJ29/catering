@@ -5,7 +5,7 @@ type State = {
 };
 
 type Action = {
-  type: "increase" | "decrease";
+  type: "INCREASE" | "DECREASE";
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -15,10 +15,10 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 export default {
   ...store,
   startLoading() {
-    dispatch({ type: "increase" });
+    dispatch({ type: "INCREASE" });
   },
   stopLoading(delay = 0) {
-    setTimeout(() => dispatch({ type: "decrease" }), delay);
+    setTimeout(() => dispatch({ type: "DECREASE" }), delay);
   },
   getSnapshot() {
     return store.getSnapshot()?.counter > 0;
@@ -27,11 +27,11 @@ export default {
 
 function reducer(action: Action, state: State): State {
   switch (action.type) {
-    case "increase":
+    case "INCREASE":
       return {
         counter: state.counter + 1,
       };
-    case "decrease":
+    case "DECREASE":
       return {
         counter: Math.max(state.counter - 1, 0),
       };

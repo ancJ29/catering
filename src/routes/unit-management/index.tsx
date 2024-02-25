@@ -2,6 +2,7 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import useMetaDataStore from "@/stores/meta-data.store";
@@ -10,7 +11,6 @@ import {
   Box,
   Button,
   Flex,
-  NumberInput,
   ScrollArea,
   Stack,
   Table,
@@ -50,6 +50,7 @@ type Column = {
 
 type X = Dispatch<SetStateAction<Unit[] | undefined>>;
 
+// TODO: refactor this component (ref: src/routes/menu-management/)
 const UnitManagement = () => {
   const t = useTranslation();
   // https://ui.mantine.dev/component/table-scroll-area/
@@ -287,10 +288,7 @@ function _rows(
             <NumberInput
               defaultValue={element.converters[kdx - 2]}
               onChange={(value) => {
-                const converter = parseInt(value.toString());
-                if (!isNaN(converter)) {
-                  _updated(idx, kdx, "converters", converter);
-                }
+                _updated(idx, kdx, "converters", value);
               }}
             />
           )}

@@ -24,7 +24,11 @@ const map = new Map<number, DailyMenuStatus>(
   statuses.map((s, i) => [i, s]),
 );
 
-const Steppers = ({ status }: { status: DailyMenuStatus }) => {
+const Steppers = ({
+  status = "NEW",
+}: {
+  status?: DailyMenuStatus;
+}) => {
   const t = useTranslation();
   const [active, setActive] = useState<number>(
     statuses.indexOf(status),

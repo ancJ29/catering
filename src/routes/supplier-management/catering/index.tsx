@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
@@ -21,8 +22,8 @@ import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Catering, configs } from "./_config";
-import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 
+// TODO: refactor this component (ref: src/routes/menu-management/)
 const SupplierCateringManagement = () => {
   const { reload: reloadCatering, caterings: cateringById } =
     useCateringStore();

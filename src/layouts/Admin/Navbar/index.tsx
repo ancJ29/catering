@@ -1,5 +1,4 @@
 import useTranslation from "@/hooks/useTranslation";
-import { buildMenu } from "@/services/navbar";
 import useAuthStore from "@/stores/auth.store";
 import { Menu } from "@/types";
 import { Box, Flex, Image, NavLink, Tooltip } from "@mantine/core";
@@ -18,7 +17,7 @@ const Navbar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthStore();
-  const [menu] = useState<Menu>(buildMenu(user?.menu));
+  const [menu] = useState<Menu>(user?.menu || []);
   const [active, setActive] = useState(location.pathname);
 
   useEffect(() => {

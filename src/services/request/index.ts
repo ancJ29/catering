@@ -34,7 +34,7 @@ async function _nonce(
   action: string,
   requestId: string,
   counter = 0,
-) {
+): Promise<string> {
   if (counter > 10000) {
     throw new Error("Cannot generate nonce");
   }

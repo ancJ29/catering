@@ -12,10 +12,12 @@ type AutocompleteForFilterDataProps = OmittedAutocompleteProps & {
 const AutocompleteForFilterData = ({
   data = [],
   onReload,
+  ...props
 }: AutocompleteForFilterDataProps) => {
   return (
     <Autocomplete
       data={data}
+      {...props}
       onEnter={onReload}
       onMatch={onReload}
       onClear={onReload}

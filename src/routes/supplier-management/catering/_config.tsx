@@ -1,8 +1,7 @@
+import NumberInput from "@/components/common/NumberInput";
 import { Department } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { positivePrice } from "@/utils";
-import { Button, NumberInput } from "@mantine/core";
-import { useState } from "react";
+import { Button } from "@mantine/core";
 
 export type Catering = Department & {
   price?: number;
@@ -36,27 +35,15 @@ export const configs = (
       width: "200px",
       header: t("Supplier catering addition fee"),
       renderCell(_, row: Catering) {
-        const Component = () => {
-          const [fee, setInternalFee] = useState(row.price || 0);
-          return (
-            <NumberInput
-              value={fee}
-              thousandSeparator="."
-              decimalSeparator=","
-              suffix=" đ"
-              step={1000}
-              onChange={(value) => {
-                const fee = positivePrice(value);
-                setInternalFee(fee);
-                setFee(row?.id || "", fee);
-              }}
-              onBlur={() => {
-                fee && setFee(row?.id || "", fee);
-              }}
-            />
-          );
-        };
-        return <Component />;
+        return (
+          <NumberInput
+            defaultValue={row.price || 0}
+            suffix=" đ"
+            step={1000}
+            onChange={(fee) => setFee(row?.id || "", fee)}
+            onBlurWithValue={(fee) => setFee(row?.id || "", fee)}
+          />
+        );
       },
     },
     {

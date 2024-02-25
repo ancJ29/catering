@@ -1,101 +1,57 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
+import NumberInput from "@/components/common/NumberInput";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  DailyMenuStatus,
+  DailyMenu,
   Product,
+  productTypeOptions,
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
 import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
+import { Box, Button, Flex, Grid, ScrollArea } from "@mantine/core";
 import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  NumberInput,
-  ScrollArea,
-} from "@mantine/core";
-import { useCallback, useMemo, useState } from "react";
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Steppers from "../components/Steppers";
 import TabControll from "../components/TabControll";
-import {
-  FilterType,
-  _configs,
-  defaultCondition,
-  filter,
-} from "./_config";
+import { _configs } from "./_config";
+import { FilterType, defaultCondition, filter } from "./_filter";
+import store from "./_item.store";
 
 const EditModal = ({
-  status = "NEW",
-  quantity: originQuantity,
+  dailyMenu,
   onSave,
 }: {
-  status?: DailyMenuStatus;
-  quantity: Map<string, number>;
-  onSave: (
-    productIds: string[],
-    quantity: Map<string, number>,
-  ) => void;
+  dailyMenu?: DailyMenu;
+  onSave: (quantity: Record<string, number>) => void;
 }) => {
+  const {
+    item: updatedDailyMenu,
+    productIds,
+    updated,
+  } = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  useEffect(() => store.set(dailyMenu), [dailyMenu]);
+
   const t = useTranslation();
   const [tab, setActiveTab] = useState<Mode>("detail");
   const { allTypes, products: allProducts } = useProductStore();
-  const [changed, setChanged] = useState(false);
-  const [quantity] = useState<Map<string, number>>(originQuantity);
-  const [productIds, setProductIds] = useState(
-    Array.from(originQuantity.keys()),
+  const typeOptions: OptionProps[] = useMemo(
+    () => productTypeOptions(allTypes, t),
+    [allTypes, t],
   );
-  const menuItem: Product[] = useMemo(() => {
-    return productIds
-      .map((productId) => allProducts.get(productId))
-      .filter(Boolean) as Product[];
-  }, [allProducts, productIds]);
-  const typeOptions: OptionProps[] = useMemo(() => {
-    return allTypes.map((type) => ({
-      label: t(`products.type.${type}`),
-      value: type,
-    }));
-  }, [allTypes, t]);
-
-  const { numberByTypes } = useMemo(() => {
-    const numberByTypes = new Map<string, number>();
-    menuItem.forEach((p) => {
-      numberByTypes.set(
-        p.others.type,
-        (numberByTypes.get(p.others.type) || 0) + 1,
-      );
-    });
-
-    return { numberByTypes };
-  }, [menuItem]);
-
-  const addProduct = useCallback((id: string) => {
-    setChanged(true);
-    setProductIds((prev) => [...prev, id]);
-  }, []);
-
-  const removeProduct = useCallback((id: string) => {
-    setChanged(true);
-    setProductIds((prev) => prev.filter((i) => i !== id));
-  }, []);
 
   const configs = useMemo(() => {
-    return _configs(
-      t,
-      originQuantity,
-      tab,
-      setQuantity,
-      removeProduct,
-    );
-    function setQuantity(productId: string, price: number) {
-      setChanged(true);
-      quantity.set(productId, price);
-    }
-  }, [originQuantity, quantity, tab, removeProduct, t]);
+    return _configs(t, tab, dailyMenu);
+  }, [dailyMenu, tab, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -117,9 +73,27 @@ const EditModal = ({
     filter,
   });
 
+  const selectedProduct: Product[] = useMemo(() => {
+    return productIds
+      .map((productId) => allProducts.get(productId))
+      .filter(Boolean) as Product[];
+  }, [allProducts, productIds]);
+
+  const { numberByTypes } = useMemo(() => {
+    const numberByTypes = new Map<string, number>();
+    selectedProduct.forEach((p) => {
+      numberByTypes.set(
+        p.others.type,
+        (numberByTypes.get(p.others.type) || 0) + 1,
+      );
+    });
+
+    return { numberByTypes };
+  }, [selectedProduct]);
+
   return (
     <Box>
-      <Steppers status={status} />
+      <Steppers status={dailyMenu?.others.status} />
       <Flex
         align="center"
         justify="space-between"
@@ -129,8 +103,11 @@ const EditModal = ({
       >
         <TabControll onChange={setActiveTab} />
         <Button
-          disabled={!changed}
-          onClick={onSave.bind(null, productIds, quantity)}
+          disabled={!updated}
+          onClick={onSave.bind(
+            null,
+            updatedDailyMenu?.others.quantity || {},
+          )}
         >
           {t("Save")}
         </Button>
@@ -171,8 +148,6 @@ const EditModal = ({
                 <NumberInput
                   label={t("Total sets")}
                   w="160px"
-                  thousandSeparator="."
-                  decimalSeparator=","
                   step={1}
                 />
                 <NumberInput
@@ -182,8 +157,6 @@ const EditModal = ({
                   defaultValue={
                     20e3 + Math.floor(Math.random() * 20) * 1e3
                   }
-                  thousandSeparator="."
-                  decimalSeparator=","
                   suffix=" đ"
                   step={1000}
                 />
@@ -194,8 +167,6 @@ const EditModal = ({
                   defaultValue={
                     10e3 + Math.floor(Math.random() * 20) * 1e3
                   }
-                  thousandSeparator="."
-                  decimalSeparator=","
                   suffix=" đ"
                   step={1000}
                 />
@@ -206,8 +177,6 @@ const EditModal = ({
                   defaultValue={
                     10e3 + Math.floor(Math.random() * 20) * 1e3
                   }
-                  thousandSeparator="."
-                  decimalSeparator=","
                   suffix=" đ"
                   step={1000}
                 />
@@ -219,7 +188,7 @@ const EditModal = ({
             hasUpdateColumn={false}
             hasOrderColumn
             columns={configs}
-            data={menuItem}
+            data={selectedProduct}
           />
         </Grid.Col>
         <Grid.Col span={3} className="c-catering-bdr-box">
@@ -252,8 +221,8 @@ const EditModal = ({
             <Selector
               data={data}
               selectedIds={productIds}
-              onAdd={addProduct}
-              onRemove={removeProduct}
+              onAdd={store.addProduct}
+              onRemove={store.removeProduct}
               labelGenerator={(p) => `${p.name} - ${p.code}`}
             />
           </ScrollArea>

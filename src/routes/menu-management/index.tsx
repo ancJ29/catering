@@ -95,11 +95,18 @@ const MenuManagement = () => {
       const catering = caterings.get(cateringId || "");
       const cateringName = catering?.name || "";
       const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift} (${cateringName})`;
-      const save = (
-        productIds: string[],
-        quantity: Map<string, number>,
-      ) => {
-        if (!timestamp || !selectedCustomer) {
+      const save = (quantity: Record<string, number>) => {
+        Object.keys(quantity).forEach((productId) => {
+          if (quantity[productId] < 1) {
+            delete quantity[productId];
+          }
+        });
+
+        if (
+          !timestamp ||
+          !selectedCustomer ||
+          !Object.keys(quantity).length
+        ) {
           modals.closeAll();
           return;
         }
@@ -120,17 +127,7 @@ const MenuManagement = () => {
                 shift,
                 status: "CONFIRMED",
                 customerId: selectedCustomer.id || "",
-                quantity: Object.fromEntries(
-                  productIds
-                    .map(
-                      (productId) =>
-                        [productId, quantity.get(productId) || 0] as [
-                          string,
-                          number,
-                        ],
-                    )
-                    .filter(([, count]) => count > 0),
-                ),
+                quantity,
               },
             });
             await _getDailyMenu(true);
@@ -138,7 +135,6 @@ const MenuManagement = () => {
           },
         });
       };
-      const m = dailyMenu.get(key);
       modals.open({
         title: <ModalTitle title={title} />,
         fullScreen: true,
@@ -146,10 +142,8 @@ const MenuManagement = () => {
         onClose: modals.closeAll,
         children: (
           <EditModal
-            status={m?.others.status}
-            quantity={
-              new Map(Object.entries(m?.others.quantity || {}))
-            }
+            key={Date.now()}
+            dailyMenu={dailyMenu.get(key)}
             onSave={save}
           />
         ),
