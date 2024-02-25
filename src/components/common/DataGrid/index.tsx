@@ -177,7 +177,7 @@ function DataGrid<
             }}
             lastPage={lastPage}
             setPage={(page) => {
-              onChangePage && onChangePage(page);
+              onChangePage?.(page);
               setPage(page);
             }}
           />

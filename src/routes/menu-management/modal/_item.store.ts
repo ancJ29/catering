@@ -1,7 +1,9 @@
+import { DailyMenuStatus } from "@/services/domain";
 import { createStore } from "@/utils";
 
 export type XDailyMenu = {
   others: {
+    status: DailyMenuStatus;
     quantity: Record<string, number>;
   };
 };
@@ -13,28 +15,25 @@ type State = {
 };
 
 // prettier-ignore
-type ActionType = "RESET" | "SET" | "SET_QUANTITY" | "ADD_PRODUCT" | "REMOVE_PRODUCT";
+type ActionType = "RESET" | "SET" | "SET_QUANTITY" | "ADD_PRODUCT" | "REMOVE_PRODUCT" | "SET_STATUS";
 
 type Action = {
   type: ActionType;
   payload?: XDailyMenu;
   productId?: string;
   quantity?: number;
+  status?: DailyMenuStatus;
 };
 
-const defaultState: State = {
+const { dispatch, ...store } = createStore<State, Action>(reducer, {
   productIds: [],
   item: {
     others: {
+      status: "NEW",
       quantity: {},
     },
   },
-};
-
-const { dispatch, ...store } = createStore<State, Action>(
-  reducer,
-  defaultState,
-);
+});
 
 export default {
   dispatch,
@@ -44,6 +43,9 @@ export default {
   },
   setQuantity(productId: string, quantity: number) {
     dispatch({ type: "SET_QUANTITY", productId, quantity });
+  },
+  setStatus(status: DailyMenuStatus) {
+    dispatch({ type: "SET_STATUS", status });
   },
   addProduct(productId: string) {
     dispatch({ type: "ADD_PRODUCT", productId });
@@ -57,6 +59,15 @@ export default {
 };
 
 function reducer(action: Action, state: State): State {
+  const defaultState = {
+    productIds: [],
+    item: {
+      others: {
+        status: "NEW" as DailyMenuStatus,
+        quantity: {},
+      },
+    },
+  };
   switch (action.type) {
     case "RESET":
       return defaultState;
@@ -66,6 +77,7 @@ function reducer(action: Action, state: State): State {
           originItem: action.payload,
           item: {
             others: {
+              status: action.payload.others.status,
               quantity: {
                 ...action.payload.others.quantity,
               },
@@ -76,6 +88,12 @@ function reducer(action: Action, state: State): State {
         };
       }
       return defaultState;
+    case "SET_STATUS":
+      if (state.item && action.status) {
+        state.item.others.status = action.status;
+        return { ...state, updated: true };
+      }
+      break;
     case "ADD_PRODUCT":
       if (action.productId) {
         const currentQuantity =

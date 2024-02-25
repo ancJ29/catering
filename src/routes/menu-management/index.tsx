@@ -2,7 +2,11 @@ import { Actions } from "@/auto-generated/api-configs";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
-import { dailyMenuKey, getDailyMenu } from "@/services/domain";
+import {
+  DailyMenuStatus,
+  dailyMenuKey,
+  getDailyMenu,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
@@ -95,7 +99,10 @@ const MenuManagement = () => {
       const catering = caterings.get(cateringId || "");
       const cateringName = catering?.name || "";
       const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift} (${cateringName})`;
-      const save = (quantity: Record<string, number>) => {
+      const save = (
+        status: DailyMenuStatus,
+        quantity: Record<string, number>,
+      ) => {
         Object.keys(quantity).forEach((productId) => {
           if (quantity[productId] < 1) {
             delete quantity[productId];
@@ -125,7 +132,7 @@ const MenuManagement = () => {
                 date: new Date(timestamp),
                 targetName: condition.target?.name || "",
                 shift,
-                status: "CONFIRMED",
+                status,
                 customerId: selectedCustomer.id || "",
                 quantity,
               },
@@ -142,6 +149,7 @@ const MenuManagement = () => {
         onClose: modals.closeAll,
         children: (
           <EditModal
+            cateringId={condition.cateringId || ""}
             key={Date.now()}
             dailyMenu={dailyMenu.get(key)}
             onSave={save}

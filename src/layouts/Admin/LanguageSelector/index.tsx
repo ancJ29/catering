@@ -20,7 +20,7 @@ const LanguageSelector = () => {
       return;
     }
     setOpened(false);
-    onChangeLanguage && onChangeLanguage(value || "vi");
+    onChangeLanguage?.(value || "vi");
   };
 
   return (

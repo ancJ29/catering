@@ -7,6 +7,7 @@ import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
   DailyMenu,
+  DailyMenuStatus,
   Product,
   productTypeOptions,
   type DailyMenuDetailMode as Mode,
@@ -28,11 +29,16 @@ import { FilterType, defaultCondition, filter } from "./_filter";
 import store from "./_item.store";
 
 const EditModal = ({
+  cateringId,
   dailyMenu,
   onSave,
 }: {
+  cateringId: string;
   dailyMenu?: DailyMenu;
-  onSave: (quantity: Record<string, number>) => void;
+  onSave: (
+    status: DailyMenuStatus,
+    quantity: Record<string, number>,
+  ) => void;
 }) => {
   const {
     item: updatedDailyMenu,
@@ -50,8 +56,8 @@ const EditModal = ({
   );
 
   const configs = useMemo(() => {
-    return _configs(t, tab, dailyMenu);
-  }, [dailyMenu, tab, t]);
+    return _configs(t, tab, cateringId, dailyMenu);
+  }, [dailyMenu, cateringId, tab, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -93,7 +99,10 @@ const EditModal = ({
 
   return (
     <Box>
-      <Steppers status={dailyMenu?.others.status} />
+      <Steppers
+        onChange={store.setStatus}
+        status={dailyMenu?.others.status}
+      />
       <Flex
         align="center"
         justify="space-between"
@@ -106,6 +115,7 @@ const EditModal = ({
           disabled={!updated}
           onClick={onSave.bind(
             null,
+            updatedDailyMenu?.others.status || "NEW",
             updatedDailyMenu?.others.quantity || {},
           )}
         >

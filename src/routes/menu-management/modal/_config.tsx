@@ -11,6 +11,7 @@ import store from "./_item.store";
 export const _configs = (
   t: (key: string) => string,
   mode: Mode,
+  cateringId: string,
   dailyMenu?: DailyMenu,
 ): DataGridColumnProps[] => {
   return [
@@ -61,11 +62,15 @@ export const _configs = (
       key: "costPrice",
       header: t("Cost price"),
       width: "100px",
-      renderCell() {
-        const cost = Math.floor(Math.random() * 500) * 100;
+      renderCell: (_, product: Product) => {
+        const cost =
+          product.others.costPriceByCatering?.[cateringId] ||
+          product.others.avgCostPrice;
         return (
           <Text w="100%" ta="right" c="red.6">
-            {cost.toLocaleString()}&nbsp;đ
+            {cost?.toLocaleString() || "N/A"}&nbsp;đ
+            {/* {cateringId} */}
+            {/* {product.id} */}
           </Text>
         );
       },
@@ -74,11 +79,11 @@ export const _configs = (
       key: "avgCostPrice",
       header: t("Average cost price"),
       width: "100px",
-      renderCell() {
-        const cost = Math.floor(Math.random() * 500) * 100;
+      renderCell: (_, product: Product) => {
+        const cost = product.others.avgCostPrice;
         return (
           <Text w="100%" ta="right" c="red.6">
-            {cost.toLocaleString()}&nbsp;đ
+            {cost?.toLocaleString() || "N/A"}&nbsp;đ
           </Text>
         );
       },

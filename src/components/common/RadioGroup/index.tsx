@@ -31,7 +31,7 @@ const RadioGroup = ({
       label={label}
       description={description && t(description)}
       onChange={(newValue: string) => {
-        onChange && onChange(newValue);
+        onChange?.(newValue);
       }}
       classNames={{ label: classes.label }}
     >

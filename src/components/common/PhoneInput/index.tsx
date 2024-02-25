@@ -19,7 +19,7 @@ const PhoneInput = ({
       const value = formatPhoneNumber(
         e?.target.value.replace(/\D/g, ""),
       );
-      onChangeValue && onChangeValue(value);
+      onChangeValue?.(value);
     },
     [onChangeValue],
   );

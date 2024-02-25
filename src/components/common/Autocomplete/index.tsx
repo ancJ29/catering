@@ -50,7 +50,7 @@ const Autocomplete = ({
     (value: string) => {
       setCurrentValue(value);
       if (onChange || onMatch) {
-        onChange && onChange(value);
+        onChange?.(value);
         if (_dataMap.has(value)) {
           onMatch?.(value);
           inputRef.current?.blur();
@@ -72,7 +72,7 @@ const Autocomplete = ({
   const _onEnter = useOnEnter(enterHandler);
 
   const clear = useCallback(() => {
-    onClear && onClear();
+    onClear?.();
     _onChange("");
   }, [_onChange, onClear]);
 

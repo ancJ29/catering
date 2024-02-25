@@ -47,7 +47,7 @@ const Cell = ({
             c="white"
             pl={8}
             mt={4}
-            bg="teal.6"
+            bg={dailyMenuStatusColor(status, 9) || "primary.6"}
             style={{
               userSelect: "none",
               borderRadius: "5px",
@@ -56,18 +56,6 @@ const Cell = ({
             {product?.name || "--"}
           </Box>
         ))}
-      <Box
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          padding: "1px",
-          width: "100%",
-          display: "flex",
-          justifyContent: "start",
-          alignItems: "center",
-        }}
-      ></Box>
     </Table.Td>
   );
 };

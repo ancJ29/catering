@@ -19,7 +19,7 @@ const IconBadge = ({
       p={10}
       onClick={(e) => {
         stopMouseEvent(e);
-        navigateUrl ? navigate(navigateUrl) : onClick && onClick();
+        navigateUrl ? navigate(navigateUrl) : onClick?.();
       }}
     >
       <Flex align="center" p={4}>

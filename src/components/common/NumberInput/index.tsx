@@ -28,8 +28,8 @@ const NumberInput = ({
 
   const blur = useCallback(
     (e: React.FocusEvent<HTMLInputElement, Element>) => {
-      onBlurWithValue && onBlurWithValue(value);
-      onBlur && onBlur(e);
+      onBlurWithValue?.(value);
+      onBlur?.(e);
     },
     [onBlur, onBlurWithValue, value],
   );
@@ -38,7 +38,7 @@ const NumberInput = ({
     (value: string | number) => {
       const quantity = _parse(value, isPositive, isInteger);
       setValue(quantity);
-      onChange && onChange(quantity);
+      onChange?.(quantity);
     },
     [isPositive, isInteger, onChange],
   );

@@ -9,6 +9,8 @@ import {
 } from "./schema";
 
 export const productOthersSchema = z.object({
+  avgCostPrice: numberSchema.optional(),
+  costPriceByCatering: z.record(stringSchema, numberSchema).optional(),
   type: z.enum([
     // cspell:disable
     "CP", // CHI PHÍ

@@ -26,8 +26,10 @@ const map = new Map<number, DailyMenuStatus>(
 
 const Steppers = ({
   status = "NEW",
+  onChange,
 }: {
   status?: DailyMenuStatus;
+  onChange: (status: DailyMenuStatus) => void;
 }) => {
   const t = useTranslation();
   const [active, setActive] = useState<number>(
@@ -37,11 +39,16 @@ const Steppers = ({
     () => dailyMenuStatusColor(map.get(active || 0) || "NEW", 9),
     [active],
   );
+
+  const click = (idx: number) => {
+    setActive(idx);
+    onChange(statuses[idx]);
+  };
   return (
     <Stepper
       w="80%"
       size="sm"
-      onStepClick={setActive}
+      onStepClick={click}
       color={color}
       m={10}
       active={active}
