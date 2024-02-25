@@ -3,6 +3,17 @@ import { Dictionary } from "@/types";
 
 export default {
   // prettier-ignore
+  "Payment Management": "Quản lý thanh toán",
+  "Payment Adjustment": "Điều chỉnh thanh toán",
+  "Payment Schedule": "Lập lịch thanh toán",
+  "Report Management": "Báo cáo",
+  "Quick Report": "Báo cáo nhanh",
+  "Report Templates": "Mẫu báo cáo",
+  "Quotation Management": "Quản lý báo giá",
+  "Quotation History Management": "Lịch sử báo giá",
+  "Internal Purchasing Order Management": "Quản lý đơn hàng nội bộ",
+  "Purchasing Order Management": "Quản lý đơn hàng",
+  "Purchasing Request Management": "Quản lý yêu cầu mua hàng",
   "__App_Title__": "C-Catering",
   "Unknown error!!!": "Lỗi không xác định!!!",
   "Active": "Đang hoạt động",

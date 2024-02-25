@@ -36,6 +36,9 @@ const Navbar = ({
                 onOpenNavbar();
                 return;
               } else {
+                if (!item.url) {
+                  alert("Not implemented!!!");
+                }
                 setActive(item.url || "");
                 navigate(item.url || "");
               }
@@ -102,6 +105,8 @@ const Navbar = ({
                           if (sub.url) {
                             setActive(sub.url);
                             navigate(sub.url);
+                          } else {
+                            alert("Not implemented!!!");
                           }
                         }}
                         leftSection={

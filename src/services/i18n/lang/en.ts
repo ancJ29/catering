@@ -3,6 +3,17 @@ import { Dictionary } from "@/types";
 
 export default {
   // prettier-ignore
+  "Payment Management": "Payment Management",
+  "Payment Adjustment": "Payment Adjustment",
+  "Payment Schedule": "Payment Schedule",
+  "Report Management": "Report Management",
+  "Quick Report": "Quick Report",
+  "Report Templates": "Report Templates",
+  "Quotation Management": "Quotation Management",
+  "Quotation History Management": "Quotation History Management",
+  "Internal Purchasing Order Management": "Internal Purchasing Order Management",
+  "Purchasing Order Management": "Purchasing Order Management",
+  "Purchasing Request Management": "Purchasing Request Management",
   "__App_Title__": "C-Catering",
   "Unknown error!!!": "Unknown error!!!",
   "Active": "Active",
