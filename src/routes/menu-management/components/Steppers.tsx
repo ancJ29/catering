@@ -8,7 +8,7 @@ import {
   IconCircleCheck,
   IconCircleCheckFilled,
 } from "@tabler/icons-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Status from "./Status";
 
 const statuses: DailyMenuStatus[] = [
@@ -27,9 +27,11 @@ const map = new Map<number, DailyMenuStatus>(
 const size = 16;
 
 const Steppers = ({
+  disabled = false,
   status = "NEW",
   onChange,
 }: {
+  disabled?: boolean;
   status?: DailyMenuStatus;
   onChange: (status: DailyMenuStatus) => void;
 }) => {
@@ -46,14 +48,25 @@ const Steppers = ({
     [active],
   );
 
-  const click = (idx: number) => {
-    setActive(idx);
-    onChange(statuses[idx]);
-  };
+  const click = useCallback(
+    (idx: number) => {
+      const current = statuses.indexOf(status);
+      if (disabled || idx <= current || idx === active) {
+        return;
+      }
+      setActive(idx);
+      onChange(statuses[idx]);
+    },
+    [active, disabled, status, onChange],
+  );
+
   return (
     <Stepper
       w="100%"
       size="sm"
+      style={{
+        cursor: disabled ? "not-allowed" : "pointer",
+      }}
       onStepClick={click}
       color={color}
       m={10}
@@ -61,6 +74,8 @@ const Steppers = ({
       completedIcon={<IconCircleCheckFilled size={size} />}
     >
       {statuses.map((s, idx) => {
+        const cursor =
+          disabled || idx <= active ? "not-allowed" : "pointer";
         const label =
           idx <= active ? (
             <Status status={s} fz={size} c={c} />
@@ -69,6 +84,8 @@ const Steppers = ({
           );
         return (
           <Stepper.Step
+            style={{ cursor }}
+            disabled={disabled}
             icon={<IconCircleCheck size={size} />}
             key={s}
             label={label}

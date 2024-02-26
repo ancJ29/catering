@@ -52,6 +52,7 @@ const ControllBar = ({
   targetName,
   cateringId,
   setShift,
+  onResetDate,
   onShiftMarkDate,
   onClear,
   onChangeMode,
@@ -254,6 +255,7 @@ const ControllBar = ({
       </Flex>
       <DateControll
         mode={mode}
+        onResetDate={onResetDate}
         onShift={onShiftMarkDate}
         onChangeMode={onChangeMode}
       />

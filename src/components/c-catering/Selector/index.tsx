@@ -9,6 +9,7 @@ type Base = {
 type SelectorProps<T> = {
   data: T[];
   selectedIds: string[];
+  disabled?: boolean;
   onAdd: (id: string) => void;
   onRemove: (id: string) => void;
   labelGenerator?: (el: T) => React.ReactNode;
@@ -16,6 +17,7 @@ type SelectorProps<T> = {
 function Selector<T extends Base>({
   data,
   selectedIds,
+  disabled,
   onAdd,
   onRemove,
   labelGenerator,
@@ -28,16 +30,19 @@ function Selector<T extends Base>({
         return (
           <Box
             style={{
-              cursor: "pointer",
+              cursor: disabled ? "not-allowed" : "pointer",
               borderRadius: "5px",
             }}
             bg={existed ? "primary.4" : undefined}
-            className="c-catering-hover-bg"
+            className={disabled ? "" : "c-catering-hover-bg"}
             key={p.id}
             w="100%"
             p={10}
             mb={4}
             onClick={() => {
+              if (disabled) {
+                return;
+              }
               if (existed) {
                 onRemove(p.id);
               } else {

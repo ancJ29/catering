@@ -15,6 +15,7 @@ import {
 import useAuthStore from "@/stores/auth.store";
 import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
+import { isPastDate } from "@/utils";
 import { Box, Button, Flex, Grid, ScrollArea } from "@mantine/core";
 import {
   useCallback,
@@ -49,7 +50,10 @@ const EditModal = ({
   useEffect(() => store.set(dailyMenu), [dailyMenu]);
 
   const t = useTranslation();
-  const { isCatering } = useAuthStore();
+  const disabled = useMemo(() => {
+    return isPastDate(dailyMenu?.date);
+  }, [dailyMenu]);
+  const { isCatering, user } = useAuthStore();
   const [tab, setActiveTab] = useState<Mode>(
     isCatering ? "modified" : "detail",
   );
@@ -60,14 +64,8 @@ const EditModal = ({
   );
 
   const configs = useMemo(() => {
-    return _configs(
-      t,
-      tab,
-      cateringId,
-      isCatering || false,
-      dailyMenu,
-    );
-  }, [isCatering, dailyMenu, cateringId, tab, t]);
+    return user ? _configs(t, tab, cateringId, user, dailyMenu) : [];
+  }, [user, dailyMenu, cateringId, tab, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -112,6 +110,7 @@ const EditModal = ({
       <Steppers
         onChange={store.setStatus}
         status={dailyMenu?.others.status}
+        disabled={disabled}
       />
       <Flex
         align="center"
@@ -127,7 +126,7 @@ const EditModal = ({
         )}
         <Button
           mt={10}
-          disabled={!updated}
+          disabled={disabled || !updated}
           onClick={onSave.bind(
             null,
             updatedDailyMenu?.others.status || "NEW",
@@ -245,6 +244,7 @@ const EditModal = ({
             </Box>
             <ScrollArea h="80vh">
               <Selector
+                disabled={disabled}
                 data={data}
                 selectedIds={productIds}
                 onAdd={store.addProduct}

@@ -16,6 +16,7 @@ import {
   addHashToUrl,
   formatTime,
   removeHashFromUrl,
+  startOfDay,
   stopMouseEvent,
 } from "@/utils";
 import { Stack, Table, Text } from "@mantine/core";
@@ -196,6 +197,12 @@ const MenuManagement = () => {
       key={`${customers.size}.${caterings.size}.${products.size}`}
     >
       <ControlBar
+        onResetDate={() =>
+          dispatch({
+            type: "OVERRIDE",
+            overrideState: { markDate: startOfDay(Date.now()) },
+          })
+        }
         mode={condition.mode}
         shift={condition.shift || ""}
         customer={condition.customer}
@@ -220,30 +227,30 @@ const MenuManagement = () => {
         onChangeMode={(mode: "W" | "M") =>
           dispatch({ type: "OVERRIDE", overrideState: { mode } })
         }
-        setShift={(shift) => {
+        setShift={(shift) =>
           dispatch({
             type: "OVERRIDE",
             overrideState: { shift },
-          });
-        }}
-        onShiftMarkDate={(diff: 1 | -1) => {
+          })
+        }
+        onShiftMarkDate={(diff: 1 | -1) =>
           dispatch({
             type: "SHIFT_MARK_DATE",
             shift: diff,
-          });
-        }}
+          })
+        }
         onTargetChange={(target: {
           name: string;
           shifts: string[];
-        }) => {
+        }) =>
           dispatch({
             type: "OVERRIDE",
             overrideState: {
               target,
               shift: target.shifts[0] || "",
             },
-          });
-        }}
+          })
+        }
       />
       <Table withTableBorder withColumnBorders>
         <Table.Thead>

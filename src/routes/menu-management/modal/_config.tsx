@@ -1,10 +1,12 @@
+import { ClientRoles as Roles } from "@/auto-generated/api-configs";
 import NumberInput from "@/components/common/NumberInput";
 import {
   DailyMenu,
   Product,
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
-import { DataGridColumnProps } from "@/types";
+import { DataGridColumnProps, Payload } from "@/types";
+import { isPastDate } from "@/utils";
 import { Button, Flex, Text } from "@mantine/core";
 import store from "./_item.store";
 
@@ -12,9 +14,11 @@ export const _configs = (
   t: (key: string) => string,
   mode: Mode,
   cateringId: string,
-  isCatering: boolean,
+  user: Payload,
   dailyMenu?: DailyMenu,
 ): DataGridColumnProps[] => {
+  const isCatering = user.others.roles[0] === Roles.CATERING;
+  const editable = !isPastDate(dailyMenu?.date);
   return [
     {
       hidden: false,
@@ -51,7 +55,7 @@ export const _configs = (
                     : undefined,
               },
             }}
-            // disabled={mode === "detail"}
+            disabled={!editable}
             defaultValue={dailyMenu?.others.quantity[product.id] || 0}
             onChange={(quantity) =>
               store.setQuantity(product.id, quantity)
@@ -126,7 +130,7 @@ export const _configs = (
               {t("BOM")}
             </Button>
             <Button
-              disabled={isCatering}
+              disabled={isCatering || !editable}
               size="compact-xs"
               variant="light"
               color="error"

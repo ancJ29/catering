@@ -1,6 +1,9 @@
 import { dailyMenuKey } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
+import { startOfDay } from "@/utils";
 import { Table } from "@mantine/core";
+import { useMemo } from "react";
 import Cell from "./Cell";
 
 type MonthViewProps = {
@@ -21,7 +24,9 @@ const MonthView = ({
   customer,
   onClick,
 }: MonthViewProps) => {
+  const { isCatering } = useAuthStore();
   const { dailyMenu } = useDailyMenuStore();
+  const today = useMemo(() => startOfDay(Date.now()), []);
   return customer ? (
     <Table.Tbody>
       {rows.map((cells, idx) => (
@@ -34,14 +39,19 @@ const MonthView = ({
               cell.timestamp,
             );
             const m = dailyMenu.get(key);
+            const quantity = new Map(
+              Object.entries(m?.others.quantity || {}),
+            );
+            const isEmpty = quantity.size === 0;
+            const isPastDate = (cell.timestamp || 0) < today;
+            const disabled = (isPastDate || isCatering) && isEmpty;
             return (
               <Cell
                 key={idx}
                 date={cell.date}
                 status={m?.others.status}
-                quantity={
-                  new Map(Object.entries(m?.others.quantity || {}))
-                }
+                disabled={disabled}
+                quantity={quantity}
                 onClick={() => onClick(shift, cell.timestamp || 0)}
               />
             );

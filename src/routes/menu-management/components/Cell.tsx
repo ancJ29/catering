@@ -1,16 +1,18 @@
+import useTranslation from "@/hooks/useTranslation";
 import {
   DailyMenuStatus,
   dailyMenuStatusColor,
 } from "@/services/domain";
-import useAuthStore from "@/stores/auth.store";
 import useProductStore from "@/stores/product.store";
 import { Box, Table } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useCallback } from "react";
 
 type CellProps = {
   date?: string;
   status?: DailyMenuStatus;
   quantity: Map<string, number>;
+  disabled?: boolean;
   onClick: () => void;
 };
 
@@ -18,17 +20,24 @@ const Cell = ({
   status = "NEW",
   quantity,
   date,
+  disabled = false,
   onClick,
 }: CellProps) => {
-  const { isCatering } = useAuthStore();
+  const t = useTranslation();
   const { products: allProducts } = useProductStore();
 
-  // simple ==> don't use useMemo
-  const clickAble = quantity.size > 0 || !isCatering;
-
   const _click = useCallback(() => {
-    clickAble && onClick();
-  }, [clickAble, onClick]);
+    if (disabled) {
+      // TODO: common
+      notifications.show({
+        title: t("Cannot edit data"),
+        message: t("Data cannot be edited."),
+        color: "red.5",
+      });
+      return;
+    }
+    onClick();
+  }, [disabled, onClick, t]);
 
   return (
     <Table.Td
@@ -36,7 +45,7 @@ const Cell = ({
       height={150}
       style={{
         position: "relative",
-        cursor: clickAble ? "pointer" : "default",
+        cursor: disabled ? "not-allowed" : "pointer",
         verticalAlign: "top",
       }}
       bg={dailyMenuStatusColor(status, 1)}

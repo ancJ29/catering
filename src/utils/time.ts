@@ -5,6 +5,14 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
 
+export function isFutureDate(date: Date) {
+  return date ? date.getTime() > Date.now() : false;
+}
+
+export function isPastDate(date?: Date) {
+  return date ? date.getTime() < Date.now() : false;
+}
+
 export function startOfWeek(timestamp: number) {
   const res = timestamp - (timestamp % ONE_WEEK) - 3 * ONE_DAY;
   return res + ONE_WEEK > timestamp ? res : res + ONE_WEEK;

@@ -1,5 +1,6 @@
 import useTranslation from "@/hooks/useTranslation";
 import {
+  Button,
   Flex,
   SegmentedControl,
   UnstyledButton,
@@ -14,12 +15,14 @@ export type DateControllProps = {
   mode: "W" | "M";
   onChangeMode: (value: "W" | "M") => void;
   onShift: (diff: 1 | -1) => void;
+  onResetDate: () => void;
 };
 
 const DateControll = ({
   mode,
   onShift,
   onChangeMode,
+  onResetDate,
 }: DateControllProps) => {
   const t = useTranslation();
   const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
@@ -49,6 +52,7 @@ const DateControll = ({
       <UnstyledButton onClick={onShift.bind(null, 1)}>
         <IconChevronRight className="c-catering-btn-icon" />
       </UnstyledButton>
+      <Button onClick={onResetDate}>{t("This week")}</Button>
     </Flex>
   );
 };

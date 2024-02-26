@@ -38,7 +38,9 @@ export const configs = (
       header: t("Role"),
       width: "10%",
       renderCell: (_, user: User) => {
-        return user.others.roles.map((role) => t(`user.role.${role}`)).join(", ");
+        return user.others.roles
+          .map((role) => t(`user.role.${role}`))
+          .join(", ");
         // return roles.map((role) => t(role.name)).join(", ");
       },
     },
