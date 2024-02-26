@@ -1,8 +1,11 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import useTranslation from "@/hooks/useTranslation";
-import { Customer } from "@/services/domain";
+import { Customer, Department } from "@/services/domain";
+import logger from "@/services/logger";
+import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
+import { Payload } from "@/types";
 import { Button, Flex, Select } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DateControll, { DateControllProps } from "./DateControll";
@@ -23,6 +26,24 @@ type ControlBarProps = RadioGroupProps & Omit<DateControllProps, "onShift"> & {
   }) => void;
 };
 
+function _cateringIds(
+  caterings: Department[],
+  isCatering: boolean,
+  user?: Payload,
+): string[] {
+  if (!user) {
+    return [];
+  }
+  return caterings
+    .filter((c) => {
+      if (isCatering) {
+        return user.departmentIds?.includes(c.id);
+      }
+      return true;
+    })
+    .map((c) => c.id);
+}
+
 const ControllBar = ({
   mode,
   shift,
@@ -39,14 +60,27 @@ const ControllBar = ({
   onCustomerChange,
 }: ControlBarProps) => {
   const t = useTranslation();
-  const [cateringName, setCateringName] = useState("");
+  const { user, isCatering } = useAuthStore();
   const { idByName: customerIdByName, customers } =
     useCustomerStore();
   const {
-    names: cateringNames,
     cateringIdByName,
     caterings,
+    names: allCateringNames,
   } = useCateringStore();
+  const [cateringName, setCateringName] = useState("");
+
+  const [cateringIds, cateringNames] = useMemo(() => {
+    if (!isCatering) {
+      return [Array.from(caterings.keys()), allCateringNames];
+    }
+    const arr = Array.from(caterings.values());
+    const ids = _cateringIds(arr, isCatering, user || undefined);
+    const names = arr
+      .filter((c) => ids.includes(c.id))
+      .map((c) => c.name);
+    return [ids, names];
+  }, [isCatering, caterings, user, allCateringNames]);
 
   const customerNamesByCateringId = useMemo(() => {
     const map = new Map<string, string[]>();
@@ -59,11 +93,27 @@ const ControllBar = ({
   }, [customers]);
 
   const customerData = useMemo(() => {
-    if (cateringId) {
+    if (!customers.size) {
+      return [];
+    }
+    if (!isCatering) {
+      return Array.from(customers.values()).map((c) => c.name);
+    }
+    if (cateringId && cateringIds.includes(cateringId)) {
       return customerNamesByCateringId.get(cateringId) || [];
     }
-    return Array.from(customerIdByName.keys());
-  }, [cateringId, customerIdByName, customerNamesByCateringId]);
+    const data = Array.from(customers.values())
+      .filter((c) => cateringIds.includes(c.others.cateringId))
+      .map((c) => c.name);
+    logger.info("customerData", data, customers, cateringIds);
+    return data;
+  }, [
+    isCatering,
+    cateringId,
+    cateringIds,
+    customerNamesByCateringId,
+    customers,
+  ]);
 
   const targetData: string[] = useMemo(() => {
     return customer?.others.targets.map((el) => el.name) || [];
@@ -126,6 +176,28 @@ const ControllBar = ({
       catering && setCateringName(catering.name);
     }
   }, [cateringId, caterings]);
+
+  useEffect(() => {
+    if (cateringNames.length === 1) {
+      if (cateringNames[0] !== cateringName) {
+        _selectCatering(cateringNames[0]);
+      }
+      return;
+    }
+    if (customerData.length === 1) {
+      if (customerData[0] !== customer?.name) {
+        _selectCustomer(customerData[0]);
+      }
+      return;
+    }
+  }, [
+    _selectCatering,
+    _selectCustomer,
+    cateringName,
+    cateringNames,
+    customer?.name,
+    customerData,
+  ]);
 
   return (
     <Flex gap={10} w="100%" justify="space-between" align="end">

@@ -1,4 +1,5 @@
 import { getAllCustomers, type Customer } from "@/services/domain";
+import logger from "@/services/logger";
 import { create } from "zustand";
 
 type CateringStore = {
@@ -17,7 +18,7 @@ export default create<CateringStore>((set, get) => ({
       return;
     }
     const data = await getAllCustomers();
-
+    logger.debug("CateringStore.reload", data.length, data);
     const customersByCateringId = new Map();
     data.forEach((c) => {
       const cateringId = c.others.cateringId;

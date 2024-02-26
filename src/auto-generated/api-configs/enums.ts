@@ -66,6 +66,7 @@ export enum Permissions {
   MENU_FULL_ACCESS = "menu-full-access",
   DAILY_MENU_OPERATION = "daily-menu-operation",
   MATERIAL_FULL_ACCESS = "material-full-access",
+  MATERIAL_READ_ONLY = "material-read-only",
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
 }
 

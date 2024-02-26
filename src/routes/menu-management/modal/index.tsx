@@ -12,6 +12,7 @@ import {
   productTypeOptions,
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
 import { Box, Button, Flex, Grid, ScrollArea } from "@mantine/core";
@@ -48,7 +49,10 @@ const EditModal = ({
   useEffect(() => store.set(dailyMenu), [dailyMenu]);
 
   const t = useTranslation();
-  const [tab, setActiveTab] = useState<Mode>("detail");
+  const { isCatering } = useAuthStore();
+  const [tab, setActiveTab] = useState<Mode>(
+    isCatering ? "modified" : "detail",
+  );
   const { allTypes, products: allProducts } = useProductStore();
   const typeOptions: OptionProps[] = useMemo(
     () => productTypeOptions(allTypes, t),
@@ -110,8 +114,13 @@ const EditModal = ({
         ta="right"
         pb={10}
       >
-        <TabControll onChange={setActiveTab} />
+        {!isCatering ? (
+          <TabControll tab={tab} onChange={setActiveTab} />
+        ) : (
+          <>&nbsp;</>
+        )}
         <Button
+          mt={10}
           disabled={!updated}
           onClick={onSave.bind(
             null,
@@ -123,7 +132,7 @@ const EditModal = ({
         </Button>
       </Flex>
       <Grid mt={10}>
-        <Grid.Col span={9}>
+        <Grid.Col span={isCatering ? 12 : 9}>
           {tab === "detail" && (
             <Box>
               <Grid
@@ -201,42 +210,44 @@ const EditModal = ({
             data={selectedProduct}
           />
         </Grid.Col>
-        <Grid.Col span={3} className="c-catering-bdr-box">
-          <Box key={counter}>
-            <Flex justify="end" align={"center"} mb="1rem">
-              <Select
-                label={t("Product type")}
-                w={"20vw"}
-                value={condition?.type || ""}
-                onChange={updateCondition.bind(null, "type", "")}
-                options={typeOptions}
+        {!isCatering && (
+          <Grid.Col span={3} className="c-catering-bdr-box">
+            <Box key={counter}>
+              <Flex justify="end" align={"center"} mb="1rem">
+                <Select
+                  label={t("Product type")}
+                  w={"20vw"}
+                  value={condition?.type || ""}
+                  onChange={updateCondition.bind(null, "type", "")}
+                  options={typeOptions}
+                />
+              </Flex>
+              <Flex justify="end" align={"center"} mb="1rem">
+                <AutocompleteForFilterData
+                  w={"20vw"}
+                  data={names}
+                  defaultValue={keyword}
+                  label={t("Cuisine name")}
+                  onReload={reload}
+                />
+              </Flex>
+            </Box>
+            <Box ta="right" mb={10}>
+              <Button disabled={!filtered} onClick={reset}>
+                {t("Clear")}
+              </Button>
+            </Box>
+            <ScrollArea h="80vh">
+              <Selector
+                data={data}
+                selectedIds={productIds}
+                onAdd={store.addProduct}
+                onRemove={store.removeProduct}
+                labelGenerator={(p) => `${p.name} - ${p.code}`}
               />
-            </Flex>
-            <Flex justify="end" align={"center"} mb="1rem">
-              <AutocompleteForFilterData
-                w={"20vw"}
-                data={names}
-                defaultValue={keyword}
-                label={t("Cuisine name")}
-                onReload={reload}
-              />
-            </Flex>
-          </Box>
-          <Box ta="right" mb={10}>
-            <Button disabled={!filtered} onClick={reset}>
-              {t("Clear")}
-            </Button>
-          </Box>
-          <ScrollArea h="80vh">
-            <Selector
-              data={data}
-              selectedIds={productIds}
-              onAdd={store.addProduct}
-              onRemove={store.removeProduct}
-              labelGenerator={(p) => `${p.name} - ${p.code}`}
-            />
-          </ScrollArea>
-        </Grid.Col>
+            </ScrollArea>
+          </Grid.Col>
+        )}
       </Grid>
     </Box>
   );

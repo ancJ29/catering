@@ -11,7 +11,7 @@ export const actionTypeEnum = z.nativeEnum({
   "DELETE": "DELETE",
 });
 
-export type ActionType = "READ" | "WRITE" | "DELETE" | "AUTH";
+export type ActionType = "READ" | "WRITE" | "DELETE";
 
 export const ActionType = {
   "READ": "READ" as ActionType,

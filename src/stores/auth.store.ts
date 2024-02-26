@@ -10,6 +10,7 @@ const schema = z.object({ payload: payloadSchema });
 type AuthStore = {
   token: string;
   user: Payload | null;
+  isCatering?: boolean;
   loadToken: () => void;
   setToken: (token: string, remember?: boolean) => void;
   removeToken: () => void;
@@ -30,7 +31,16 @@ export default create<AuthStore>((set, get) => ({
     if (token) {
       const user = _decode(token);
       logger.info("User logged in", user);
-      set(() => (user ? { user, token } : { user: null, token: "" }));
+      const isCatering = user?.roles.includes("client-catering");
+      set(() =>
+        user
+          ? {
+              isCatering,
+              user,
+              token,
+            }
+          : { user: null, token: "" },
+      );
       if (user) {
         remember
           ? localStorage.setItem("token", token)

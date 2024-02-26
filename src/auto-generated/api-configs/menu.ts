@@ -60,11 +60,102 @@ export default [
     ],
   },
   {
-    roles: ["client-owner", "client-sales"],
-    dashboard: ["client-sales"],
+    roles: ["client-owner"],
+    key: "purchasing-order-management",
+    label: "Purchasing Order Management",
+    icon: "package-import",
+    subs: [
+      {
+        roles: ["client-owner"],
+        key: "purchasing-request-management",
+        label: "Purchasing Request Management",
+        icon: "message-question",
+      },
+      {
+        roles: ["client-owner"],
+        key: "purchasing-order-management",
+        label: "Purchasing Order Management",
+        icon: "package-import",
+      },
+      {
+        roles: ["client-owner"],
+        key: "internal-purchasing-order-management",
+        label: "Internal Purchasing Order Management",
+        icon: "package",
+      },
+    ],
+  },
+  {
+    roles: ["client-owner"],
+    key: "quotation-management",
+    label: "Quotation Management",
+    icon: "blockquote",
+    subs: [
+      {
+        roles: ["client-owner"],
+        key: "quotation-management",
+        label: "Quotation Management",
+        icon: "blockquote",
+      },
+      {
+        roles: ["client-owner"],
+        key: "quotation-history-management",
+        label: "Quotation History Management",
+        icon: "history",
+      },
+    ],
+  },
+  {
+    roles: [
+      "client-owner",
+      "client-sales",
+      "client-catering",
+      "client-purchasing",
+    ],
+    dashboard: ["client-sales", "client-catering", "client-purchasing"],
     key: "menu-management",
     label: "Menu Management",
     icon: "chef-hat",
     url: "/menu-management",
+  },
+  {
+    roles: ["client-owner", "client-sales"],
+    key: "payment-management",
+    label: "Payment Management",
+    icon: "credit-card",
+    subs: [
+      {
+        roles: ["client-owner", "client-sales"],
+        key: "payment-adjustment",
+        label: "Payment Adjustment",
+        icon: "edit-circle",
+      },
+      {
+        roles: ["client-owner", "client-sales"],
+        key: "payment-schedule",
+        label: "Payment Schedule",
+        icon: "credit-card-pay",
+      },
+    ],
+  },
+  {
+    roles: ["client-owner"],
+    key: "report-management",
+    label: "Report Management",
+    icon: "report",
+    subs: [
+      {
+        roles: ["client-owner"],
+        key: "quick-report",
+        label: "Quick Report",
+        icon: "checkup-list",
+      },
+      {
+        roles: ["client-owner"],
+        key: "report-template",
+        label: "Report Templates",
+        icon: "template",
+      },
+    ],
   },
 ] satisfies Menu;

@@ -48,7 +48,7 @@ const MenuManagement = () => {
   const t = useTranslation();
   const { hash: locationHash } = useLocation();
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
-  const { reload: loadAllProducts } = useProductStore();
+  const { products, reload: loadAllProducts } = useProductStore();
   const { dailyMenu, push: pushDailyMenu } = useDailyMenuStore();
   const {
     idByName: customerIdByName,
@@ -191,7 +191,10 @@ const MenuManagement = () => {
   }, [loaded, condition]);
 
   return (
-    <Stack gap={10}>
+    <Stack
+      gap={10}
+      key={`${customers.size}.${caterings.size}.${products.size}`}
+    >
       <ControlBar
         mode={condition.mode}
         shift={condition.shift || ""}

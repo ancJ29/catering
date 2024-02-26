@@ -2,8 +2,10 @@ import {
   DailyMenuStatus,
   dailyMenuStatusColor,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useProductStore from "@/stores/product.store";
 import { Box, Table } from "@mantine/core";
+import { useCallback } from "react";
 
 type CellProps = {
   date?: string;
@@ -18,14 +20,23 @@ const Cell = ({
   date,
   onClick,
 }: CellProps) => {
+  const { isCatering } = useAuthStore();
   const { products: allProducts } = useProductStore();
+
+  // simple ==> don't use useMemo
+  const clickAble = quantity.size > 0 && isCatering;
+
+  const _click = useCallback(() => {
+    clickAble && onClick();
+  }, [clickAble, onClick]);
+
   return (
     <Table.Td
-      onClick={onClick}
+      onClick={_click}
       height={150}
       style={{
         position: "relative",
-        cursor: "pointer",
+        cursor: clickAble ? "pointer" : "default",
         verticalAlign: "top",
       }}
       bg={dailyMenuStatusColor(status, 1)}
