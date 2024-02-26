@@ -24,7 +24,7 @@ const Cell = ({
   const { products: allProducts } = useProductStore();
 
   // simple ==> don't use useMemo
-  const clickAble = quantity.size > 0 && isCatering;
+  const clickAble = quantity.size > 0 || !isCatering;
 
   const _click = useCallback(() => {
     clickAble && onClick();
