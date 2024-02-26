@@ -12,14 +12,16 @@ export const _configs = (
   t: (key: string) => string,
   mode: Mode,
   cateringId: string,
+  isCatering: boolean,
   dailyMenu?: DailyMenu,
 ): DataGridColumnProps[] => {
   return [
     {
+      hidden: false,
       key: "typeName",
       header: t("Product type"),
       width: "10%",
-      renderCell: (_, product: Product) => {
+      renderCell: (_: unknown, product: Product) => {
         return (
           <Text fz="sm">
             {t(`products.type.${product.others.type}`)}
@@ -30,13 +32,13 @@ export const _configs = (
     {
       key: "name",
       header: t("Cuisine name"),
-      width: "15rem",
+      width: isCatering ? "45rem" : "15rem",
     },
     {
       key: "quantity",
       header: t("Quantity"),
       width: "100px",
-      renderCell(_, product: Product) {
+      renderCell(_: unknown, product: Product) {
         return (
           <NumberInput
             fw={600}
@@ -62,15 +64,14 @@ export const _configs = (
       key: "costPrice",
       header: t("Cost price"),
       width: "100px",
-      renderCell: (_, product: Product) => {
+      hidden: isCatering,
+      renderCell: (_: unknown, product: Product) => {
         const cost =
           product.others.costPriceByCatering?.[cateringId] ||
           product.others.avgCostPrice;
         return (
           <Text w="100%" ta="right" c="red.6">
             {cost?.toLocaleString() || "N/A"}&nbsp;đ
-            {/* {cateringId} */}
-            {/* {product.id} */}
           </Text>
         );
       },
@@ -79,7 +80,8 @@ export const _configs = (
       key: "avgCostPrice",
       header: t("Average cost price"),
       width: "100px",
-      renderCell: (_, product: Product) => {
+      hidden: isCatering,
+      renderCell: (_: unknown, product: Product) => {
         const cost = product.others.avgCostPrice;
         return (
           <Text w="100%" ta="right" c="red.6">
@@ -92,6 +94,7 @@ export const _configs = (
       key: "ratio",
       header: t("Ratio"),
       width: "70px",
+      hidden: isCatering,
       renderCell() {
         const ratio = Math.floor(Math.random() * 10000) / 100 + "%";
         return (
@@ -110,7 +113,8 @@ export const _configs = (
         paddingRight: "1rem",
         flexGrow: 1,
       },
-      renderCell: (_, product: Product) => {
+      // hidden: isCatering,
+      renderCell: (_: unknown, product: Product) => {
         return (
           <Flex justify="end" align="center" gap={10}>
             <Button
@@ -122,6 +126,7 @@ export const _configs = (
               {t("BOM")}
             </Button>
             <Button
+              disabled={isCatering}
               size="compact-xs"
               variant="light"
               color="error"

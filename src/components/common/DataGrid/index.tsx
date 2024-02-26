@@ -124,15 +124,19 @@ function DataGrid<
       from = limit * (page - 1);
       data = rows.slice(from, from + limit);
     }
-    return _contentBuilder(data, configs, {
-      orderFrom: from,
-      hasOrderColumn,
-      actionHandlers,
-      hasActionColumn,
-      hasUpdateColumn,
-      onSort: sortHandler,
-      onRowClick,
-    });
+    return _contentBuilder(
+      data,
+      configs.filter((el) => !el.hidden),
+      {
+        orderFrom: from,
+        hasOrderColumn,
+        actionHandlers,
+        hasActionColumn,
+        hasUpdateColumn,
+        onSort: sortHandler,
+        onRowClick,
+      },
+    );
   }, [
     onRowClick,
     actionHandlers,

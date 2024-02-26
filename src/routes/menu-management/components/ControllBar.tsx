@@ -202,24 +202,30 @@ const ControllBar = ({
   return (
     <Flex gap={10} w="100%" justify="space-between" align="end">
       <Flex gap={10} justify="start" align="end">
-        <Autocomplete
-          key={cateringName || "cateringName"}
-          label={t("Catering name")}
-          defaultValue={cateringName}
-          data={cateringNames}
-          disabled={cateringNames.length < 2}
-          onChange={(value) => _selectCatering(value)}
-        />
-        <Autocomplete
-          key={customer?.name || "customerName"}
-          defaultValue={customer?.name || ""}
-          label={t("Customer")}
-          data={customerData}
-          disabled={customerData.length < 2}
-          onChange={_selectCustomer}
-          onEnter={(value) => _selectCustomer(value, true)}
-          onClear={() => _selectCustomer(null, true)}
-        />
+        {!isCatering && (
+          <Autocomplete
+            key={cateringName || "cateringName"}
+            label={t("Catering name")}
+            defaultValue={cateringName}
+            data={cateringNames}
+            disabled={cateringNames.length < 2}
+            onChange={(value) => _selectCatering(value)}
+          />
+        )}
+        {isCatering && customerData.length < 2 ? (
+          ""
+        ) : (
+          <Autocomplete
+            key={customer?.name || "customerName"}
+            defaultValue={customer?.name || ""}
+            label={t("Customer")}
+            data={customerData}
+            disabled={customerData.length < 2}
+            onChange={_selectCustomer}
+            onEnter={(value) => _selectCustomer(value, true)}
+            onClear={() => _selectCustomer(null, true)}
+          />
+        )}
         {customer ? (
           <Select
             value={targetName}

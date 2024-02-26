@@ -60,8 +60,14 @@ const EditModal = ({
   );
 
   const configs = useMemo(() => {
-    return _configs(t, tab, cateringId, dailyMenu);
-  }, [dailyMenu, cateringId, tab, t]);
+    return _configs(
+      t,
+      tab,
+      cateringId,
+      isCatering || false,
+      dailyMenu,
+    );
+  }, [isCatering, dailyMenu, cateringId, tab, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
