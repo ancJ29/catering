@@ -2,6 +2,7 @@ import {
   configs as actionConfigs,
   Actions,
   emailSchema,
+  ClientRoles as Roles,
 } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import PhoneInput from "@/components/common/PhoneInput";
@@ -42,13 +43,12 @@ const EditUserForm = ({
     departmentIdByName: data.departmentIdByName,
     departments: Array.from(data.departmentIdByName.keys()),
     roles: Array.from(data.roleIdByName.keys()).map((name) =>
-      t(name),
+      t(`user.role.${name}`),
     ),
     roleIdByName: new Map(
-      Array.from(data.roleIdByName.entries()).map(([name, id]) => [
-        t(name),
-        id,
-      ]),
+      Array.from(data.roleIdByName.entries())
+        .filter(([name]) => name !== Roles.OWNER)
+        .map(([name, id]) => [t(`user.role.${name}`), id]),
     ),
   });
   const form = useForm<Form>({
@@ -57,7 +57,7 @@ const EditUserForm = ({
       ...user,
       email: user.email || "",
       phone: user.phone || "",
-      role: t(user.roles?.[0]?.name) || "",
+      role: t(`user.role.${user.others.roles[0]}`) || "",
       department: user.departments?.[0]?.name || "",
     },
   });

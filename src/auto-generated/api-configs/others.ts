@@ -8,6 +8,30 @@ import {
   stringSchema,
 } from "./schema";
 
+export enum ClientRoles {
+  OWNER = "owner",
+  MANAGER = "manager",
+  PRODUCTION = "production",
+  PURCHASING = "purchasing",
+  CATERING = "catering",
+  ACCOUNTING = "accounting",
+  SUPPLIER = "supplier",
+}
+
+const roleSchema = z.enum([
+  ClientRoles.OWNER,
+  ClientRoles.MANAGER,
+  ClientRoles.PRODUCTION,
+  ClientRoles.PURCHASING,
+  ClientRoles.CATERING,
+  ClientRoles.ACCOUNTING,
+  ClientRoles.SUPPLIER,
+]);
+
+export const userOthersSchema = z.object({
+  roles: roleSchema.array(),
+});
+
 export const productOthersSchema = z.object({
   avgCostPrice: numberSchema.optional(),
   costPriceByCatering: z.record(stringSchema, numberSchema).optional(),
@@ -32,7 +56,9 @@ export const productOthersSchema = z.object({
     // cspell:enable
   ]),
 });
+
 export const departmentOthersSchema = z.object({
+  role: roleSchema,
   iCenter: booleanSchema.default(true),
   totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),

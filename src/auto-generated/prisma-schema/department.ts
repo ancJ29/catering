@@ -10,7 +10,6 @@ export const departmentSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
   name: z.string(),
-  type: z.string().nullish(),
   enabled: z.boolean(),
   code: z.string(),
   shortName: z.string().nullish(),
@@ -23,4 +22,5 @@ export const departmentSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
+  clientEnumId: z.string().nullish(),
 })

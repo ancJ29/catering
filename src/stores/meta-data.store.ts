@@ -19,7 +19,6 @@ type Unit = Omit<z.infer<typeof unitSchema>, OmitUnitType>;
 type MetaDataStore = {
   materialGroupByType: Record<string, string[]>;
   dictionaries: Record<string, Dictionary>;
-  kitchenType?: string;
   units: Unit[];
   enumMap: Map<string, string>;
   departmentIdByName: Map<string, string>;
@@ -60,9 +59,6 @@ export default create<MetaDataStore>((set) => ({
       );
     }
     set(() => ({
-      kitchenType: data.enums.find(
-        (e) => e.name === "client-catering",
-      )?.id,
       units: data.units,
       enumMap: new Map(data.enums.map((e) => [e.id, e.name])),
       departmentIdByName: new Map(

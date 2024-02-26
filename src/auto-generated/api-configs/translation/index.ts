@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  ClientRoles,
   dailyMenuOthersSchema,
   materialOthersSchema,
   productOthersSchema,
@@ -7,7 +8,9 @@ import {
 import en from "./en";
 import vi from "./vi";
 
-const version = "1.0.1707194823942";
+const version = "1.0.1707194823951";
+
+type DepartmentKey = `user.role.${ClientRoles}`;
 
 type DailyMenuStatus = z.infer<typeof dailyMenuOthersSchema.shape.status>;
 type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
@@ -20,6 +23,32 @@ type MaterialGroup = z.infer<typeof materialOthersSchema.shape.group>;
 type MaterialKey =
   | `materials.type.${MaterialType}`
   | `materials.group.${MaterialGroup}`;
+
+const departmentDictionaries: {
+  en: Record<DepartmentKey, string>;
+  vi: Record<DepartmentKey, string>;
+} = {
+  en: {
+    [`user.role.${ClientRoles.OWNER}`]: "Owner",
+    [`user.role.${ClientRoles.MANAGER}`]: "Manager",
+    [`user.role.${ClientRoles.PRODUCTION}`]: "Production",
+    [`user.role.${ClientRoles.PURCHASING}`]: "Purchasing",
+    [`user.role.${ClientRoles.CATERING}`]: "Catering",
+    [`user.role.${ClientRoles.ACCOUNTING}`]: "Accounting",
+    [`user.role.${ClientRoles.SUPPLIER}`]: "Supplier",
+  } as Record<DepartmentKey, string>, // TOD: remove this
+  vi: {
+    /* cspell:disable */
+    [`user.role.${ClientRoles.OWNER}`]: "OWNER",
+    [`user.role.${ClientRoles.MANAGER}`]: "Quản lý ",
+    [`user.role.${ClientRoles.PRODUCTION}`]: "Sản xuất",
+    [`user.role.${ClientRoles.PURCHASING}`]: "Cung ứng",
+    [`user.role.${ClientRoles.CATERING}`]: "Bếp",
+    [`user.role.${ClientRoles.ACCOUNTING}`]: "kế toán",
+    [`user.role.${ClientRoles.SUPPLIER}`]: "Nhà cung cấp",
+    /* cspell:enable */
+  } as Record<DepartmentKey, string>, // TOD: remove this
+};
 
 const dailyMenuDictionaries: {
   en: Record<DailyMenuKey, string>;
@@ -186,12 +215,14 @@ export const dictionaries: {
 } = {
   version,
   en: {
+    ...departmentDictionaries.en,
     ...dailyMenuDictionaries.en,
     ...materialDictionaries.en,
     ...productDictionaries.en,
     ...en,
   },
   vi: {
+    ...departmentDictionaries.vi,
     ...dailyMenuDictionaries.vi,
     ...materialDictionaries.vi,
     ...productDictionaries.vi,

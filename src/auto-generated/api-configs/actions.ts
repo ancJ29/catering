@@ -17,7 +17,7 @@ import {
   xSupplierSchema,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
-import { dailyMenuOthersSchema } from "./others";
+import { dailyMenuOthersSchema, userOthersSchema } from "./others";
 import {
   addResponse,
   booleanSchema,
@@ -202,6 +202,7 @@ export const configs = {
             active: booleanSchema,
             createdAt: z.date(),
             updatedAt: z.date(),
+            others: userOthersSchema,
             lastModifiedBy: optionalStringSchema,
             departments: z
               .object({
@@ -235,8 +236,7 @@ export const configs = {
         password: stringSchema,
         email: emailSchema.optional(),
         phone: phoneSchema.optional(),
-        roleId: stringSchema,
-        departmentIds: stringSchema.array().default([]),
+        departmentIds: stringSchema.array(),
       }),
       response: z.object({
         id: stringSchema,
@@ -278,9 +278,7 @@ export const configs = {
     group: ActionGroups.DEPARTMENT_MANAGEMENT,
     type: ActionType.READ,
     schema: {
-      request: getSchema.extend({
-        type: optionalStringSchema,
-      }),
+      request: getSchema,
       response: listResponse.extend({
         departments: xDepartmentSchema.array(),
       }),

@@ -1,5 +1,6 @@
 import {
   Actions,
+  ClientRoles as Roles,
   configs as actionConfigs,
   emailSchema,
 } from "@/auto-generated/api-configs";
@@ -61,13 +62,12 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
     departmentIdByName: data.departmentIdByName,
     departments: Array.from(data.departmentIdByName.keys()),
     roles: Array.from(data.roleIdByName.keys()).map((name) =>
-      t(name),
+      t(`user.role.${name}`),
     ),
     roleIdByName: new Map(
-      Array.from(data.roleIdByName.entries()).map(([name, id]) => [
-        t(name),
-        id,
-      ]),
+      Array.from(data.roleIdByName.entries())
+        .filter(([name]) => name !== Roles.OWNER)
+        .map(([name, id]) => [t(`user.role.${name}`), id]),
     ),
   });
 
@@ -99,7 +99,6 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
               password: Math.random().toString(36).slice(-8),
               userName: values.userName.trim(),
               fullName: values.fullName.trim(),
-              roleId: options.roleIdByName.get(values.role) || "",
               departmentIds: [departmentId || ""].filter(Boolean),
               email: values.email?.trim() || undefined,
               phone:

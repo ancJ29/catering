@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { contextSchema, genericSchema, stringSchema } from "./schema";
+import { contextSchema } from "./general-schema";
+import { genericSchema, stringSchema } from "./schema";
 
 export enum MESSAGE_QUEUE_CHANNEL {
   PRODUCT_ADDED = "product-added",

@@ -1,8 +1,8 @@
+import { ClientRoles } from "@/auto-generated/api-configs";
 import {
   getAllDepartments,
   type Department,
 } from "@/services/domain";
-import useMetaDataStore from "@/stores/meta-data.store";
 import { create } from "zustand";
 
 type CateringStore = {
@@ -20,14 +20,12 @@ export default create<CateringStore>((set, get) => ({
     if (get().caterings.size) {
       return;
     }
-    const kitchenType = useMetaDataStore.getState().kitchenType;
-    if (kitchenType) {
-      const data = await getAllDepartments(kitchenType);
-      set(() => ({
-        names: data.map((e) => e.name),
-        caterings: new Map(data.map((e) => [e.id, e])),
-        cateringIdByName: new Map(data.map((e) => [e.name, e.id])),
-      }));
-    }
+    let data = await getAllDepartments();
+    data = data.filter((e) => e.others.role === ClientRoles.CATERING);
+    set(() => ({
+      names: data.map((e) => e.name),
+      caterings: new Map(data.map((e) => [e.id, e])),
+      cateringIdByName: new Map(data.map((e) => [e.name, e.id])),
+    }));
   },
 }));

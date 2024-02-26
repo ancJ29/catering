@@ -5,6 +5,7 @@ import {
   materialSchema,
   productSchema,
   supplierSchema,
+  userSchema,
 } from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 import {
@@ -14,8 +15,17 @@ import {
   materialOthersSchema,
   productOthersSchema,
   supplierOthersSchema,
+  userOthersSchema,
 } from "./others";
 import { stringSchema } from "./schema";
+
+export const xUserSchema = userSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: userOthersSchema,
+  });
 
 export const xCustomerSchema = customerSchema
   .omit({

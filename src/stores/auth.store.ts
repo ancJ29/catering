@@ -1,4 +1,7 @@
-import { payloadSchema } from "@/auto-generated/api-configs";
+import {
+  ClientRoles,
+  payloadSchema,
+} from "@/auto-generated/api-configs";
 import logger from "@/services/logger";
 import { Payload } from "@/types";
 import jwtDecode from "jwt-decode";
@@ -31,16 +34,12 @@ export default create<AuthStore>((set, get) => ({
     if (token) {
       const user = _decode(token);
       logger.info("User logged in", user);
-      const isCatering = user?.roles.includes("client-catering");
-      set(() =>
-        user
-          ? {
-              isCatering,
-              user,
-              token,
-            }
-          : { user: null, token: "" },
-      );
+      const isCatering = user?.roles.includes(ClientRoles.CATERING);
+      set(() => ({
+        user,
+        token: user ? token : "",
+        isCatering,
+      }));
       if (user) {
         remember
           ? localStorage.setItem("token", token)
