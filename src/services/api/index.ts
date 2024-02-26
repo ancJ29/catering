@@ -40,7 +40,8 @@ export default async function callApi<T, R>({
   let key = "";
   if (
     !options?.noCache &&
-    actionConfigs[action].type === ActionType.READ
+    actionConfigs[action].type === ActionType.READ &&
+    actionConfigs[action].name !== Actions.LOGIN
   ) {
     const cache = _checkCache<R>(
       action,

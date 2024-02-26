@@ -17,6 +17,17 @@ export type Product = z.infer<typeof productSchema>;
 export async function getAllProducts(
   noCache = false,
 ): Promise<Product[]> {
+  if (
+    localStorage.__All_PRODUCTS__ &&
+    typeof localStorage.__All_PRODUCTS__ === "string"
+  ) {
+    const res = response.safeParse(
+      JSON.parse(localStorage.__All_PRODUCTS__ || "{}"),
+    );
+    if (res.success) {
+      return res.data;
+    }
+  }
   const key = "domain.product.getAllProducts";
   if (cache.has(key)) {
     const res = response.safeParse(cache.get(key));
@@ -30,6 +41,8 @@ export async function getAllProducts(
     params: {},
     options: { noCache },
   });
+  logger.debug("cached for getAllProducts");
+  localStorage.__All_PRODUCTS__ = JSON.stringify(products || []);
   return products || [];
 }
 

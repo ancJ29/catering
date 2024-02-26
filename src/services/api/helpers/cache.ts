@@ -4,10 +4,12 @@ import logger from "@/services/logger";
 function _key<T>(action?: string, params?: T) {
   const ONE_MINUTE = 60000;
   const now = Date.now();
-  return btoa(
-    `${now - (now % ONE_MINUTE)}.${action}.${JSON.stringify(
-      params || {},
-    )}`,
+  return window.btoa(
+    encodeURIComponent(
+      `${now - (now % ONE_MINUTE)}.${action}.${JSON.stringify(
+        params || {},
+      )}`,
+    ),
   );
 }
 

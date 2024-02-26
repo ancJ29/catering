@@ -24,6 +24,8 @@ const map = new Map<number, DailyMenuStatus>(
   statuses.map((s, i) => [i, s]),
 );
 
+const size = 16;
+
 const Steppers = ({
   status = "NEW",
   onChange,
@@ -35,8 +37,12 @@ const Steppers = ({
   const [active, setActive] = useState<number>(
     statuses.indexOf(status),
   );
-  const color = useMemo(
-    () => dailyMenuStatusColor(map.get(active || 0) || "NEW", 9),
+
+  const [color, c] = useMemo(
+    () => [
+      dailyMenuStatusColor(map.get(active || 0) || "NEW", 9),
+      dailyMenuStatusColor(statuses[active], 9),
+    ],
     [active],
   );
 
@@ -46,24 +52,24 @@ const Steppers = ({
   };
   return (
     <Stepper
-      w="80%"
+      w="100%"
       size="sm"
       onStepClick={click}
       color={color}
       m={10}
       active={active}
-      completedIcon={<IconCircleCheckFilled size={18} />}
+      completedIcon={<IconCircleCheckFilled size={size} />}
     >
       {statuses.map((s, idx) => {
-        const isActive = idx === active;
-        const label = isActive ? (
-          <Status status={s} fz={16} />
-        ) : (
-          t(`dailyMenu.status.${s}`)
-        );
+        const label =
+          idx <= active ? (
+            <Status status={s} fz={size} c={c} />
+          ) : (
+            t(`dailyMenu.status.${s}`)
+          );
         return (
           <Stepper.Step
-            icon={<IconCircleCheck size={18} />}
+            icon={<IconCircleCheck size={size} />}
             key={s}
             label={label}
           />

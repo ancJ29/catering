@@ -11,7 +11,8 @@ export default {
   "Report Templates": "Report Templates",
   "Quotation Management": "Quotation Management",
   "Quotation History Management": "Quotation History Management",
-  "Internal Purchasing Order Management": "Internal Purchasing Order Management",
+  "Internal Purchasing Order Management":
+    "Internal Purchasing Order Management",
   "Purchasing Order Management": "Purchasing Order Management",
   "Purchasing Request Management": "Purchasing Request Management",
   "__App_Title__": "C-Catering",
