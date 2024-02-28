@@ -6,6 +6,7 @@ import {
 import callApi from "@/services/api";
 import { ONE_WEEK } from "@/utils";
 import { z } from "zod";
+import { Customer } from "../customer";
 
 const response =
   actionConfigs[Actions.GET_DAILY_MENU].schema.response;
@@ -38,12 +39,41 @@ export function dailyMenuStatusColor(
   return `${colors[status]}.${level}`;
 }
 
+export function blankDailyMenu(
+  customer: Customer,
+  targetName: string,
+  shift: string,
+  date: Date,
+): DailyMenu {
+  return {
+    id: "",
+    clientId: customer.clientId,
+    menuId: "",
+    date,
+    menu: {
+      menuProducts: [],
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    customerId: customer.id,
+    others: {
+      status: "NEW",
+      cateringId: customer.others.cateringId,
+      targetName,
+      shift,
+      quantity: {},
+    },
+  };
+}
+
 export async function getDailyMenu({
+  id,
   customerId,
   from = Date.now() - ONE_WEEK,
   to = Date.now() + ONE_WEEK,
   noCache = false,
 }: {
+  id?: string;
   from: number;
   to: number;
   customerId: string;
@@ -51,7 +81,7 @@ export async function getDailyMenu({
 }): Promise<DailyMenu[]> {
   const dailyMenuList = await callApi<unknown, Response>({
     action: Actions.GET_DAILY_MENU,
-    params: { customerId, from, to },
+    params: { id, customerId, from, to },
     options: { noCache },
   });
   return dailyMenuList || [];

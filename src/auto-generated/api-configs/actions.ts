@@ -405,6 +405,7 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: z.object({
+        id: stringSchema.optional(),
         from: dateSchema,
         to: dateSchema,
         customerId: stringSchema,

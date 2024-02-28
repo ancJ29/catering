@@ -3,7 +3,6 @@ import {
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
 import { Customer } from "@/services/domain";
-import logger from "@/services/logger";
 import {
   ONE_DAY,
   ONE_WEEK,
@@ -116,7 +115,6 @@ export const reducer = (
       }
       break;
     case "CLEAR":
-      logger.debug("CLEAR", action.keys);
       if (action.keys?.length) {
         const _state = { ...state };
         for (const key of action.keys) {

@@ -41,7 +41,6 @@ export async function getAllProducts(
     params: {},
     options: { noCache },
   });
-  logger.debug("cached for getAllProducts");
   localStorage.__All_PRODUCTS__ = JSON.stringify(products || []);
   return products || [];
 }

@@ -78,6 +78,7 @@ export const customerOthersSchema = z.object({
 });
 
 export const dailyMenuOthersSchema = z.object({
+  cateringId: stringSchema,
   targetName: stringSchema,
   shift: stringSchema,
   quantity: z.record(stringSchema, numberSchema),

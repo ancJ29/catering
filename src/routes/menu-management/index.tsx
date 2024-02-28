@@ -1,12 +1,6 @@
-import { Actions } from "@/auto-generated/api-configs";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import callApi from "@/services/api";
-import {
-  DailyMenuStatus,
-  dailyMenuKey,
-  getDailyMenu,
-} from "@/services/domain";
+import { getDailyMenu } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
@@ -14,13 +8,10 @@ import useProductStore from "@/stores/product.store";
 import {
   ONE_WEEK,
   addHashToUrl,
-  formatTime,
   removeHashFromUrl,
   startOfDay,
-  stopMouseEvent,
 } from "@/utils";
-import { Stack, Table, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Stack, Table } from "@mantine/core";
 import {
   useCallback,
   useEffect,
@@ -28,7 +19,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   customerId,
   defaultCondition,
@@ -40,17 +31,16 @@ import {
 } from "./_configs";
 import BlankTableBody from "./components/BlankTableBody";
 import ControlBar from "./components/ControllBar";
-import ModalTitle from "./components/ModalTitle";
 import MonthView from "./components/MonthView";
 import WeekView from "./components/WeekView";
-import EditModal from "./modal";
 
 const MenuManagement = () => {
+  const navigate = useNavigate();
   const t = useTranslation();
   const { hash: locationHash } = useLocation();
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
   const { products, reload: loadAllProducts } = useProductStore();
-  const { dailyMenu, push: pushDailyMenu } = useDailyMenuStore();
+  const { push: pushDailyMenu } = useDailyMenuStore();
   const {
     idByName: customerIdByName,
     customers,
@@ -82,83 +72,20 @@ const MenuManagement = () => {
     [condition.markDate, condition.customer?.id, pushDailyMenu],
   );
 
-  const openModal = useCallback(
+  const onOpen = useCallback(
     (shift: string, timestamp: number) => {
       const selectedCustomer = condition.customer;
       const targetName = condition.target?.name || "";
       if (!targetName || !selectedCustomer) {
         return;
       }
-      const key = dailyMenuKey(
-        selectedCustomer?.id || "",
-        condition.target?.name || "",
-        shift,
-        timestamp,
+      navigate(
+        `/menu-management/${selectedCustomer.id}/${encodeURIComponent(
+          targetName,
+        )}/${encodeURIComponent(shift)}/${timestamp}`,
       );
-      const date = formatTime(timestamp, "YYYY-MM-DD");
-      const cateringId = selectedCustomer.others.cateringId;
-      const catering = caterings.get(cateringId || "");
-      const cateringName = catering?.name || "";
-      const title = `${date}: ${selectedCustomer.name} > ${targetName} > ${shift} (${cateringName})`;
-      const save = (
-        status: DailyMenuStatus,
-        quantity: Record<string, number>,
-      ) => {
-        Object.keys(quantity).forEach((productId) => {
-          if (quantity[productId] < 1) {
-            delete quantity[productId];
-          }
-        });
-
-        if (
-          !timestamp ||
-          !selectedCustomer ||
-          !Object.keys(quantity).length
-        ) {
-          modals.closeAll();
-          return;
-        }
-        modals.openConfirmModal({
-          title: `${t("Update menu")}`,
-          children: (
-            <Text size="sm">
-              {t("Are you sure you want to save menu?")}
-            </Text>
-          ),
-          labels: { confirm: "OK", cancel: t("Cancel") },
-          onConfirm: async () => {
-            await callApi<unknown, unknown>({
-              action: Actions.PUSH_DAILY_MENU,
-              params: {
-                date: new Date(timestamp),
-                targetName: condition.target?.name || "",
-                shift,
-                status,
-                customerId: selectedCustomer.id || "",
-                quantity,
-              },
-            });
-            await _getDailyMenu(true);
-            modals.closeAll();
-          },
-        });
-      };
-      modals.open({
-        title: <ModalTitle title={title} />,
-        fullScreen: true,
-        onClick: stopMouseEvent,
-        onClose: modals.closeAll,
-        children: (
-          <EditModal
-            cateringId={condition.cateringId || ""}
-            key={Date.now()}
-            dailyMenu={dailyMenu.get(key)}
-            onSave={save}
-          />
-        ),
-      });
     },
-    [_getDailyMenu, caterings, condition, dailyMenu, t],
+    [condition, navigate],
   );
 
   const { rows, headers } = useMemo(() => {
@@ -271,19 +198,21 @@ const MenuManagement = () => {
         {customerId(condition) ? (
           isWeekView(condition.mode) ? (
             <WeekView
+              key={`w.${Date.now()}`}
               headers={headers || []}
               shifts={condition.target?.shifts || []}
               customer={condition.customer}
               targetName={condition.target?.name || ""}
-              onClick={openModal}
+              onClick={onOpen}
             />
           ) : (
             <MonthView
+              key={`m.${Date.now()}`}
               rows={rows}
               customer={condition.customer}
               shift={condition.shift || ""}
               targetName={condition.target?.name || ""}
-              onClick={openModal}
+              onClick={onOpen}
             />
           )
         ) : (

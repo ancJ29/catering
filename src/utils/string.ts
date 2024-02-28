@@ -4,3 +4,7 @@ export function randomPassword() {
   const _r = (l: number) => Math.random().toString(36).slice(l);
   return `${_r(8)}${s}${_r(7)}`;
 }
+
+export function randomString() {
+  return Math.random().toString(36).substring(2, 12);
+}

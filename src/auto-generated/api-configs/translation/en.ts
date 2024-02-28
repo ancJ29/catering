@@ -1,5 +1,8 @@
 export default {
   // prettier-ignore
+  "Cannot edit data": "Cannot edit data",
+  "Data cannot be edited.": "Data cannot be edited.",
+  "This week": "This week",
   "Modified": "Modified",
   "Are you sure you want to add new supplier?":
     "Are you sure you want to add new supplier?",

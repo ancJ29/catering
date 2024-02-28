@@ -13,15 +13,14 @@ import store from "./_item.store";
 export const _configs = (
   t: (key: string) => string,
   mode: Mode,
-  cateringId: string,
   user: Payload,
-  dailyMenu?: DailyMenu,
+  dailyMenu: DailyMenu,
 ): DataGridColumnProps[] => {
+  const cateringId = dailyMenu?.others.cateringId;
   const isCatering = user.others.roles[0] === Roles.CATERING;
   const editable = !isPastDate(dailyMenu?.date);
   return [
     {
-      hidden: false,
       key: "typeName",
       header: t("Product type"),
       width: "10%",

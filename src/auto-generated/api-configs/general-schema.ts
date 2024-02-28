@@ -1,8 +1,20 @@
-import { actionStatusEnum, clientEnumSchema, departmentSchema, userSchema } from "@/auto-generated/prisma-schema";
+import {
+  actionStatusEnum,
+  clientEnumSchema,
+  departmentSchema,
+  userSchema,
+} from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 import { userOthersSchema } from "./others";
-import { emailSchema, genericSchema, optionalBooleanSchema, optionalNumberSchema, optionalStringSchema, phoneSchema, stringSchema } from "./schema";
-
+import {
+  emailSchema,
+  genericSchema,
+  optionalBooleanSchema,
+  optionalNumberSchema,
+  optionalStringSchema,
+  phoneSchema,
+  stringSchema,
+} from "./schema";
 
 const enumSchema = clientEnumSchema
   .pick({

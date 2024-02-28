@@ -1,5 +1,8 @@
 export default {
   // prettier-ignore
+  "Cannot edit data": "Không thể chỉnh sửa",
+  "Data cannot be edited.": "Dữ liệu không thể chỉnh sửa.",
+  "This week": "Tuần này",
   "Modified": "Bếp thay đổi",
   "Are you sure you want to add new supplier?":
     "Bạn có chắc chắn muốn thêm nhà cung cấp mới?",
