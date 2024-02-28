@@ -1,6 +1,6 @@
+import en from "@/auto-generated/api-configs/translation/en";
+import vi from "@/auto-generated/api-configs/translation/vi";
 import { Dictionary } from "@/types";
-import en from "./lang/en";
-import vi from "./lang/vi";
 
 export const dictionaryList: Record<string, Dictionary> = {
   en,
