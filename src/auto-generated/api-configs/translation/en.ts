@@ -9,17 +9,12 @@ export default {
   "Add user": "Add user",
   "Add": "Add",
   "Are you sure to save changes?": "Are you sure to save changes?",
-  "Are you sure you want to add new supplier?":
-    "Are you sure you want to add new supplier?",
-  "Are you sure you want to add new user?":
-    "Are you sure you want to add new user?",
-  "Are you sure you want to deactivate this user?":
-    "Are you sure you want to deactivate this user?",
-  "Are you sure you want to reset changes?":
-    "Are you sure you want to reset changes?",
+  "Are you sure you want to add new supplier?": "Are you sure you want to add new supplier?",
+  "Are you sure you want to add new user?": "Are you sure you want to add new user?",
+  "Are you sure you want to deactivate this user?": "Are you sure you want to deactivate this user?",
+  "Are you sure you want to reset changes?": "Are you sure you want to reset changes?",
   "Are you sure you want to save menu?": "Are you sure you want to save menu?",
-  "Are you sure you want to update user?":
-    "Are you sure you want to update user?",
+  "Are you sure you want to update user?": "Are you sure you want to update user?",
   "Average cost price": "Average cost price",
   "Back to menu": "Back to menu",
   "BOM": "BOM",
@@ -58,8 +53,7 @@ export default {
   "Fri": "Fri",
   "Full name": "Full name",
   "In operation": "In operation",
-  "Internal Purchasing Order Management":
-    "Internal Purchasing Order Management",
+  "Internal Purchasing Order Management": "Internal Purchasing Order Management",
   "Invalid email": "Invalid email",
   "Invalid phone number": "Invalid phone number",
   "Inventory check date": "Inventory check date",
@@ -84,8 +78,7 @@ export default {
   "Mon": "Mon",
   "Monthly": "Monthly",
   "New password": "New password",
-  "No results found. Please try another search.":
-    "No results found. Please try another search.",
+  "No results found. Please try another search.": "No results found. Please try another search.",
   "NO": "NO",
   "Non-central catering": "Non-central catering",
   "noodle-for-party": "Soup for party",
@@ -101,12 +94,10 @@ export default {
   "Payment Management": "Payment Management",
   "Payment Schedule": "Payment Schedule",
   "Phone": "Phone",
-  "Please copy and keep password safe before create new user":
-    "Please copy and keep password safe before create new user",
+  "Please copy and keep password safe before create new user": "Please copy and keep password safe before create new user",
   "Please enter email": "Please enter email",
   "Please enter password": "Please enter password",
-  "Please input price for all materials":
-    "Please input price for all materials",
+  "Please input price for all materials": "Please input price for all materials",
   "Price per set": "Price per set",
   "Product code": "Code",
   "Product Management": "Product Management",

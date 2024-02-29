@@ -14,6 +14,7 @@ type AuthStore = {
   token: string;
   user: Payload | null;
   isCatering?: boolean;
+  role?: ClientRoles;
   loadToken: () => void;
   setToken: (token: string, remember?: boolean) => void;
   removeToken: () => void;
@@ -33,18 +34,21 @@ export default create<AuthStore>((set, get) => ({
   setToken: (token: string, remember?: boolean) => {
     if (token) {
       const user = _decode(token);
+      if (!user) {
+        return;
+      }
       logger.info("User logged in", user);
       const isCatering = user?.roles.includes(ClientRoles.CATERING);
+      const role = user.others.roles?.[0];
       set(() => ({
         user,
+        role,
         token: user ? token : "",
         isCatering,
       }));
-      if (user) {
-        remember
-          ? localStorage.setItem("token", token)
-          : sessionStorage.setItem("token", token);
-      }
+      remember
+        ? localStorage.setItem("token", token)
+        : sessionStorage.setItem("token", token);
     }
   },
 

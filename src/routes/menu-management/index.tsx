@@ -29,6 +29,7 @@ import {
   parseHash,
   reducer,
 } from "./_configs";
+import Alert from "./components/Alert";
 import BlankTableBody from "./components/BlankTableBody";
 import ControlBar from "./components/ControllBar";
 import MonthView from "./components/MonthView";
@@ -40,7 +41,7 @@ const MenuManagement = () => {
   const { hash: locationHash } = useLocation();
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
   const { products, reload: loadAllProducts } = useProductStore();
-  const { push: pushDailyMenu } = useDailyMenuStore();
+  const { push: pushDailyMenu, loadTodayMenu } = useDailyMenuStore();
   const {
     idByName: customerIdByName,
     customers,
@@ -49,10 +50,16 @@ const MenuManagement = () => {
   const { caterings, reload: loadAllCaterings } = useCateringStore();
 
   const load = useCallback(() => {
+    loadTodayMenu();
     loadAllProducts();
     loadAllCustomers();
     loadAllCaterings();
-  }, [loadAllCaterings, loadAllCustomers, loadAllProducts]);
+  }, [
+    loadTodayMenu,
+    loadAllCaterings,
+    loadAllCustomers,
+    loadAllProducts,
+  ]);
 
   useOnMounted(load);
 
@@ -179,6 +186,7 @@ const MenuManagement = () => {
           })
         }
       />
+      <Alert />
       <Table withTableBorder withColumnBorders>
         <Table.Thead>
           <Table.Tr>

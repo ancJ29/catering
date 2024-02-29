@@ -1,13 +1,48 @@
-import { dailyMenuKey, type DailyMenu } from "@/services/domain";
+import { ClientRoles } from "@/auto-generated/api-configs";
+import {
+  dailyMenuKey,
+  loadTodayMenu,
+  type DailyMenu,
+} from "@/services/domain";
+import logger from "@/services/logger";
+import useAuthStore from "@/stores/auth.store";
 import { create } from "zustand";
 
 type DailyMenuStore = {
   dailyMenu: Map<string, DailyMenu>;
+  alertItems: DailyMenu[];
+  loadTodayMenu: () => Promise<void>;
   push: (_: DailyMenu[]) => void;
 };
 
 export default create<DailyMenuStore>((set, get) => ({
   dailyMenu: new Map(),
+  alertItems: [],
+  loadTodayMenu: async (noCache = false) => {
+    const user = useAuthStore.getState().user;
+    const role = user?.others.roles?.[0];
+    if (!role || ![ClientRoles.PRODUCTION, ClientRoles.CATERING].includes(role)) {
+      return;
+    }
+    const data = await loadTodayMenu(noCache);
+    if (role == ClientRoles.PRODUCTION) {
+      const alertItems = data?.filter(
+        (el) => el.others.status === "NEW",
+      );
+      set({ alertItems });
+      logger.debug("alertItems", alertItems);
+    }
+    if (role == ClientRoles.CATERING) {
+      const cateringId = user?.departmentIds?.[0];
+      if (cateringId) {
+        const alertItems = data
+          .filter((el) => el.others.cateringId === cateringId)
+          .filter((el) => el.others.status === "WAITING");
+        logger.debug("alertItems", alertItems);
+        set({ alertItems });
+      }
+    }
+  },
   push: (data: DailyMenu[]) => {
     const dailyMenu = new Map(get().dailyMenu);
     data.forEach((el) => {

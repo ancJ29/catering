@@ -413,6 +413,17 @@ export const configs = {
       response: xDailyMenuSchema.array(),
     },
   },
+  [Actions.GET_TODAY_MENU]: {
+    name: Actions.GET_TODAY_MENU,
+    group: ActionGroups.MENU_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: z.object({
+        date: dateSchema.optional(),
+      }),
+      response: xDailyMenuSchema.array(),
+    },
+  },
   [Actions.PUSH_DAILY_MENU]: {
     name: Actions.PUSH_DAILY_MENU,
     group: ActionGroups.MENU_MANAGEMENT,

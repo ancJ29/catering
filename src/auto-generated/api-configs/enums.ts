@@ -40,6 +40,7 @@ export enum Actions {
   ADD_MENU = "add-menu",
   GET_DAILY_MENU = "get-daily-menu",
   PUSH_DAILY_MENU = "push-daily-menu",
+  GET_TODAY_MENU = "get-today-menu",
   // UPDATE_MENU = "update-menu",
   // DELETE_MENU = "delete-menu",
   GET_MATERIALS = "get-materials",
@@ -70,8 +71,8 @@ export enum Permissions {
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
 }
 
-export enum Policy {}
+export enum Policy { }
 // TODO: add policies
 
-export enum RequestDecorator {}
+export enum RequestDecorator { }
 // TODO: add request decorators

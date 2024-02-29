@@ -1,7 +1,7 @@
 import {
   Actions,
   configs as actionConfigs,
-  xDailyMenuSchema,
+  xDailyMenuSchema
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { ONE_WEEK } from "@/utils";
@@ -20,6 +20,20 @@ export type DailyMenuStatus = z.infer<
 >;
 
 export type DailyMenuDetailMode = "detail" | "modified";
+
+export async function loadTodayMenu(
+  noCache = false,
+): Promise<DailyMenu[]> {
+  const response =
+    actionConfigs[Actions.GET_TODAY_MENU].schema.response;
+  type Response = z.infer<typeof response>;
+  const data = await callApi<unknown, Response>({
+    action: Actions.GET_TODAY_MENU,
+    params: {},
+    options: { noCache },
+  });
+  return data || [];
+}
 
 export function dailyMenuStatusColor(
   status: DailyMenuStatus | undefined,
@@ -118,7 +132,7 @@ export const dailyMenuKey = _dailyMenuKey;
 
 import { ClientRoles as Roles } from "@/auto-generated/api-configs";
 
-type X = Record<DailyMenuStatus, { actor: Roles; }>;
+type X = Record<DailyMenuStatus, { actor: Roles }>;
 export const dailyMenuStatusTransitionMap: X = {
   NEW: {
     actor: Roles.PRODUCTION,
