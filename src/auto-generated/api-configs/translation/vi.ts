@@ -9,12 +9,16 @@ export default {
   "Add user": "Thêm người dùng",
   "Add": "Thêm",
   "Are you sure to save changes?": "Bạn có chắc chắn muốn cập nhật thông tin?",
-  "Are you sure you want to add new supplier?": "Bạn có chắc chắn muốn thêm nhà cung cấp mới?",
-  "Are you sure you want to add new user?": "Bạn có chắc chắn muốn thêm người dùng mới?",
-  "Are you sure you want to deactivate this user?": "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
+  "Are you sure you want to add new supplier?":
+    "Bạn có chắc chắn muốn thêm nhà cung cấp mới?",
+  "Are you sure you want to add new user?":
+    "Bạn có chắc chắn muốn thêm người dùng mới?",
+  "Are you sure you want to deactivate this user?":
+    "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
   "Are you sure you want to reset changes?": "Bạn có chắc chắn muốn khôi phục?",
   "Are you sure you want to save menu?": "Bạn có chắc chắn muốn lưu thực đơn?",
-  "Are you sure you want to update user?": "Bạn có chắc chắn muốn cập nhật người dùng?",
+  "Are you sure you want to update user?":
+    "Bạn có chắc chắn muốn cập nhật người dùng?",
   "Average cost price": "Giá cost (TB)",
   "Back to menu": "Quay lại thực đơn",
   "BOM": "Định lượng",
@@ -78,7 +82,8 @@ export default {
   "Mon": "T2",
   "Monthly": "Hàng tháng",
   "New password": "Mật khẩu mới",
-  "No results found. Please try another search.": "Không tìm thấy kết quả. Vui lòng thử lại.",
+  "No results found. Please try another search.":
+    "Không tìm thấy kết quả. Vui lòng thử lại.",
   "NO": "Không",
   "Non-central catering": "Bếp công trình",
   "noodle-for-party": "Món nước (tiệc)",
@@ -94,10 +99,12 @@ export default {
   "Payment Management": "Quản lý thanh toán",
   "Payment Schedule": "Lập lịch thanh toán",
   "Phone": "Số điện thoại",
-  "Please copy and keep password safe before create new user": "Vui lòng sao chép và lưu mật khẩu trước khi tạo người dùng mới",
+  "Please copy and keep password safe before create new user":
+    "Vui lòng sao chép và lưu mật khẩu trước khi tạo người dùng mới",
   "Please enter email": "Vui lòng nhập địa chỉ email",
   "Please enter password": "Vui lòng nhập mật khẩu",
-  "Please input price for all materials": "Vui lòng nhập giá cho tất cả nguyên liệu",
+  "Please input price for all materials":
+    "Vui lòng nhập giá cho tất cả nguyên liệu",
   "Price per set": "Giá mỗi phần",
   "Product code": "Mã",
   "Product Management": "Quản lý sản phẩm",
@@ -160,7 +167,8 @@ export default {
   "Update supplier successfully": "Cập nhật nhà cung cấp thành công",
   "Update user successfully": "Cập nhật người dùng thành công",
   "User Management": "Quản lý người dùng",
-  "Username or password is incorrect.": "Tên đăng nhập hoặc mật khẩu không chính xác.",
+  "Username or password is incorrect.":
+    "Tên đăng nhập hoặc mật khẩu không chính xác.",
   "Username": "Tên đăng nhập",
   "vegetable": "Rau củ xào/ luộc",
   "vegetarian-main-dish": "Chay chính",

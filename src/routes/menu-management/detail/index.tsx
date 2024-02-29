@@ -25,7 +25,7 @@ import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
 import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
-import { ONE_DAY, isPastDate, randomString } from "@/utils";
+import { ONE_DAY, endOfDay, isPastDate, randomString } from "@/utils";
 import {
   Box,
   Button,
@@ -210,8 +210,8 @@ const EditModal = () => {
   useOnMounted(_reload);
 
   const disabled = useMemo(() => {
-    return isPastDate(dailyMenu?.date);
-  }, [dailyMenu]);
+    return isPastDate(new Date(endOfDay(timestamp)));
+  }, [timestamp]);
   const { isCatering, user } = useAuthStore();
   const [tab, setActiveTab] = useState<Mode>(
     isCatering ? "modified" : "detail",

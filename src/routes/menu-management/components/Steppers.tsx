@@ -47,10 +47,6 @@ const Steppers = ({
     if (_disabled) {
       return true;
     }
-    const debug = false;
-    if (debug) {
-      return false;
-    }
     const role = user?.others.roles[0];
     logger.debug("role", role, dailyMenuStatusTransitionMap[status]);
     if (!role) {
