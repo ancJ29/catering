@@ -105,7 +105,7 @@ const EditModal = () => {
               date,
               targetName,
               shift,
-              status: dailyMenu.others.status,
+              status: updatedDailyMenu.others.status,
               customerId,
               quantity,
             },

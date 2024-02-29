@@ -2,7 +2,10 @@ import useTranslation from "@/hooks/useTranslation";
 import {
   DailyMenuStatus,
   dailyMenuStatusColor,
+  dailyMenuStatusTransitionMap,
 } from "@/services/domain";
+import logger from "@/services/logger";
+import useAuthStore from "@/stores/auth.store";
 import { Stepper } from "@mantine/core";
 import {
   IconCircleCheck,
@@ -27,7 +30,7 @@ const map = new Map<number, DailyMenuStatus>(
 const size = 16;
 
 const Steppers = ({
-  disabled = false,
+  disabled: _disabled = false,
   status = "NEW",
   onChange,
 }: {
@@ -39,6 +42,22 @@ const Steppers = ({
   const [active, setActive] = useState<number>(
     statuses.indexOf(status),
   );
+  const { user } = useAuthStore();
+  const disabled = useMemo(() => {
+    if (_disabled) {
+      return true;
+    }
+    const debug = false;
+    if (debug) {
+      return false;
+    }
+    const role = user?.others.roles[0];
+    logger.debug("role", role, dailyMenuStatusTransitionMap[status]);
+    if (!role) {
+      return true;
+    }
+    return !dailyMenuStatusTransitionMap[status].actor.includes(role);
+  }, [_disabled, status, user]);
 
   const [color, c] = useMemo(
     () => [
@@ -74,8 +93,9 @@ const Steppers = ({
       completedIcon={<IconCircleCheckFilled size={size} />}
     >
       {statuses.map((s, idx) => {
+        const _disabled = disabled || idx !== active + 1;
         const cursor =
-          disabled || idx <= active ? "not-allowed" : "pointer";
+          _disabled || idx <= active ? "not-allowed" : "pointer";
         const label =
           idx <= active ? (
             <Status status={s} fz={size} c={c} />
@@ -85,7 +105,7 @@ const Steppers = ({
         return (
           <Stepper.Step
             style={{ cursor }}
-            disabled={disabled}
+            disabled={_disabled}
             icon={<IconCircleCheck size={size} />}
             key={s}
             label={label}

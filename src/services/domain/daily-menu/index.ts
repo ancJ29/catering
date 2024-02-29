@@ -115,3 +115,27 @@ function _dailyMenuKey(
 }
 
 export const dailyMenuKey = _dailyMenuKey;
+
+import { ClientRoles as Roles } from "@/auto-generated/api-configs";
+
+type X = Record<DailyMenuStatus, { actor: Roles; }>;
+export const dailyMenuStatusTransitionMap: X = {
+  NEW: {
+    actor: Roles.PRODUCTION,
+  },
+  WAITING: {
+    actor: Roles.CATERING,
+  },
+  CONFIRMED: {
+    actor: Roles.CATERING,
+  },
+  PROCESSING: {
+    actor: Roles.CATERING,
+  },
+  READY: {
+    actor: Roles.CATERING,
+  },
+  DELIVERED: {
+    actor: Roles.CATERING,
+  },
+};
