@@ -20,7 +20,10 @@ export default create<DailyMenuStore>((set, get) => ({
   loadTodayMenu: async (noCache = false) => {
     const user = useAuthStore.getState().user;
     const role = user?.others.roles?.[0];
-    if (!role || ![ClientRoles.PRODUCTION, ClientRoles.CATERING].includes(role)) {
+    if (
+      !role ||
+      ![ClientRoles.PRODUCTION, ClientRoles.CATERING].includes(role)
+    ) {
       return;
     }
     const data = await loadTodayMenu(noCache);

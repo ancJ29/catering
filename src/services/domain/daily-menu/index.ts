@@ -1,7 +1,7 @@
 import {
   Actions,
   configs as actionConfigs,
-  xDailyMenuSchema
+  xDailyMenuSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { ONE_WEEK } from "@/utils";

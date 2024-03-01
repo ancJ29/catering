@@ -1,4 +1,5 @@
 import { getAllProducts, type Product } from "@/services/domain";
+import logger from "@/services/logger";
 import { unique } from "@/utils";
 import { create } from "zustand";
 
@@ -26,6 +27,7 @@ export default create<ProductStore>((set, get) => ({
       return;
     }
     const data = await getAllProducts(noCache);
+    logger.info(`Loaded ${data.length} products`);
     const allTypes = unique(data.map((e) => e.others.type));
     set(() => ({
       allTypes,

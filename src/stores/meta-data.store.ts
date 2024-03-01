@@ -42,11 +42,7 @@ export default create<MetaDataStore>((set) => ({
     const data: Response = await request({
       action: Actions.GET_METADATA,
     });
-    logger.info(
-      "loadMetaData",
-      typeof data,
-      data.dictionaries.version,
-    );
+    logger.trace("meta data loaded:", data.dictionaries.version);
     const version = data.dictionaries.version;
     const cachedVersion = localStorage.getItem(
       "____dictionaries-version____",

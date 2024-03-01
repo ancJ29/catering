@@ -1,7 +1,6 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import useTranslation from "@/hooks/useTranslation";
 import { Customer, Department } from "@/services/domain";
-import logger from "@/services/logger";
 import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
@@ -103,11 +102,9 @@ const ControllBar = ({
     if (cateringId && cateringIds.includes(cateringId)) {
       return customerNamesByCateringId.get(cateringId) || [];
     }
-    const data = Array.from(customers.values())
+    return Array.from(customers.values())
       .filter((c) => cateringIds.includes(c.others.cateringId))
       .map((c) => c.name);
-    logger.info("customerData", data, customers, cateringIds);
-    return data;
   }, [
     isCatering,
     cateringId,

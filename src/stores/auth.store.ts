@@ -37,7 +37,7 @@ export default create<AuthStore>((set, get) => ({
       if (!user) {
         return;
       }
-      logger.info("User logged in", user);
+      logger.trace("User logged in", user);
       const isCatering = user?.roles.includes(ClientRoles.CATERING);
       const role = user.others.roles?.[0];
       set(() => ({
@@ -54,8 +54,7 @@ export default create<AuthStore>((set, get) => ({
 
   removeToken: () => {
     set(() => ({ user: null, token: "" }));
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
+    localStorage.clear();
   },
 }));
 

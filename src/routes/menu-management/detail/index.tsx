@@ -18,7 +18,6 @@ import {
   productTypeOptions,
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
-import logger from "@/services/logger";
 import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
@@ -60,8 +59,7 @@ const EditModal = () => {
     products: allProducts,
     reload: loadAllProducts,
   } = useProductStore();
-  const [loading, setLoading] = useState(false);
-  const [reloadCounter, setReloadCounter] = useState(0);
+
   const { customers, reload: loadAllCustomers } = useCustomerStore();
   const { reload: loadAllCaterings } = useCateringStore();
   const { dailyMenu: records, push: pushDailyMenu } =
@@ -73,14 +71,46 @@ const EditModal = () => {
     updated,
   } = useSyncExternalStore(store.subscribe, store.getSnapshot);
 
-  const { timestamp, customerId, shift, targetName } = useMemo(() => {
-    return {
-      customerId: params.customerId || "",
-      targetName: decodeURIComponent(params.targetName || ""),
-      shift: decodeURIComponent(params.shift || ""),
-      timestamp: parseInt(params.timestamp || "0"),
-    };
-  }, [params]);
+  const { key, timestamp, customer, customerId, shift, targetName } =
+    useMemo(() => {
+      if (!customers) {
+        return {
+          key: "",
+          customer: undefined,
+          timestamp: 0,
+          customerId: "",
+          shift: "",
+          targetName: "",
+        };
+      }
+      const { timestamp, customerId, shift, targetName } = {
+        customerId: params.customerId || "",
+        targetName: decodeURIComponent(params.targetName || ""),
+        shift: decodeURIComponent(params.shift || ""),
+        timestamp: parseInt(params.timestamp || "0"),
+      };
+      const customer = customers.get(customerId);
+      const target = customer?.others.targets.find(
+        (t) => t.name === targetName,
+      );
+      if (!customer || !target?.shifts.includes(shift)) {
+        return {
+          dailyMenuKey: "",
+          timestamp: 0,
+          customerId: "",
+          shift: "",
+          targetName: "",
+        };
+      }
+      return {
+        timestamp,
+        customerId,
+        shift,
+        targetName,
+        customer,
+        key: dailyMenuKey(customerId, targetName, shift, timestamp),
+      };
+    }, [params, customers]);
 
   const save = useCallback(async () => {
     if (!updatedDailyMenu || !dailyMenu) {
@@ -144,45 +174,18 @@ const EditModal = () => {
     navigate,
   ]);
 
-  const _reload = useCallback(async () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    if (reloadCounter > 10) {
-      setLoading(false);
-      return;
-    }
-    setReloadCounter((reloadCounter) => reloadCounter + 1);
-    if (dailyMenu || !customerId || !targetName || !shift) {
-      setLoading(false);
-      return;
-    }
-    logger.debug("reload daily menu...", reloadCounter);
+  const _loadData = useCallback(async () => {
+    loadAllCustomers();
     loadAllProducts();
     loadAllCaterings();
-    if (customers.size === 0) {
-      loadAllCustomers();
+  }, [loadAllCaterings, loadAllCustomers, loadAllProducts]);
+
+  useOnMounted(_loadData);
+
+  const _reload = useCallback(async () => {
+    if (!key || !customer) {
       return;
     }
-    const customer = customers.get(customerId);
-    if (!customer) {
-      setLoading(false);
-      return;
-    }
-    const target = customer?.others.targets.find(
-      (t) => t.name === targetName,
-    );
-    if (!target?.shifts.includes(shift)) {
-      setLoading(false);
-      return;
-    }
-    const key = dailyMenuKey(
-      customerId,
-      targetName,
-      shift,
-      timestamp,
-    );
     const y = records.get(key);
     if (y) {
       store.set(y);
@@ -193,7 +196,6 @@ const EditModal = () => {
         from: timestamp - ONE_DAY,
         to: timestamp + ONE_DAY,
       });
-      logger.debug("get daily menu...", res.length, res);
       if (res.length) {
         res.length && pushDailyMenu(res);
       } else {
@@ -204,24 +206,17 @@ const EditModal = () => {
           new Date(timestamp),
         );
         store.set(menu);
-        logger.debug("set blank daily menu...");
         setDailyMenu(menu);
       }
     }
-    setLoading(false);
   }, [
-    loading,
-    reloadCounter,
-    dailyMenu,
+    key,
+    customer,
     customerId,
     targetName,
     shift,
-    customers,
     timestamp,
     records,
-    loadAllProducts,
-    loadAllCustomers,
-    loadAllCaterings,
     pushDailyMenu,
   ]);
 
@@ -240,11 +235,10 @@ const EditModal = () => {
     [allTypes, t],
   );
 
-  const [key, configs] = useMemo(() => {
-    logger.debug("check...");
+  const [configKey, configs] = useMemo(() => {
     if (user && dailyMenu) {
-      const key = `${Date.now()}.${randomString()}`;
-      return [key, _configs(t, tab, user, dailyMenu)];
+      const configKey = `${Date.now()}.${randomString()}`;
+      return [configKey, _configs(t, tab, user, dailyMenu)];
     }
     return ["config", []];
   }, [user, dailyMenu, tab, t]);
@@ -288,7 +282,7 @@ const EditModal = () => {
   }, [selectedProduct]);
 
   return (
-    <Box key={`${tab}.${key}`}>
+    <Box key={`${tab}.${configKey}`}>
       <Steppers
         onChange={store.setStatus}
         status={dailyMenu?.others.status}

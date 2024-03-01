@@ -12,7 +12,7 @@ export default async function request(
   const requestId = uuid();
   const action = (data.action || "").toString();
   const nonce = await _nonce(timestamp, action, requestId);
-  logger.debug(`[request] [${timestamp}] [${nonce}]`);
+  logger.trace(`[request] [${timestamp}] [${nonce}]`);
   return axios
     .request({
       method: "POST",
@@ -26,7 +26,11 @@ export default async function request(
         "x-client-request-id": requestId,
       },
     })
-    .then((res) => decode(res.data));
+    .then(async (res) => {
+      const json = await decode(res.data);
+      logger.trace(`[response] [${timestamp}] [${nonce}]`, data, json);
+      return json;
+    });
 }
 
 async function _nonce(

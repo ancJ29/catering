@@ -22,9 +22,9 @@ export async function getAllProducts(
     typeof localStorage.__All_PRODUCTS__ === "string"
   ) {
     const res = response.safeParse(
-      JSON.parse(localStorage.__All_PRODUCTS__ || "{}"),
+      JSON.parse(localStorage.__All_PRODUCTS__ || "[]"),
     );
-    if (res.success) {
+    if (res.success && res.data.length) {
       return res.data;
     }
   }
