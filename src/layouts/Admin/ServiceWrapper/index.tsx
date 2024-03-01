@@ -1,8 +1,10 @@
 import useTranslation from "@/hooks/useTranslation";
+import useAuthStore from "@/stores/auth.store";
+import { Menu } from "@/types";
 import { AppShell, Box, Burger, Button } from "@mantine/core";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import { IconArrowUp } from "@tabler/icons-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserView } from "react-device-detect";
 import { useLocation } from "react-router-dom";
 import AdminHeader from "../AdminHeader";
@@ -18,6 +20,8 @@ const ServiceWrapper = ({ title, children }: Props) => {
   const location = useLocation();
   const [opened, { toggle, close, open }] = useDisclosure(false);
   const [scroll, scrollTo] = useWindowScroll();
+  const { user } = useAuthStore();
+  const [menu] = useState<Menu>(user?.menu || []);
 
   useEffect(close, [close, location.key]);
 
@@ -43,7 +47,7 @@ const ServiceWrapper = ({ title, children }: Props) => {
         />
       </AppShell.Header>
       <AppShell.Navbar>
-        {<Navbar display={!opened} onOpenNavbar={open} />}
+        <Navbar opened={opened} menu={menu} onOpenNavbar={open} />
       </AppShell.Navbar>
       <AppShell.Main>
         <Box

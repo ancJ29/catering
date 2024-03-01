@@ -1,20 +1,22 @@
 .item {
   padding: 1.2rem;
   display: flex;
+  cursor: pointer;
 
   &:hover {
     background: var(--hover-background-color);
-    cursor: pointer;
   }
 }
 
 .active {
-  padding: 1.2rem;
-  display: flex;
   background: var(--navbar-active-background-color);
 
   &:hover {
-    background: var(--navbar-active-background-color);
-    cursor: pointer;
+    background: var(--navbar-active-background-color) !important;
   }
+}
+
+.wrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
 }

@@ -1,136 +1,82 @@
 import useTranslation from "@/hooks/useTranslation";
-import useAuthStore from "@/stores/auth.store";
 import { Menu } from "@/types";
-import {
-  Flex,
-  Image,
-  NavLink,
-  ScrollArea,
-  Tooltip,
-} from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Box, NavLink } from "@mantine/core";
+import clsx from "clsx";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Icon from "./Icon";
 import classes from "./navbar.module.scss";
 
+type NavbarProps = {
+  opened?: boolean;
+  menu: Menu;
+  level?: number;
+  onOpenNavbar?: () => void;
+};
 const Navbar = ({
-  display = false,
+  level = 1,
+  opened,
+  menu,
   onOpenNavbar,
-}: {
-  display?: boolean;
-  onOpenNavbar: () => void;
-}) => {
+}: NavbarProps) => {
   const t = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuthStore();
-  const [menu] = useState<Menu>(user?.menu || []);
   const [active, setActive] = useState(location.pathname);
+  const [activeKey, setActiveKey] = useState("");
 
   useEffect(() => {
     setActive(location.pathname);
+    setActiveKey("");
   }, [location.pathname]);
 
-  // TODO: refactor this block
-  return (
-    <ScrollArea className={classes.links} pb={20}>
-      {menu.length &&
-        menu.map((item, idx) => (
-          <Flex
-            key={idx}
-            onClick={() => {
-              if (item.subs) {
-                onOpenNavbar();
-                return;
-              } else {
-                if (!item.url) {
-                  alert("Not implemented!!!");
-                }
-                setActive(item.url || "");
-                navigate(item.url || "");
-              }
-            }}
-          >
-            <Tooltip
-              label={t(item.label)}
-              color="#fff"
-              c="black"
-              classNames={{ tooltip: "c-catering-bdr-f" }}
-            >
-              <Flex
-                display={!display ? "none" : "flex"}
-                className={
-                  active === item.url ? classes.active : classes.item
-                }
-              >
-                <Image
-                  radius="md"
-                  h={20}
-                  w={20}
-                  src={`/img/menu/${item.icon}.svg`}
-                />
-              </Flex>
-            </Tooltip>
-            <Flex
-              className="c-catering-p-0 c-catering-w-full"
-              direction="column"
-            >
-              <NavLink
-                fz={14}
-                display={display ? "none" : "flex"}
-                label={t(item.label)}
-                classNames={{
-                  children: "c-catering-p-0",
-                }}
-                className={
-                  active === item.url ? classes.active : classes.item
-                }
-                leftSection={
-                  <Image
-                    radius="md"
-                    h={20}
-                    w={20}
-                    src={`/img/menu/${item.icon}.svg`}
-                  />
-                }
-              >
-                {item.subs?.length &&
-                  item.subs?.map((sub, idx) => {
-                    return (
-                      <NavLink
-                        className={
-                          active === sub.url
-                            ? classes.active
-                            : classes.item
-                        }
-                        py={"1rem"}
-                        pl={"2rem"}
-                        key={idx}
-                        label={t(sub.label)}
-                        display={display ? "none" : "flex"}
-                        onClick={() => {
-                          if (sub.url) {
-                            setActive(sub.url);
-                            navigate(sub.url);
-                          } else {
-                            alert("Not implemented!!!");
-                          }
-                        }}
-                        leftSection={
-                          <Image
-                            src={`/img/menu/${sub.icon}.svg`}
-                            radius="md"
-                            h={20}
-                            w={20}
-                          />
-                        }
-                      />
-                    );
-                  })}
-              </NavLink>
-            </Flex>
-          </Flex>
-        ))}
-    </ScrollArea>
+  const open = useCallback(
+    (item: { key: string; url?: string; subs?: unknown[] }) => {
+      if (item.subs) {
+        setActiveKey((prev) => (prev === item.key ? "" : item.key));
+        return;
+      }
+      if (!item.url) {
+        alert("Not implemented!!!");
+        return;
+      }
+      navigate(item.url);
+    },
+    [navigate],
+  );
+
+  return menu.length ? (
+    <Box className={classes.wrapper} pb={level === 1 ? "2rem" : "0"}>
+      {menu.map((item, idx) => (
+        <NavLink
+          opened={item.subs && activeKey === item.key}
+          key={idx}
+          h="3rem"
+          onClick={open.bind(null, item)}
+          label={opened ? t(item.label) : ""}
+          classNames={{
+            children: "c-catering-p-0",
+          }}
+          className={clsx(
+            classes.item,
+            active === item.url ? classes.active : "",
+          )}
+          leftSection={
+            <Icon
+              {...item}
+              disabled={opened}
+              onClick={onOpenNavbar}
+            />
+          }
+        >
+          {item.subs && opened && (
+            <Navbar opened level={level + 1} menu={item.subs || []} />
+          )}
+        </NavLink>
+      ))}
+    </Box>
+  ) : (
+    ""
   );
 };
 export default Navbar;
