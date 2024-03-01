@@ -28,7 +28,11 @@ export default async function request(
     })
     .then(async (res) => {
       const json = await decode(res.data);
-      logger.trace(`[response] [${timestamp}] [${nonce}]`, data, json);
+      logger.trace(
+        `[response] [${timestamp}] [${nonce}]`,
+        data,
+        json,
+      );
       return json;
     });
 }

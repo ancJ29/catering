@@ -64,7 +64,7 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/menu-management/:customerId/:targetName/:shift/:timestamp",
+    path: "/menu-management/:customerName/:targetName/:shift/:timestamp",
     element: "MenuManagementDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,

@@ -24,7 +24,14 @@ import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
 import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
-import { ONE_DAY, endOfDay, isPastDate, randomString } from "@/utils";
+import {
+  ONE_DAY,
+  decodeUri,
+  endOfDay,
+  isPastDate,
+  randomString,
+  toSpace,
+} from "@/utils";
 import {
   Box,
   Button,
@@ -52,24 +59,30 @@ const EditModal = () => {
   const t = useTranslation();
   const navigate = useNavigate();
 
-  useOnMounted(store.reset);
-
-  const {
-    allTypes,
-    products: allProducts,
-    reload: loadAllProducts,
-  } = useProductStore();
-
-  const { customers, reload: loadAllCustomers } = useCustomerStore();
-  const { reload: loadAllCaterings } = useCateringStore();
-  const { dailyMenu: records, push: pushDailyMenu } =
-    useDailyMenuStore();
-  const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
+  // external store
   const {
     item: updatedDailyMenu,
     productIds,
     updated,
   } = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  useOnMounted(store.reset);
+
+  // internal store
+  const { dailyMenu: records, push: pushDailyMenu } =
+    useDailyMenuStore();
+  const { reload: loadAllCaterings } = useCateringStore();
+  const { customers, reload: loadAllCustomers } = useCustomerStore();
+  const {
+    allTypes,
+    products: allProducts,
+    reload: loadAllProducts,
+  } = useProductStore();
+  useOnMounted(loadAllCustomers);
+  useOnMounted(loadAllCaterings);
+  useOnMounted(loadAllProducts);
+
+  // local state
+  const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
 
   const { key, timestamp, customer, customerId, shift, targetName } =
     useMemo(() => {
@@ -78,18 +91,23 @@ const EditModal = () => {
           key: "",
           customer: undefined,
           timestamp: 0,
-          customerId: "",
+          customerName: "",
           shift: "",
           targetName: "",
         };
       }
-      const { timestamp, customerId, shift, targetName } = {
-        customerId: params.customerId || "",
-        targetName: decodeURIComponent(params.targetName || ""),
-        shift: decodeURIComponent(params.shift || ""),
+      // unicode to ascii
+      // const targetName =
+      const { timestamp, customerName, shift, targetName } = {
+        customerName: decodeUri(params.customerName || ""),
+        targetName: decodeUri(params.targetName || ""),
+        shift: decodeUri(params.shift || ""),
         timestamp: parseInt(params.timestamp || "0"),
       };
-      const customer = customers.get(customerId);
+      const customer = Array.from(customers.values()).find((el) => {
+        return toSpace(el.name) === toSpace(customerName);
+      });
+      // .find(el => el.name === customerName);
       const target = customer?.others.targets.find(
         (t) => t.name === targetName,
       );
@@ -104,84 +122,13 @@ const EditModal = () => {
       }
       return {
         timestamp,
-        customerId,
+        customerId: customer.id,
         shift,
         targetName,
         customer,
-        key: dailyMenuKey(customerId, targetName, shift, timestamp),
+        key: dailyMenuKey(customer.id, targetName, shift, timestamp),
       };
     }, [params, customers]);
-
-  const save = useCallback(async () => {
-    if (!updatedDailyMenu || !dailyMenu) {
-      return;
-    }
-    const quantity = updatedDailyMenu.others.quantity;
-    const date = dailyMenu.date;
-    Object.keys(quantity).forEach((productId) => {
-      if (quantity[productId] < 1) {
-        delete quantity[productId];
-      }
-    });
-    modals.openConfirmModal({
-      title: `${t("Update menu")}`,
-      children: (
-        <Text size="sm">
-          {t("Are you sure you want to save menu?")}
-        </Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        loadingStore.startLoading();
-        const { id } =
-          (await callApi<unknown, { id: string }>({
-            action: Actions.PUSH_DAILY_MENU,
-            params: {
-              date,
-              targetName,
-              shift,
-              status: updatedDailyMenu.others.status,
-              customerId,
-              quantity,
-            },
-          })) || {};
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const res = await getDailyMenu({
-          id,
-          noCache: true,
-          customerId: dailyMenu.customerId,
-          from: timestamp - ONE_DAY,
-          to: timestamp + ONE_DAY,
-        });
-        if (res.length === 1) {
-          pushDailyMenu(res);
-          store.set(res[0]);
-          setDailyMenu(res[0]);
-        }
-        loadingStore.stopLoading();
-        navigate(-1);
-      },
-    });
-  }, [
-    updatedDailyMenu,
-    dailyMenu,
-    customerId,
-    targetName,
-    shift,
-    timestamp,
-    t,
-    pushDailyMenu,
-    navigate,
-  ]);
-
-  const _loadData = useCallback(async () => {
-    loadAllCustomers();
-    loadAllProducts();
-    loadAllCaterings();
-  }, [loadAllCaterings, loadAllCustomers, loadAllProducts]);
-
-  useOnMounted(_loadData);
-
   const _reload = useCallback(async () => {
     if (!key || !customer) {
       return;
@@ -280,6 +227,68 @@ const EditModal = () => {
 
     return { numberByTypes };
   }, [selectedProduct]);
+
+  const save = useCallback(async () => {
+    if (!updatedDailyMenu || !dailyMenu) {
+      return;
+    }
+    const quantity = updatedDailyMenu.others.quantity;
+    const date = dailyMenu.date;
+    Object.keys(quantity).forEach((productId) => {
+      if (quantity[productId] < 1) {
+        delete quantity[productId];
+      }
+    });
+    modals.openConfirmModal({
+      title: `${t("Update menu")}`,
+      children: (
+        <Text size="sm">
+          {t("Are you sure you want to save menu?")}
+        </Text>
+      ),
+      labels: { confirm: "OK", cancel: t("Cancel") },
+      onConfirm: async () => {
+        loadingStore.startLoading();
+        const { id } =
+          (await callApi<unknown, { id: string }>({
+            action: Actions.PUSH_DAILY_MENU,
+            params: {
+              date,
+              targetName,
+              shift,
+              status: updatedDailyMenu.others.status,
+              customerId,
+              quantity,
+            },
+          })) || {};
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const res = await getDailyMenu({
+          id,
+          noCache: true,
+          customerId: dailyMenu.customerId,
+          from: timestamp - ONE_DAY,
+          to: timestamp + ONE_DAY,
+        });
+        if (res.length === 1) {
+          pushDailyMenu(res);
+          store.set(res[0]);
+          setDailyMenu(res[0]);
+        }
+        loadingStore.stopLoading();
+        navigate(-1);
+      },
+    });
+  }, [
+    updatedDailyMenu,
+    dailyMenu,
+    customerId,
+    targetName,
+    shift,
+    timestamp,
+    t,
+    pushDailyMenu,
+    navigate,
+  ]);
 
   return (
     <Box key={`${tab}.${configKey}`}>

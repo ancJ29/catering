@@ -8,3 +8,19 @@ export function randomPassword() {
 export function randomString() {
   return Math.random().toString(36).substring(2, 12);
 }
+
+export function encodeUri(str: string) {
+  return encodeURIComponent(str.replace(/\s/g, "-"));
+}
+
+export function decodeUri(str: string) {
+  return decodeURIComponent(toSpace(str));
+}
+
+export function fromSpace(str: string) {
+  return str.replace(/\s/g, "-");
+}
+
+export function toSpace(str: string) {
+  return str.replace(/-/g, " ");
+}

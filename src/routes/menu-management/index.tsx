@@ -8,6 +8,7 @@ import useProductStore from "@/stores/product.store";
 import {
   ONE_WEEK,
   addHashToUrl,
+  encodeUri,
   removeHashFromUrl,
   startOfDay,
 } from "@/utils";
@@ -87,9 +88,9 @@ const MenuManagement = () => {
         return;
       }
       navigate(
-        `/menu-management/${selectedCustomer.id}/${encodeURIComponent(
-          targetName,
-        )}/${encodeURIComponent(shift)}/${timestamp}`,
+        `/menu-management/${encodeUri(
+          selectedCustomer.name,
+        )}/${encodeUri(targetName)}/${encodeUri(shift)}/${timestamp}`,
       );
     },
     [condition, navigate],
