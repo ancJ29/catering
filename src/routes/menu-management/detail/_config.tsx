@@ -15,6 +15,7 @@ export const _configs = (
   mode: Mode,
   user: Payload,
   dailyMenu: DailyMenu,
+  disabled: boolean,
 ): DataGridColumnProps[] => {
   const cateringId = dailyMenu?.others.cateringId;
   const isCatering = user.others.roles[0] === Roles.CATERING;
@@ -54,7 +55,7 @@ export const _configs = (
                     : undefined,
               },
             }}
-            disabled={!editable}
+            disabled={disabled || !editable}
             defaultValue={dailyMenu?.others.quantity[product.id] || 0}
             onChange={(quantity) =>
               store.setQuantity(product.id, quantity)

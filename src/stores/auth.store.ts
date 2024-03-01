@@ -54,7 +54,8 @@ export default create<AuthStore>((set, get) => ({
 
   removeToken: () => {
     set(() => ({ user: null, token: "" }));
-    localStorage.clear();
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
   },
 }));
 

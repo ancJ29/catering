@@ -8,7 +8,7 @@ import {
 import en from "./en";
 import vi from "./vi";
 
-const version = "1.0.1707194823951";
+const version = "1.0.1709219376271";
 
 type DepartmentKey = `user.role.${ClientRoles}`;
 

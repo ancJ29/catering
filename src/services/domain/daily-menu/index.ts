@@ -4,7 +4,7 @@ import {
   xDailyMenuSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
-import { ONE_WEEK } from "@/utils";
+import { ONE_WEEK, throttle } from "@/utils";
 import { z } from "zod";
 import { Customer } from "../customer";
 
@@ -79,6 +79,28 @@ export function blankDailyMenu(
     },
   };
 }
+
+export const _getDailyMenu = throttle(async function getDailyMenu({
+  id,
+  customerId,
+  from = Date.now() - ONE_WEEK,
+  to = Date.now() + ONE_WEEK,
+  noCache = false,
+}: {
+  id?: string;
+  from: number;
+  to: number;
+  customerId: string;
+  noCache?: boolean;
+}): Promise<DailyMenu[]> {
+  const dailyMenuList = await callApi<unknown, Response>({
+    action: Actions.GET_DAILY_MENU,
+    params: { id, customerId, from, to },
+    options: { noCache },
+  });
+  return dailyMenuList || [];
+},
+1000);
 
 export async function getDailyMenu({
   id,

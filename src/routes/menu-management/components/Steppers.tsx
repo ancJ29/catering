@@ -2,9 +2,7 @@ import useTranslation from "@/hooks/useTranslation";
 import {
   DailyMenuStatus,
   dailyMenuStatusColor,
-  dailyMenuStatusTransitionMap,
 } from "@/services/domain";
-import useAuthStore from "@/stores/auth.store";
 import { Stepper } from "@mantine/core";
 import {
   IconCircleCheck,
@@ -29,7 +27,7 @@ const map = new Map<number, DailyMenuStatus>(
 const size = 16;
 
 const Steppers = ({
-  disabled: _disabled = false,
+  disabled = false,
   status = "NEW",
   onChange,
 }: {
@@ -41,18 +39,6 @@ const Steppers = ({
   const [active, setActive] = useState<number>(
     statuses.indexOf(status),
   );
-  const { user } = useAuthStore();
-  const disabled = useMemo(() => {
-    if (_disabled) {
-      return true;
-    }
-    const role = user?.others.roles[0];
-    if (!role) {
-      return true;
-    }
-    return !dailyMenuStatusTransitionMap[status].actor.includes(role);
-  }, [_disabled, status, user]);
-
   const [color, c] = useMemo(
     () => [
       dailyMenuStatusColor(map.get(active || 0) || "NEW", 9),

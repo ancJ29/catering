@@ -82,5 +82,5 @@ export const xDailyMenuSchema = dailyMenuSchema
           }),
         }),
       ),
-    }).optional(),
+    }),
   });

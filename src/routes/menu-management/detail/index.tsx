@@ -1,4 +1,4 @@
-import { Actions } from "@/auto-generated/api-configs";
+import { Actions, ClientRoles } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
@@ -10,10 +10,12 @@ import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import loadingStore from "@/services/api/store/loading";
 import {
+  Customer,
   DailyMenu,
+  DailyMenuStatus,
   Product,
-  blankDailyMenu,
   dailyMenuKey,
+  dailyMenuStatusTransitionMap,
   getDailyMenu,
   productTypeOptions,
   type DailyMenuDetailMode as Mode,
@@ -30,7 +32,6 @@ import {
   endOfDay,
   isPastDate,
   randomString,
-  toSpace,
 } from "@/utils";
 import {
   Box,
@@ -43,6 +44,7 @@ import {
 import { modals } from "@mantine/modals";
 import {
   useCallback,
+  useEffect,
   useMemo,
   useState,
   useSyncExternalStore,
@@ -54,128 +56,94 @@ import { _configs } from "./_config";
 import { FilterType, defaultCondition, filter } from "./_filter";
 import store from "./_item.store";
 
+type Params = {
+  timestamp: number;
+  customerId: string;
+  shift: string;
+  targetName: string;
+  customer: Customer;
+  key: string;
+};
+
 const EditModal = () => {
   const params = useParams();
   const t = useTranslation();
   const navigate = useNavigate();
-
-  // external store
-  const {
-    item: updatedDailyMenu,
-    productIds,
-    updated,
-  } = useSyncExternalStore(store.subscribe, store.getSnapshot);
-  useOnMounted(store.reset);
-
-  // internal store
+  const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
+  const [parsedParams, setParsedParams] = useState<Params>();
+  const [disabled, setDisabled] = useState(false);
+  const { isCatering, user } = useAuthStore();
+  const [tab, setActiveTab] = useState<Mode>(
+    isCatering ? "modified" : "detail",
+  );
   const { dailyMenu: records, push: pushDailyMenu } =
     useDailyMenuStore();
   const { reload: loadAllCaterings } = useCateringStore();
   const { customers, reload: loadAllCustomers } = useCustomerStore();
   const {
+    item: updatedDailyMenu,
+    productIds,
+    updated,
+  } = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const {
     allTypes,
     products: allProducts,
     reload: loadAllProducts,
   } = useProductStore();
-  useOnMounted(loadAllCustomers);
-  useOnMounted(loadAllCaterings);
-  useOnMounted(loadAllProducts);
 
-  // local state
-  const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
+  const onMounted = useCallback(async () => {
+    store.reset();
+    loadAllCustomers();
+    loadAllCaterings();
+    loadAllProducts();
+  }, [loadAllCaterings, loadAllCustomers, loadAllProducts]);
 
-  const { key, timestamp, customer, customerId, shift, targetName } =
-    useMemo(() => {
-      if (!customers) {
-        return {
-          key: "",
-          customer: undefined,
-          timestamp: 0,
-          customerName: "",
-          shift: "",
-          targetName: "",
-        };
-      }
-      // unicode to ascii
-      // const targetName =
-      const { timestamp, customerName, shift, targetName } = {
-        customerName: decodeUri(params.customerName || ""),
-        targetName: decodeUri(params.targetName || ""),
-        shift: decodeUri(params.shift || ""),
-        timestamp: parseInt(params.timestamp || "0"),
-      };
-      const customer = Array.from(customers.values()).find((el) => {
-        return toSpace(el.name) === toSpace(customerName);
-      });
-      // .find(el => el.name === customerName);
-      const target = customer?.others.targets.find(
-        (t) => t.name === targetName,
+  useOnMounted(onMounted);
+
+  useEffect(() => {
+    if (
+      !parsedParams?.key &&
+      customers?.size &&
+      params.customerName
+    ) {
+      setParsedParams(_parse(params, customers));
+    }
+  }, [params, parsedParams, customers]);
+
+  useEffect(() => {
+    if (!disabled && parsedParams && user) {
+      setDisabled(
+        !_editable(
+          new Date(endOfDay(parsedParams.timestamp)),
+          user.others.roles[0],
+          updatedDailyMenu?.others.status,
+        ),
       );
-      if (!customer || !target?.shifts.includes(shift)) {
-        return {
-          dailyMenuKey: "",
-          timestamp: 0,
-          customerId: "",
-          shift: "",
-          targetName: "",
-        };
-      }
-      return {
-        timestamp,
-        customerId: customer.id,
-        shift,
-        targetName,
-        customer,
-        key: dailyMenuKey(customer.id, targetName, shift, timestamp),
-      };
-    }, [params, customers]);
-  const _reload = useCallback(async () => {
-    if (!key || !customer) {
+    }
+  }, [disabled, parsedParams, updatedDailyMenu?.others.status, user]);
+
+  useEffect(() => {
+    if (!parsedParams || dailyMenu) {
       return;
     }
-    const y = records.get(key);
-    if (y) {
-      store.set(y);
-      setDailyMenu(y);
-    } else {
-      const res = await getDailyMenu({
-        customerId,
-        from: timestamp - ONE_DAY,
-        to: timestamp + ONE_DAY,
-      });
-      if (res.length) {
-        res.length && pushDailyMenu(res);
-      } else {
-        const menu = blankDailyMenu(
-          customer,
-          targetName,
-          shift,
-          new Date(timestamp),
-        );
-        store.set(menu);
-        setDailyMenu(menu);
-      }
+    const x = records.get(parsedParams.key);
+    if (x) {
+      setDailyMenu(x);
+      store.set(x);
+      return;
     }
-  }, [
-    key,
-    customer,
-    customerId,
-    targetName,
-    shift,
-    timestamp,
-    records,
-    pushDailyMenu,
-  ]);
-
-  useOnMounted(_reload);
-
-  const disabled = useMemo(() => {
-    return isPastDate(new Date(endOfDay(timestamp)));
-  }, [timestamp]);
-  const { isCatering, user } = useAuthStore();
-  const [tab, setActiveTab] = useState<Mode>(
-    isCatering ? "modified" : "detail",
-  );
+    getDailyMenu({
+      customerId: parsedParams.customerId,
+      from: parsedParams.timestamp - ONE_DAY,
+      to: parsedParams.timestamp + ONE_DAY,
+    }).then((res) => {
+      if (res[0]) {
+        pushDailyMenu(res);
+        setDailyMenu(res[0]);
+        store.set(res[0]);
+      }
+    });
+  }, [dailyMenu, records, parsedParams, pushDailyMenu]);
 
   const typeOptions: OptionProps[] = useMemo(
     () => productTypeOptions(allTypes, t),
@@ -185,10 +153,10 @@ const EditModal = () => {
   const [configKey, configs] = useMemo(() => {
     if (user && dailyMenu) {
       const configKey = `${Date.now()}.${randomString()}`;
-      return [configKey, _configs(t, tab, user, dailyMenu)];
+      return [configKey, _configs(t, tab, user, dailyMenu, disabled)];
     }
     return ["config", []];
-  }, [user, dailyMenu, tab, t]);
+  }, [user, dailyMenu, tab, disabled, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -228,63 +196,37 @@ const EditModal = () => {
     return { numberByTypes };
   }, [selectedProduct]);
 
-  const save = useCallback(async () => {
-    if (!updatedDailyMenu || !dailyMenu) {
-      return;
-    }
-    const quantity = updatedDailyMenu.others.quantity;
-    const date = dailyMenu.date;
-    Object.keys(quantity).forEach((productId) => {
-      if (quantity[productId] < 1) {
-        delete quantity[productId];
-      }
-    });
-    modals.openConfirmModal({
-      title: `${t("Update menu")}`,
-      children: (
-        <Text size="sm">
-          {t("Are you sure you want to save menu?")}
-        </Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        loadingStore.startLoading();
-        const { id } =
-          (await callApi<unknown, { id: string }>({
-            action: Actions.PUSH_DAILY_MENU,
-            params: {
-              date,
-              targetName,
-              shift,
-              status: updatedDailyMenu.others.status,
-              customerId,
-              quantity,
-            },
-          })) || {};
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const res = await getDailyMenu({
-          id,
-          noCache: true,
-          customerId: dailyMenu.customerId,
-          from: timestamp - ONE_DAY,
-          to: timestamp + ONE_DAY,
-        });
-        if (res.length === 1) {
-          pushDailyMenu(res);
-          store.set(res[0]);
-          setDailyMenu(res[0]);
-        }
-        loadingStore.stopLoading();
-        navigate(-1);
-      },
-    });
+  const save = useCallback(() => {
+    parsedParams &&
+      updatedDailyMenu &&
+      dailyMenu &&
+      modals.openConfirmModal({
+        title: `${t("Update menu")}`,
+        children: (
+          <Text size="sm">
+            {t("Are you sure you want to save menu?")}
+          </Text>
+        ),
+        labels: { confirm: "OK", cancel: t("Cancel") },
+        onConfirm: () =>
+          _save(
+            parsedParams,
+            dailyMenu.date,
+            updatedDailyMenu.others.status,
+            _skipZero(updatedDailyMenu.others.quantity),
+          ).then((res) => {
+            if (res?.length) {
+              pushDailyMenu(res);
+              store.set(res[0]);
+              setDailyMenu(res[0]);
+            }
+            navigate(-1);
+          }),
+      });
   }, [
     updatedDailyMenu,
     dailyMenu,
-    customerId,
-    targetName,
-    shift,
-    timestamp,
+    parsedParams,
     t,
     pushDailyMenu,
     navigate,
@@ -443,3 +385,86 @@ const EditModal = () => {
 };
 
 export default EditModal;
+
+function _parse(
+  params: Record<string, string | undefined>,
+  customers: Map<string, Customer>,
+): Params | undefined {
+  const { timestamp, customerName, shift, targetName } = {
+    customerName: decodeUri(params.customerName || ""),
+    targetName: decodeUri(params.targetName || ""),
+    shift: decodeUri(params.shift || ""),
+    timestamp: parseInt(params.timestamp || "0"),
+  };
+  const customer = Array.from(customers.values()).find((el) => {
+    return el.name === customerName;
+  });
+  const target = customer?.others.targets?.find(
+    (t) => t.name === targetName,
+  );
+  if (!customer || !target) {
+    return;
+  }
+  return {
+    key: dailyMenuKey(customer.id, targetName, shift, timestamp || 0),
+    timestamp,
+    customerId: customer.id,
+    shift,
+    customer,
+    targetName,
+  };
+}
+
+async function _save(
+  params: Params,
+  date: Date,
+  status: DailyMenuStatus,
+  quantity: Record<string, number>,
+) {
+  loadingStore.startLoading();
+  const { id } =
+    (await callApi<unknown, { id: string }>({
+      action: Actions.PUSH_DAILY_MENU,
+      params: {
+        date,
+        status,
+        quantity,
+        targetName: params.targetName,
+        shift: params.shift,
+        customerId: params.customerId,
+      },
+    })) || {};
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const res = await getDailyMenu({
+    id,
+    noCache: true,
+    customerId: params.customerId,
+    from: params.timestamp - ONE_DAY,
+    to: params.timestamp + ONE_DAY,
+  });
+  loadingStore.stopLoading();
+  return res;
+}
+
+function _skipZero(quantity: Record<string, number>) {
+  Object.keys(quantity).forEach((productId) => {
+    if (quantity[productId] < 1) {
+      delete quantity[productId];
+    }
+  });
+  return quantity;
+}
+
+function _editable(
+  date: Date,
+  role?: ClientRoles,
+  status?: DailyMenuStatus,
+) {
+  if (!role || !status) {
+    return false;
+  }
+  if (isPastDate(date)) {
+    return false;
+  }
+  return dailyMenuStatusTransitionMap[status].actor.includes(role);
+}

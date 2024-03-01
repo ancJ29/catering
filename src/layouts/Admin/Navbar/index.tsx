@@ -1,7 +1,13 @@
 import useTranslation from "@/hooks/useTranslation";
 import useAuthStore from "@/stores/auth.store";
 import { Menu } from "@/types";
-import { Box, Flex, Image, NavLink, Tooltip } from "@mantine/core";
+import {
+  Flex,
+  Image,
+  NavLink,
+  ScrollArea,
+  Tooltip,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import classes from "./navbar.module.scss";
@@ -26,7 +32,7 @@ const Navbar = ({
 
   // TODO: refactor this block
   return (
-    <Box className={classes.links}>
+    <ScrollArea className={classes.links} pb={20}>
       {menu.length &&
         menu.map((item, idx) => (
           <Flex
@@ -124,7 +130,7 @@ const Navbar = ({
             </Flex>
           </Flex>
         ))}
-    </Box>
+    </ScrollArea>
   );
 };
 export default Navbar;

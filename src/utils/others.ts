@@ -20,3 +20,34 @@ export function removeHashFromUrl() {
 export function addHashToUrl(hash: string) {
   hash.length && (window.location.hash = hash);
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AsyncFunction = (...args: any[]) => Promise<any>;
+
+export function throttle(fn: AsyncFunction, limit: number) {
+  let active = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const queue: any[] = [];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const execute = async (...args: any[]) => {
+    if (active >= limit) {
+      return new Promise((resolve) => {
+        queue.push(() => resolve(execute(...args)));
+      });
+    }
+
+    active++;
+    const result = await fn(...args);
+    active--;
+
+    if (queue.length) {
+      const next = queue.shift();
+      next();
+    }
+
+    return result;
+  };
+
+  return execute;
+}
