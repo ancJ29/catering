@@ -1,4 +1,5 @@
 import { DailyMenuStatus } from "@/services/domain";
+import logger from "@/services/logger";
 import { createStore } from "@/utils";
 
 export type XDailyMenu = {
@@ -54,6 +55,7 @@ export default {
     dispatch({ type: "REMOVE_PRODUCT", productId });
   },
   reset() {
+    logger.debug("reset store...");
     dispatch({ type: "RESET" });
   },
 };

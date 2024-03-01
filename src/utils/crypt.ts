@@ -1,12 +1,10 @@
 import { iv, key } from "@/configs/keys";
-import logger from "@/services/logger";
 import { Md5 } from "ts-md5";
 
 export async function decode(str: unknown) {
   if (typeof str === "string") {
     /* cspell:disable-next-line */
     const crypt = str.endsWith(".nW9h5wkTVY4pAfhb24NGtjE");
-    logger.debug("crypt", crypt);
     if (!crypt) {
       return JSON.parse(decodeURIComponent(atob(str)));
     }

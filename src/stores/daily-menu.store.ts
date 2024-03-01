@@ -4,7 +4,6 @@ import {
   loadTodayMenu,
   type DailyMenu,
 } from "@/services/domain";
-import logger from "@/services/logger";
 import useAuthStore from "@/stores/auth.store";
 import { create } from "zustand";
 
@@ -30,7 +29,6 @@ export default create<DailyMenuStore>((set, get) => ({
         (el) => el.others.status === "NEW",
       );
       set({ alertItems });
-      logger.debug("alertItems", alertItems);
     }
     if (role == ClientRoles.CATERING) {
       const cateringId = user?.departmentIds?.[0];
@@ -38,7 +36,6 @@ export default create<DailyMenuStore>((set, get) => ({
         const alertItems = data
           .filter((el) => el.others.cateringId === cateringId)
           .filter((el) => el.others.status === "WAITING");
-        logger.debug("alertItems", alertItems);
         set({ alertItems });
       }
     }

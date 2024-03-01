@@ -4,7 +4,6 @@ import {
   dailyMenuStatusColor,
   dailyMenuStatusTransitionMap,
 } from "@/services/domain";
-import logger from "@/services/logger";
 import useAuthStore from "@/stores/auth.store";
 import { Stepper } from "@mantine/core";
 import {
@@ -48,7 +47,6 @@ const Steppers = ({
       return true;
     }
     const role = user?.others.roles[0];
-    logger.debug("role", role, dailyMenuStatusTransitionMap[status]);
     if (!role) {
       return true;
     }

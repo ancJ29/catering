@@ -47,16 +47,21 @@ import TabControll from "../components/TabControll";
 import { _configs } from "./_config";
 import { FilterType, defaultCondition, filter } from "./_filter";
 import store from "./_item.store";
-let _counter = 0;
+
 const EditModal = () => {
   const params = useParams();
   const t = useTranslation();
   const navigate = useNavigate();
+
+  useOnMounted(store.reset);
+
   const {
     allTypes,
     products: allProducts,
     reload: loadAllProducts,
   } = useProductStore();
+  const [loading, setLoading] = useState(false);
+  const [reloadCounter, setReloadCounter] = useState(0);
   const { customers, reload: loadAllCustomers } = useCustomerStore();
   const { reload: loadAllCaterings } = useCateringStore();
   const { dailyMenu: records, push: pushDailyMenu } =
@@ -140,9 +145,20 @@ const EditModal = () => {
   ]);
 
   const _reload = useCallback(async () => {
-    if (dailyMenu || !customerId || !targetName || !shift) {
+    if (loading) {
       return;
     }
+    setLoading(true);
+    if (reloadCounter > 10) {
+      setLoading(false);
+      return;
+    }
+    setReloadCounter((reloadCounter) => reloadCounter + 1);
+    if (dailyMenu || !customerId || !targetName || !shift) {
+      setLoading(false);
+      return;
+    }
+    logger.debug("reload daily menu...", reloadCounter);
     loadAllProducts();
     loadAllCaterings();
     if (customers.size === 0) {
@@ -151,12 +167,14 @@ const EditModal = () => {
     }
     const customer = customers.get(customerId);
     if (!customer) {
+      setLoading(false);
       return;
     }
     const target = customer?.others.targets.find(
       (t) => t.name === targetName,
     );
     if (!target?.shifts.includes(shift)) {
+      setLoading(false);
       return;
     }
     const key = dailyMenuKey(
@@ -170,16 +188,12 @@ const EditModal = () => {
       store.set(y);
       setDailyMenu(y);
     } else {
-      if (_counter > 10) {
-        return;
-      }
-      logger.debug("getDailyMenu...", _counter);
-      _counter++;
       const res = await getDailyMenu({
         customerId,
         from: timestamp - ONE_DAY,
         to: timestamp + ONE_DAY,
       });
+      logger.debug("get daily menu...", res.length, res);
       if (res.length) {
         res.length && pushDailyMenu(res);
       } else {
@@ -190,10 +204,14 @@ const EditModal = () => {
           new Date(timestamp),
         );
         store.set(menu);
+        logger.debug("set blank daily menu...");
         setDailyMenu(menu);
       }
     }
+    setLoading(false);
   }, [
+    loading,
+    reloadCounter,
     dailyMenu,
     customerId,
     targetName,
@@ -223,6 +241,7 @@ const EditModal = () => {
   );
 
   const [key, configs] = useMemo(() => {
+    logger.debug("check...");
     if (user && dailyMenu) {
       const key = `${Date.now()}.${randomString()}`;
       return [key, _configs(t, tab, user, dailyMenu)];
