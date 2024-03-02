@@ -67,7 +67,8 @@ export const _configs = (
               },
             }}
             disabled={disabled}
-            defaultValue={dailyMenu?.others.quantity[product.id] || 0}
+            min={1}
+            defaultValue={dailyMenu?.others.quantity[product.id] || 1}
             onChange={(quantity) =>
               store.setQuantity(product.id, quantity)
             }

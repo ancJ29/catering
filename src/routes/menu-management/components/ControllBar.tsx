@@ -96,21 +96,25 @@ const ControllBar = ({
     if (!customers.size) {
       return [];
     }
-    if (!isCatering) {
-      return Array.from(customers.values()).map((c) => c.name);
+    if (isCatering) {
+      const cateringId = user?.departmentIds?.[0];
+      return Array.from(customers.values())
+        .filter((c) => c.others.cateringId === cateringId)
+        .map((c) => c.name);
     }
-    if (cateringId && cateringIds.includes(cateringId)) {
+    if (cateringId) {
       return customerNamesByCateringId.get(cateringId) || [];
     }
     return Array.from(customers.values())
       .filter((c) => cateringIds.includes(c.others.cateringId))
       .map((c) => c.name);
   }, [
+    customers,
     isCatering,
     cateringId,
-    cateringIds,
+    user,
     customerNamesByCateringId,
-    customers,
+    cateringIds,
   ]);
 
   const targetData: string[] = useMemo(() => {
