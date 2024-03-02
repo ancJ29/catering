@@ -15,6 +15,7 @@ type AuthStore = {
   user: Payload | null;
   isCatering?: boolean;
   role?: ClientRoles;
+  cateringId?: string;
   loadToken: () => void;
   setToken: (token: string, remember?: boolean) => void;
   removeToken: () => void;
@@ -40,9 +41,14 @@ export default create<AuthStore>((set, get) => ({
       logger.trace("User logged in", user);
       const isCatering = user?.roles.includes(ClientRoles.CATERING);
       const role = user.others.roles?.[0];
+      const cateringId =
+        role === ClientRoles.CATERING
+          ? user.departmentIds?.[0]
+          : undefined;
       set(() => ({
         user,
         role,
+        cateringId,
         token: user ? token : "",
         isCatering,
       }));

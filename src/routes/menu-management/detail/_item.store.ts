@@ -2,7 +2,9 @@ import { DailyMenuStatus } from "@/services/domain";
 import { createStore } from "@/utils";
 
 export type XDailyMenu = {
+  id: string;
   others: {
+    cateringId: string;
     status: DailyMenuStatus;
     quantity: Record<string, number>;
   };
@@ -28,7 +30,9 @@ type Action = {
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
   productIds: [],
   item: {
+    id: "",
     others: {
+      cateringId: "",
       status: "NEW",
       quantity: {},
     },
@@ -62,7 +66,9 @@ function reducer(action: Action, state: State): State {
   const defaultState = {
     productIds: [],
     item: {
+      id: "",
       others: {
+        cateringId: "",
         status: "NEW" as DailyMenuStatus,
         quantity: {},
       },
@@ -76,7 +82,9 @@ function reducer(action: Action, state: State): State {
         return {
           originItem: action.payload,
           item: {
+            id: action.payload?.id || "",
             others: {
+              cateringId: action.payload.others.cateringId,
               status: action.payload.others.status,
               quantity: {
                 ...action.payload.others.quantity,

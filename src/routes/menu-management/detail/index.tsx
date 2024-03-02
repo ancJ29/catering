@@ -1,4 +1,4 @@
-import { Actions, ClientRoles } from "@/auto-generated/api-configs";
+import { Actions } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
@@ -15,7 +15,7 @@ import {
   DailyMenuStatus,
   Product,
   dailyMenuKey,
-  dailyMenuStatusTransitionMap,
+  editableDailyMenu,
   getDailyMenu,
   productTypeOptions,
   type DailyMenuDetailMode as Mode,
@@ -28,10 +28,10 @@ import useProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
 import {
   ONE_DAY,
+  ONE_MINUTE,
   decodeUri,
-  endOfDay,
-  isPastDate,
   randomString,
+  startOfDay,
 } from "@/utils";
 import {
   Box,
@@ -72,7 +72,7 @@ const EditModal = () => {
   const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
   const [parsedParams, setParsedParams] = useState<Params>();
   const [disabled, setDisabled] = useState(false);
-  const { isCatering, user } = useAuthStore();
+  const { isCatering, user, role, cateringId } = useAuthStore();
   const [tab, setActiveTab] = useState<Mode>(
     isCatering ? "modified" : "detail",
   );
@@ -90,6 +90,10 @@ const EditModal = () => {
     products: allProducts,
     reload: loadAllProducts,
   } = useProductStore();
+
+  /*
+  http://localhost:9000/menu-management#Vy4xOTc3Ny5jbHQ4N2drMncwMDdlMTBvODFzZXU0eXZvLllVV0ElMjAxLlMlRTElQkElQTNuJTIweHUlRTElQkElQTV0JTIwMS5DYSUyMDE=
+  */
 
   const onMounted = useCallback(async () => {
     store.reset();
@@ -111,36 +115,47 @@ const EditModal = () => {
   }, [params, parsedParams, customers]);
 
   useEffect(() => {
-    if (!disabled && parsedParams && user) {
+    parsedParams &&
+      role &&
       setDisabled(
-        !_editable(
-          new Date(endOfDay(parsedParams.timestamp)),
-          user.others.roles[0],
-          updatedDailyMenu?.others.status,
+        !editableDailyMenu(
+          role,
+          parsedParams.timestamp,
+          updatedDailyMenu,
+          cateringId,
         ),
       );
-    }
-  }, [disabled, parsedParams, updatedDailyMenu?.others.status, user]);
+  }, [cateringId, disabled, parsedParams, updatedDailyMenu, role]);
 
   useEffect(() => {
     if (!parsedParams || dailyMenu) {
       return;
     }
-    const x = records.get(parsedParams.key);
-    if (x) {
-      setDailyMenu(x);
-      store.set(x);
+
+    const record = records.get(parsedParams.key);
+    if (record) {
+      setDailyMenu(record);
+      store.set(record);
       return;
     }
+    const mark = startOfDay(parsedParams.timestamp);
     getDailyMenu({
       customerId: parsedParams.customerId,
-      from: parsedParams.timestamp - ONE_DAY,
-      to: parsedParams.timestamp + ONE_DAY,
+      from: mark - ONE_MINUTE,
+      to: mark + ONE_MINUTE,
     }).then((res) => {
-      if (res[0]) {
-        pushDailyMenu(res);
-        setDailyMenu(res[0]);
-        store.set(res[0]);
+      res.length && pushDailyMenu(res);
+      const record = res.find((el) => {
+        if (el.others.shift === parsedParams.shift) {
+          if (el.others.targetName === parsedParams.targetName) {
+            return true;
+          }
+        }
+        return false;
+      });
+      if (record) {
+        setDailyMenu(record);
+        store.set(record);
       }
     });
   }, [dailyMenu, records, parsedParams, pushDailyMenu]);
@@ -151,12 +166,19 @@ const EditModal = () => {
   );
 
   const [configKey, configs] = useMemo(() => {
-    if (user && dailyMenu) {
-      const configKey = `${Date.now()}.${randomString()}`;
-      return [configKey, _configs(t, tab, user, dailyMenu, disabled)];
+    if (user && parsedParams) {
+      const configs = _configs(
+        t,
+        tab,
+        user,
+        parsedParams.customer.others.cateringId,
+        disabled,
+        dailyMenu,
+      );
+      return [`${Date.now()}.${randomString()}`, configs];
     }
     return ["config", []];
-  }, [user, dailyMenu, tab, disabled, t]);
+  }, [user, dailyMenu, tab, parsedParams, disabled, t]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -199,7 +221,6 @@ const EditModal = () => {
   const save = useCallback(() => {
     parsedParams &&
       updatedDailyMenu &&
-      dailyMenu &&
       modals.openConfirmModal({
         title: `${t("Update menu")}`,
         children: (
@@ -211,7 +232,6 @@ const EditModal = () => {
         onConfirm: () =>
           _save(
             parsedParams,
-            dailyMenu.date,
             updatedDailyMenu.others.status,
             _skipZero(updatedDailyMenu.others.quantity),
           ).then((res) => {
@@ -220,17 +240,10 @@ const EditModal = () => {
               store.set(res[0]);
               setDailyMenu(res[0]);
             }
-            navigate(-1);
+            window.history.length > 2 && navigate(-1);
           }),
       });
-  }, [
-    updatedDailyMenu,
-    dailyMenu,
-    parsedParams,
-    t,
-    pushDailyMenu,
-    navigate,
-  ]);
+  }, [updatedDailyMenu, parsedParams, t, pushDailyMenu, navigate]);
 
   return (
     <Box key={`${tab}.${configKey}`}>
@@ -259,9 +272,11 @@ const EditModal = () => {
           >
             {t("Save")}
           </Button>
-          <Button mt={10} onClick={() => navigate(-1)}>
-            {t("Back to menu")}
-          </Button>
+          {window.history.length > 2 && (
+            <Button mt={10} onClick={() => navigate(-1)}>
+              {t("Back to menu")}
+            </Button>
+          )}
         </Flex>
       </Flex>
       <Grid mt={10}>
@@ -417,7 +432,6 @@ function _parse(
 
 async function _save(
   params: Params,
-  date: Date,
   status: DailyMenuStatus,
   quantity: Record<string, number>,
 ) {
@@ -426,7 +440,7 @@ async function _save(
     (await callApi<unknown, { id: string }>({
       action: Actions.PUSH_DAILY_MENU,
       params: {
-        date,
+        date: new Date(startOfDay(params.timestamp)),
         status,
         quantity,
         targetName: params.targetName,
@@ -453,18 +467,4 @@ function _skipZero(quantity: Record<string, number>) {
     }
   });
   return quantity;
-}
-
-function _editable(
-  date: Date,
-  role?: ClientRoles,
-  status?: DailyMenuStatus,
-) {
-  if (!role || !status) {
-    return false;
-  }
-  if (isPastDate(date)) {
-    return false;
-  }
-  return dailyMenuStatusTransitionMap[status].actor.includes(role);
 }

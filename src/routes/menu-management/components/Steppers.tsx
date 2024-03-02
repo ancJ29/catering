@@ -1,8 +1,10 @@
+import { ClientRoles } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import {
   DailyMenuStatus,
   dailyMenuStatusColor,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import { Stepper } from "@mantine/core";
 import {
   IconCircleCheck,
@@ -36,6 +38,7 @@ const Steppers = ({
   onChange: (status: DailyMenuStatus) => void;
 }) => {
   const t = useTranslation();
+  const { role } = useAuthStore();
   const [active, setActive] = useState<number>(
     statuses.indexOf(status),
   );
@@ -49,14 +52,16 @@ const Steppers = ({
 
   const click = useCallback(
     (idx: number) => {
-      const current = statuses.indexOf(status);
-      if (disabled || idx <= current || idx === active) {
-        return;
+      if (role !== ClientRoles.OWNER) {
+        const current = statuses.indexOf(status);
+        if (disabled || idx <= current || idx === active) {
+          return;
+        }
       }
       setActive(idx);
       onChange(statuses[idx]);
     },
-    [active, disabled, status, onChange],
+    [role, onChange, status, disabled, active],
   );
 
   return (
@@ -73,9 +78,14 @@ const Steppers = ({
       completedIcon={<IconCircleCheckFilled size={size} />}
     >
       {statuses.map((s, idx) => {
-        const _disabled = disabled || idx !== active + 1;
-        const cursor =
+        let _disabled = disabled || idx !== active + 1;
+        let cursor =
           _disabled || idx <= active ? "not-allowed" : "pointer";
+
+        if (role === ClientRoles.OWNER) {
+          _disabled = false;
+          cursor = "pointer";
+        }
         const label =
           idx <= active ? (
             <Status status={s} fz={size} c={c} />

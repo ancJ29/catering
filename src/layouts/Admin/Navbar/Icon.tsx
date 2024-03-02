@@ -6,10 +6,9 @@ type IconProps = {
   icon?: string;
   url?: string;
   disabled?: boolean;
-  onClick?: () => void;
 };
 
-const Icon = ({ disabled, label, icon, onClick }: IconProps) => {
+const Icon = ({ disabled, label, icon }: IconProps) => {
   const t = useTranslation();
   return (
     <Tooltip
@@ -20,7 +19,6 @@ const Icon = ({ disabled, label, icon, onClick }: IconProps) => {
       classNames={{ tooltip: "c-catering-bdr-f" }}
     >
       <Image
-        onClick={disabled ? undefined : onClick}
         radius="md"
         h={20}
         w={20}

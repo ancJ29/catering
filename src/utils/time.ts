@@ -22,6 +22,10 @@ export function startOfDay(timestamp: number) {
   return timestamp - (timestamp % ONE_DAY);
 }
 
+export function isBeforeYesterday(timestamp: number) {
+  return timestamp < startOfDay(Date.now() - ONE_DAY);
+}
+
 export function endOfDay(timestamp: number) {
   return startOfDay(timestamp) + ONE_DAY - ONE_SECOND;
 }

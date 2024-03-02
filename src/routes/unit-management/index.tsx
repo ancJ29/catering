@@ -148,8 +148,6 @@ const UnitManagement = () => {
   return (
     <Stack gap={10}>
       <Box ta="right" pr={10}>
-        <div>list: {list?.[0].name}</div>
-        <div>updated: {updated?.[0].name || "-"}</div>
         <Button variant="outline" ml={10} w={100} onClick={addRow}>
           {t("Add")}
         </Button>

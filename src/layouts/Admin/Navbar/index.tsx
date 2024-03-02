@@ -46,7 +46,11 @@ const Navbar = ({
   );
 
   return menu.length ? (
-    <Box className={classes.wrapper} pb={level === 1 ? "2rem" : "0"}>
+    <Box
+      className={classes.wrapper}
+      pb={level === 1 ? "2rem" : "0"}
+      onClick={onOpenNavbar}
+    >
       {menu.map((item, idx) => (
         <NavLink
           opened={item.subs && activeKey === item.key}
@@ -61,13 +65,7 @@ const Navbar = ({
             classes.item,
             active === item.url ? classes.active : "",
           )}
-          leftSection={
-            <Icon
-              {...item}
-              disabled={opened}
-              onClick={onOpenNavbar}
-            />
-          }
+          leftSection={<Icon {...item} disabled={opened} />}
         >
           {item.subs && opened && (
             <Navbar opened level={level + 1} menu={item.subs || []} />

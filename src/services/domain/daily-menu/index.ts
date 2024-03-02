@@ -1,10 +1,11 @@
 import {
   Actions,
+  ClientRoles,
   configs as actionConfigs,
   xDailyMenuSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
-import { ONE_WEEK, throttle } from "@/utils";
+import { ONE_WEEK, isBeforeYesterday } from "@/utils";
 import { z } from "zod";
 import { Customer } from "../customer";
 
@@ -80,7 +81,7 @@ export function blankDailyMenu(
   };
 }
 
-export const _getDailyMenu = throttle(async function getDailyMenu({
+export const _getDailyMenu = async function getDailyMenu({
   id,
   customerId,
   from = Date.now() - ONE_WEEK,
@@ -99,8 +100,7 @@ export const _getDailyMenu = throttle(async function getDailyMenu({
     options: { noCache },
   });
   return dailyMenuList || [];
-},
-1000);
+};
 
 export async function getDailyMenu({
   id,
@@ -175,3 +175,83 @@ export const dailyMenuStatusTransitionMap: X = {
     actor: Roles.CATERING,
   },
 };
+
+export function readableDailyMenu(
+  role?: ClientRoles,
+  timestamp?: number,
+  dailyMenu?: {
+    id: string;
+    others: { cateringId: string };
+  },
+  selfCateringId?: string,
+) {
+  if (!timestamp || !role) {
+    return false;
+  }
+  switch (role) {
+    case ClientRoles.OWNER:
+      return true;
+    case ClientRoles.CATERING:
+      if (!dailyMenu?.id) {
+        return false;
+      }
+      if (dailyMenu.others.cateringId !== selfCateringId) {
+        return false;
+      }
+      return true;
+    case ClientRoles.PRODUCTION:
+      if (!dailyMenu?.id) {
+        if (isBeforeYesterday(timestamp)) {
+          return false;
+        }
+        return true;
+      }
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function editableDailyMenu(
+  role?: ClientRoles,
+  timestamp?: number,
+  dailyMenu?: {
+    id: string;
+    others: { cateringId: string; status: DailyMenuStatus };
+  },
+  selfCateringId?: string,
+) {
+  if (!timestamp || !role) {
+    return false;
+  }
+  const status = dailyMenu?.others.status || "NEW";
+  const actor = dailyMenuStatusTransitionMap[status].actor;
+  switch (role) {
+    case ClientRoles.OWNER:
+      return true;
+    case ClientRoles.CATERING:
+      if (actor !== ClientRoles.CATERING) {
+        return false;
+      }
+      if (!dailyMenu?.id) {
+        return false;
+      }
+      if (dailyMenu.others.cateringId !== selfCateringId) {
+        return false;
+      }
+      if (isBeforeYesterday(timestamp)) {
+        return false;
+      }
+      return true;
+    case ClientRoles.PRODUCTION:
+      if (actor !== ClientRoles.PRODUCTION) {
+        return false;
+      }
+      if (isBeforeYesterday(timestamp)) {
+        return false;
+      }
+      return true;
+    default:
+      return false;
+  }
+}

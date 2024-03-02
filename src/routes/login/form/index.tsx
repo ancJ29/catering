@@ -87,8 +87,9 @@ const LoginForm = () => {
           <Group justify="flex-start" mt="xl">
             <Flex w="100%" fz="0.8rem" justify="space-between">
               <Checkbox
-                {...form.getInputProps("remember")}
                 label={t("Remember me")}
+                checked={form.values.remember}
+                {...form.getInputProps("remember")}
               />
               <Anchor href="/forgot-password" underline="never">
                 <TextCenter

@@ -1,4 +1,7 @@
-import { ClientRoles as Roles } from "@/auto-generated/api-configs";
+import {
+  ClientRoles,
+  ClientRoles as Roles,
+} from "@/auto-generated/api-configs";
 import NumberInput from "@/components/common/NumberInput";
 import {
   DailyMenu,
@@ -6,7 +9,6 @@ import {
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
 import { DataGridColumnProps, Payload } from "@/types";
-import { isPastDate } from "@/utils";
 import { Button, Flex, Text } from "@mantine/core";
 import store from "./_item.store";
 
@@ -14,12 +16,21 @@ export const _configs = (
   t: (key: string) => string,
   mode: Mode,
   user: Payload,
-  dailyMenu: DailyMenu,
-  disabled: boolean,
+  cateringId: string,
+  _disabled: boolean,
+  dailyMenu?: DailyMenu,
 ): DataGridColumnProps[] => {
-  const cateringId = dailyMenu?.others.cateringId;
-  const isCatering = user.others.roles[0] === Roles.CATERING;
-  const editable = !isPastDate(dailyMenu?.date);
+  const role = user.others.roles[0];
+  let disabled = _disabled;
+  const isCatering = role === Roles.CATERING;
+
+  if (!_disabled) {
+    if (role === ClientRoles.PRODUCTION) {
+      disabled = mode === "modified";
+    } else if (role === ClientRoles.CATERING) {
+      disabled = mode === "detail";
+    }
+  }
   return [
     {
       key: "typeName",
@@ -55,7 +66,7 @@ export const _configs = (
                     : undefined,
               },
             }}
-            disabled={disabled || !editable}
+            disabled={disabled}
             defaultValue={dailyMenu?.others.quantity[product.id] || 0}
             onChange={(quantity) =>
               store.setQuantity(product.id, quantity)
@@ -130,7 +141,7 @@ export const _configs = (
               {t("BOM")}
             </Button>
             <Button
-              disabled={isCatering || !editable}
+              disabled={disabled || isCatering}
               size="compact-xs"
               variant="light"
               color="error"

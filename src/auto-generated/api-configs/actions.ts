@@ -421,11 +421,7 @@ export const configs = {
       request: z.object({
         date: dateSchema.optional(),
       }),
-      response: xDailyMenuSchema
-        .omit({
-          menu: true,
-        })
-        .array(),
+      response: xDailyMenuSchema.array(),
     },
   },
   [Actions.PUSH_DAILY_MENU]: {
