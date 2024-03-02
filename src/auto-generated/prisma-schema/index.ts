@@ -3,6 +3,7 @@ export * from "./enums";
 export * from "./action"
 export * from "./actionlog"
 export * from "./client"
+export * from "./misc"
 export * from "./clientenum"
 export * from "./permission"
 export * from "./permissionaction"

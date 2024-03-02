@@ -15,6 +15,47 @@ export async function decode(str: unknown) {
   return str;
 }
 
+export async function encode(params: unknown) {
+  return encryptData(JSON.stringify(params));
+}
+
+export async function encryptData(data: string): Promise<string> {
+  // Convert data, key, and iv to ArrayBuffer
+  const dataBuffer = new TextEncoder().encode(data).buffer;
+  const keyArrayBuffer = new Uint8Array(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    key.match(/[\da-f]{2}/gi)!.map((h) => parseInt(h, 16)),
+  ).buffer;
+  const ivArrayBuffer = new Uint8Array(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    iv.match(/[\da-f]{2}/gi)!.map((h) => parseInt(h, 16)),
+  ).buffer;
+
+  // Import the key
+  const cryptoKey = await window.crypto.subtle.importKey(
+    "raw",
+    keyArrayBuffer,
+    { name: "AES-CBC", length: 256 },
+    false,
+    ["encrypt"],
+  );
+
+  // Encrypt the data
+  const encryptedArrayBuffer = await window.crypto.subtle.encrypt(
+    { name: "AES-CBC", iv: ivArrayBuffer },
+    cryptoKey,
+    dataBuffer,
+  );
+
+  // Convert ArrayBuffer to string
+  const encryptedArray = new Uint8Array(encryptedArrayBuffer);
+  const encrypted = Array.prototype.map
+    .call(encryptedArray, (x) => ("00" + x.toString(16)).slice(-2))
+    .join("");
+
+  return encrypted;
+}
+
 async function decryptData(
   encryptedData: string,
   key: string,
