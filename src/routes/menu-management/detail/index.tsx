@@ -362,7 +362,7 @@ const EditModal = () => {
                     const iByType = itemByType?.[type] || 0;
                     const all = iByType * total;
                     const avg = all / nByType;
-                    const bg = idx % 2 ? "red.2" : undefined;
+                    const bg = all > tByType ? "red.2" : "";
                     return (
                       <Table.Tr key={idx} bg={bg}>
                         <Table.Td
