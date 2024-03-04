@@ -51,8 +51,8 @@ const ServiceWrapper = ({ title, children }: Props) => {
       </AppShell.Navbar>
       <AppShell.Main>
         <Box
+          mah={"calc(100vh - 4.5rem)"}
           style={{
-            flex: "grow",
             height: "auto",
             width: "100%",
             padding: "10px",

@@ -7,6 +7,7 @@ import {
   productSchema,
   unitSchema,
 } from "@/auto-generated/prisma-schema";
+
 import { z } from "zod";
 import {
   xCustomerSchema,
@@ -33,6 +34,8 @@ import {
   stringSchema,
 } from "./schema";
 
+export type Schema = z.ZodType<unknown, z.ZodTypeDef, unknown>;
+
 export type ActionConfig = {
   name: Actions;
   group: string;
@@ -42,8 +45,8 @@ export type ActionConfig = {
   type: ActionType;
   policy?: Policy | Policy[];
   schema: {
-    request: z.ZodType<unknown, z.ZodTypeDef, unknown>;
-    response?: z.ZodType<unknown, z.ZodTypeDef, unknown>;
+    request: Schema;
+    response?: Schema;
   };
 };
 

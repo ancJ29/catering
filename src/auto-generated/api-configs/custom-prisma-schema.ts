@@ -73,14 +73,16 @@ export const xDailyMenuSchema = dailyMenuSchema
   })
   .extend({
     others: dailyMenuOthersSchema,
-    menu: z.object({
-      menuProducts: z.array(
-        z.object({
-          product: z.object({
-            id: stringSchema,
-            name: stringSchema,
+    menu: z
+      .object({
+        menuProducts: z.array(
+          z.object({
+            product: z.object({
+              id: stringSchema,
+              name: stringSchema,
+            }),
           }),
-        }),
-      ),
-    }).optional(),
+        ),
+      })
+      .optional(),
   });

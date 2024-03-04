@@ -16,8 +16,14 @@ type State = {
   updated?: boolean;
 };
 
-// prettier-ignore
-type ActionType = "RESET" | "SET" | "SET_QUANTITY" | "ADD_PRODUCT" | "REMOVE_PRODUCT" | "SET_STATUS";
+enum ActionType {
+  RESET = "RESET",
+  SET = "SET",
+  SET_QUANTITY = "SET_QUANTITY",
+  ADD_PRODUCT = "ADD_PRODUCT",
+  REMOVE_PRODUCT = "REMOVE_PRODUCT",
+  SET_STATUS = "SET_STATUS",
+}
 
 type Action = {
   type: ActionType;
@@ -43,22 +49,22 @@ export default {
   dispatch,
   ...store,
   set(item?: XDailyMenu) {
-    dispatch({ type: "SET", payload: item });
+    dispatch({ type: ActionType.SET, payload: item });
   },
   setQuantity(productId: string, quantity: number) {
-    dispatch({ type: "SET_QUANTITY", productId, quantity });
+    dispatch({ type: ActionType.SET_QUANTITY, productId, quantity });
   },
   setStatus(status: DailyMenuStatus) {
-    dispatch({ type: "SET_STATUS", status });
+    dispatch({ type: ActionType.SET_STATUS, status });
   },
   addProduct(productId: string) {
-    dispatch({ type: "ADD_PRODUCT", productId });
+    dispatch({ type: ActionType.ADD_PRODUCT, productId });
   },
   removeProduct(productId: string) {
-    dispatch({ type: "REMOVE_PRODUCT", productId });
+    dispatch({ type: ActionType.REMOVE_PRODUCT, productId });
   },
   reset() {
-    dispatch({ type: "RESET" });
+    dispatch({ type: ActionType.RESET });
   },
 };
 

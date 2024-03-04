@@ -13,7 +13,7 @@ export default async function request(
   data.timestamp = timestamp;
   const encoded = await encode(data);
   const nonce = await _nonce(timestamp, encoded, requestId);
-  logger.debug(`[request] [${timestamp}] [${nonce}] 111`);
+  logger.trace(`[request] [${timestamp}] [${nonce}]`);
   return axios
     .request({
       method: "POST",

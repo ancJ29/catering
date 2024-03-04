@@ -37,7 +37,7 @@ const baseMenuItem = z.object({
   roles: stringSchema.array().optional(),
 });
 
-type MenuItem = z.infer<typeof baseMenuItem> & {
+export type MenuItem = z.infer<typeof baseMenuItem> & {
   subs?: MenuItem[];
 };
 

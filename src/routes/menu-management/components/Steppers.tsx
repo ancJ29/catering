@@ -1,7 +1,7 @@
-import { ClientRoles } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import {
   DailyMenuStatus,
+  changeableDailyMenuStatus,
   dailyMenuStatusColor,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
@@ -52,25 +52,16 @@ const Steppers = ({
 
   const click = useCallback(
     (idx: number) => {
-      if (role !== ClientRoles.OWNER) {
-        const current = statuses.indexOf(status);
-        if (disabled || idx <= current || idx === active) {
-          return;
-        }
-      }
       setActive(idx);
       onChange(statuses[idx]);
     },
-    [role, onChange, status, disabled, active],
+    [onChange],
   );
 
   return (
     <Stepper
       w="100%"
       size="sm"
-      style={{
-        cursor: disabled ? "not-allowed" : "pointer",
-      }}
       onStepClick={click}
       color={color}
       m={10}
@@ -78,14 +69,9 @@ const Steppers = ({
       completedIcon={<IconCircleCheckFilled size={size} />}
     >
       {statuses.map((s, idx) => {
-        let _disabled = disabled || idx !== active + 1;
-        let cursor =
-          _disabled || idx <= active ? "not-allowed" : "pointer";
-
-        if (role === ClientRoles.OWNER) {
-          _disabled = false;
-          cursor = "pointer";
-        }
+        const _disabled =
+          disabled || !changeableDailyMenuStatus(status, s, role);
+        const cursor = _disabled ? "not-allowed" : "pointer";
         const label =
           idx <= active ? (
             <Status status={s} fz={size} c={c} />

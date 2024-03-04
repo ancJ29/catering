@@ -1,5 +1,5 @@
 import useTranslation from "@/hooks/useTranslation";
-import { Menu } from "@/types";
+import { Menu, MenuItem } from "@/types";
 import { Box, NavLink } from "@mantine/core";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
@@ -51,30 +51,51 @@ const Navbar = ({
       pb={level === 1 ? "2rem" : "0"}
       onClick={onOpenNavbar}
     >
-      {menu.map((item, idx) => (
-        <NavLink
-          opened={item.subs && activeKey === item.key}
-          key={idx}
-          h="3rem"
-          onClick={open.bind(null, item)}
-          label={opened ? t(item.label) : ""}
-          classNames={{
-            children: "c-catering-p-0",
-          }}
-          className={clsx(
-            classes.item,
-            active === item.url ? classes.active : "",
-          )}
-          leftSection={<Icon {...item} disabled={opened} />}
-        >
-          {item.subs && opened && (
-            <Navbar opened level={level + 1} menu={item.subs || []} />
-          )}
-        </NavLink>
-      ))}
+      {menu.map((item, idx) => {
+        const isActive = _isActive(item, active);
+        return (
+          <NavLink
+            opened={item.subs && activeKey === item.key}
+            key={idx}
+            h="3rem"
+            onClick={open.bind(null, item)}
+            label={opened ? t(item.label) : ""}
+            classNames={{
+              children: "c-catering-p-0",
+            }}
+            className={clsx(
+              classes.item,
+              // item.url === active ? classes.active : "",
+              // !opened &&
+              isActive ? classes.active : "",
+            )}
+            leftSection={<Icon {...item} disabled={opened} />}
+          >
+            {item.subs && opened && (
+              <Navbar
+                opened
+                level={level + 1}
+                menu={item.subs || []}
+              />
+            )}
+          </NavLink>
+        );
+      })}
     </Box>
   ) : (
     <></>
   );
 };
 export default Navbar;
+
+function _isActive(item: MenuItem, activeUrl: string): boolean {
+  if (activeUrl === item.url) {
+    return true;
+  }
+  if (item.subs) {
+    return item.subs.some((sub: MenuItem) =>
+      _isActive(sub, activeUrl),
+    );
+  }
+  return false;
+}

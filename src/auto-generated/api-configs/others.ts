@@ -77,23 +77,23 @@ export const customerOthersSchema = z.object({
     .array(),
 });
 
+export const dailyMenuStatusSchema = z.enum([
+  // cspell:disable
+  "NEW", // Chưa xác nhận số lượng
+  "WAITING", // Chờ bếp xác nhận
+  "CONFIRMED", // Đã xác nhận
+  "PROCESSING", // Bếp đang chuẩn bị
+  "READY", // Sẵn sàng giao
+  "DELIVERED", // Đã giao
+  // cspell:enable
+]);
+
 export const dailyMenuOthersSchema = z.object({
   cateringId: stringSchema,
   targetName: stringSchema,
   shift: stringSchema,
   quantity: z.record(stringSchema, numberSchema),
-  status: z
-    .enum([
-      // cspell:disable
-      "NEW", // Chưa xác nhận số lượng
-      "WAITING", // Chờ bếp xác nhận
-      "CONFIRMED", // Đã xác nhận
-      "PROCESSING", // Bếp đang chuẩn bị
-      "READY", // Sẵn sàng giao
-      "DELIVERED", // Đã giao
-      // cspell:enable
-    ])
-    .default("NEW"),
+  status: dailyMenuStatusSchema.default("NEW"),
 });
 
 export const supplierOthersSchema = z.object({

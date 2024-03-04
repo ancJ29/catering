@@ -25,24 +25,6 @@ type ControlBarProps = RadioGroupProps & Omit<DateControllProps, "onShift"> & {
   }) => void;
 };
 
-function _cateringIds(
-  caterings: Department[],
-  isCatering: boolean,
-  user?: Payload,
-): string[] {
-  if (!user) {
-    return [];
-  }
-  return caterings
-    .filter((c) => {
-      if (isCatering) {
-        return user.departmentIds?.includes(c.id);
-      }
-      return true;
-    })
-    .map((c) => c.id);
-}
-
 const ControllBar = ({
   mode,
   shift,
@@ -204,7 +186,9 @@ const ControllBar = ({
   return (
     <Flex gap={10} w="100%" justify="space-between" align="end">
       <Flex gap={10} justify="start" align="end">
-        {!isCatering && (
+        {isCatering ? (
+          ""
+        ) : (
           <Autocomplete
             key={cateringName || "cateringName"}
             label={t("Catering name")}
@@ -238,12 +222,14 @@ const ControllBar = ({
         ) : (
           ""
         )}
-        {mode === "M" && shifts.length && (
+        {mode === "M" && shifts.length ? (
           <RadioGroup
             shifts={shifts}
             shift={shift || ""}
             setShift={setShift}
           />
+        ) : (
+          ""
         )}
         <Button
           onClick={() => {
@@ -265,3 +251,21 @@ const ControllBar = ({
 };
 
 export default ControllBar;
+
+function _cateringIds(
+  caterings: Department[],
+  isCatering: boolean,
+  user?: Payload,
+): string[] {
+  if (!user) {
+    return [];
+  }
+  return caterings
+    .filter((c) => {
+      if (isCatering) {
+        return user.departmentIds?.includes(c.id);
+      }
+      return true;
+    })
+    .map((c) => c.id);
+}

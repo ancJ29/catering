@@ -2,7 +2,7 @@ import {
   Actions,
   ClientRoles,
   configs as actionConfigs,
-  xDailyMenuSchema,
+  dailyMenuStatusSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { ONE_WEEK, isBeforeYesterday } from "@/utils";
@@ -16,24 +16,33 @@ const dailySchema = response.transform((array) => array[0]);
 
 export type DailyMenu = z.infer<typeof dailySchema>;
 
-export type DailyMenuStatus = z.infer<
-  typeof xDailyMenuSchema.shape.others.shape.status
->;
+// TODO: use enums
+export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
 
 export type DailyMenuDetailMode = "detail" | "modified";
 
-export async function loadTodayMenu(
-  noCache = false,
-): Promise<DailyMenu[]> {
-  const response =
-    actionConfigs[Actions.GET_TODAY_MENU].schema.response;
-  type Response = z.infer<typeof response>;
-  const data = await callApi<unknown, Response>({
-    action: Actions.GET_TODAY_MENU,
-    params: {},
-    options: { noCache },
+export function getAlertMenuItems(
+  role?: ClientRoles,
+  cateringId?: string,
+) {
+  if (
+    role !== ClientRoles.PRODUCTION &&
+    role !== ClientRoles.CATERING
+  ) {
+    return [];
+  }
+  return _loadTodayMenu().then((data) => {
+    if (role == ClientRoles.CATERING) {
+      if (cateringId) {
+        return data
+          .filter((el) => el.others.cateringId === cateringId)
+          .filter((el) => el.others.status === "WAITING");
+      }
+    }
+    if (role == ClientRoles.PRODUCTION) {
+      return data?.filter((el) => el.others.status === "NEW");
+    }
   });
-  return data || [];
 }
 
 export function dailyMenuStatusColor(
@@ -254,4 +263,45 @@ export function editableDailyMenu(
     default:
       return false;
   }
+}
+
+export function changeableDailyMenuStatus(
+  current: DailyMenuStatus,
+  next: DailyMenuStatus,
+  role?: ClientRoles,
+) {
+  if (!role) {
+    return false;
+  }
+  if (role === ClientRoles.OWNER) {
+    return true;
+  }
+  if (role === ClientRoles.PRODUCTION) {
+    if (current === "NEW" && next === "WAITING") {
+      return true;
+    }
+    return true;
+  }
+  if (role === ClientRoles.CATERING) {
+    if (next === "NEW" || current === "NEW") {
+      return false;
+    }
+    if (current === "DELIVERED") {
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+async function _loadTodayMenu(): Promise<DailyMenu[]> {
+  const response =
+    actionConfigs[Actions.GET_TODAY_MENU].schema.response;
+  type Response = z.infer<typeof response>;
+  const data = await callApi<unknown, Response>({
+    action: Actions.GET_TODAY_MENU,
+    params: {},
+    options: { noCache: true },
+  });
+  return data || [];
 }

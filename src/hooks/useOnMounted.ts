@@ -1,17 +1,15 @@
 import logger from "@/services/logger";
-import { useEffect, useState } from "react";
-import { useIsMounted } from "usehooks-ts";
+import { useEffect } from "react";
+import { useBoolean, useIsMounted } from "usehooks-ts";
 
 export default function useOnMounted(callback: () => void, key = "") {
   const isMounted = useIsMounted();
-  const [counter, setCounter] = useState(0);
+  const { value: loaded, setFalse } = useBoolean(false);
   useEffect(() => {
-    if (isMounted() && counter < 1) {
-      if (key) {
-        logger.trace(`useOnMounted: ${key} / ${counter}`);
-      }
-      setCounter((prev) => prev + 1);
+    key && logger.debug(`useOnMounted ${key} ${loaded}`);
+    if (isMounted() && !loaded) {
+      setFalse();
       callback();
     }
-  }, [callback, isMounted, key, counter]);
+  }, [key, loaded, callback, isMounted, setFalse]);
 }

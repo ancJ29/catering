@@ -4,6 +4,8 @@ import {
 } from "@/auto-generated/api-configs";
 import { z } from "zod";
 
+export { type MenuItem } from "@/auto-generated/api-configs/general-schema";
+
 export * from "./common";
 
 export type Payload = z.infer<typeof payloadSchema>;
