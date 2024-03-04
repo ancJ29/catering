@@ -1,5 +1,6 @@
 export default {
   // prettier-ignore
+  "BOM Management": "BOM Management",
   "Supply Coordination": "Supply Coordination",
   "Payment Request": "Payment Request",
   "Cost Assignment": "Cost Assignment",

@@ -43,6 +43,12 @@ export default [
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
+        key: "bom",
+        label: "BOM Management",
+        icon: "components",
+      },
+      {
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
         key: "unit",
         label: "Unit Management",
         icon: "currency-dollar",

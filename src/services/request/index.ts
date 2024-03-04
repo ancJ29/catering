@@ -4,6 +4,8 @@ import axios from "axios";
 import { v4 as uuid } from "uuid";
 import logger from "../logger";
 
+const debugCode = import.meta.env.DEBUG_CODE || undefined;
+
 export default async function request(
   data: GenericObject,
   token?: string,
@@ -19,6 +21,7 @@ export default async function request(
       method: "POST",
       url: import.meta.env.BASE_URL,
       data: {
+        ...(debugCode ? data : {}),
         data: encoded,
       },
       headers: {
@@ -27,7 +30,7 @@ export default async function request(
         "x-client-nonce": nonce,
         "x-client-timestamp": timestamp,
         "x-client-request-id": requestId,
-        "x-debug-code": import.meta.env.DEBUG_CODE || undefined,
+        "x-debug-code": debugCode,
       },
     })
     .then(async (res) => {

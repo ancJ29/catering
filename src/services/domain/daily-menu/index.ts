@@ -81,6 +81,8 @@ export function blankDailyMenu(
     updatedAt: new Date(),
     customerId: customer.id,
     others: {
+      total: 0,
+      itemByType: {},
       status: "NEW",
       cateringId: customer.others.cateringId,
       targetName,

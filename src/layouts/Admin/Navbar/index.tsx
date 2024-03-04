@@ -65,8 +65,6 @@ const Navbar = ({
             }}
             className={clsx(
               classes.item,
-              // item.url === active ? classes.active : "",
-              // !opened &&
               isActive ? classes.active : "",
             )}
             leftSection={<Icon {...item} disabled={opened} />}

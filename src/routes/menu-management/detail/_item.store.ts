@@ -1,14 +1,18 @@
+import { ProductType } from "@/auto-generated/api-configs";
 import { DailyMenuStatus } from "@/services/domain";
 import { createStore } from "@/utils";
 
 export type XDailyMenu = {
   id: string;
   others: {
+    itemByType?: Record<string, number>;
     cateringId: string;
     status: DailyMenuStatus;
     quantity: Record<string, number>;
+    total?: number;
   };
 };
+
 type State = {
   originItem?: XDailyMenu;
   item: XDailyMenu;
@@ -19,18 +23,22 @@ type State = {
 enum ActionType {
   RESET = "RESET",
   SET = "SET",
+  SET_ITEM_BY_TYPE = "SET_ITEM_BY_TYPE",
   SET_QUANTITY = "SET_QUANTITY",
   ADD_PRODUCT = "ADD_PRODUCT",
   REMOVE_PRODUCT = "REMOVE_PRODUCT",
   SET_STATUS = "SET_STATUS",
+  SET_TOTAL = "SET_TOTAL",
 }
 
 type Action = {
   type: ActionType;
+  productType?: ProductType;
   payload?: XDailyMenu;
   productId?: string;
   quantity?: number;
   status?: DailyMenuStatus;
+  total?: number;
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -38,6 +46,8 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
   item: {
     id: "",
     others: {
+      total: 0,
+      itemByType: {},
       cateringId: "",
       status: "NEW",
       quantity: {},
@@ -50,6 +60,16 @@ export default {
   ...store,
   set(item?: XDailyMenu) {
     dispatch({ type: ActionType.SET, payload: item });
+  },
+  setItemByType(type: ProductType, quantity: number) {
+    dispatch({
+      type: ActionType.SET_ITEM_BY_TYPE,
+      productType: type,
+      quantity,
+    });
+  },
+  setTotal(total: number) {
+    dispatch({ type: ActionType.SET_TOTAL, total });
   },
   setQuantity(productId: string, quantity: number) {
     dispatch({ type: ActionType.SET_QUANTITY, productId, quantity });
@@ -83,6 +103,22 @@ function reducer(action: Action, state: State): State {
   switch (action.type) {
     case "RESET":
       return defaultState;
+    case "SET_ITEM_BY_TYPE":
+      if (state.item && action.productType) {
+        if (!state.item.others.itemByType) {
+          state.item.others.itemByType = {};
+        }
+        state.item.others.itemByType[action.productType] =
+          action.quantity || 0;
+        return { ...state, updated: true };
+      }
+      break;
+    case "SET_TOTAL":
+      if (state.item) {
+        state.item.others.total = action.total || 0;
+        return { ...state, updated: true };
+      }
+      break;
     case "SET":
       if (action.payload) {
         return {
@@ -90,6 +126,8 @@ function reducer(action: Action, state: State): State {
           item: {
             id: action.payload?.id || "",
             others: {
+              itemByType: action.payload.others.itemByType || {},
+              total: action.payload.others.total || 0,
               cateringId: action.payload.others.cateringId,
               status: action.payload.others.status,
               quantity: {
@@ -140,7 +178,7 @@ function reducer(action: Action, state: State): State {
           action.quantity;
       }
       return {
-        item: state.item,
+        item: { ...state.item },
         productIds: state.productIds,
         updated: true,
       };

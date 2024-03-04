@@ -1,5 +1,6 @@
 export default {
   // prettier-ignore
+  "BOM Management": "Quản lý định lượng",
   "Supply Coordination": "Điều phối nguồn cung",
   "Payment Request": "Lập đề nghị thanh toán",
   "Cost Assignment": "Phân bổ chi phí",

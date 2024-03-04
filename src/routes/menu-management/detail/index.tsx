@@ -1,4 +1,4 @@
-import { Actions } from "@/auto-generated/api-configs";
+import { Actions, ProductType } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
@@ -39,6 +39,7 @@ import {
   Flex,
   Grid,
   ScrollArea,
+  Table,
   Text,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
@@ -206,17 +207,20 @@ const EditModal = () => {
       .filter(Boolean) as Product[];
   }, [allProducts, productIds]);
 
-  const { numberByTypes } = useMemo(() => {
+  const { numberByTypes, totalByTypes } = useMemo(() => {
     const numberByTypes = new Map<string, number>();
+    const totalByTypes = new Map<string, number>();
     selectedProduct.forEach((p) => {
-      numberByTypes.set(
-        p.others.type,
-        (numberByTypes.get(p.others.type) || 0) + 1,
-      );
+      const type: ProductType = p.others.type;
+      let before = numberByTypes.get(type) || 0;
+      numberByTypes.set(type, before + 1);
+      before = totalByTypes.get(type) || 0;
+      const total = updatedDailyMenu.others.quantity[p.id] || 0;
+      totalByTypes.set(type, total + before);
     });
 
-    return { numberByTypes };
-  }, [selectedProduct]);
+    return { numberByTypes, totalByTypes };
+  }, [selectedProduct, updatedDailyMenu]);
 
   const save = useCallback(() => {
     parsedParams &&
@@ -233,6 +237,8 @@ const EditModal = () => {
           _save(
             parsedParams,
             updatedDailyMenu.others.status,
+            updatedDailyMenu.others.itemByType || {},
+            updatedDailyMenu.others.total || 0,
             _skipZero(updatedDailyMenu.others.quantity),
           ).then((res) => {
             if (res?.length) {
@@ -281,73 +287,171 @@ const EditModal = () => {
       </Flex>
       <Grid mt={10}>
         <Grid.Col span={isCatering ? 12 : 9}>
-          {tab === "detail" && (
-            <Box>
-              {Array.from(numberByTypes.keys()).map((type, idx) => {
-                return (
-                  <Grid
-                    key={idx}
-                    mb={5}
-                    w="15vw"
-                    gutter="sm"
-                    justify="center"
-                    align="flex-start"
+          <Box>
+            {/* cspell:disable */}
+            <Table
+              my={10}
+              w="60vw"
+              style={{
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th
+                    c="primary"
+                    ta="left"
+                    style={{
+                      borderRight: "1px solid var(--border-color)",
+                    }}
                   >
-                    <Grid.Col key={`x.${idx}.1`} span={10}>
-                      {t(`products.type.${type}`)}
-                    </Grid.Col>
-                    <Grid.Col key={`x.${type}.2`} span={2}>
-                      {numberByTypes.get(type) || 0}
-                    </Grid.Col>
-                  </Grid>
-                );
-              })}
-              <Flex
-                gap={10}
-                justify="start"
-                align="start"
-                className="c-catering-bdr-t"
-                mt={10}
-                pt={5}
-              >
-                <NumberInput
-                  label={t("Total sets")}
-                  w="160px"
-                  step={1}
-                />
-                <NumberInput
-                  disabled
-                  label={t("Price per set")}
-                  w="160px"
-                  defaultValue={
-                    20e3 + Math.floor(Math.random() * 20) * 1e3
-                  }
-                  suffix=" đ"
-                  step={1000}
-                />
-                <NumberInput
-                  disabled
-                  label={t("Cost price")}
-                  w="160px"
-                  defaultValue={
-                    10e3 + Math.floor(Math.random() * 20) * 1e3
-                  }
-                  suffix=" đ"
-                  step={1000}
-                />
-                <NumberInput
-                  disabled
-                  label={t("Average cost price")}
-                  w="160px"
-                  defaultValue={
-                    10e3 + Math.floor(Math.random() * 20) * 1e3
-                  }
-                  suffix=" đ"
-                  step={1000}
-                />
-              </Flex>
-            </Box>
-          )}
+                    {t("Product type")}
+                  </Table.Th>
+                  <Table.Th
+                    c="primary"
+                    ta="center"
+                    style={{
+                      borderRight: "1px solid var(--border-color)",
+                    }}
+                  >
+                    {t("Quantity")}
+                  </Table.Th>
+                  <Table.Th
+                    c="primary"
+                    ta="center"
+                    style={{
+                      borderRight: "1px solid var(--border-color)",
+                    }}
+                  >
+                    Số lượng cho 1 suất ăn
+                  </Table.Th>
+                  <Table.Th
+                    c="primary"
+                    ta="center"
+                    style={{
+                      borderRight: "1px solid var(--border-color)",
+                    }}
+                  >
+                    Số lượng cần chuẩn bị cho{" "}
+                    <span
+                      style={{
+                        textDecoration: "italic",
+                        color: "red",
+                      }}
+                    >
+                      {(
+                        updatedDailyMenu.others.total || 0
+                      ).toLocaleString()}{" "}
+                    </span>
+                    suất ăn
+                  </Table.Th>
+                  <Table.Th c="primary" ta="center">
+                    Số lượng bình quân cho mỗi món
+                  </Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {Array.from(numberByTypes.keys()).map(
+                  (_type, idx) => {
+                    const type = _type as ProductType;
+                    const total = updatedDailyMenu.others.total || 0;
+                    const itemByType =
+                      dailyMenu?.others.itemByType || {};
+                    const nByType = numberByTypes.get(type) || 0;
+                    const tByType = totalByTypes.get(type) || 0;
+                    const iByType = itemByType?.[type] || 0;
+                    const all = iByType * total;
+                    const avg = all / nByType;
+                    const bg = idx % 2 ? "red.2" : undefined;
+                    return (
+                      <Table.Tr key={idx} bg={bg}>
+                        <Table.Td
+                          fw={700}
+                          ta="left"
+                          style={tBorderStyle}
+                        >
+                          {t(`products.type.${type}`)} ({nByType})
+                        </Table.Td>
+                        <Table.Td ta="center" style={tBorderStyle}>
+                          {tByType.toLocaleString()}
+                        </Table.Td>
+                        <Table.Td ta="right" style={tBorderStyle}>
+                          <NumberInput
+                            ml="auto"
+                            w="120px"
+                            disabled={isCatering || disabled}
+                            defaultValue={iByType}
+                            onChange={(value) => {
+                              store.setItemByType(type, value);
+                            }}
+                          />
+                        </Table.Td>
+                        <Table.Td ta="center" style={tBorderStyle}>
+                          {all.toLocaleString()}
+                        </Table.Td>
+                        <Table.Td
+                          ta="center"
+                          style={{
+                            borderRight:
+                              "1px solid var(--border-color)",
+                          }}
+                        >
+                          {avg.toLocaleString()}
+                        </Table.Td>
+                      </Table.Tr>
+                    );
+                  },
+                )}
+              </Table.Tbody>
+              {/* cspell:enablr */}
+            </Table>
+            <Flex
+              gap={10}
+              justify="start"
+              align="start"
+              className="c-catering-bdr-t"
+              mt={10}
+              pt={5}
+            >
+              <NumberInput
+                label={t("Total sets")}
+                w="160px"
+                step={1}
+                defaultValue={dailyMenu?.others.total || 0}
+                onChange={(total) => store.setTotal(total)}
+              />
+              <NumberInput
+                disabled
+                label={t("Price per set")}
+                w="160px"
+                defaultValue={
+                  20e3 + Math.floor(Math.random() * 20) * 1e3
+                }
+                suffix=" đ"
+                step={1000}
+              />
+              <NumberInput
+                disabled
+                label={t("Cost price")}
+                w="160px"
+                defaultValue={
+                  10e3 + Math.floor(Math.random() * 20) * 1e3
+                }
+                suffix=" đ"
+                step={1000}
+              />
+              <NumberInput
+                disabled
+                label={t("Average cost price")}
+                w="160px"
+                defaultValue={
+                  10e3 + Math.floor(Math.random() * 20) * 1e3
+                }
+                suffix=" đ"
+                step={1000}
+              />
+            </Flex>
+          </Box>
           <DataGrid
             hasUpdateColumn={false}
             hasOrderColumn
@@ -399,6 +503,10 @@ const EditModal = () => {
   );
 };
 
+const tBorderStyle = {
+  borderRight: "1px solid var(--border-color)",
+};
+
 export default EditModal;
 
 function _parse(
@@ -433,6 +541,8 @@ function _parse(
 async function _save(
   params: Params,
   status: DailyMenuStatus,
+  itemByType: Record<string, number>,
+  total: number,
   quantity: Record<string, number>,
 ) {
   loadingStore.startLoading();
@@ -443,6 +553,8 @@ async function _save(
         date: new Date(startOfDay(params.timestamp)),
         status,
         quantity,
+        total,
+        itemByType,
         targetName: params.targetName,
         shift: params.shift,
         customerId: params.customerId,
