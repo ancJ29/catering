@@ -37,6 +37,9 @@ export const configs = (
       sortable: true,
       header: t("Material code"),
       width: "5%",
+      renderCell: (_, row: Material) => {
+        return row.others.internalCode || "N/A";
+      },
     },
     {
       key: "type",

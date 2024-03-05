@@ -30,7 +30,7 @@ export async function getMaterialById(
     noCache: true,
   });
   materials = materials.map((material) => {
-    material.name = material.name.replace(/\.[0-9]+$/g, "");
+    material.name = material.name.split("___")[0];
     return material;
   });
   return materials.length ? materials[0] : undefined;
@@ -52,9 +52,10 @@ export async function getAllMaterials(
     action: Actions.GET_MATERIALS,
   });
   materials = materials.map((material) => {
-    material.name = material.name.replace(/\.[0-9]+$/g, "");
+    material.name = material.name.split("___")[0];
     return material;
   });
+  materials.sort((a, b) => a.others.type.localeCompare(b.others.type));
   cache.set(key, { materials });
   return materials;
 }

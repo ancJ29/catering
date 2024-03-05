@@ -1,8 +1,8 @@
-import { z } from "zod";
 import {
   ClientRoles,
-  dailyMenuStatusSchema,
-  materialOthersSchema,
+  DailyMenuStatus,
+  MaterialGroup,
+  MaterialType,
   ProductType,
 } from "../others";
 import en from "./en";
@@ -11,14 +11,8 @@ import vi from "./vi";
 const version = "1.0.1709219376271";
 
 type DepartmentKey = `user.role.${ClientRoles}`;
-
-type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
-type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
-
 type ProductKey = `products.type.${ProductType}`;
-
-type MaterialType = z.infer<typeof materialOthersSchema.shape.type>;
-type MaterialGroup = z.infer<typeof materialOthersSchema.shape.group>;
+type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
 type MaterialKey =
   | `materials.type.${MaterialType}`
   | `materials.group.${MaterialGroup}`;
