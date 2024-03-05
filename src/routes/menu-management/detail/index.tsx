@@ -224,17 +224,16 @@ const EditModal = () => {
             updatedDailyMenu.others.itemByType || {},
             updatedDailyMenu.others.total || 0,
             updatedDailyMenu.others.price || 0,
-            _skipZero(updatedDailyMenu.others.quantity),
+            updatedDailyMenu.others.quantity,
           ).then((res) => {
             if (res?.length) {
               pushDailyMenu(res);
               store.set(res[0]);
               setDailyMenu(res[0]);
             }
-            window.history.length > 2 && navigate(-1);
           }),
       });
-  }, [updatedDailyMenu, parsedParams, t, pushDailyMenu, navigate]);
+  }, [updatedDailyMenu, parsedParams, t, pushDailyMenu]);
 
   return (
     <Box key={`${tab}.${configKey}`}>
@@ -396,11 +395,11 @@ async function _save(
   return res;
 }
 
-function _skipZero(quantity: Record<string, number>) {
-  Object.keys(quantity).forEach((productId) => {
-    if (quantity[productId] < 1) {
-      delete quantity[productId];
-    }
-  });
-  return quantity;
-}
+// function _skipZero(quantity: Record<string, number>) {
+//   Object.keys(quantity).forEach((productId) => {
+//     if (quantity[productId] < 1) {
+//       delete quantity[productId];
+//     }
+//   });
+//   return quantity;
+// }
