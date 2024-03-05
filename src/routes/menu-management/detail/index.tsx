@@ -317,7 +317,9 @@ const EditModal = () => {
                 selectedIds={productIds}
                 onAdd={store.addProduct}
                 onRemove={store.removeProduct}
-                labelGenerator={(p) => `${p.name} - ${p.code}`}
+                labelGenerator={(p) =>
+                  `${p.name} - ${p.others.internalCode}`
+                }
               />
             </ScrollArea>
           </Grid.Col>

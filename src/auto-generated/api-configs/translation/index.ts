@@ -3,7 +3,7 @@ import {
   ClientRoles,
   dailyMenuStatusSchema,
   materialOthersSchema,
-  productOthersSchema,
+  ProductType,
 } from "../others";
 import en from "./en";
 import vi from "./vi";
@@ -15,7 +15,6 @@ type DepartmentKey = `user.role.${ClientRoles}`;
 type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
 type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
 
-type ProductType = z.infer<typeof productOthersSchema.shape.type>;
 type ProductKey = `products.type.${ProductType}`;
 
 type MaterialType = z.infer<typeof materialOthersSchema.shape.type>;
@@ -81,39 +80,39 @@ const productDictionaries: {
   en: {
     "products.type.CP": "Cost",
     "products.type.KV": "Appetizer",
-    "products.type.C": "Soup",
-    "products.type.C_V": "Vegetarian soup",
-    "products.type.R": "Cơm",
-    "products.type.M": "Main dish",
-    "products.type.A": "Additional food",
-    "products.type.M_V": "Vegetarian main dish",
-    "products.type.S_V": "Vegetarian soup",
-    "products.type.S": "Soup",
-    "products.type.L": "Boiled",
-    "products.type.D": "Desert",
-    "products.type.V": "Vegetarian vegetable",
-    "products.type.A_P": "Additional food for party",
-    "products.type.S_P": "Soup for party",
-    "products.type.M_P": "Main dish for party",
+    "products.type.CM": "Soup",
+    "products.type.CA": "Vegetarian soup",
+    "products.type.CO": "Cơm",
+    "products.type.MC": "Main dish",
+    "products.type.CT": "Additional food",
+    "products.type.CC": "Vegetarian main dish",
+    "products.type.NC": "Vegetarian soup",
+    "products.type.NM": "Soup",
+    "products.type.LU": "Boiled",
+    "products.type.TM": "Desert",
+    "products.type.XC": "Vegetarian vegetable",
+    "products.type.CT1": "Additional food for party",
+    "products.type.NM1": "Soup for party",
+    "products.type.MC1": "Main dish for party",
   },
   vi: {
     /* cspell:disable */
     "products.type.CP": "CHI PHÍ",
     "products.type.KV": "Món ăn khai vị",
-    "products.type.C": "Canh",
-    "products.type.C_V": "Canh chay",
-    "products.type.R": "Cơm",
-    "products.type.M": "Mặn chính",
-    "products.type.A": "Món cải thiện",
-    "products.type.M_V": "Món chay chính",
-    "products.type.S_V": "Món nước phần ăn chay",
-    "products.type.S": "Món nước phần ăn mặn",
-    "products.type.L": "Luộc",
-    "products.type.D": "Tráng miệng",
-    "products.type.V": "Xào chay",
-    "products.type.A_P": "Tiệc - Món cải thiện",
-    "products.type.S_P": "Tiệc - Món nước (phần ăn mặn)",
-    "products.type.M_P": "Tiệc - Phần ăn mặn",
+    "products.type.CM": "Canh",
+    "products.type.CA": "Canh chay",
+    "products.type.CO": "Cơm",
+    "products.type.MC": "Mặn chính",
+    "products.type.CT": "Món cải thiện",
+    "products.type.CC": "Món chay chính",
+    "products.type.NC": "Món nước phần ăn chay",
+    "products.type.NM": "Món nước phần ăn mặn",
+    "products.type.LU": "Rau củ xào, luộc",
+    "products.type.TM": "Tráng miệng",
+    "products.type.XC": "Xào chay",
+    "products.type.CT1": "Tiệc - Món cải thiện",
+    "products.type.NM1": "Tiệc - Món nước (phần ăn mặn)",
+    "products.type.MC1": "Tiệc - Phần ăn mặn",
     /* cspell:enable */
   },
 };

@@ -67,7 +67,8 @@ export default {
   },
   setPrice(price: number) {
     dispatch({
-      type: ActionType.SET_PRICE, price,
+      type: ActionType.SET_PRICE,
+      price,
     });
   },
   setItemByType(type: ProductType, quantity: number) {

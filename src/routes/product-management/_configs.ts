@@ -16,6 +16,9 @@ export const configs = (
       sortable: true,
       header: t("Cuisine code"),
       width: "20%",
+      renderCell: (_, product: Product) => {
+        return product.others.internalCode;
+      },
     },
     {
       key: "typeName",

@@ -33,33 +33,52 @@ export const userOthersSchema = z.object({
   roles: roleSchema.array(),
 });
 
+export const productCategorySchema = z.enum([
+  // cspell:disable
+  "O", // Loại hình khác (Mã Nhóm Loại: 4)
+  "D", // Suất ăn hàng ngày (2)
+  "P", // Tiệc (1)
+  // cspell:enable
+]);
+
+export type ProductCategory = z.infer<typeof productCategorySchema>;
+
 export const productTypeSchema = z.enum([
   // cspell:disable
   "CP", // CHI PHÍ
   "KV", // Món ăn khai vị
-  "C", // Canh
-  "C_V", // Canh chay
-  "R", // Cơm
-  "M", // Mặn chính
-  "A", // Món cải thiện
-  "M_V", // Món chay chính
-  "S_V", // Món nước phần ăn chay
-  "S", // Món nước phần ăn mặn
-  "L", // Luộc
-  "D", // Tráng miệng
-  "V", // Xào chay
-  "A_P", // Tiệc - Món cải thiện
-  "S_P", // Tiệc - Món nước (phần ăn mặn)
-  "M_P", // Tiệc - Phần ăn mặn
+  "CM", // Canh
+  "CA", // Canh chay
+  "CO", // Cơm
+  "MC", // Mặn chính
+  "CT", // Món cải thiện
+  "CC", // Món chay chính
+  "NC", // Món nước phần ăn chay
+  "NM", // Món nước phần ăn mặn
+  "LU", // Rau củ xào, luộc
+  "TM", // Tráng miệng
+  "XC", // Xào chay
+  "CT1", // Tiệc - Món cải thiện
+  "NM1", // Tiệc - Món nước (phần ăn mặn)
+  "MC1", // Tiệc - Phần ăn mặn
   // cspell:enable
 ]);
 
 export type ProductType = z.infer<typeof productTypeSchema>;
 
 export const productOthersSchema = z.object({
-  costPrice: optionalNumberSchema,
-  costPriceByCatering: z.record(stringSchema, numberSchema).optional(),
+  oldId: numberSchema,
+  internalCode: stringSchema,
+  costPrice: optionalNumberSchema.default(0),
+  costPriceByCatering: z
+    .record(stringSchema, numberSchema)
+    .optional()
+    .default({}),
   type: productTypeSchema,
+  category: productCategorySchema,
+  party: booleanSchema.default(true),
+  normal: booleanSchema.default(true),
+  supply: booleanSchema.default(true),
 });
 
 export const departmentOthersSchema = z.object({

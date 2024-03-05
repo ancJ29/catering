@@ -36,10 +36,14 @@ export async function getAllProducts(
       return res.data;
     }
   }
-  const products = await callApi<unknown, Product[]>({
+  let products = await callApi<unknown, Product[]>({
     action: Actions.GET_ALL_PRODUCTS,
     params: {},
     options: { noCache },
+  });
+  products = products?.map((product) => {
+    product.name = product.name.split("___")[0];
+    return product;
   });
   localStorage.__All_PRODUCTS__ = JSON.stringify(products || []);
   return products || [];
