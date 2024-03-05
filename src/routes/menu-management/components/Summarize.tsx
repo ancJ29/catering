@@ -79,7 +79,7 @@ const Summarize = ({
     <Box>
       <Table
         my={10}
-        w="60vw"
+        // w="60vw"
         style={{
           border: "1px solid var(--border-color)",
         }}
@@ -196,6 +196,7 @@ const Summarize = ({
         pt={5}
       >
         <NumberInput
+          disabled={disabled}
           label={t("Total sets")}
           w="160px"
           step={1}
@@ -203,6 +204,7 @@ const Summarize = ({
           onChange={(total) => store.setTotal(total)}
         />
         <NumberInput
+          disabled={disabled}
           label={t("Price per set")}
           w="160px"
           defaultValue={price}

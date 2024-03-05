@@ -274,7 +274,7 @@ const EditModal = () => {
         <Grid.Col span={isCatering ? 12 : 9}>
           <Summarize
             selectedProduct={selectedProduct}
-            disabled={isCatering || disabled}
+            disabled={isCatering || disabled || tab === "modified"}
           />
           <DataGrid
             hasUpdateColumn={false}

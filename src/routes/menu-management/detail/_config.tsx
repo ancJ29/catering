@@ -82,6 +82,7 @@ export const _configs = (
       header: t("Cost price"),
       width: "100px",
       hidden: isCatering,
+      textAlign: "right",
       renderCell: (_: unknown, product: Product) => {
         const cost =
           product.others.costPriceByCatering?.[cateringId] || 0;
@@ -95,8 +96,9 @@ export const _configs = (
     {
       key: "avgCostPrice",
       header: t("Average cost price"),
-      width: "100px",
+      width: "120px",
       hidden: isCatering,
+      textAlign: "right",
       renderCell: () => {
         const cost = 0;
         return (
@@ -109,7 +111,8 @@ export const _configs = (
     {
       key: "ratio",
       header: t("Ratio"),
-      width: "70px",
+      width: "100px",
+      textAlign: "right",
       hidden: isCatering,
       renderCell() {
         const ratio = Math.floor(Math.random() * 10000) / 100 + "%";
