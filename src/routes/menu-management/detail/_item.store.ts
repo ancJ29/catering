@@ -5,6 +5,7 @@ import { createStore } from "@/utils";
 export type XDailyMenu = {
   id: string;
   others: {
+    price?: number;
     itemByType?: Record<string, number>;
     cateringId: string;
     status: DailyMenuStatus;
@@ -23,6 +24,7 @@ type State = {
 enum ActionType {
   RESET = "RESET",
   SET = "SET",
+  SET_PRICE = "SET_PRICE",
   SET_ITEM_BY_TYPE = "SET_ITEM_BY_TYPE",
   SET_QUANTITY = "SET_QUANTITY",
   ADD_PRODUCT = "ADD_PRODUCT",
@@ -39,6 +41,7 @@ type Action = {
   quantity?: number;
   status?: DailyMenuStatus;
   total?: number;
+  price?: number;
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -46,6 +49,7 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
   item: {
     id: "",
     others: {
+      price: 0,
       total: 0,
       itemByType: {},
       cateringId: "",
@@ -60,6 +64,11 @@ export default {
   ...store,
   set(item?: XDailyMenu) {
     dispatch({ type: ActionType.SET, payload: item });
+  },
+  setPrice(price: number) {
+    dispatch({
+      type: ActionType.SET_PRICE, price,
+    });
   },
   setItemByType(type: ProductType, quantity: number) {
     dispatch({
@@ -94,6 +103,7 @@ function reducer(action: Action, state: State): State {
     item: {
       id: "",
       others: {
+        price: 0,
         cateringId: "",
         status: "NEW" as DailyMenuStatus,
         quantity: {},
@@ -113,6 +123,12 @@ function reducer(action: Action, state: State): State {
         return { ...state, updated: true };
       }
       break;
+    case "SET_PRICE":
+      if (state.item) {
+        state.item.others.price = action.price || 0;
+        return { ...state, updated: true };
+      }
+      break;
     case "SET_TOTAL":
       if (state.item) {
         state.item.others.total = action.total || 0;
@@ -126,6 +142,7 @@ function reducer(action: Action, state: State): State {
           item: {
             id: action.payload?.id || "",
             others: {
+              price: action.payload.others.price || 0,
               itemByType: action.payload.others.itemByType || {},
               total: action.payload.others.total || 0,
               cateringId: action.payload.others.cateringId,

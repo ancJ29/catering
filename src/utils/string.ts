@@ -5,6 +5,10 @@ export function randomPassword() {
   return `${_r(8)}${s}${_r(7)}`;
 }
 
+export function numberWithDelimiter(value: number, delimiter = ".") {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
+}
+
 export function randomString() {
   return Math.random().toString(36).substring(2, 12);
 }

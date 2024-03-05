@@ -57,7 +57,7 @@ export const productTypeSchema = z.enum([
 export type ProductType = z.infer<typeof productTypeSchema>;
 
 export const productOthersSchema = z.object({
-  avgCostPrice: numberSchema.optional(),
+  costPrice: optionalNumberSchema,
   costPriceByCatering: z.record(stringSchema, numberSchema).optional(),
   type: productTypeSchema,
 });
@@ -94,6 +94,7 @@ export const dailyMenuStatusSchema = z.enum([
 ]);
 
 export const dailyMenuOthersSchema = z.object({
+  price: optionalNumberSchema,
   cateringId: stringSchema,
   targetName: stringSchema,
   shift: stringSchema,

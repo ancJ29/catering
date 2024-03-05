@@ -437,6 +437,7 @@ export const configs = {
         customerId: stringSchema,
         targetName: stringSchema,
         shift: stringSchema,
+        price: numberSchema,
         quantity: z.record(stringSchema, numberSchema),
         total: numberSchema,
         status: dailyMenuOthersSchema.shape.status,

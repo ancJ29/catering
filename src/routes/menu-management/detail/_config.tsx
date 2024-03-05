@@ -9,6 +9,7 @@ import {
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
 import { DataGridColumnProps, Payload } from "@/types";
+import { numberWithDelimiter } from "@/utils";
 import { Button, Flex, Text } from "@mantine/core";
 import store from "./_item.store";
 
@@ -83,11 +84,10 @@ export const _configs = (
       hidden: isCatering,
       renderCell: (_: unknown, product: Product) => {
         const cost =
-          product.others.costPriceByCatering?.[cateringId] ||
-          product.others.avgCostPrice;
+          product.others.costPriceByCatering?.[cateringId] || 0;
         return (
-          <Text w="100%" ta="right" c="red.6">
-            {cost?.toLocaleString() || "N/A"}&nbsp;đ
+          <Text w="100%" ta="right">
+            {cost ? `${numberWithDelimiter(cost)} đ` : "N/A"}
           </Text>
         );
       },
@@ -97,11 +97,11 @@ export const _configs = (
       header: t("Average cost price"),
       width: "100px",
       hidden: isCatering,
-      renderCell: (_: unknown, product: Product) => {
-        const cost = product.others.avgCostPrice;
+      renderCell: () => {
+        const cost = 0;
         return (
-          <Text w="100%" ta="right" c="red.6">
-            {cost?.toLocaleString() || "N/A"}&nbsp;đ
+          <Text w="100%" ta="right">
+            {cost ? `${numberWithDelimiter(cost)} đ` : "N/A"}
           </Text>
         );
       },
@@ -114,7 +114,7 @@ export const _configs = (
       renderCell() {
         const ratio = Math.floor(Math.random() * 10000) / 100 + "%";
         return (
-          <Text w="100%" ta="right" c="red.6">
+          <Text w="100%" ta="right">
             {ratio}
           </Text>
         );
