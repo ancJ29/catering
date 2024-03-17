@@ -503,6 +503,27 @@ export const configs = {
       response: addResponse,
     },
   },
+  [Actions.GET_ALL_MATERIALS]: {
+    name: Actions.GET_ALL_MATERIALS,
+    group: ActionGroups.MATERIAL_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: z.any({}),
+      response: xMaterialSchema
+        .extend({
+          supplierMaterials: z
+            .object({
+              price: numberSchema.nonnegative(),
+              supplier: z.object({
+                id: stringSchema,
+                name: stringSchema,
+              }),
+            })
+            .array(),
+        })
+        .array(),
+    },
+  },
   [Actions.GET_MATERIALS]: {
     name: Actions.GET_MATERIALS,
     group: ActionGroups.MATERIAL_MANAGEMENT,

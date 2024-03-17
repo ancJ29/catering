@@ -1,10 +1,11 @@
 import CateringBar from "@/components/c-catering/CateringBar";
+import CustomButton from "@/components/c-catering/CustomButton";
 import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import useLoading from "@/hooks/useLoading";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import { getBom, pushBom } from "@/services/domain";
-import { Button, Flex, Grid, Stack } from "@mantine/core";
+import { Flex, Grid, Stack } from "@mantine/core";
 import { useCounter } from "@mantine/hooks";
 import { useCallback, useReducer, useSyncExternalStore } from "react";
 import store from "./_bom.store";
@@ -73,12 +74,12 @@ const BomManagement = () => {
             mb={10}
           >
             <ProductFilter onSelect={select} onClear={clear} />
-            <Button disabled={!updated} onClick={save}>
+            <CustomButton confirm disabled={!updated} onClick={save}>
               {t("Save")}
-            </Button>
+            </CustomButton>
           </Flex>
           {!isStandard && (
-            <Flex gap={10} justify="start" align="end">
+            <Flex gap={10} justify="start" align="end" mb={10}>
               <CateringBar
                 allowAllTarget
                 enableShift

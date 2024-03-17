@@ -141,7 +141,7 @@ const UserManagement = () => {
             onChange={handleKeywordChange}
           />
           <Button
-            ml={8}
+            ml={10}
             w={100}
             type="submit"
             disabled={!filter.keyword}

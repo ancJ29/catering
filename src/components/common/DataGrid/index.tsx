@@ -170,7 +170,7 @@ function DataGrid<
   return (
     <Table.ScrollContainer minWidth={"100%"} p={0} mt={20} w="100%">
       {isPaginated && (
-        <Flex justify="end" align="center" mb={12} mx={4} gap={5}>
+        <Flex justify="end" align="center" mb={10} mx={5} gap={5}>
           <PaginationBar
             page={page}
             key={limit}
@@ -215,12 +215,12 @@ function PaginationBar({
       justify="space-between"
       w="100%"
       align="center"
-      mb={12}
-      mx={4}
+      mb={10}
+      mx={5}
       gap={5}
     >
       <Flex align="center" gap={5}>
-        <Text c="primary" fw={"600"} mr={4}>
+        <Text c="primary" fw={"600"} mr={5}>
           {t("Item per page")}:
         </Text>
         <Select

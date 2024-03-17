@@ -2,19 +2,17 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import callApi from "@/services/api";
 import cache from "@/services/cache";
 import { loadAll } from "@/services/data-loaders";
 import logger from "@/services/logger";
 import { OptionProps } from "@/types";
 import { z } from "zod";
 
-const response = actionConfigs[Actions.GET_MATERIALS].schema.response;
+const response =
+  actionConfigs[Actions.GET_ALL_MATERIALS].schema.response;
 
-const materialSchema = response.shape.materials.transform(
-  (array) => array[0],
-);
-
-const schema = response.omit({ cursor: true, hasMore: true });
+const materialSchema = response.transform((array) => array[0]);
 
 export type Material = z.infer<typeof materialSchema> & {
   typeName?: string;
@@ -41,20 +39,22 @@ export async function getAllMaterials(
 ): Promise<Material[]> {
   const key = "domain.material.getAllMaterials";
   if (!noCache && cache.has(key)) {
-    const res = schema.safeParse(cache.get(key));
+    const res = response.safeParse(cache.get(key));
     if (res.success) {
       logger.trace("cache hit", key);
-      return res.data.materials;
+      return res.data;
     }
   }
-  let materials = await loadAll<Material>({
-    key: "materials",
-    action: Actions.GET_MATERIALS,
-  });
-  materials = materials.map((material) => {
-    material.name = material.name.split("___")[0];
-    return material;
-  });
+  const materials =
+    (await callApi<unknown, Material[]>({
+      action: Actions.GET_ALL_MATERIALS,
+      options: { noCache: true },
+    }).then((materials) =>
+      materials?.map((material) => {
+        material.name = material.name.split("___")[0];
+        return material;
+      }),
+    )) || [];
   materials.sort((a, b) =>
     a.others.type.localeCompare(b.others.type),
   );

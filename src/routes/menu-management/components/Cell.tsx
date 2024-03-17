@@ -50,7 +50,7 @@ const Cell = ({
       }}
       bg={dailyMenuStatusColor(status, 1)}
     >
-      <Box fz={16} fw={900} mb={2} w="100%" ta="right">
+      <Box fz={16} fw={900} mb={5} w="100%" ta="right">
         {date}
       </Box>
       {Array.from(quantity.keys())
@@ -65,8 +65,8 @@ const Cell = ({
             fz={10}
             fw={900}
             c="white"
-            pl={8}
-            mt={4}
+            pl={10}
+            mt={5}
             bg={dailyMenuStatusColor(status, 9) || "primary.6"}
             style={{
               userSelect: "none",
