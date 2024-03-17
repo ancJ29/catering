@@ -1,3 +1,4 @@
+export * from "./bom";
 export * from "./customer";
 export * from "./daily-menu";
 export * from "./department";

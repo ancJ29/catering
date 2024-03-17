@@ -1,20 +1,5 @@
-import {
-  Actions,
-  configs as actionConfigs,
-} from "@/auto-generated/api-configs";
-import { Customer } from "@/services/domain";
+import { Customer, Target } from "@/services/domain";
 import { ONE_WEEK, startOfDay } from "@/utils";
-import { z } from "zod";
-
-const targetSchema = actionConfigs[
-  Actions.GET_CUSTOMERS
-].schema.response.shape.customers
-  .transform((array) => {
-    return array[0].others.targets;
-  })
-  .transform((array) => array[0]);
-
-export type Target = z.infer<typeof targetSchema>;
 
 // prettier-ignore
 export type FilterType = {
@@ -33,6 +18,11 @@ export enum ActionType {
   UPDATE_CUSTOMER = "UPDATE_CUSTOMER",
   UPDATE_CATERING_ID = "UPDATE_CATERING_ID",
 }
+
+export const defaultCondition: FilterType = {
+  mode: "W",
+  markDate: startOfDay(Date.now()),
+};
 
 export const reducer = (
   state: FilterType,
@@ -114,9 +104,4 @@ export const reducer = (
       return state;
   }
   return state;
-};
-
-export const defaultCondition: FilterType = {
-  mode: "W",
-  markDate: startOfDay(Date.now()),
 };

@@ -112,9 +112,9 @@ function reducer(action: Action, state: State): State {
     },
   };
   switch (action.type) {
-    case "RESET":
+    case ActionType.RESET:
       return defaultState;
-    case "SET_ITEM_BY_TYPE":
+    case ActionType.SET_ITEM_BY_TYPE:
       if (state.item && action.productType) {
         if (!state.item.others.itemByType) {
           state.item.others.itemByType = {};
@@ -124,19 +124,19 @@ function reducer(action: Action, state: State): State {
         return { ...state, updated: true };
       }
       break;
-    case "SET_PRICE":
+    case ActionType.SET_PRICE:
       if (state.item) {
         state.item.others.price = action.price || 0;
         return { ...state, updated: true };
       }
       break;
-    case "SET_TOTAL":
+    case ActionType.SET_TOTAL:
       if (state.item) {
         state.item.others.total = action.total || 0;
         return { ...state, updated: true };
       }
       break;
-    case "SET":
+    case ActionType.SET:
       if (action.payload) {
         return {
           originItem: action.payload,
@@ -158,13 +158,13 @@ function reducer(action: Action, state: State): State {
         };
       }
       return defaultState;
-    case "SET_STATUS":
+    case ActionType.SET_STATUS:
       if (state.item && action.status) {
         state.item.others.status = action.status;
         return { ...state, updated: true };
       }
       break;
-    case "ADD_PRODUCT":
+    case ActionType.ADD_PRODUCT:
       if (action.productId) {
         const currentQuantity =
           state.item.others.quantity[action.productId] || 0;
@@ -177,7 +177,7 @@ function reducer(action: Action, state: State): State {
         };
       }
       break;
-    case "REMOVE_PRODUCT":
+    case ActionType.REMOVE_PRODUCT:
       if (action.productId) {
         delete state.item.others.quantity[action.productId];
         return {
@@ -187,7 +187,7 @@ function reducer(action: Action, state: State): State {
         };
       }
       break;
-    case "SET_QUANTITY":
+    case ActionType.SET_QUANTITY:
       if (!state.item) {
         break;
       }
@@ -201,7 +201,7 @@ function reducer(action: Action, state: State): State {
         updated: true,
       };
     default:
-      return state;
+      break;
   }
   return state;
 }

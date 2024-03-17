@@ -6,7 +6,12 @@ import guestRoutes from "@/router/guest.route";
 import loadingStore from "@/services/api/store/loading";
 import notificationStore from "@/services/api/store/notification";
 import useAuthStore from "@/stores/auth.store";
+import useCateringStore from "@/stores/catering.store";
+import useCustomerStore from "@/stores/customer.store";
+import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
+import useProductStore from "@/stores/product.store";
+import useSupplierStore from "@/stores/supplier.store";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications, notifications } from "@mantine/notifications";
@@ -51,6 +56,7 @@ const App = () => {
     if (!user?.id) {
       return;
     }
+    _reload();
   }, [user]);
 
   const routes = useMemo(() => {
@@ -58,10 +64,10 @@ const App = () => {
   }, [user, loaded]);
 
   useEffect(() => {
-    signals.forEach(({ color, message, translate }) => {
+    signals.forEach(({ color, message }) => {
       notifications.show({
         color,
-        message: translate ? t(message) : message,
+        message: t(message),
       });
     });
   }, [signals, t]);
@@ -93,4 +99,16 @@ function _buildRoutes(loaded: boolean, login: boolean) {
     ];
   }
   return login ? authRoutes : guestRoutes;
+}
+
+function _reload() {
+  setTimeout(() => {
+    if (useAuthStore.getState().token) {
+      useProductStore.getState().reload();
+      useSupplierStore.getState().reload();
+      useMaterialStore.getState().reload();
+      useCustomerStore.getState().reload();
+      useCateringStore.getState().reload();
+    }
+  }, 200);
 }

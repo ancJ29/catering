@@ -107,7 +107,7 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
                 ) || undefined,
             },
             options: {
-              toastMessage: t("Add user successfully"),
+              toastMessage: "Add user successfully",
             },
           });
           res?.id && onSuccess();

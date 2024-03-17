@@ -1,13 +1,14 @@
+import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
+import CustomButton from "@/components/c-catering/CustomButton";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
 import useFilterData from "@/hooks/useFilterData";
-import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import { Product } from "@/services/domain";
 import userProductStore from "@/stores/product.store";
 import { OptionProps } from "@/types";
 import { unique } from "@/utils";
-import { Button, Flex, Stack, Switch } from "@mantine/core";
+import { Flex, Stack, Switch } from "@mantine/core";
 import { useCallback, useMemo } from "react";
 import {
   FilterType,
@@ -15,14 +16,11 @@ import {
   defaultCondition,
   filter,
 } from "./_configs";
-import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 
 const ProductManagement = () => {
   const t = useTranslation();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  const { products, reload: reloadProducts } = userProductStore();
-
-  useOnMounted(reloadProducts);
+  const { products } = userProductStore();
 
   const typeOptions: OptionProps[] = useMemo(() => {
     return unique(
@@ -88,9 +86,9 @@ const ProductManagement = () => {
             label={t("Cuisine name")}
             onReload={reload}
           />
-          <Button disabled={!filtered} onClick={reset}>
+          <CustomButton disabled={!filtered} onClick={reset}>
             {t("Clear")}
-          </Button>
+          </CustomButton>
         </Flex>
       </Flex>
 

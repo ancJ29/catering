@@ -23,7 +23,7 @@ const WeekView = ({
   const { dailyMenu } = useDailyMenuStore();
 
   return customer ? (
-    <Table.Tbody>
+    <>
       {shifts.map((shift, idx) => (
         <Table.Tr key={idx}>
           <Table.Td>{shift}</Table.Td>
@@ -56,7 +56,7 @@ const WeekView = ({
           })}
         </Table.Tr>
       ))}
-    </Table.Tbody>
+    </>
   ) : (
     <></>
   );

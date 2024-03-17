@@ -46,6 +46,7 @@ export default [
         key: "bom",
         label: "BOM Management",
         icon: "components",
+        url: "/bom-management",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER],

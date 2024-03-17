@@ -4,7 +4,7 @@ import { Anchor, Flex, Text } from "@mantine/core";
 const Logo = ({ title }: { title?: string }) => {
   const t = useTranslation();
   return (
-    <Flex direction="row" align="center" gap={4}>
+    <Flex direction="row" align="center" gap={5}>
       <Anchor href="/dashboard" style={{ whiteSpace: "nowrap" }}>
         <Text fw="bolder" fz="1.25rem">
           C-Catering

@@ -86,7 +86,7 @@ const EditUserForm = ({
                 ) || undefined,
             },
             options: {
-              toastMessage: t("Update user successfully"),
+              toastMessage: "Update user successfully",
             },
           });
           res && onSuccess();

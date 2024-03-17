@@ -25,8 +25,7 @@ import { Catering, configs } from "./_config";
 
 // TODO: refactor this component (ref: src/routes/menu-management/)
 const SupplierCateringManagement = () => {
-  const { reload: reloadCatering, caterings: cateringById } =
-    useCateringStore();
+  const { caterings: cateringById } = useCateringStore();
   const { supplierId } = useParams();
   const t = useTranslation();
   const { set } = useSupplierStore();
@@ -44,7 +43,6 @@ const SupplierCateringManagement = () => {
     if (!supplierId) {
       return;
     }
-    await reloadCatering();
     const supplier = await getSupplierById(supplierId);
     if (!supplier) {
       return;
@@ -64,7 +62,7 @@ const SupplierCateringManagement = () => {
         })
         .filter(Boolean) as Catering[],
     );
-  }, [supplierId, reloadCatering, set, cateringById]);
+  }, [supplierId, set, cateringById]);
 
   useOnMounted(load);
 
@@ -134,7 +132,7 @@ const SupplierCateringManagement = () => {
             },
           },
           options: {
-            toastMessage: t("Your changes have been saved"),
+            toastMessage: "Your changes have been saved",
           },
         });
         setChanged(false);

@@ -1,27 +1,26 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
+import CustomButton from "@/components/c-catering/CustomButton";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
+import {
+  FilterType,
+  defaultCondition,
+  filter,
+} from "@/configs/filters/materials";
 import useFilterData from "@/hooks/useFilterData";
-import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import { Material, typeAndGroupOptions } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
-import { Button, Flex, Stack } from "@mantine/core";
+import { Flex, Stack } from "@mantine/core";
 import { useCallback, useMemo } from "react";
-import {
-  FilterType,
-  configs,
-  defaultCondition,
-  filter,
-} from "./_configs";
+import { configs } from "./_configs";
 
 const MaterialManagement = () => {
   const t = useTranslation();
   const { materialGroupByType } = useMetaDataStore();
-  const { materials, reload: reloadMaterial } = useMaterialStore();
+  const { materials } = useMaterialStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-  useOnMounted(reloadMaterial);
 
   const dataLoader = useCallback(() => {
     return Array.from(materials.values());
@@ -83,9 +82,9 @@ const MaterialManagement = () => {
           defaultValue={keyword}
           onReload={reload}
         />
-        <Button disabled={!filtered} onClick={reset}>
+        <CustomButton disabled={!filtered} onClick={reset}>
           {t("Clear")}
-        </Button>
+        </CustomButton>
       </Flex>
       <DataGrid
         page={page}

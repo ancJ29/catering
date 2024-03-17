@@ -18,9 +18,7 @@ const schema = response.omit({ cursor: true, hasMore: true });
 
 export type Department = z.infer<typeof customerSchema>;
 
-export async function getAllDepartments(
-  type?: string,
-): Promise<Department[]> {
+export async function getAllDepartments() {
   const key = "domain.department.getAllDepartments";
   if (cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
@@ -29,10 +27,9 @@ export async function getAllDepartments(
       return res.data.departments;
     }
   }
-  const departments = loadAll<Department>({
+  const departments = await loadAll<Department>({
     key: "departments",
     action: Actions.GET_DEPARTMENTS,
-    params: { type },
     noCache: true,
   });
   cache.set(key, { departments });

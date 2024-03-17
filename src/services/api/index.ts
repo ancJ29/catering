@@ -67,7 +67,7 @@ export default async function callApi<T, R>({
     return data;
   } catch (error) {
     logger.error("[api-v2-error]", error);
-    options.toastMessage && _toast("Unknown error!!!", true, true);
+    options.toastMessage && _toast("Unknown error!!!", true);
   } finally {
     const elapsed = Date.now() - start;
     !options?.noLoading &&
@@ -76,11 +76,10 @@ export default async function callApi<T, R>({
   }
 }
 
-function _toast(message: string, error = false, translate = false) {
+function _toast(message: string, error = false) {
   notificationStore.push({
     color: error ? "red.5" : "blue.5",
     message: message,
-    translate,
   });
 }
 

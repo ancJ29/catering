@@ -55,7 +55,9 @@ export async function getAllMaterials(
     material.name = material.name.split("___")[0];
     return material;
   });
-  materials.sort((a, b) => a.others.type.localeCompare(b.others.type));
+  materials.sort((a, b) =>
+    a.others.type.localeCompare(b.others.type),
+  );
   cache.set(key, { materials });
   return materials;
 }

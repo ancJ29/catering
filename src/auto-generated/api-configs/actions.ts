@@ -18,7 +18,11 @@ import {
   xSupplierSchema,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
-import { dailyMenuOthersSchema, userOthersSchema } from "./others";
+import {
+  bomOthersSchema,
+  dailyMenuOthersSchema,
+  userOthersSchema,
+} from "./others";
 import {
   addResponse,
   booleanSchema,
@@ -444,6 +448,37 @@ export const configs = {
         itemByType: z.record(stringSchema, numberSchema).optional(),
       }),
       response: addResponse,
+    },
+  },
+  [Actions.GET_BOM]: {
+    name: Actions.GET_BOM,
+    group: ActionGroups.BOM_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: z.object({
+        productId: stringSchema,
+      }),
+      response: z
+        .object({
+          id: stringSchema,
+          productId: stringSchema,
+          bom: z.record(stringSchema, numberSchema),
+          others: bomOthersSchema,
+        })
+        .array(),
+    },
+  },
+  [Actions.PUSH_BOM]: {
+    name: Actions.PUSH_BOM,
+    group: ActionGroups.BOM_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        id: optionalStringSchema,
+        productId: stringSchema,
+        bom: z.record(stringSchema, numberSchema),
+        others: bomOthersSchema,
+      }),
     },
   },
   [Actions.ADD_MENU]: {

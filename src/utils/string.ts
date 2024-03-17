@@ -5,8 +5,21 @@ export function randomPassword() {
   return `${_r(8)}${s}${_r(7)}`;
 }
 
-export function numberWithDelimiter(value: number, delimiter = ".") {
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
+export function numberWithDelimiter(
+  value: number,
+  delimiter = ".",
+  separator = ",",
+) {
+  const sign = value < 0 ? "-" : "";
+  const _value = Math.abs(value);
+  const int = Math.floor(_value);
+  const sub = Math.round(1e5 * (_value - int)) / 1e5;
+  const res = int
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
+  return sub
+    ? `${sign}${res}${separator}${sub.toString().slice(2)}`
+    : `${sign}${res}`;
 }
 
 export function randomString() {

@@ -13,6 +13,16 @@ const customerSchema = response.shape.customers.transform(
   (array) => array[0],
 );
 
+const targetSchema = actionConfigs[
+  Actions.GET_CUSTOMERS
+].schema.response.shape.customers
+  .transform((array) => {
+    return array[0].others.targets;
+  })
+  .transform((array) => array[0]);
+
+export type Target = z.infer<typeof targetSchema>;
+
 const schema = response.omit({ cursor: true, hasMore: true });
 
 export type Customer = z.infer<typeof customerSchema>;

@@ -228,7 +228,11 @@ export function editableDailyMenu(
   timestamp?: number,
   dailyMenu?: {
     id: string;
-    others: { cateringId: string; status: DailyMenuStatus };
+    others: {
+      cateringId: string;
+      status: DailyMenuStatus;
+      total?: number;
+    };
   },
   selfCateringId?: string,
 ) {
@@ -259,6 +263,9 @@ export function editableDailyMenu(
         return false;
       }
       if (isBeforeYesterday(timestamp)) {
+        return false;
+      }
+      if (!dailyMenu?.others?.total) {
         return false;
       }
       return true;

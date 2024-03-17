@@ -30,8 +30,7 @@ import { SupplierMaterial, configs } from "./_config";
 const MaterialSupplierManagement = () => {
   const { materialId } = useParams();
   const { set } = useMaterialStore();
-  const { reload: reloadSuppliers, suppliers: supplierById } =
-    useSupplierStore();
+  const { suppliers: supplierById } = useSupplierStore();
   const t = useTranslation();
   const [changed, setChanged] = useState(false);
   const [material, setMaterial] = useState<Material>();
@@ -43,7 +42,6 @@ const MaterialSupplierManagement = () => {
   );
 
   const load = useCallback(async () => {
-    await reloadSuppliers();
     if (!materialId) {
       return;
     }
@@ -64,7 +62,7 @@ const MaterialSupplierManagement = () => {
         })) || []
       ).sort((a, b) => a.price - b.price),
     );
-  }, [reloadSuppliers, materialId, set]);
+  }, [materialId, set]);
 
   useOnMounted(load);
 
@@ -150,7 +148,7 @@ const MaterialSupplierManagement = () => {
             }),
           },
           options: {
-            toastMessage: t("Your changes have been saved"),
+            toastMessage: "Your changes have been saved",
           },
         });
         load();

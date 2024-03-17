@@ -1,5 +1,18 @@
 export default {
   // prettier-ignore
+  "Price": "Price",
+  "Estimated cost": "Estimated cost",
+  "Previous saved cost": "Previous saved cost",
+  "Change ratio": "Change ratio",
+  "Cost per sale price": "Cost per sale price",
+  "Amount": "Amount",
+  "All": "All",
+  "Memo": "Memo",
+  "Bom updated": "Bom updated",
+  "Customized BOM": "Customized BOM",
+  "Standard BOM": "Standard BOM",
+  "Sorry, this feature is implemented yet":
+    "Sorry, this feature is implemented yet",
   "BOM Management": "BOM Management",
   "Supply Coordination": "Supply Coordination",
   "Payment Request": "Payment Request",

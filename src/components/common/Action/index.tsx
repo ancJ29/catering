@@ -19,7 +19,7 @@ const Action = ({
 }: Props) => {
   return (
     <Flex
-      gap={3}
+      gap={5}
       px={2}
       justify={justify}
       opacity={disable ? 0.6 : 1}

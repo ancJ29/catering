@@ -75,7 +75,7 @@ const AddSupplierForm = ({
             action: Actions.UPDATE_SUPPLIER,
             params,
             options: {
-              toastMessage: t("Update supplier successfully"),
+              toastMessage: "Update supplier successfully",
               reloadOnSuccess: true,
             },
           });

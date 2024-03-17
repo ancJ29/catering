@@ -15,14 +15,7 @@ import UpdateSupplierForm from "./components/UpdateSupplierForm";
 // TODO: refactor this component (ref: src/routes/menu-management/)
 const SupplierManagement = () => {
   const t = useTranslation();
-  const { suppliers, reload: reloadSuppliers } = useSupplierStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-
-  const dataLoader = useCallback(async () => {
-    await reloadSuppliers();
-    return Array.from(suppliers.values());
-  }, [suppliers, reloadSuppliers]);
-
   const { data, names, page, reload, setPage } =
     useFilterData<Supplier>({ dataLoader });
 
@@ -86,3 +79,12 @@ const SupplierManagement = () => {
 };
 
 export default SupplierManagement;
+
+async function dataLoader(): Promise<Supplier[]> {
+  const suppliers = useSupplierStore.getState().suppliers;
+  if (suppliers.size) {
+    return Array.from(suppliers.values());
+  }
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  return dataLoader();
+}

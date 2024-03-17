@@ -25,7 +25,7 @@ const MonthView = ({
   const { role, cateringId } = useAuthStore();
   const { dailyMenu } = useDailyMenuStore();
   return customer ? (
-    <Table.Tbody>
+    <>
       {rows.map((cells, idx) => (
         <Table.Tr key={idx}>
           {cells.map((cell, idx) => {
@@ -58,7 +58,7 @@ const MonthView = ({
           })}
         </Table.Tr>
       ))}
-    </Table.Tbody>
+    </>
   ) : (
     <></>
   );

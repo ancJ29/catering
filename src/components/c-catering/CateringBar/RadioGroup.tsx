@@ -2,18 +2,22 @@ import useTranslation from "@/hooks/useTranslation";
 import { Group, Radio } from "@mantine/core";
 
 export type RadioGroupProps = {
-  shift: string;
-  shifts: string[];
-  setShift: (shift: string) => void;
+  shift?: string;
+  shifts?: string[];
+  onChangeShift?: (shift: string) => void;
 };
 
-const RadioGroup = ({ shifts, shift, setShift }: RadioGroupProps) => {
+const RadioGroup = ({
+  shift = "",
+  shifts = [],
+  onChangeShift,
+}: RadioGroupProps) => {
   const t = useTranslation();
   return (
     <Radio.Group
       label={t("shifts")}
       value={shift}
-      onChange={setShift}
+      onChange={onChangeShift}
     >
       <Group>
         {shifts.map((shift, idx) => {

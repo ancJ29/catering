@@ -63,7 +63,7 @@ const AddSupplierForm = ({
             action: Actions.ADD_SUPPLIER,
             params: request.parse(values),
             options: {
-              toastMessage: t("Add supplier successfully"),
+              toastMessage: "Add supplier successfully",
               reloadOnSuccess: true,
             },
           });

@@ -53,7 +53,7 @@ const Dashboard = () => {
           .toString(),
       },
       options: {
-        toastMessage: t("Password updated"),
+        toastMessage: "Password updated",
       },
     });
     logger.trace("change-password result", res);

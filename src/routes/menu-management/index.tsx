@@ -1,8 +1,9 @@
+import ScrollTable from "@/components/c-catering/ScrollTable";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useCustomerStore from "@/stores/customer.store";
 import { startOfDay } from "@/utils";
-import { ScrollArea, Stack, Table } from "@mantine/core";
+import { Stack, Table } from "@mantine/core";
 import {
   useCallback,
   useEffect,
@@ -11,7 +12,6 @@ import {
   useState,
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import classes from "./ScrollArea.module.scss";
 import { ActionType, defaultCondition, reducer } from "./_configs";
 import {
   _customerId,
@@ -26,7 +26,7 @@ import {
 } from "./_helpers";
 import Alert from "./components/Alert";
 import BlankTableBody from "./components/BlankTableBody";
-import ControlBar from "./components/ControllBar";
+import ControlBar from "./components/ControlBar";
 import MonthView from "./components/MonthView";
 import WeekView from "./components/WeekView";
 
@@ -111,7 +111,7 @@ const MenuManagement = () => {
             overrideState: { mode },
           })
         }
-        setShift={(shift) =>
+        onChangeShift={(shift) =>
           dispatch({
             type: ActionType.OVERRIDE,
             overrideState: { shift },
@@ -137,48 +137,48 @@ const MenuManagement = () => {
         }
       />
       <Alert />
-      <ScrollArea h={"calc(100vh - 10rem)"}>
-        <Table withColumnBorders m={0} className={classes.table}>
-          <Table.Thead className={classes.header}>
-            <Table.Tr bg="white">
-              {condition.mode === "W" && (
-                <Table.Th w={60}>&nbsp;</Table.Th>
-              )}
-              {headers.map((el, idx) => {
-                return (
-                  <Table.Th ta="center" key={idx} w="14.2857%">
-                    {el.label}
-                  </Table.Th>
-                );
-              })}
-            </Table.Tr>
-          </Table.Thead>
-
-          {_customerId(condition) ? (
-            _isWeekView(condition.mode) ? (
-              <WeekView
-                key={`w.${Date.now()}`}
-                headers={headers || []}
-                shifts={condition.target?.shifts || []}
-                customer={condition.customer}
-                targetName={condition.target?.name || ""}
-                onClick={onOpen}
-              />
-            ) : (
-              <MonthView
-                key={`m.${Date.now()}`}
-                rows={rows}
-                customer={condition.customer}
-                shift={condition.shift || ""}
-                targetName={condition.target?.name || ""}
-                onClick={onOpen}
-              />
-            )
+      <ScrollTable
+        withColumnBorders
+        h={"calc(100vh - 10rem)"}
+        header={
+          <>
+            {condition.mode === "W" && (
+              <Table.Th w={60}>&nbsp;</Table.Th>
+            )}
+            {headers.map((el, idx) => {
+              return (
+                <Table.Th ta="center" key={idx} w="14.2857%">
+                  {el.label}
+                </Table.Th>
+              );
+            })}
+          </>
+        }
+      >
+        {_customerId(condition) ? (
+          _isWeekView(condition.mode) ? (
+            <WeekView
+              key={`w.${Date.now()}`}
+              headers={headers || []}
+              shifts={condition.target?.shifts || []}
+              customer={condition.customer}
+              targetName={condition.target?.name || ""}
+              onClick={onOpen}
+            />
           ) : (
-            <BlankTableBody mode={condition.mode} />
-          )}
-        </Table>
-      </ScrollArea>
+            <MonthView
+              key={`m.${Date.now()}`}
+              rows={rows}
+              customer={condition.customer}
+              shift={condition.shift || ""}
+              targetName={condition.target?.name || ""}
+              onClick={onOpen}
+            />
+          )
+        ) : (
+          <BlankTableBody mode={condition.mode} />
+        )}
+      </ScrollTable>
     </Stack>
   );
 };

@@ -1,0 +1,113 @@
+import ScrollTable from "@/components/c-catering/ScrollTable";
+import EmptyBox from "@/components/common/EmptyBox";
+import NumberInput from "@/components/common/NumberInput";
+import useTranslation from "@/hooks/useTranslation";
+import useMaterialStore from "@/stores/material.store";
+import { numberWithDelimiter } from "@/utils";
+import { Box, Table, TextInput } from "@mantine/core";
+import { useMemo, useSyncExternalStore } from "react";
+import store from "../_bom.store";
+import { FilterType, Tab, _customizeKey } from "../_config";
+
+const BomTable = ({ condition }: { condition: FilterType }) => {
+  const t = useTranslation();
+  const { materials } = useMaterialStore();
+  const { originalBom, materialIds } = useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+  );
+
+  const customizeKey = useMemo(
+    () => _customizeKey(condition),
+    [condition],
+  );
+
+  const isStandard = condition.tab === Tab.STANDARD;
+
+  return (
+    <ScrollTable
+      key={`${customizeKey}.${materialIds.length}`}
+      // h={"calc(100vh - 30rem)"}
+      header={
+        <>
+          <Table.Th w="40%">{t("Material name")}</Table.Th>
+          {isStandard ? "" : <Table.Th>{t("Price")}</Table.Th>}
+          <Table.Th w={150} ta="right">
+            {t("Amount")}
+          </Table.Th>
+          <Table.Th w={120} ta="center">
+            {t("Unit")}
+          </Table.Th>
+          <Table.Th>{t("Memo")}</Table.Th>
+        </>
+      }
+    >
+      {materialIds.map((materialId) => {
+        const material = materials.get(materialId);
+        const others = originalBom?.others;
+        const memo = customizeKey
+          ? others?.memo?.[`${customizeKey}.${materialId}`]
+          : others?.memo?.[materialId];
+        let amount = originalBom?.bom[materialId] || 0;
+        if (customizeKey) {
+          amount =
+            others?.customized?.[customizeKey]?.[materialId] ||
+            amount;
+        }
+        let price = material?.others.price || 0;
+        const cateringId = condition.cateringId;
+        if (cateringId) {
+          price = material?.others.prices?.[cateringId] || price;
+        }
+        return (
+          <Table.Tr key={materialId}>
+            <Table.Td>{material?.name}</Table.Td>
+            {isStandard ? (
+              ""
+            ) : (
+              <Table.Td ta="right">
+                {numberWithDelimiter(price)}&nbsp; đ
+              </Table.Td>
+            )}
+            <Table.Td pr={10}>
+              <NumberInput
+                ml="auto"
+                w="120px"
+                defaultValue={amount}
+                onChange={(amount) => {
+                  store.setAmount(materialId, amount, customizeKey);
+                }}
+              />
+            </Table.Td>
+            <Table.Td ta="center">
+              {material?.others?.unit?.name || "--"}
+            </Table.Td>
+            <Table.Td px={10}>
+              <TextInput
+                defaultValue={memo}
+                onChange={(e) => {
+                  store.setMemo(
+                    materialId,
+                    e.target.value,
+                    customizeKey,
+                  );
+                }}
+              />
+            </Table.Td>
+          </Table.Tr>
+        );
+      })}
+      {!materialIds.length && (
+        <Table.Tr>
+          <Table.Td colSpan={4}>
+            <Box w="100%">
+              <EmptyBox />
+            </Box>
+          </Table.Td>
+        </Table.Tr>
+      )}
+    </ScrollTable>
+  );
+};
+
+export default BomTable;

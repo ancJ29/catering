@@ -7,40 +7,40 @@ import useCustomerStore from "@/stores/customer.store";
 import { Payload } from "@/types";
 import { Button, Flex, Select } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import DateControll, { DateControllProps } from "./DateControll";
 import RadioGroup, { RadioGroupProps } from "./RadioGroup";
 
 // prettier-ignore
-type ControlBarProps = RadioGroupProps & Omit<DateControllProps, "onShift"> & {
+export type CateringBarProps = RadioGroupProps & {
   customer?: Customer;
   targetName: string;
   cateringId?: string;
+  allowAllTarget?: boolean;
+  enableShift?: boolean;
   onClear: () => void;
   onChangeCateringId: (cateringId?: string) => void;
-  onShiftMarkDate: (diff: 1 | -1) => void;
   onCustomerChange: (customer?: Customer) => void;
+  onClearTarget?: () => void;
   onTargetChange: (_: {
     name: string;
     shifts: string[];
   }) => void;
 };
 
-const ControllBar = ({
-  mode,
+const CateringBar = ({
   shift,
   shifts,
   customer,
   targetName,
   cateringId,
-  setShift,
-  onResetDate,
-  onShiftMarkDate,
+  enableShift,
+  allowAllTarget,
+  onChangeShift,
   onClear,
-  onChangeMode,
   onChangeCateringId,
+  onClearTarget,
   onTargetChange,
   onCustomerChange,
-}: ControlBarProps) => {
+}: CateringBarProps) => {
   const t = useTranslation();
   const { user, isCatering } = useAuthStore();
   const { idByName: customerIdByName, customers } =
@@ -100,19 +100,27 @@ const ControllBar = ({
   ]);
 
   const targetData: string[] = useMemo(() => {
-    return customer?.others.targets.map((el) => el.name) || [];
-  }, [customer]);
+    const data = customer?.others.targets.map((el) => el.name) || [];
+    if (allowAllTarget && data.length > 1) {
+      data.unshift(t("All"));
+    }
+    return data;
+  }, [allowAllTarget, customer, t]);
 
   const _onTargetChange = useCallback(
     (targetName: string | null) => {
       if (targetName && customer?.others.targets) {
+        if (targetName === t("All")) {
+          onClearTarget && onClearTarget();
+          return;
+        }
         const target = customer.others.targets.find(
           (el) => el.name === targetName,
         );
         target && onTargetChange(target);
       }
     },
-    [customer, onTargetChange],
+    [customer, onClearTarget, onTargetChange, t],
   );
 
   const _selectCustomer = useCallback(
@@ -184,73 +192,65 @@ const ControllBar = ({
   ]);
 
   return (
-    <Flex gap={10} w="100%" justify="space-between" align="end">
-      <Flex gap={10} justify="start" align="end">
-        {isCatering ? (
-          ""
-        ) : (
-          <Autocomplete
-            key={cateringName || "cateringName"}
-            label={t("Catering name")}
-            defaultValue={cateringName}
-            data={cateringNames}
-            disabled={cateringNames.length < 2}
-            onChange={(value) => _selectCatering(value)}
-          />
-        )}
-        {isCatering && customerData.length < 2 ? (
-          ""
-        ) : (
-          <Autocomplete
-            key={customer?.name || "customerName"}
-            defaultValue={customer?.name || ""}
-            label={t("Customer")}
-            data={customerData}
-            disabled={customerData.length < 2}
-            onChange={_selectCustomer}
-            onEnter={(value) => _selectCustomer(value, true)}
-            onClear={() => _selectCustomer(null, true)}
-          />
-        )}
-        {customer ? (
-          <Select
-            value={targetName}
-            label={t("Customer target")}
-            data={targetData}
-            onChange={_onTargetChange}
-          />
-        ) : (
-          ""
-        )}
-        {mode === "M" && shifts.length ? (
-          <RadioGroup
-            shifts={shifts}
-            shift={shift || ""}
-            setShift={setShift}
-          />
-        ) : (
-          ""
-        )}
-        <Button
-          onClick={() => {
-            setCateringName("");
-            onClear();
-          }}
-        >
-          {t("Clear")}
-        </Button>
-      </Flex>
-      <DateControll
-        mode={mode}
-        onResetDate={onResetDate}
-        onShift={onShiftMarkDate}
-        onChangeMode={onChangeMode}
-      />
+    <Flex gap={10} justify="start" align="end">
+      {isCatering ? (
+        ""
+      ) : (
+        <Autocomplete
+          key={cateringName || "cateringName"}
+          label={t("Catering name")}
+          defaultValue={cateringName}
+          data={cateringNames}
+          disabled={cateringNames.length < 2}
+          onChange={(value) => _selectCatering(value)}
+        />
+      )}
+      {isCatering && customerData.length < 2 ? (
+        ""
+      ) : (
+        <Autocomplete
+          key={customer?.name || "customerName"}
+          defaultValue={customer?.name || ""}
+          label={t("Customer")}
+          data={customerData}
+          disabled={customerData.length < 2}
+          onChange={_selectCustomer}
+          onEnter={(value) => _selectCustomer(value, true)}
+          onClear={() => _selectCustomer(null, true)}
+        />
+      )}
+      {customer ? (
+        <Select
+          value={targetName || t("All")}
+          label={t("Customer target")}
+          data={targetData}
+          onChange={_onTargetChange}
+        />
+      ) : (
+        ""
+      )}
+      {enableShift && shifts?.length ? (
+        <RadioGroup
+          shifts={shifts}
+          shift={shift || ""}
+          onChangeShift={onChangeShift}
+        />
+      ) : (
+        ""
+      )}
+      <Button
+        onClick={() => {
+          setCateringName("");
+          onClear();
+        }}
+      >
+        {t("Clear")}
+      </Button>
     </Flex>
   );
 };
 
-export default ControllBar;
+export default CateringBar;
 
 function _cateringIds(
   caterings: Department[],

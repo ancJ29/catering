@@ -186,6 +186,8 @@ export const materialOthersSchema = z.object({
   internalCode: stringSchema,
   group: materialGroupSchema,
   type: materialTypeSchema,
+  price: optionalNumberSchema,
+  prices: z.record(stringSchema, numberSchema).optional(),
   unit: unitSchema
     .pick({
       name: true,
@@ -237,8 +239,17 @@ export const materialGroupByType = [
   {} as Record<string, string[]>,
 );
 
+export const bomOthersSchema = z.object({
+  /*
+    ${customerId}.${target}.${shift}
+      <materialId>: <amount>
+  */
+  customized: z.record(stringSchema, z.record(stringSchema, numberSchema)),
+  memo: z.record(stringSchema, stringSchema).optional(),
+});
+
 export type ProductType = z.infer<typeof productTypeSchema>;
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type MaterialType = z.infer<typeof materialTypeSchema>;
-export type MaterialGroup = z.infer<typeof materialGroupSchema>
+export type MaterialGroup = z.infer<typeof materialGroupSchema>;
 export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;

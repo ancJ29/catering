@@ -1,7 +1,6 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
-import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useCateringStore from "@/stores/catering.store";
 import { Flex, Stack } from "@mantine/core";
@@ -10,10 +9,8 @@ import { Department, configs } from "./_configs";
 
 const CateringManagement = () => {
   const t = useTranslation();
-  const { reload: reloadCatering, caterings } = useCateringStore();
+  const { caterings } = useCateringStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
-
-  useOnMounted(reloadCatering);
 
   const dataLoader = useCallback(() => {
     return Array.from(caterings.values());

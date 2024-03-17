@@ -1,11 +1,15 @@
 import useTranslation from "@/hooks/useTranslation";
 import { Menu, MenuItem } from "@/types";
-import { Box, NavLink } from "@mantine/core";
+import { Box, NavLink, Text } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import classes from "./navbar.module.scss";
+
+// TODO: remove debug
+const debug = window.location.hostname.includes("localhost");
 
 type NavbarProps = {
   opened?: boolean;
@@ -37,12 +41,19 @@ const Navbar = ({
         return;
       }
       if (!item.url) {
-        alert("Not implemented!!!");
+        modals.open({
+          withCloseButton: false,
+          children: (
+            <Text size="sm" c="red.5" fw={800} w="100%" ta="center">
+              {t("Sorry, this feature is implemented yet")}
+            </Text>
+          ),
+        });
         return;
       }
       navigate(item.url);
     },
-    [navigate],
+    [navigate, t],
   );
 
   return menu.length ? (
@@ -51,34 +62,47 @@ const Navbar = ({
       pb={level === 1 ? "2rem" : "0"}
       onClick={onOpenNavbar}
     >
-      {menu.map((item, idx) => {
-        const isActive = _isActive(item, active);
-        return (
-          <NavLink
-            opened={item.subs && activeKey === item.key}
-            key={idx}
-            h="3rem"
-            onClick={open.bind(null, item)}
-            label={opened ? t(item.label) : ""}
-            classNames={{
-              children: "c-catering-p-0",
-            }}
-            className={clsx(
-              classes.item,
-              isActive ? classes.active : "",
-            )}
-            leftSection={<Icon {...item} disabled={opened} />}
-          >
-            {item.subs && opened && (
-              <Navbar
-                opened
-                level={level + 1}
-                menu={item.subs || []}
-              />
-            )}
-          </NavLink>
-        );
-      })}
+      {menu
+        .filter((el) => {
+          if (debug) {
+            if (el.url) {
+              return true;
+            }
+            if (el.subs?.length) {
+              return !!el.subs.find((el) => !!el.url);
+            }
+            return false;
+          }
+          return true;
+        })
+        .map((item, idx) => {
+          const isActive = _isActive(item, active);
+          return (
+            <NavLink
+              opened={item.subs && activeKey === item.key}
+              key={idx}
+              h="3rem"
+              onClick={open.bind(null, item)}
+              label={opened ? t(item.label) : ""}
+              classNames={{
+                children: "c-catering-p-0",
+              }}
+              className={clsx(
+                classes.item,
+                isActive ? classes.active : "",
+              )}
+              leftSection={<Icon {...item} disabled={opened} />}
+            >
+              {item.subs && opened && (
+                <Navbar
+                  opened
+                  level={level + 1}
+                  menu={item.subs || []}
+                />
+              )}
+            </NavLink>
+          );
+        })}
     </Box>
   ) : (
     <></>

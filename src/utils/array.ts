@@ -4,6 +4,13 @@ export function cloneDeep<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
+export function compareDeep<T>(a?: T, b?: T): boolean {
+  if (!a || !b) {
+    return false;
+  }
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 export function uniqueByKey<T, K extends keyof T>(
   arr: T[],
   key: string,

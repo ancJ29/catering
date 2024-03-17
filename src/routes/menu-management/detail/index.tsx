@@ -1,5 +1,6 @@
 import { Actions } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
+import CustomButton from "@/components/c-catering/CustomButton";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
 import Select from "@/components/common/Select";
@@ -20,7 +21,6 @@ import {
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
-import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
 import useProductStore from "@/stores/product.store";
@@ -78,31 +78,15 @@ const EditModal = () => {
   );
   const { dailyMenu: records, push: pushDailyMenu } =
     useDailyMenuStore();
-  const { reload: loadAllCaterings } = useCateringStore();
-  const { customers, reload: loadAllCustomers } = useCustomerStore();
+  const { customers } = useCustomerStore();
   const {
     item: updatedDailyMenu,
     productIds,
     updated,
   } = useSyncExternalStore(store.subscribe, store.getSnapshot);
-  const {
-    allTypes,
-    products: allProducts,
-    reload: loadAllProducts,
-  } = useProductStore();
+  const { allTypes, products: allProducts } = useProductStore();
 
-  /*
-  http://localhost:9000/menu-management#Vy4xOTc3Ny5jbHQ4N2drMncwMDdlMTBvODFzZXU0eXZvLllVV0ElMjAxLlMlRTElQkElQTNuJTIweHUlRTElQkElQTV0JTIwMS5DYSUyMDE=
-  */
-
-  const onMounted = useCallback(async () => {
-    store.reset();
-    loadAllCustomers();
-    loadAllCaterings();
-    loadAllProducts();
-  }, [loadAllCaterings, loadAllCustomers, loadAllProducts]);
-
-  useOnMounted(onMounted);
+  useOnMounted(store.reset);
 
   useEffect(() => {
     if (
@@ -305,9 +289,9 @@ const EditModal = () => {
               </Flex>
             </Box>
             <Box ta="right" mb={10}>
-              <Button disabled={!filtered} onClick={reset}>
+              <CustomButton disabled={!filtered} onClick={reset}>
                 {t("Clear")}
-              </Button>
+              </CustomButton>
             </Box>
             <ScrollArea h="80vh">
               <Selector

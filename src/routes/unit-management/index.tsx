@@ -92,7 +92,7 @@ const UnitManagement = () => {
           action: Actions.UPDATE_UNITS,
           params: updated?.filter((el) => !!el.name),
           options: {
-            toastMessage: t("Your changes have been saved"),
+            toastMessage: "Your changes have been saved",
           },
         }).then(() => {
           setList(_updated);

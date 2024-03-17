@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from "@mantine/core";
 import { IconCircleMinus, IconCirclePlus } from "@tabler/icons-react";
+import { useCallback } from "react";
 
 type Base = {
   id: string;
@@ -22,10 +23,20 @@ function Selector<T extends Base>({
   onRemove,
   labelGenerator,
 }: SelectorProps<T>) {
+  const onClick = useCallback(
+    (existed: boolean, id: string) => {
+      if (disabled) {
+        return;
+      }
+      existed ? onRemove(id) : onAdd(id);
+    },
+    [disabled, onAdd, onRemove],
+  );
+
   return (
     <>
-      {data.map((p) => {
-        const existed = selectedIds.includes(p.id);
+      {data.map((el) => {
+        const existed = selectedIds.includes(el.id);
         const Icon = existed ? IconCircleMinus : IconCirclePlus;
         return (
           <Box
@@ -35,25 +46,16 @@ function Selector<T extends Base>({
             }}
             bg={existed ? "primary.4" : undefined}
             className={disabled ? "" : "c-catering-hover-bg"}
-            key={p.id}
+            key={el.id}
             w="100%"
             p={10}
             mb={4}
-            onClick={() => {
-              if (disabled) {
-                return;
-              }
-              if (existed) {
-                onRemove(p.id);
-              } else {
-                onAdd(p.id);
-              }
-            }}
+            onClick={onClick.bind(null, existed, el.id)}
           >
             <Flex gap={5}>
               <Icon />
               <Text>
-                {labelGenerator ? labelGenerator(p) : p.name}
+                {labelGenerator ? labelGenerator(el) : el.name}
               </Text>
             </Flex>
           </Box>

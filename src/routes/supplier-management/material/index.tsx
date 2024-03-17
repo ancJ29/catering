@@ -1,9 +1,6 @@
 import { Actions } from "@/auto-generated/api-configs";
-import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
-import Selector from "@/components/c-catering/Selector";
+import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import DataGrid from "@/components/common/DataGrid";
-import Select from "@/components/common/Select";
-import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
@@ -11,52 +8,30 @@ import {
   Material,
   Supplier,
   getSupplierById,
-  typeAndGroupOptions,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
-import useMetaDataStore from "@/stores/meta-data.store";
 import useSupplierStore from "@/stores/supplier.store";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
+import { Box, Button, Flex, Grid, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  FilterType,
-  SupplierMaterial,
-  configs,
-  defaultCondition,
-  filter,
-} from "./_config";
+import { SupplierMaterial, configs } from "./_config";
 
 const SupplierMaterialManagement = () => {
   const { supplierId } = useParams();
   const t = useTranslation();
   const { set } = useSupplierStore();
-  const { materialGroupByType } = useMetaDataStore();
-  const { reload: reloadMaterial, materials: materialById } =
-    useMaterialStore();
+  const { materials: materialById } = useMaterialStore();
   const [supplier, setSupplier] = useState<Supplier>();
   const [prices] = useState<Map<string, number>>(new Map());
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
-  const materialIds = useMemo(
-    () => materials?.map((sm) => sm.material.id) || [],
-    [materials],
-  );
 
   const load = useCallback(async () => {
     if (!supplierId) {
       return;
     }
-    reloadMaterial();
     const supplier = await getSupplierById(supplierId);
     if (!supplier) {
       return;
@@ -73,38 +48,9 @@ const SupplierMaterialManagement = () => {
         },
       })) || [],
     );
-  }, [supplierId, set, reloadMaterial]);
+  }, [supplierId, set]);
 
   useOnMounted(load);
-
-  const dataLoader = useCallback(() => {
-    return Array.from(materialById.values());
-  }, [materialById]);
-
-  const {
-    counter,
-    condition,
-    data,
-    filtered,
-    names,
-    keyword,
-    reload,
-    reset,
-    setCondition,
-    updateCondition,
-  } = useFilterData<Material, FilterType>({
-    dataLoader,
-    filter,
-    defaultCondition,
-  });
-
-  const [typeOptions, groupOptions] = useMemo(() => {
-    return typeAndGroupOptions(
-      materialGroupByType,
-      condition?.type || "",
-      t,
-    );
-  }, [materialGroupByType, t, condition]);
 
   const addMaterial = useCallback(
     (materialId: string) => {
@@ -181,7 +127,7 @@ const SupplierMaterialManagement = () => {
             }),
           },
           options: {
-            toastMessage: t("Your changes have been saved"),
+            toastMessage: "Your changes have been saved",
           },
         });
         load();
@@ -203,9 +149,6 @@ const SupplierMaterialManagement = () => {
     [t],
   );
 
-  if (!materials || !data.length) {
-    return <></>;
-  }
   return (
     <Box>
       <Box w="100%" pb={10}>
@@ -231,57 +174,11 @@ const SupplierMaterialManagement = () => {
             )}
           </Grid.Col>
           <Grid.Col span={3} className="c-catering-bdr-box">
-            <Flex justify="end" align={"center"} mb="1rem">
-              <Select
-                key={condition?.type || ""}
-                value={condition?.type || ""}
-                label={t("Material type")}
-                w={"20vw"}
-                options={typeOptions}
-                onChange={(value) =>
-                  value !== condition?.type &&
-                  setCondition({
-                    type: value || "",
-                    group: "",
-                  })
-                }
-                mb={10}
-              />
-            </Flex>
-            <Flex justify="end" align={"center"} mb="1rem">
-              <Select
-                key={condition?.group || ""}
-                label={t("Material group")}
-                value={condition?.group}
-                w={"20vw"}
-                options={groupOptions}
-                onChange={updateCondition.bind(null, "group", "")}
-              />
-            </Flex>
-            <Flex justify="end" align={"center"} mb="1rem">
-              <AutocompleteForFilterData
-                key={counter}
-                defaultValue={keyword}
-                label={t("Material name")}
-                w={"20vw"}
-                data={names}
-                onReload={reload}
-              />
-            </Flex>
-            <Box ta="right" mb={10}>
-              <Button disabled={!filtered} onClick={reset}>
-                {t("Clear")}
-              </Button>
-            </Box>
-            <ScrollArea h="80vh">
-              <Selector
-                data={data}
-                selectedIds={materialIds}
-                onAdd={addMaterial}
-                onRemove={removeMaterial}
-                labelGenerator={labelGenerator}
-              />
-            </ScrollArea>
+            <MaterialSelector
+              onAdd={addMaterial}
+              onRemove={removeMaterial}
+              labelGenerator={labelGenerator}
+            />
           </Grid.Col>
         </Grid>
       </Box>

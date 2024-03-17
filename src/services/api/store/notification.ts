@@ -47,11 +47,7 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  push(payload: {
-    color: string;
-    message: string;
-    translate?: boolean;
-  }) {
+  push(payload: { color: string; message: string }) {
     const type = "PUSH";
     const id = Math.random().toString(36).slice(2);
     dispatch({ type, payload: { ...payload, id } });
