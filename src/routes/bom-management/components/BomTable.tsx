@@ -3,7 +3,7 @@ import EmptyBox from "@/components/common/EmptyBox";
 import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import useMaterialStore from "@/stores/material.store";
-import { numberWithDelimiter } from "@/utils";
+import { lastElement, numberWithDelimiter } from "@/utils";
 import { Box, Table, TextInput } from "@mantine/core";
 import { useMemo, useSyncExternalStore } from "react";
 import store from "../_bom.store";
@@ -54,6 +54,7 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
             others?.customized?.[customizeKey]?.[materialId] ||
             amount;
         }
+        const unit = lastElement(material?.others.unit?.units || []);
         let price = material?.others.price || 0;
         const cateringId = condition.cateringId;
         if (cateringId) {
@@ -71,6 +72,7 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
             )}
             <Table.Td pr={10}>
               <NumberInput
+                isInteger={false}
                 ml="auto"
                 w="120px"
                 defaultValue={amount}
@@ -79,9 +81,7 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
                 }}
               />
             </Table.Td>
-            <Table.Td ta="center">
-              {material?.others?.unit?.name || "--"}
-            </Table.Td>
+            <Table.Td ta="center">{unit || "--"}</Table.Td>
             <Table.Td px={10}>
               <TextInput
                 defaultValue={memo}

@@ -62,7 +62,7 @@ function _parse(
   isPositive: boolean,
   isInteger: boolean,
 ) {
-  let quantity = parseInt(value.toString());
+  let quantity = parseFloat(value.toString());
   if (isNaN(quantity)) {
     quantity = 0;
   }
