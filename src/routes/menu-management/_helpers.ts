@@ -1,4 +1,4 @@
-import { Customer, getDailyMenu } from "@/services/domain";
+import { getDailyMenu } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
@@ -6,15 +6,12 @@ import useProductStore from "@/stores/product.store";
 import {
   ONE_DAY,
   ONE_WEEK,
-  addHashToUrl,
   encodeUri,
   firstMonday,
   formatTime,
   lastSunday,
-  removeHashFromUrl,
   startOfWeek,
 } from "@/utils";
-import { type FilterType } from "./_configs";
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -47,77 +44,6 @@ export function _url(
     encodeUri(shift || ""),
     timestamp,
   ].join("/");
-}
-
-export function _updateHash(hash: string) {
-  hash ? addHashToUrl(hash) : removeHashFromUrl();
-}
-
-export function _parseHash(
-  hash: string,
-  customerIdByName: Map<string, string>,
-  customers: Map<string, Customer>,
-) {
-  if (!hash) {
-    return;
-  }
-  const [
-    mode,
-    markDate,
-    cateringId,
-    customerName,
-    targetName,
-    shift,
-  ] = window.atob(hash.slice(1)).split(".").map(decodeURIComponent);
-
-  if (!customerName || isNaN(parseInt(markDate || "x"))) {
-    return;
-  }
-  if (mode != "M" && mode != "W") {
-    return;
-  }
-  const customerId = customerIdByName.get(customerName);
-  const customer = customers.get(customerId || "");
-  if (!customer) {
-    return;
-  }
-  const target = customer.others.targets.find(
-    (el) => el.name === targetName,
-  );
-  if (!target) {
-    return;
-  }
-  if (!shift && !target.shifts.includes(shift)) {
-    return;
-  }
-  return {
-    cateringId,
-    mode: mode as "W" | "M",
-    markDate: parseInt(markDate) * ONE_DAY,
-    customer,
-    target,
-    shift,
-  };
-}
-
-export function _hash(condition: FilterType) {
-  if (!condition.customer?.name) {
-    return "";
-  }
-  const hash = window.btoa(
-    [
-      condition.mode,
-      Math.floor(condition.markDate / ONE_DAY),
-      condition.cateringId || "",
-      condition.customer?.name || "",
-      condition.target?.name || "",
-      condition.shift,
-    ]
-      .filter(Boolean)
-      .map((el) => encodeURIComponent(el?.toString() || ""))
-      .join("."),
-  );
-  return "#" + hash;
 }
 
 export function _isWeekView(mode: string) {

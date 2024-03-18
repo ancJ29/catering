@@ -1,27 +1,23 @@
 import ScrollTable from "@/components/c-catering/ScrollTable";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import useCustomerStore from "@/stores/customer.store";
+import useUrlHash from "@/hooks/useUrlHash";
 import { startOfDay } from "@/utils";
 import { Stack, Table } from "@mantine/core";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ActionType, defaultCondition, reducer } from "./_configs";
+  ActionType,
+  FilterType,
+  defaultCondition,
+  reducer,
+} from "./_configs";
 import {
   _customerId,
   _getDailyMenu,
-  _hash,
   _headersAndRows,
   _isWeekView,
-  _parseHash,
   _reload,
-  _updateHash,
   _url,
 } from "./_helpers";
 import Alert from "./components/Alert";
@@ -33,11 +29,16 @@ import WeekView from "./components/WeekView";
 const MenuManagement = () => {
   const navigate = useNavigate();
   const t = useTranslation();
-  const [loaded, setLoaded] = useState(false);
-  const { hash: locationHash } = useLocation();
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
-  // prettier-ignore
-  const { idByName: customerIdByName, customers } = useCustomerStore();
+
+  const callback = useCallback((condition: FilterType) => {
+    dispatch({
+      type: ActionType.OVERRIDE,
+      overrideState: condition,
+    });
+  }, []);
+
+  useUrlHash(condition, callback);
 
   // prettier-ignore
   const onOpen = useCallback((shift: string, timestamp: number) => navigate(_url(
@@ -56,24 +57,6 @@ const MenuManagement = () => {
   useEffect(() => {
     _getDailyMenu(condition.customer?.id || "", condition.markDate);
   }, [condition.customer?.id, condition.markDate]);
-
-  useEffect(() => {
-    loaded && _updateHash(_hash(condition));
-  }, [loaded, condition]);
-
-  useEffect(() => {
-    if (!loaded && customers.size) {
-      setLoaded(true);
-      dispatch({
-        type: ActionType.OVERRIDE,
-        overrideState: _parseHash(
-          locationHash,
-          customerIdByName,
-          customers,
-        ),
-      });
-    }
-  }, [customerIdByName, customers, locationHash, loaded]);
 
   return (
     <Stack gap={10}>

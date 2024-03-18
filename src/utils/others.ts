@@ -1,3 +1,6 @@
+import logger from "@/services/logger";
+import { GenericObject } from "@/types";
+
 export function positivePrice(value: string | number) {
   let price = parseInt(
     value.toString().replace(/\./g, "").replace(/,/g, "."),
@@ -18,7 +21,27 @@ export function removeHashFromUrl() {
 }
 
 export function addHashToUrl(hash: string) {
-  hash.length && (window.location.hash = hash);
+  hash.length && (window.location.hash = "#" + hash);
+}
+
+export function toCondition<T>(hash: string) {
+  try {
+    return JSON.parse(
+      decodeURIComponent(window.atob(hash.slice(1))),
+    ) as T;
+  } catch (error) {
+    logger.error("toCondition", error);
+    return {} as T;
+  }
+}
+
+export function toHash(condition: GenericObject) {
+  const data = JSON.stringify(condition);
+  if (!data || data === "{}") {
+    removeHashFromUrl();
+  } else {
+    addHashToUrl(window.btoa(encodeURIComponent(data)));
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

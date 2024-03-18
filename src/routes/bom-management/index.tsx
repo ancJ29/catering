@@ -4,6 +4,7 @@ import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import useLoading from "@/hooks/useLoading";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
+import useUrlHash from "@/hooks/useUrlHash";
 import { getBom, pushBom } from "@/services/domain";
 import { Flex, Grid, Stack } from "@mantine/core";
 import { useCounter } from "@mantine/hooks";
@@ -11,6 +12,7 @@ import { useCallback, useReducer, useSyncExternalStore } from "react";
 import store from "./_bom.store";
 import {
   ActionType,
+  FilterType,
   Tab,
   defaultCondition,
   reducer,
@@ -55,6 +57,21 @@ const BomManagement = () => {
     bom && pushBom(bom);
   }, [bom]);
 
+  const callback = useCallback(
+    (condition: FilterType) => {
+      dispatch({
+        type: ActionType.OVERRIDE,
+        overrideState: condition,
+      });
+      if (condition.productId) {
+        select(condition.productId);
+      }
+    },
+    [select],
+  );
+
+  useUrlHash(condition, callback);
+
   const isStandard = condition.tab === Tab.STANDARD;
 
   return (
@@ -73,7 +90,12 @@ const BomManagement = () => {
             w="100%"
             mb={10}
           >
-            <ProductFilter onSelect={select} onClear={clear} />
+            <ProductFilter
+              key={condition.productId || "-"}
+              productId={condition.productId}
+              onSelect={select}
+              onClear={clear}
+            />
             <CustomButton confirm disabled={!updated} onClick={save}>
               {t("Save")}
             </CustomButton>

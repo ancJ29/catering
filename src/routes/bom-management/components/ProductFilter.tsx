@@ -6,9 +6,11 @@ import { useCounter, useDisclosure } from "@mantine/hooks";
 import { useMemo } from "react";
 
 const ProductFilter = ({
+  productId,
   onSelect,
   onClear,
 }: {
+  productId?: string;
   onClear: () => void;
   onSelect: (productId: string) => void;
 }) => {
@@ -28,11 +30,16 @@ const ProductFilter = ({
     return { productNames, productIdByName };
   }, [products]);
 
+  const defaultValue = useMemo(() => {
+    return productId ? products.get(productId)?.name : "";
+  }, [productId, products]);
+
   return (
     <Flex align="flex-end" gap={10}>
       <AutocompleteForFilterData
-        key={counter}
+        key={`${counter}.${defaultValue}`}
         w="300px"
+        defaultValue={defaultValue}
         unFocusOnMatch
         label={t("Cuisine name")}
         data={productNames}
