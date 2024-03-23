@@ -42,7 +42,13 @@ const AdminHeader = ({
           </NavLink>
           <LanguageSelector />
           <UnstyledButton className={classes["logout-icon"]}>
-            <IconLogout onClick={removeToken} />
+            <IconLogout
+              onClick={() => {
+                removeToken();
+                localStorage.clear();
+                sessionStorage.clear();
+              }}
+            />
           </UnstyledButton>
         </Flex>
       </Flex>

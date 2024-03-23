@@ -1,9 +1,11 @@
 import {
   Actions,
   configs as actionConfigs,
+  numberSchema,
+  stringSchema,
+  xMaterialSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
-import cache from "@/services/cache";
 import { loadAll } from "@/services/data-loaders";
 import logger from "@/services/logger";
 import { OptionProps } from "@/types";
@@ -13,6 +15,31 @@ const response =
   actionConfigs[Actions.GET_ALL_MATERIALS].schema.response;
 
 const materialSchema = response.transform((array) => array[0]);
+
+const cacheSchema = xMaterialSchema
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    supplierMaterials: z
+      .object({
+        price: numberSchema.nonnegative(),
+        supplier: z.object({
+          id: stringSchema,
+          name: stringSchema,
+        }),
+      })
+      .array(),
+  })
+  .transform((el) => ({
+    ...el,
+    createdAt: new Date(el.createdAt),
+    updatedAt: new Date(el.updatedAt),
+  }))
+  .array();
 
 export type Material = z.infer<typeof materialSchema> & {
   typeName?: string;
@@ -37,13 +64,20 @@ export async function getMaterialById(
 export async function getAllMaterials(
   noCache = false,
 ): Promise<Material[]> {
-  const key = "domain.material.getAllMaterials";
-  if (!noCache && cache.has(key)) {
-    const res = response.safeParse(cache.get(key));
-    if (res.success) {
-      logger.trace("cache hit", key);
-      return res.data;
+  try {
+    if (!noCache && localStorage.__ALL_MATERIALS__) {
+      const res = cacheSchema.safeParse(
+        JSON.parse(localStorage.__ALL_MATERIALS__),
+      );
+      if (res.success) {
+        logger.trace("cache hit");
+        return res.data;
+      } else {
+        logger.info("cache invalid", res.error);
+      }
     }
+  } catch (e) {
+    logger.error("cache error", e);
   }
   const materials =
     (await callApi<unknown, Material[]>({
@@ -58,7 +92,7 @@ export async function getAllMaterials(
   materials.sort((a, b) =>
     a.others.type.localeCompare(b.others.type),
   );
-  cache.set(key, { materials });
+  localStorage.__ALL_MATERIALS__ = JSON.stringify(materials);
   return materials;
 }
 

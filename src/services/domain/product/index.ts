@@ -1,9 +1,9 @@
 import {
   Actions,
   configs as actionConfigs,
+  xProductSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
-import cache from "@/services/cache";
 import logger from "@/services/logger";
 import { z } from "zod";
 
@@ -12,29 +12,41 @@ const response =
 
 const productSchema = response.transform((array) => array[0]);
 
+const cacheSchema = xProductSchema
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+    clientId: true,
+  })
+  .extend({
+    updatedAt: z.string(),
+  })
+  .transform((el) => ({
+    ...el,
+    updatedAt: new Date(el.updatedAt),
+  }))
+  .array();
+
 export type Product = z.infer<typeof productSchema>;
 
 export async function getAllProducts(
   noCache = false,
 ): Promise<Product[]> {
-  if (
-    localStorage.__All_PRODUCTS__ &&
-    typeof localStorage.__All_PRODUCTS__ === "string"
-  ) {
-    const res = response.safeParse(
-      JSON.parse(localStorage.__All_PRODUCTS__ || "[]"),
-    );
-    if (res.success && res.data.length) {
-      return res.data;
+  // if (!noCache && localStorage.__All_PRODUCTS__) {
+  try {
+    if (!noCache && localStorage.__All_PRODUCTS__) {
+      const res = cacheSchema.safeParse(
+        JSON.parse(localStorage.__All_PRODUCTS__),
+      );
+      if (res.success) {
+        logger.info("111 cache hit");
+        return res.data;
+      } else {
+        logger.info("cache invalid", res.error);
+      }
     }
-  }
-  const key = "domain.product.getAllProducts";
-  if (cache.has(key)) {
-    const res = response.safeParse(cache.get(key));
-    if (res.success) {
-      logger.trace("cache hit", key);
-      return res.data;
-    }
+  } catch (e) {
+    logger.error("cache error", e);
   }
   let products = await callApi<unknown, Product[]>({
     action: Actions.GET_ALL_PRODUCTS,
