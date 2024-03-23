@@ -167,15 +167,24 @@ const BomManagement = () => {
               condition.productId,
           ) && <CostTable key={updatedAt} condition={condition} />}
         </Grid.Col>
-        <Grid.Col span={3} className="c-catering-bdr-box">
-          <MaterialSelector
-            disabled={!condition.productId}
-            // key={`${materialIds.length}.${counter}`}
-            key={counter}
-            materialIds={materialIds}
-            onAdd={store.add}
-            onRemove={store.remove}
-          />
+        <Grid.Col
+          span={3}
+          className="c-catering-bdr-box"
+          style={{
+            cursor: condition.productId ? "auto" : "not-allowed",
+            opacity: condition.productId ? 1 : 0.2,
+          }}
+        >
+          {condition.productId && (
+            <MaterialSelector
+              disabled={!condition.productId}
+              // key={`${materialIds.length}.${counter}`}
+              key={counter}
+              materialIds={materialIds}
+              onAdd={store.add}
+              onRemove={store.remove}
+            />
+          )}
         </Grid.Col>
       </Grid>
     </Stack>

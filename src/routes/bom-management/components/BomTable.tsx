@@ -101,7 +101,13 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
         <Table.Tr>
           <Table.Td colSpan={4}>
             <Box w="100%">
-              <EmptyBox />
+              <EmptyBox
+                noResultText={
+                  condition.productId
+                    ? t("No bom configured")
+                    : t("Please select a product")
+                }
+              />
             </Box>
           </Table.Td>
         </Table.Tr>
