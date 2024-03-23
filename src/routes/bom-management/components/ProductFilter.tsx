@@ -2,7 +2,7 @@ import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFi
 import useTranslation from "@/hooks/useTranslation";
 import useProductStore from "@/stores/product.store";
 import { Button, Flex } from "@mantine/core";
-import { useCounter, useDisclosure } from "@mantine/hooks";
+import { useCounter } from "@mantine/hooks";
 import { useMemo } from "react";
 
 const ProductFilter = ({
@@ -17,7 +17,6 @@ const ProductFilter = ({
   const t = useTranslation();
   const [counter, { increment }] = useCounter(0);
   const { products } = useProductStore();
-  const [disabled, { toggle }] = useDisclosure(true);
 
   const { productNames, productIdByName } = useMemo(() => {
     const productIdByName = new Map(
@@ -45,11 +44,9 @@ const ProductFilter = ({
         data={productNames}
         onReload={(keyword) => {
           if (!keyword) {
-            toggle();
             onClear();
           } else {
             if (keyword && productIdByName.has(keyword)) {
-              toggle();
               const productId = productIdByName.get(keyword);
               productId && onSelect(productId);
             }
@@ -57,9 +54,8 @@ const ProductFilter = ({
         }}
       />
       <Button
-        disabled={disabled}
+        disabled={!productId}
         onClick={() => {
-          toggle();
           increment();
           onClear();
         }}

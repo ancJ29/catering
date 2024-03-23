@@ -42,6 +42,7 @@ const BomManagement = () => {
       toggleLoading(600);
       getBom(productId).then((bom) => {
         bom ? store.set(bom) : store.init(productId);
+        increment();
       });
     },
     [increment, toggleLoading],
@@ -91,7 +92,7 @@ const BomManagement = () => {
             mb={10}
           >
             <ProductFilter
-              key={condition.productId || "-"}
+              key={counter}
               productId={condition.productId}
               onSelect={select}
               onClear={clear}
@@ -169,7 +170,8 @@ const BomManagement = () => {
         <Grid.Col span={3} className="c-catering-bdr-box">
           <MaterialSelector
             disabled={!condition.productId}
-            key={`${materialIds.length}.${counter}`}
+            // key={`${materialIds.length}.${counter}`}
+            key={counter}
             materialIds={materialIds}
             onAdd={store.add}
             onRemove={store.remove}

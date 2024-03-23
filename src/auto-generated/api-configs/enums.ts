@@ -76,8 +76,8 @@ export enum Permissions {
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
 }
 
-export enum Policy { }
+export enum Policy {}
 // TODO: add policies
 
-export enum RequestDecorator { }
+export enum RequestDecorator {}
 // TODO: add request decorators
