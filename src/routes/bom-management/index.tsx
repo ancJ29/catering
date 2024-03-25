@@ -9,7 +9,12 @@ import notificationStore from "@/services/api/store/notification";
 import { getBom, pushBom } from "@/services/domain";
 import { Flex, Grid, Stack } from "@mantine/core";
 import { useCounter } from "@mantine/hooks";
-import { useCallback, useReducer, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useReducer,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import store from "./_bom.store";
 import {
   ActionType,
@@ -57,23 +62,26 @@ const BomManagement = () => {
     store.reset();
   }, [increment]);
 
+  const [errorAmounts, setErrorAmounts] =
+    useState<Record<string, number>>();
+
   const save = useCallback(() => {
     const customizeKey = _customizeKey(condition);
-    let amounts = [];
+    let amounts = Object.entries(bom?.bom || {});
     if (customizeKey) {
-      amounts = Object.values(
+      amounts = Object.entries(
         bom?.others?.customized?.[customizeKey] || {},
       );
-    } else {
-      amounts = Object.values(bom?.bom || {});
     }
-    if (amounts.some((amount) => amount === 0)) {
+    if (amounts.some(([, amount]) => amount < 1)) {
       notificationStore.push({
         color: "red.5",
         message: "Amount should be greater than 0",
       });
+      setErrorAmounts(Object.fromEntries(amounts));
       return;
     }
+    setErrorAmounts(undefined);
     bom && pushBom(bom);
   }, [bom, condition]);
 
@@ -178,7 +186,10 @@ const BomManagement = () => {
             </Flex>
           )}
           {Boolean(isStandard || condition.cateringId) && (
-            <BomTable condition={condition} />
+            <BomTable
+              condition={condition}
+              errorAmounts={errorAmounts}
+            />
           )}
           {Boolean(
             !isStandard &&

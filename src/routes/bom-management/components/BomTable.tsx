@@ -9,14 +9,19 @@ import { useMemo, useSyncExternalStore } from "react";
 import store from "../_bom.store";
 import { FilterType, Tab, _customizeKey } from "../_config";
 
-const BomTable = ({ condition }: { condition: FilterType }) => {
+const BomTable = ({
+  condition,
+  errorAmounts,
+}: {
+  condition: FilterType;
+  errorAmounts?: Record<string, number>;
+}) => {
   const t = useTranslation();
   const { materials } = useMaterialStore();
   const { originalBom, materialIds } = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
   );
-
   const customizeKey = useMemo(
     () => _customizeKey(condition),
     [condition],
@@ -26,8 +31,7 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
 
   return (
     <ScrollTable
-      key={`${customizeKey}.${materialIds.length}`}
-      // h={"calc(100vh - 30rem)"}
+      key={`${customizeKey}`}
       header={
         <>
           <Table.Th w="40%">{t("Material name")}</Table.Th>
@@ -77,6 +81,14 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
                 ml="auto"
                 w="120px"
                 defaultValue={amount}
+                styles={{
+                  input: {
+                    backgroundColor:
+                      errorAmounts?.[materialId] === 0
+                        ? "var(--mantine-color-red-1)"
+                        : undefined,
+                  },
+                }}
                 onChange={(amount) => {
                   store.setAmount(materialId, amount, customizeKey);
                 }}
@@ -100,7 +112,7 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
                 size="compact-xs"
                 variant="light"
                 color="error"
-                onClick={store.remove.bind(null, materialId)}
+                onClick={() => store.remove(materialId)}
               >
                 {t("Remove")}
               </Button>
