@@ -34,7 +34,6 @@ export function _validateResponse<R>(action: string, data: R): R {
     if (!res.success) {
       logger.error("[api-v2-invalid-response]", res.error);
       logger.error("[api-v2-invalid-response-data]", data);
-      // alert(`Invalid response of ${action}`);
       throw new Error("Invalid response");
     } else {
       data = res.data as R;

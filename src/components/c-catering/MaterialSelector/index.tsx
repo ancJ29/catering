@@ -6,7 +6,12 @@ import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { unique } from "@/utils";
 import { Box, Flex, ScrollArea } from "@mantine/core";
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
 import CustomButton from "../CustomButton";
 import Selector from "../Selector";
@@ -53,6 +58,10 @@ const MaterialSelector = ({
     defaultCondition,
   });
   const { materialGroupByType } = useMetaDataStore();
+
+  useEffect(() => {
+    setMaterialIds(_materialIds);
+  }, [_materialIds]);
 
   const [typeOptions, groupOptions] = useMemo(() => {
     return typeAndGroupOptions(
@@ -128,6 +137,7 @@ const MaterialSelector = ({
       </Box>
       <ScrollArea h="60vh">
         <Selector
+          key={_materialIds.length}
           disabled={disabled}
           data={data.slice(0, 10)}
           selectedIds={materialIds}

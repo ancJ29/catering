@@ -1,6 +1,5 @@
 import Action from "@/components/common/Action";
 import { Bom } from "@/services/domain/bom";
-import logger from "@/services/logger";
 import materialStore from "@/stores/material.store";
 import { cloneDeep, compareDeep, createStore } from "@/utils";
 
@@ -189,9 +188,8 @@ function reducer(action: Action, state: State): State {
       }
       break;
     case ActionType.SET_AMOUNT:
-      if (state.bom && action.materialId && action.amount) {
+      if (state.bom && action.materialId && action.amount !== undefined) {
         if (action.materialId in state.bom.bom) {
-          logger.debug("set amount", action);
           if (action.customizedKey) {
             customized = state.bom.others.customized || {};
             customized[action.customizedKey] =

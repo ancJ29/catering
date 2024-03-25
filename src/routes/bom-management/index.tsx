@@ -5,6 +5,7 @@ import useLoading from "@/hooks/useLoading";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
+import notificationStore from "@/services/api/store/notification";
 import { getBom, pushBom } from "@/services/domain";
 import { Flex, Grid, Stack } from "@mantine/core";
 import { useCounter } from "@mantine/hooks";
@@ -14,6 +15,7 @@ import {
   ActionType,
   FilterType,
   Tab,
+  _customizeKey,
   defaultCondition,
   reducer,
 } from "./_config";
@@ -28,6 +30,7 @@ const BomManagement = () => {
   const t = useTranslation();
   const [counter, { increment }] = useCounter(0);
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
+
   const toggleLoading = useLoading();
   const { updatedAt, bom, materialIds, updated } =
     useSyncExternalStore(store.subscribe, store.getSnapshot);
@@ -55,8 +58,24 @@ const BomManagement = () => {
   }, [increment]);
 
   const save = useCallback(() => {
+    const customizeKey = _customizeKey(condition);
+    let amounts = [];
+    if (customizeKey) {
+      amounts = Object.values(
+        bom?.others?.customized?.[customizeKey] || {},
+      );
+    } else {
+      amounts = Object.values(bom?.bom || {});
+    }
+    if (amounts.some((amount) => amount === 0)) {
+      notificationStore.push({
+        color: "red.5",
+        message: "Amount should be greater than 0",
+      });
+      return;
+    }
     bom && pushBom(bom);
-  }, [bom]);
+  }, [bom, condition]);
 
   const callback = useCallback(
     (condition: FilterType) => {

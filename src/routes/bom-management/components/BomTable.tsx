@@ -4,7 +4,7 @@ import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import useMaterialStore from "@/stores/material.store";
 import { lastElement, numberWithDelimiter } from "@/utils";
-import { Box, Table, TextInput } from "@mantine/core";
+import { Box, Button, Table, TextInput } from "@mantine/core";
 import { useMemo, useSyncExternalStore } from "react";
 import store from "../_bom.store";
 import { FilterType, Tab, _customizeKey } from "../_config";
@@ -39,6 +39,7 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
             {t("Unit")}
           </Table.Th>
           <Table.Th>{t("Memo")}</Table.Th>
+          <Table.Th></Table.Th>
         </>
       }
     >
@@ -93,6 +94,16 @@ const BomTable = ({ condition }: { condition: FilterType }) => {
                   );
                 }}
               />
+            </Table.Td>
+            <Table.Td ta="center">
+              <Button
+                size="compact-xs"
+                variant="light"
+                color="error"
+                onClick={store.remove.bind(null, materialId)}
+              >
+                {t("Remove")}
+              </Button>
             </Table.Td>
           </Table.Tr>
         );
