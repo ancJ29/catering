@@ -8,7 +8,11 @@ import useUrlHash from "@/hooks/useUrlHash";
 import notificationStore from "@/services/api/store/notification";
 import { getBom, pushBom } from "@/services/domain";
 import { Flex, Grid, Stack } from "@mantine/core";
-import { useCounter } from "@mantine/hooks";
+import { useCounter, useDisclosure } from "@mantine/hooks";
+import {
+  IconChevronsLeft,
+  IconChevronsRight,
+} from "@tabler/icons-react";
 import {
   useCallback,
   useReducer,
@@ -33,6 +37,7 @@ const BomManagement = () => {
   useOnMounted(store.reset);
 
   const t = useTranslation();
+  const [opened, { toggle }] = useDisclosure(false);
   const [counter, { increment }] = useCounter(0);
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
 
@@ -82,8 +87,15 @@ const BomManagement = () => {
       return;
     }
     setErrorAmounts(undefined);
-    bom && pushBom(bom);
-  }, [bom, condition]);
+    bom &&
+      pushBom(bom).then(() => {
+        const productId = bom.productId;
+        getBom(productId).then((bom) => {
+          bom ? store.set(bom) : store.init(productId);
+          increment();
+        });
+      });
+  }, [bom, condition, increment]);
 
   const callback = useCallback(
     (condition: FilterType) => {
@@ -110,8 +122,8 @@ const BomManagement = () => {
           dispatch({ type: ActionType.CHANGE_TAB, tab });
         }}
       />
-      <Grid mt={10}>
-        <Grid.Col span={9}>
+      <Grid mt={10} style={{ zIndex: 100 }}>
+        <Grid.Col span={opened ? 9 : 12}>
           <Flex
             align="flex-end"
             justify="space-between"
@@ -197,26 +209,69 @@ const BomManagement = () => {
               condition.productId,
           ) && <CostTable key={updatedAt} condition={condition} />}
         </Grid.Col>
-        <Grid.Col
-          span={3}
-          className="c-catering-bdr-box"
-          style={{
-            cursor: condition.productId ? "auto" : "not-allowed",
-            opacity: condition.productId ? 1 : 0.2,
-          }}
-        >
-          {condition.productId && (
-            <MaterialSelector
-              disabled={!condition.productId}
-              // key={`${materialIds.length}.${counter}`}
-              key={counter}
-              materialIds={materialIds}
-              onAdd={store.add}
-              onRemove={store.remove}
-            />
-          )}
-        </Grid.Col>
+        {opened && (
+          <Grid.Col
+            span={3}
+            className="c-catering-bdr-box"
+            style={{
+              cursor: condition.productId ? "auto" : "not-allowed",
+              opacity: condition.productId ? 1 : 0.2,
+            }}
+          >
+            {condition.productId && (
+              <MaterialSelector
+                disabled={!condition.productId}
+                // key={`${materialIds.length}.${counter}`}
+                key={counter}
+                materialIds={materialIds}
+                onAdd={store.add}
+                onRemove={store.remove}
+              />
+            )}
+          </Grid.Col>
+        )}
       </Grid>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: "5vw",
+          height: "100vh",
+          backgroundColor: "transparent",
+          zIndex: 0,
+        }}
+      >
+        {opened ? (
+          <IconChevronsRight
+            onClick={toggle}
+            size={30}
+            style={{
+              zIndex: 100,
+              color: "var(--main-color)",
+              cursor: "pointer",
+              position: "absolute",
+              top: "10vh",
+              right: 0,
+              margin: "1rem",
+            }}
+          />
+        ) : (
+          <IconChevronsLeft
+            onClick={toggle}
+            size={30}
+            style={{
+              zIndex: 100,
+              color: "var(--main-color)",
+              cursor: "pointer",
+              position: "absolute",
+              top: "10vh",
+              right: 0,
+              margin: "1rem",
+            }}
+          />
+        )}
+      </div>
     </Stack>
   );
 };
