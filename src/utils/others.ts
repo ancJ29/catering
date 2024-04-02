@@ -35,12 +35,15 @@ export function toCondition<T>(hash: string) {
   }
 }
 
+export function buildHash(condition: GenericObject) {
+  return window.btoa(encodeURIComponent(JSON.stringify(condition)));
+}
+
 export function toHash(condition: GenericObject) {
-  const data = JSON.stringify(condition);
-  if (!data || data === "{}") {
+  if (Object.keys(condition).length === 0) {
     removeHashFromUrl();
   } else {
-    addHashToUrl(window.btoa(encodeURIComponent(data)));
+    addHashToUrl(buildHash(condition));
   }
 }
 

@@ -19,6 +19,7 @@ export const _configs = (
   user: Payload,
   cateringId: string,
   _disabled: boolean,
+  onNavigate: (productId: string) => void,
   dailyMenu?: DailyMenu,
 ): DataGridColumnProps[] => {
   const role = user.others.roles[0];
@@ -138,9 +139,7 @@ export const _configs = (
           <Flex justify="end" align="center" gap={10}>
             <Button
               size="compact-xs"
-              onClick={() => {
-                alert("Not implemented!!!");
-              }}
+              onClick={() => onNavigate(product.id)}
             >
               {t("BOM")}
             </Button>

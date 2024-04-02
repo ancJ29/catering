@@ -28,6 +28,7 @@ import { OptionProps } from "@/types";
 import {
   ONE_DAY,
   ONE_MINUTE,
+  buildHash,
   decodeUri,
   randomString,
   startOfDay,
@@ -49,6 +50,10 @@ import {
   useSyncExternalStore,
 } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  FilterType as BomFilterType,
+  Tab,
+} from "../../bom-management/_config";
 import Steppers from "../components/Steppers";
 import Summarize from "../components/Summarize";
 import TabControll from "../components/TabControll";
@@ -157,12 +162,29 @@ const EditModal = () => {
         user,
         parsedParams.customer.others.cateringId,
         disabled,
+        (productId: string) => {
+          const target = parsedParams.customer.others.targets.find(
+            (target) => {
+              return target.name === parsedParams.targetName;
+            },
+          );
+          navigate(
+            `/bom-management#${buildHash({
+              productId,
+              tab: Tab.CUSTOMIZED,
+              customer: parsedParams.customer,
+              target,
+              shift: parsedParams.shift,
+              cateringId: parsedParams.customer.others.cateringId,
+            } satisfies BomFilterType)}`,
+          );
+        },
         dailyMenu,
       );
       return [`${Date.now()}.${randomString()}`, configs];
     }
     return ["config", []];
-  }, [user, dailyMenu, tab, parsedParams, disabled, t]);
+  }, [user, dailyMenu, tab, parsedParams, disabled, t, navigate]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
