@@ -188,6 +188,13 @@ export const materialOthersSchema = z.object({
   type: materialTypeSchema,
   price: optionalNumberSchema,
   prices: z.record(stringSchema, numberSchema).optional(),
+  /*
+    Unit:
+      [kg, g] => [1000] ~ 1kg = 1000g
+      // cspell:disable-next-line
+      [Thùng, Hộp, Bịch] => [12, 24] ~ 1 thùng = 12 hộp = 12 x 24 bịch
+  */
+
   unit: unitSchema
     .pick({
       name: true,
@@ -244,7 +251,9 @@ export const bomOthersSchema = z.object({
     ${customerId}.${target}.${shift}
       <materialId>: <amount>
   */
-  customized: z.record(stringSchema, z.record(stringSchema, numberSchema)),
+  customized: z
+    .record(stringSchema, z.record(stringSchema, numberSchema))
+    .default({}),
   memo: z.record(stringSchema, stringSchema).optional(),
 });
 

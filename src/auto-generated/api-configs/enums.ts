@@ -16,6 +16,7 @@ export enum ActionGroups {
 export enum Actions {
   LOGIN = "login",
   GET_METADATA = "get-metadata",
+  GET_VERSION = "get-version",
   UPDATE_UNITS = "update-units",
   GET_MESSAGES = "get-messages",
   GET_ALL_MESSAGE_TEMPLATES = "get-all-message-templates",
@@ -76,8 +77,8 @@ export enum Permissions {
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
 }
 
-export enum Policy {}
+export enum Policy { }
 // TODO: add policies
 
-export enum RequestDecorator {}
+export enum RequestDecorator { }
 // TODO: add request decorators

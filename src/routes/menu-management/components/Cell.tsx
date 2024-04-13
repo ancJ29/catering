@@ -3,7 +3,7 @@ import {
   DailyMenuStatus,
   dailyMenuStatusColor,
 } from "@/services/domain";
-import useProductStore from "@/stores/product.store";
+import useMetaDataStore from "@/stores/meta-data.store";
 import { Box, Table } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCallback } from "react";
@@ -24,7 +24,7 @@ const Cell = ({
   onClick,
 }: CellProps) => {
   const t = useTranslation();
-  const { products: allProducts } = useProductStore();
+  const { productNameById } = useMetaDataStore();
 
   const _click = useCallback(() => {
     if (disabled) {
@@ -54,11 +54,9 @@ const Cell = ({
         {date}
       </Box>
       {Array.from(quantity.keys())
-        .map((productId) => {
-          return allProducts.get(productId);
-        })
+        .map((productId) => productNameById.get(productId))
         .filter(Boolean)
-        .map((product, idx) => (
+        .map((productName, idx) => (
           <Box
             key={idx}
             w="100%"
@@ -73,7 +71,7 @@ const Cell = ({
               borderRadius: "5px",
             }}
           >
-            {product?.name || "--"}
+            {productName || "--"}
           </Box>
         ))}
     </Table.Td>

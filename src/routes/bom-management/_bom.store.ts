@@ -188,7 +188,11 @@ function reducer(action: Action, state: State): State {
       }
       break;
     case ActionType.SET_AMOUNT:
-      if (state.bom && action.materialId && action.amount !== undefined) {
+      if (
+        state.bom &&
+        action.materialId &&
+        action.amount !== undefined
+      ) {
         if (action.materialId in state.bom.bom) {
           if (action.customizedKey) {
             customized = state.bom.others.customized || {};

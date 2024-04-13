@@ -71,6 +71,18 @@ export const configs = {
       }),
     },
   },
+  [Actions.GET_VERSION]: {
+    name: Actions.GET_VERSION,
+    group: ActionGroups.METADATA,
+    public: true,
+    type: ActionType.READ,
+    schema: {
+      request: z.any(),
+      response: z.object({
+        version: stringSchema,
+      }),
+    },
+  },
   [Actions.GET_METADATA]: {
     name: Actions.GET_METADATA,
     group: ActionGroups.METADATA,
@@ -79,9 +91,12 @@ export const configs = {
     schema: {
       request: z.any(),
       response: z.object({
+        version: stringSchema,
         materialGroupByType: z.record(stringSchema, stringSchema.array()),
         departments: idAndNameSchema.array(),
         roles: idAndNameSchema.array(),
+        products: stringSchema.array().length(2).array(),
+        materials: stringSchema.array().length(2).array(),
         units: unitSchema
           .pick({
             id: true,

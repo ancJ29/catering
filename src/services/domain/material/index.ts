@@ -9,6 +9,7 @@ import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import logger from "@/services/logger";
 import { OptionProps } from "@/types";
+import { ONE_DAY } from "@/utils";
 import { z } from "zod";
 
 const response =
@@ -66,14 +67,15 @@ export async function getAllMaterials(
 ): Promise<Material[]> {
   try {
     if (!noCache && localStorage.__ALL_MATERIALS__) {
-      const res = cacheSchema.safeParse(
-        JSON.parse(localStorage.__ALL_MATERIALS__),
-      );
-      if (res.success) {
-        logger.trace("cache hit");
-        return res.data;
-      } else {
-        logger.info("cache invalid", res.error);
+      const rawData = JSON.parse(localStorage.__ALL_MATERIALS__);
+      if (Date.now() - rawData.savedAt < ONE_DAY) {
+        const res = cacheSchema.safeParse(rawData.data);
+        if (res.success) {
+          logger.trace("cache hit");
+          return res.data;
+        } else {
+          logger.info("cache invalid", res.error);
+        }
       }
     }
   } catch (e) {
@@ -92,7 +94,10 @@ export async function getAllMaterials(
   materials.sort((a, b) =>
     a.others.type.localeCompare(b.others.type),
   );
-  localStorage.__ALL_MATERIALS__ = JSON.stringify(materials);
+  localStorage.__ALL_MATERIALS__ = JSON.stringify({
+    data: materials,
+    savedAt: Date.now(),
+  });
   return materials;
 }
 

@@ -5,6 +5,7 @@ import {
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import logger from "@/services/logger";
+import { ONE_DAY } from "@/utils";
 import { z } from "zod";
 
 const response =
@@ -32,17 +33,17 @@ export type Product = z.infer<typeof productSchema>;
 export async function getAllProducts(
   noCache = false,
 ): Promise<Product[]> {
-  // if (!noCache && localStorage.__All_PRODUCTS__) {
   try {
     if (!noCache && localStorage.__All_PRODUCTS__) {
-      const res = cacheSchema.safeParse(
-        JSON.parse(localStorage.__All_PRODUCTS__),
-      );
-      if (res.success) {
-        logger.info("111 cache hit");
-        return res.data;
-      } else {
-        logger.info("cache invalid", res.error);
+      const rawData = JSON.parse(localStorage.__All_PRODUCTS__);
+      if (Date.now() - rawData.savedAt < ONE_DAY) {
+        const res = cacheSchema.safeParse(rawData.data);
+        if (res.success) {
+          logger.info("111 cache hit");
+          return res.data;
+        } else {
+          logger.info("cache invalid", res.error);
+        }
       }
     }
   } catch (e) {
@@ -57,7 +58,10 @@ export async function getAllProducts(
     product.name = product.name.split("___")[0];
     return product;
   });
-  localStorage.__All_PRODUCTS__ = JSON.stringify(products || []);
+  localStorage.__All_PRODUCTS__ = JSON.stringify({
+    data: products || [],
+    savedAt: Date.now(),
+  });
   return products || [];
 }
 
