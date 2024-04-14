@@ -79,7 +79,7 @@ export const productOthersSchema = z.object({
 
 export const departmentOthersSchema = z.object({
   role: roleSchema,
-  iCenter: booleanSchema.default(true),
+  isCenter: booleanSchema.default(true),
   totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),
   address: nullishStringSchema,

@@ -4,6 +4,7 @@
     "./src/types/auto-generated",
   ],
   "cSpell.words": [
+    "tailwindcss",
     "arrowParens",
     "clsx",
     "Controll",
