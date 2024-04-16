@@ -45,6 +45,9 @@ const AdminHeader = ({
             <IconLogout
               onClick={() => {
                 removeToken();
+                if (import.meta.env.DEV) {
+                  localStorage.clear();
+                }
               }}
             />
           </UnstyledButton>

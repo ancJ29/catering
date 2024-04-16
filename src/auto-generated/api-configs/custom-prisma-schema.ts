@@ -3,6 +3,7 @@ import {
   customerSchema,
   dailyMenuSchema,
   departmentSchema,
+  inventorySchema,
   materialSchema,
   productSchema,
   supplierSchema,
@@ -14,6 +15,7 @@ import {
   customerOthersSchema,
   dailyMenuOthersSchema,
   departmentOthersSchema,
+  inventoryOthersSchema,
   materialOthersSchema,
   productOthersSchema,
   supplierOthersSchema,
@@ -43,6 +45,14 @@ export const xDepartmentSchema = departmentSchema
   })
   .extend({
     others: departmentOthersSchema,
+  });
+
+export const xInventorySchema = inventorySchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: inventoryOthersSchema,
   });
 
 export const xProductSchema = productSchema

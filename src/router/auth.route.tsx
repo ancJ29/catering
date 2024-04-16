@@ -32,6 +32,8 @@ const componentMap: Record<string, LazyExoticComponent> = {
   SupplierMaterialManagement: lazy(() => import("@/routes/supplier-management/material")),
   SupplierCateringManagement: lazy(() => import("@/routes/supplier-management/catering")),
   MenuManagement: lazy(() => import("@/routes/menu-management")),
+  InventoryManagement: lazy(() => import("@/routes/inventory-management")),
+  CheckInventory: lazy(() => import("@/routes/check-inventory")),
   MenuManagementDetail: lazy(() => import("@/routes/menu-management/detail")),
   BomManagement: lazy(() => import("@/routes/bom-management")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
@@ -188,6 +190,26 @@ const configs: Config[] = [
   {
     path: "/*",
     element: () => <Navigate to="/dashboard" />,
+  },
+  {
+    path: "/inventory-management",
+    element: "InventoryManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Inventory Management",
+      },
+    },
+  },
+  {
+    path: "/check-inventory",
+    element: "CheckInventory",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Check Inventory",
+      },
+    },
   },
 ];
 

@@ -8,6 +8,7 @@ export type DataGridProps<T> = {
   page?: number;
   isPaginated?: boolean;
   className?: string;
+  noResultText?: string;
   columns: DataGridColumnProps[];
   data?: T[];
   onChangePage?: (page: number) => void;

@@ -7,7 +7,6 @@ import {
   DataGridProps,
   GenericObject,
 } from "@/types";
-import { formatTime } from "@/utils";
 import {
   Box,
   Flex,
@@ -25,6 +24,7 @@ import cls from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
+import LastUpdated from "../LastUpdated";
 import classes from "./DataGrid.module.scss";
 
 const limitOptions = [10, 20, 50, 100].map((el) => ({
@@ -49,6 +49,7 @@ function DataGrid<
   className,
   columns,
   data,
+  noResultText,
   actionHandlers,
   onSort,
   onChangePage,
@@ -128,6 +129,7 @@ function DataGrid<
       data,
       configs.filter((el) => !el.hidden),
       {
+        noResultText,
         orderFrom: from,
         hasOrderColumn,
         actionHandlers,
@@ -139,8 +141,9 @@ function DataGrid<
     );
   }, [
     onRowClick,
-    actionHandlers,
     configs,
+    actionHandlers,
+    noResultText,
     hasActionColumn,
     hasOrderColumn,
     hasUpdateColumn,
@@ -255,6 +258,7 @@ function _contentBuilder<
   columns: DataGridColumnProps[],
   {
     orderFrom = 0,
+    noResultText,
     actionHandlers,
     hasUpdateColumn = true,
     hasActionColumn = false,
@@ -263,6 +267,7 @@ function _contentBuilder<
     onRowClick,
   }: {
     orderFrom?: number;
+    noResultText?: string;
     hasUpdateColumn?: boolean;
     hasOrderColumn?: boolean;
     hasActionColumn?: boolean;
@@ -297,12 +302,15 @@ function _contentBuilder<
             {columns.map((column) => (
               <Cell key={column.key} row={row} column={column} />
             ))}
-            <LastUpdated
-              hasUpdateColumn={hasUpdateColumn}
-              hasActionColumn={hasActionColumn}
-              lastModifiedBy={row.lastModifiedBy ?? ""}
-              updatedAt={row.updatedAt ?? undefined}
-            />
+            {hasUpdateColumn ? (
+              <LastUpdated
+                hasActionColumn={hasActionColumn}
+                lastModifiedBy={row.lastModifiedBy ?? ""}
+                updatedAt={row.updatedAt ?? undefined}
+              />
+            ) : (
+              <></>
+            )}
             <Actions
               key={idx + 1}
               row={row}
@@ -312,41 +320,9 @@ function _contentBuilder<
           </Box>
         ))
       ) : (
-        <EmptyBox />
+        <EmptyBox noResultText={noResultText} />
       )}
     </div>
-  );
-}
-
-function LastUpdated({
-  lastModifiedBy,
-  updatedAt,
-  hasUpdateColumn,
-  hasActionColumn,
-}: {
-  hasUpdateColumn?: boolean;
-  hasActionColumn?: boolean;
-  lastModifiedBy: string;
-  updatedAt?: Date;
-}) {
-  const t = useTranslation();
-  return hasUpdateColumn ? (
-    <Box
-      className={classes.updated}
-      style={{
-        flexGrow: !hasActionColumn ? 1 : undefined,
-      }}
-    >
-      <div className="c-catering-fz-dot8rem">
-        <b>{t("Last modifier")}</b>:&nbsp;
-        {(lastModifiedBy as string) || "-"}
-        <br />
-        <b>{t("Last updated")}</b>:&nbsp;
-        <span>{formatTime(updatedAt)}</span>
-      </div>
-    </Box>
-  ) : (
-    <></>
   );
 }
 
@@ -387,7 +363,6 @@ function Headers<T>({
             key={idx}
             className={classes.cell}
             w={column.width}
-            // bg="red.1"
             style={column.headerStyle || column.style}
             hidden={column.hidden}
             ta={
@@ -398,17 +373,15 @@ function Headers<T>({
           >
             {column.sortable ? (
               <Flex
-                justify="space-between"
+                gap={20}
+                justify="start"
                 align="center"
                 pr={10}
                 w="100%"
               >
                 {column.header || ""}
                 {column.sortable && (
-                  <UnstyledButton
-                    onClick={() => onSort(column)}
-                    style={{ width: column.width }}
-                  >
+                  <UnstyledButton onClick={() => onSort(column)}>
                     <Icon width={15} height={15} />
                   </UnstyledButton>
                 )}

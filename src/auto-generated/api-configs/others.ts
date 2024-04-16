@@ -5,7 +5,9 @@ import {
   dateSchema,
   nullishStringSchema,
   numberSchema,
+  optionalBooleanSchema,
   optionalNumberSchema,
+  optionalStringSchema,
   stringSchema,
 } from "./schema";
 
@@ -79,10 +81,15 @@ export const productOthersSchema = z.object({
 
 export const departmentOthersSchema = z.object({
   role: roleSchema,
-  isCenter: booleanSchema.default(true),
+  isCenter: optionalBooleanSchema,
+  hasInventory: optionalBooleanSchema,
   totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),
   address: nullishStringSchema,
+});
+
+export const inventoryOthersSchema = z.object({
+  memo: optionalStringSchema,
 });
 
 export const customerOthersSchema = z.object({
