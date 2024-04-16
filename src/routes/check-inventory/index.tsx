@@ -4,6 +4,7 @@ import Autocomplete from "@/components/common/Autocomplete";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
+import useUrlHash from "@/hooks/useUrlHash";
 import { Material, updateInventory } from "@/services/domain";
 import {
   Department,
@@ -22,6 +23,7 @@ import {
 } from "react";
 import {
   ActionType,
+  CateringFilterType,
   MaterialFilterType,
   configs,
   defaultCondition,
@@ -69,6 +71,9 @@ const CustomerManagement = () => {
     () => buildMap(caterings),
     [caterings],
   );
+  const cateringName = useMemo(() => {
+    return cateringNameById.get(condition.cateringId || "") || "";
+  }, [condition.cateringId, cateringNameById]);
 
   const setCatering = useCallback(
     (cateringId?: string) => {
@@ -102,16 +107,27 @@ const CustomerManagement = () => {
     });
   }, [condition.cateringId]);
 
+  const callback = useCallback((condition: CateringFilterType) => {
+    if (!condition.cateringId) {
+      return;
+    }
+    dispatch({
+      type: ActionType.SET_CATERING_ID,
+      cateringId: condition.cateringId,
+    });
+    store.load(condition.cateringId).then(() => setKey(Date.now()));
+  }, []);
+
+  useUrlHash(condition, callback);
+
   return (
     <Stack gap={10}>
       <Flex justify="space-between" align={"end"} gap={10} w="100%">
         <Autocomplete
           style={{ width: "20vw" }}
-          key={condition.cateringId || "-"}
+          key={cateringName}
           label={t("Catering name")}
-          defaultValue={
-            cateringNameById.get(condition.cateringId || "") || ""
-          }
+          defaultValue={cateringName}
           options={caterings.map((el) => ({
             label: el.name,
             value: el.id,
