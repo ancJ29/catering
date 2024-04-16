@@ -12,7 +12,7 @@ import {
 } from "@/services/domain/department";
 import useMaterialStore from "@/stores/material.store";
 import { buildMap } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Flex, Group, Radio, Stack } from "@mantine/core";
 import {
   useCallback,
   useEffect,
@@ -62,7 +62,7 @@ const CustomerManagement = () => {
   } = useFilterData<Material, MaterialFilterType>({
     dataLoader,
     filter,
-    defaultCondition: { type: "", group: "" },
+    defaultCondition: { type: "", group: "", checked: "All" },
   });
 
   const [condition, dispatch] = useReducer(reducer, defaultCondition);
@@ -151,6 +151,7 @@ const CustomerManagement = () => {
                 setCondition({
                   type: value,
                   group: "",
+                  checked: materialCondition?.checked || "All",
                 });
               }}
             />
@@ -162,6 +163,34 @@ const CustomerManagement = () => {
           {t("Save")}
         </CustomButton>
       </Flex>
+      {condition.cateringId ? (
+        <Radio.Group
+          value={materialCondition?.checked || "All"}
+          onChange={(value) => {
+            updateCondition(
+              "checked",
+              "All",
+              value as "All" | "Checked" | "Not Checked",
+            );
+          }}
+        >
+          <Group>
+            {["All", "Checked", "Not Checked"].map((el, idx) => {
+              return (
+                <Radio
+                  h="2.2rem"
+                  pt=".8rem"
+                  key={idx}
+                  value={el}
+                  label={t(el)}
+                />
+              );
+            })}
+          </Group>
+        </Radio.Group>
+      ) : (
+        <></>
+      )}
       <DataGrid
         key={key}
         page={page}

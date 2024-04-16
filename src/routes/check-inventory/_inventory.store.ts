@@ -2,7 +2,7 @@ import {
   Inventory,
   getInventories,
 } from "@/services/domain/inventory";
-import { createStore } from "@/utils";
+import { createStore, isSameDate } from "@/utils";
 
 type State = {
   updated: boolean;
@@ -65,7 +65,7 @@ export default {
     if (!updatedAt) {
       return false;
     }
-    return updatedAt.getDate() === new Date().getDate();
+    return isSameDate(new Date(), updatedAt);
   },
   getInventory(materialId: string) {
     return store.getSnapshot().currents[materialId];

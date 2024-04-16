@@ -8,6 +8,7 @@ import store from "./_inventory.store";
 export type MaterialFilterType = {
   type: string;
   group: string;
+  checked: "All" | "Checked" | "Not Checked";
 };
 
 export type CateringFilterType = {
@@ -20,6 +21,12 @@ export function filter(m: Material, condition?: MaterialFilterType) {
   }
   if (condition?.type && m.others.type !== condition.type) {
     return false;
+  }
+  if (condition?.checked === "Checked") {
+    return store.checked(m.id);
+  }
+  if (condition?.checked === "Not Checked") {
+    return !store.checked(m.id);
   }
   return true;
 }
@@ -88,6 +95,7 @@ export const configs = (
       renderCell: (_, row) => {
         return (
           <NumberInput
+            key={row.id}
             style={{ paddingLeft: "2rem" }}
             defaultValue={store.getAmount(row.id)}
             onChange={(value) => store.setAmount(row.id, value)}
@@ -115,6 +123,7 @@ export const configs = (
         return (
           <Center w="full">
             <Checkbox
+              key={row.id}
               defaultChecked={store.checked(row.id)}
               onChange={() => store.markChecked(row.id)}
             />
@@ -128,6 +137,7 @@ export const configs = (
         const inventory = store.getInventory(row.id);
         return inventory?.updatedAt ? (
           <LastUpdated
+            key={row.id}
             lastModifiedBy={inventory.lastModifiedBy || "-"}
             updatedAt={inventory.updatedAt}
           />

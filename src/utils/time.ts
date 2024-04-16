@@ -5,6 +5,13 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
 
+export function isSameDate(a: Date, b?: Date) {
+  if (!b) {
+    return false;
+  }
+  return a.toLocaleDateString() === b.toLocaleDateString();
+}
+
 export function isFutureDate(date: Date) {
   return date ? date.getTime() > Date.now() : false;
 }
