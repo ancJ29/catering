@@ -9,19 +9,27 @@ export const configs = (
     {
       key: "name",
       header: t("Supplier name"),
-      width: "20%",
+      width: "15%",
     },
     {
       key: "code",
       header: t("Supplier code"),
-      width: "10%",
+      width: "8%",
     },
     {
-      key: "pic",
-      header: t("Supplier PIC"),
+      key: "taxCode",
+      header: t("Supplier tax code"),
       width: "10%",
       renderCell: (_, row) => {
-        return `${row.others?.contact || "-"}`;
+        return <>{row.others?.taxCode}</>;
+      },
+    },
+    {
+      key: "address",
+      header: t("Supplier address"),
+      width: "15%",
+      renderCell: (_, row) => {
+        return <>{row.others?.address}</>;
       },
     },
     {
@@ -64,6 +72,14 @@ export const configs = (
             navigateUrl={`/supplier-management/material/${supplier.id}`}
           />
         );
+      },
+    },
+    {
+      key: "active",
+      header: t("Status"),
+      width: "10%",
+      renderCell: (_, row) => {
+        return row.others.active ? t("Active") : t("Disabled");
       },
     },
   ];

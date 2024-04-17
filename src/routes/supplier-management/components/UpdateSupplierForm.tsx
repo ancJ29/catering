@@ -4,54 +4,56 @@ import {
   emailSchema,
 } from "@/auto-generated/api-configs";
 import PhoneInput from "@/components/common/PhoneInput";
+import Switch from "@/components/common/Switch";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import { Supplier } from "@/services/domain";
-import { GenericObject } from "@/types";
 import { isVietnamesePhoneNumber } from "@/utils";
 import { Button, Text, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
 import { z } from "zod";
+import { SupplierForm } from "./AddSupplierForm";
 
 const { request } = actionConfigs[Actions.UPDATE_SUPPLIER].schema;
 type Request = z.infer<typeof request>;
 
 const w = "100%";
 
-export type AddSupplierFormProps = {
+export type UpdateSupplierFormProps = {
   reOpen?: (values: Supplier) => void;
   supplier: Supplier;
 };
 
-const AddSupplierForm = ({
+const UpdateSupplierForm = ({
   supplier,
   reOpen,
-}: AddSupplierFormProps) => {
+}: UpdateSupplierFormProps) => {
   const t = useTranslation();
-  const form = useForm<GenericObject>({
+  const form = useForm<SupplierForm>({
     validate: _validate(t),
     initialValues: {
       id: supplier.id,
       name: supplier.name || "",
       code: supplier.code || "",
       others: {
+        active: supplier.others.active,
+        taxCode: supplier.others.taxCode || "",
+        address: supplier.others.address || "",
         email: supplier.others.email || "",
         phone: supplier.others.phone || "",
-        contact: supplier.others.contact || "",
-        address: supplier.others.address || "",
       },
     },
   });
 
   const submit = useCallback(
-    (values: GenericObject) => {
+    (values: SupplierForm) => {
       modals.openConfirmModal({
         title: t("Add user"),
         children: (
           <Text size="sm">
-            {t("Are you sure you want to add new supplier?")}
+            {t("Are you sure you want to update supplier?")}
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
@@ -71,6 +73,7 @@ const AddSupplierForm = ({
             ...supplier.others,
             ...params.others,
           };
+
           await callApi<Request, { id: string }>({
             action: Actions.UPDATE_SUPPLIER,
             params,
@@ -106,10 +109,15 @@ const AddSupplierForm = ({
       />
       <TextInput
         w={w}
-        withAsterisk
-        label={t("Supplier contact")}
-        placeholder={t("Supplier contact")}
-        {...form.getInputProps("others.contact")}
+        label={t("Supplier tax code")}
+        placeholder={t("Supplier tax code")}
+        {...form.getInputProps("others.taxCode")}
+      />
+      <TextInput
+        w={w}
+        label={t("Supplier address")}
+        placeholder={t("Supplier address")}
+        {...form.getInputProps("others.address")}
       />
       <TextInput
         w={w}
@@ -126,18 +134,23 @@ const AddSupplierForm = ({
         }
         {...form.getInputProps("others.phone")}
       />
-      <TextInput
+      <Switch
+        checked={form.values.others.active}
         w={w}
-        label={t("Supplier address")}
-        placeholder={t("Supplier address")}
-        {...form.getInputProps("others.address")}
+        label={t("Active")}
+        labelPosition="left"
+        onChangeValue={(active) =>
+          form.setFieldValue("others.active", active)
+        }
+        {...form.getInputProps("others.active")}
       />
+
       <Button type="submit">{t("Save")}</Button>
     </form>
   );
 };
 
-export default AddSupplierForm;
+export default UpdateSupplierForm;
 
 function _validate(t: (s: string) => string) {
   return {

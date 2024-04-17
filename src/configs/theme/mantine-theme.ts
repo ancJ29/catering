@@ -3,6 +3,7 @@ import {
   Checkbox,
   Input,
   PasswordInput,
+  Switch,
   createTheme,
 } from "@mantine/core";
 import classes from "./theme.module.scss";
@@ -59,6 +60,11 @@ export const theme = createTheme({
       classNames: {
         input: classes.input,
         innerInput: classes.innerInput,
+      },
+    }),
+    Switch: Switch.extend({
+      styles: {
+        label: labelStyle,
       },
     }),
   },
