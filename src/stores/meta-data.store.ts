@@ -51,6 +51,9 @@ export default create<MetaDataStore>((set) => ({
     if (await _checkVersion()) {
       set(() => _convert(JSON.parse(localStorage.__META_DATA__)));
       return;
+    } else {
+      delete localStorage.__ALL_MATERIALS__;
+      delete localStorage.__ALL_PRODUCTS__;
     }
     const data: Response = await request({
       action: Actions.GET_METADATA,
