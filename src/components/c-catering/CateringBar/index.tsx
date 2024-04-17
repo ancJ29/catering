@@ -5,8 +5,10 @@ import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import { Payload } from "@/types";
+import { lastElement } from "@/utils";
 import { Button, Flex, Select } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import CateringSelector from "../CateringSelector";
 import RadioGroup, { RadioGroupProps } from "./RadioGroup";
 
 // prettier-ignore
@@ -45,11 +47,7 @@ const CateringBar = ({
   const { user, isCatering } = useAuthStore();
   const { idByName: customerIdByName, customers } =
     useCustomerStore();
-  const {
-    cateringIdByName,
-    caterings,
-    names: allCateringNames,
-  } = useCateringStore();
+  const { caterings, names: allCateringNames } = useCateringStore();
   const [cateringName, setCateringName] = useState("");
 
   const [cateringIds, cateringNames] = useMemo(() => {
@@ -137,16 +135,14 @@ const CateringBar = ({
     [customerIdByName, customers, onCustomerChange],
   );
 
-  const _selectCatering = useCallback(
-    (cateringName: string | null) => {
-      if (!cateringName) {
+  const setCatering = useCallback(
+    (cateringId?: string) => {
+      if (!cateringId) {
         setCateringName("");
         onChangeCateringId();
-        return;
-      }
-      const cateringId = cateringIdByName.get(cateringName);
-      if (cateringId) {
-        setCateringName(cateringName);
+      } else {
+        const catering = caterings.get(cateringId);
+        catering && setCateringName(catering.name);
         onChangeCateringId(cateringId);
         const customerNames =
           customerNamesByCateringId.get(cateringId) || [];
@@ -155,9 +151,9 @@ const CateringBar = ({
       }
     },
     [
-      _selectCustomer,
-      cateringIdByName,
+      caterings,
       customerNamesByCateringId,
+      _selectCustomer,
       onChangeCateringId,
     ],
   );
@@ -170,44 +166,29 @@ const CateringBar = ({
   }, [cateringId, caterings]);
 
   useEffect(() => {
-    if (cateringNames.length === 1) {
-      if (cateringNames[0] !== cateringName) {
-        _selectCatering(cateringNames[0]);
-      }
+    if (caterings.size === 1) {
+      const catering = lastElement(Array.from(caterings.values()));
+      setCatering(catering.id);
       return;
     }
+  }, [caterings, setCatering]);
+
+  useEffect(() => {
     if (customerData.length === 1) {
-      if (customerData[0] !== customer?.name) {
-        _selectCustomer(customerData[0]);
-      }
-      return;
+      _selectCustomer(customerData[0]);
     }
-  }, [
-    _selectCatering,
-    _selectCustomer,
-    cateringName,
-    cateringNames,
-    customer?.name,
-    customerData,
-  ]);
+  }, [customerData, _selectCustomer]);
 
   return (
     <Flex gap={10} justify="start" align="end">
-      {isCatering ? (
-        ""
-      ) : (
-        <Autocomplete
-          key={cateringName || "cateringName"}
-          label={t("Catering name")}
-          defaultValue={cateringName}
-          data={cateringNames}
+      {!isCatering && (
+        <CateringSelector
+          cateringName={cateringName}
           disabled={cateringNames.length < 2}
-          onChange={(value) => _selectCatering(value)}
+          setCatering={setCatering}
         />
       )}
-      {isCatering && customerData.length < 2 ? (
-        ""
-      ) : (
+      {(!isCatering || customerData.length > 1) && (
         <Autocomplete
           key={customer?.name || "customerName"}
           defaultValue={customer?.name || ""}
@@ -219,24 +200,20 @@ const CateringBar = ({
           onClear={() => _selectCustomer(null, true)}
         />
       )}
-      {customer ? (
+      {Boolean(customer) && (
         <Select
           value={targetName || t("All")}
           label={t("Customer target")}
           data={targetData}
           onChange={_onTargetChange}
         />
-      ) : (
-        ""
       )}
-      {enableShift && shifts?.length ? (
+      {enableShift && Boolean(shifts?.length) && (
         <RadioGroup
           shifts={shifts}
           shift={shift || ""}
           onChangeShift={onChangeShift}
         />
-      ) : (
-        ""
       )}
       <Button
         onClick={() => {

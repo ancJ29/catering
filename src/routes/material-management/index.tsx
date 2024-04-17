@@ -50,7 +50,7 @@ const MaterialManagement = () => {
           keyword={keyword}
           materialNames={names}
           clearable={filtered}
-          clear={reset}
+          onClear={reset}
           onReload={reload}
           onChangeGroup={updateCondition.bind(null, "group", "")}
           onChangeType={(value) => {

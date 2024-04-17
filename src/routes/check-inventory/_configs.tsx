@@ -5,59 +5,33 @@ import { DataGridColumnProps } from "@/types";
 import { Center, Checkbox } from "@mantine/core";
 import store from "./_inventory.store";
 
-export type MaterialFilterType = {
+export enum CheckType {
+  ALL = "All",
+  CHECKED = "Checked",
+  NOT_CHECKED = "Not Checked",
+}
+
+export type FilterType = {
   type: string;
   group: string;
-  checked: "All" | "Checked" | "Not Checked";
+  checkType: CheckType;
 };
 
-export type CateringFilterType = {
-  cateringId?: string;
-};
-
-export function filter(m: Material, condition?: MaterialFilterType) {
+export function filter(m: Material, condition?: FilterType) {
   if (condition?.group && m.others.group !== condition.group) {
     return false;
   }
   if (condition?.type && m.others.type !== condition.type) {
     return false;
   }
-  if (condition?.checked === "Checked") {
+  if (condition?.checkType === CheckType.CHECKED) {
     return store.checked(m.id);
   }
-  if (condition?.checked === "Not Checked") {
+  if (condition?.checkType === CheckType.NOT_CHECKED) {
     return !store.checked(m.id);
   }
   return true;
 }
-
-export const defaultCondition: CateringFilterType = {};
-
-export enum ActionType {
-  SET_CATERING_ID = "SET_CATERING_ID",
-  CLEAR_CATERING_ID = "CLEAR_CATERING_ID",
-}
-
-export const reducer = (
-  state: CateringFilterType,
-  action: {
-    type: ActionType;
-    cateringId?: string;
-  },
-): CateringFilterType => {
-  switch (action.type) {
-    case ActionType.CLEAR_CATERING_ID:
-      return { ...state, cateringId: undefined };
-    case ActionType.SET_CATERING_ID:
-      if (action.cateringId) {
-        return { ...state, cateringId: action.cateringId };
-      }
-      break;
-    default:
-      break;
-  }
-  return state;
-};
 
 export const configs = (
   t: (key: string) => string,
@@ -103,17 +77,6 @@ export const configs = (
         );
       },
     },
-    // {
-    //   key: "difference",
-    //   header: t("Difference"),
-    //   textAlign: "right",
-    //   width: "300px",
-    //   renderCell: (_, row) => {
-    //     return (
-    //       <div>{store.getDifference(row.id).toLocaleString()}</div>
-    //     );
-    //   },
-    // },
     {
       key: "checked",
       header: t("Checked"),
@@ -133,6 +96,7 @@ export const configs = (
     },
     {
       key: "lastUpdated",
+      className: "c-catering-last-column flex-end",
       renderCell: (_, row) => {
         const inventory = store.getInventory(row.id);
         return inventory?.updatedAt ? (

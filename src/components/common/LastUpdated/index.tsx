@@ -1,6 +1,7 @@
 import useTranslation from "@/hooks/useTranslation";
 import { formatTime } from "@/utils";
 import { Box } from "@mantine/core";
+import clsx from "clsx";
 
 const LastUpdated = ({
   lastModifiedBy,
@@ -14,13 +15,9 @@ const LastUpdated = ({
   const t = useTranslation();
   return (
     <Box
-      style={{
-        display: "flex",
-        justifyContent: "flex-end",
-        paddingRight: "1rem",
-        width: "250px",
-        flexGrow: !hasActionColumn ? 1 : undefined,
-      }}
+      className={clsx("c-catering-last-updated", {
+        "c-catering-last-column": !hasActionColumn,
+      })}
     >
       <div className="c-catering-fz-dot8rem">
         <b>{t("Last modifier")}</b>:&nbsp;

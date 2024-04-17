@@ -12,14 +12,6 @@ export function isSameDate(a: Date, b?: Date) {
   return a.toLocaleDateString() === b.toLocaleDateString();
 }
 
-export function isFutureDate(date: Date) {
-  return date ? date.getTime() > Date.now() : false;
-}
-
-export function isPastDate(date?: Date) {
-  return date ? date.getTime() < Date.now() : false;
-}
-
 export function startOfWeek(timestamp: number) {
   const res = timestamp - (timestamp % ONE_WEEK) - 3 * ONE_DAY;
   return res + ONE_WEEK > timestamp ? res : res + ONE_WEEK;

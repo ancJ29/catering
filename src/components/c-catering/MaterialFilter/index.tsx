@@ -12,7 +12,7 @@ type MaterialFilterProps = {
   keyword?: string;
   clearable?: boolean;
   materialNames: string[];
-  clear: () => void;
+  onClear: () => void;
   onReload: (keyword?: string) => void;
   onChangeGroup: (value: string) => void;
   onChangeType: (value: string) => void;
@@ -24,7 +24,7 @@ const MaterialFilter = ({
   keyword,
   materialNames,
   clearable,
-  clear,
+  onClear,
   onReload,
   onChangeGroup,
   onChangeType,
@@ -58,7 +58,7 @@ const MaterialFilter = ({
         defaultValue={keyword}
         onReload={onReload}
       />
-      <CustomButton disabled={!clearable} onClick={clear}>
+      <CustomButton disabled={!clearable} onClick={onClear}>
         {t("Clear")}
       </CustomButton>
     </>

@@ -30,6 +30,9 @@ export type DataGridColumnProps = {
   textAlign?: TextAlign | { header?: TextAlign; cell?: TextAlign };
   cellStyle?: MantineStyleProp;
   headerStyle?: MantineStyleProp;
+  headerClassName?: string;
+  cellClassName?: string;
+  className?: string;
   style?: MantineStyleProp;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sortValue?: (record: any) => string;

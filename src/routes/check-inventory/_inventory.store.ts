@@ -70,15 +70,6 @@ export default {
   getInventory(materialId: string) {
     return store.getSnapshot().currents[materialId];
   },
-  getDifference(materialId: string) {
-    const state = store.getSnapshot();
-    if (state.updates[materialId]) {
-      const before = state.currents[materialId]?.amount || 0;
-      const after = state.updates[materialId]?.amount || 0;
-      return after - before;
-    }
-    return 0;
-  },
   getUpdates() {
     return Object.values(store.getSnapshot().updates);
   },

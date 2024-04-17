@@ -21,6 +21,7 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import cls from "classnames";
+import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
@@ -172,7 +173,7 @@ function DataGrid<
 
   return (
     <Table.ScrollContainer minWidth={"100%"} p={0} mt={20} w="100%">
-      {isPaginated && (
+      {Boolean(rows.length) && isPaginated && (
         <Flex justify="end" align="center" mb={10} mx={5} gap={5}>
           <PaginationBar
             page={page}
@@ -361,7 +362,10 @@ function Headers<T>({
         return (
           <Box
             key={idx}
-            className={classes.cell}
+            className={clsx(
+              classes.cell,
+              column.headerClassName || column.className,
+            )}
             w={column.width}
             style={column.headerStyle || column.style}
             hidden={column.hidden}
@@ -461,7 +465,10 @@ function Cell<T extends GenericObject>({
     <Box
       key={column.key}
       w={column.width}
-      className={classes.dataCell}
+      className={clsx(
+        classes.dataCell,
+        column.cellClassName || column.className,
+      )}
       style={column.cellStyle || column.style}
       hidden={column.hidden}
       ta={
