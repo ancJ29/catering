@@ -54,7 +54,7 @@ function Selector<T extends Base>({
           >
             <Flex gap={5}>
               <Icon />
-              <Text>
+              <Text style={{ width: "100%" }}>
                 {labelGenerator ? labelGenerator(el) : el.name}
               </Text>
             </Flex>

@@ -57,7 +57,7 @@ const MaterialSupplierManagement = () => {
           price: sm.price,
           supplier: {
             id: sm.supplier.id,
-            name: sm.supplier.name,
+            name: sm.supplier.name.split("___")[0],
           },
         })) || []
       ).sort((a, b) => a.price - b.price),

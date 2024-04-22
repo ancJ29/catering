@@ -4,12 +4,13 @@ import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Supplier } from "@/services/domain";
 import useSupplierStore from "@/stores/supplier.store";
-import { GenericObject } from "@/types";
 import { Button, Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
-import AddSupplierForm from "./components/AddSupplierForm";
+import AddSupplierForm, {
+  SupplierForm,
+} from "./components/AddSupplierForm";
 import UpdateSupplierForm from "./components/UpdateSupplierForm";
 
 // TODO: refactor this component (ref: src/routes/menu-management/)
@@ -20,7 +21,7 @@ const SupplierManagement = () => {
     useFilterData<Supplier>({ dataLoader });
 
   const addSupplier = useCallback(
-    (values?: GenericObject) => {
+    (values?: SupplierForm) => {
       modals.open({
         title: t("Add supplier"),
         classNames: { title: "c-catering-font-bold" },

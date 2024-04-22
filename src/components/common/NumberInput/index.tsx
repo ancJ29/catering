@@ -51,6 +51,7 @@ const NumberInput = ({
       decimalSeparator=","
       onChange={change}
       onBlur={blur}
+      allowNegative={false}
     />
   );
 };

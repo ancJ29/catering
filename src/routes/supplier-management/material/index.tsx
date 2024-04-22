@@ -12,6 +12,7 @@ import {
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { Box, Button, Flex, Grid, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useMemo, useState } from "react";
@@ -27,6 +28,7 @@ const SupplierMaterialManagement = () => {
   const [prices] = useState<Map<string, number>>(new Map());
   const [changed, setChanged] = useState(false);
   const [materials, setMaterials] = useState<SupplierMaterial[]>();
+  const [opened, { toggle }] = useDisclosure(false);
 
   const load = useCallback(async () => {
     if (!supplierId) {
@@ -44,7 +46,7 @@ const SupplierMaterialManagement = () => {
         price: sm.price,
         material: {
           id: sm.material.id,
-          name: sm.material.name,
+          name: sm.material.name.split("___")[0],
         },
       })) || [],
     );
@@ -75,12 +77,31 @@ const SupplierMaterialManagement = () => {
     [materialById],
   );
 
-  const removeMaterial = useCallback((materialId: string) => {
-    setChanged(true);
-    setMaterials((prev) => {
-      return prev?.filter((sm) => sm.material.id !== materialId);
-    });
-  }, []);
+  const removeMaterial = useCallback(
+    (materialId: string) => {
+      modals.openConfirmModal({
+        title: t("Remove material"),
+        children: (
+          <Text size="sm">
+            {t("Are you sure you want to remove material?")}
+          </Text>
+        ),
+        labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+        },
+        onConfirm: async () => {
+          setChanged(true);
+          setMaterials((prev) => {
+            return prev?.filter(
+              (sm) => sm.material.id !== materialId,
+            );
+          });
+        },
+      });
+    },
+    [t],
+  );
 
   const dataGridConfigs = useMemo(() => {
     return materialById.size
@@ -158,12 +179,17 @@ const SupplierMaterialManagement = () => {
             {" - "}
             {t("Supplier supplied material")}
           </Text>
-          <Button disabled={!changed} onClick={save}>
-            {t("Save")}
-          </Button>
+          <Flex display="flex" direction="column">
+            <Button disabled={!changed} onClick={save}>
+              {t("Save")}
+            </Button>
+            <Button onClick={toggle} mt="0.5rem">
+              {t("Material list")}
+            </Button>
+          </Flex>
         </Flex>
         <Grid mt={10}>
-          <Grid.Col span={9}>
+          <Grid.Col span={opened ? 9 : 12}>
             {materialById.size && (
               <DataGrid
                 hasUpdateColumn={false}
@@ -173,11 +199,16 @@ const SupplierMaterialManagement = () => {
               />
             )}
           </Grid.Col>
-          <Grid.Col span={3} className="c-catering-bdr-box">
+          <Grid.Col
+            span={3}
+            className="c-catering-bdr-box"
+            style={{ display: opened ? "block" : "none" }}
+          >
             <MaterialSelector
               onAdd={addMaterial}
               onRemove={removeMaterial}
               labelGenerator={labelGenerator}
+              materialIds={materials?.map((e) => e.material.id)}
             />
           </Grid.Col>
         </Grid>
