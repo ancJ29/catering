@@ -7,6 +7,7 @@ import {
   numberSchema,
   optionalBooleanSchema,
   optionalNumberSchema,
+  optionalStringSchema,
   stringSchema,
 } from "./schema";
 
@@ -63,6 +64,25 @@ export const productTypeSchema = z.enum([
   // cspell:enable
 ]);
 
+export const productTypeOrders: Record<string, number> = {
+  MC: 1,
+  LU: 2,
+  CO: 3,
+  CM: 4,
+  CC: 5,
+  XC: 6,
+  CA: 7,
+  NC: 8,
+  NM: 9,
+  TM: 10,
+  CT: 11,
+  KV: 12,
+  CT1: 13,
+  NM1: 14,
+  MC1: 15,
+  CP: 16,
+};
+
 export const productOthersSchema = z.object({
   oldId: numberSchema,
   internalCode: stringSchema,
@@ -80,10 +100,15 @@ export const productOthersSchema = z.object({
 
 export const departmentOthersSchema = z.object({
   role: roleSchema,
-  iCenter: booleanSchema.default(true),
+  isCenter: optionalBooleanSchema,
+  hasInventory: optionalBooleanSchema,
   totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),
   address: nullishStringSchema,
+});
+
+export const inventoryOthersSchema = z.object({
+  memo: optionalStringSchema,
 });
 
 export const customerOthersSchema = z.object({

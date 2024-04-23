@@ -56,13 +56,6 @@ export default [
         url: "/unit-management",
       },
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
-        key: "warehouse",
-        label: "Warehouse Management",
-        icon: "building-factory",
-        url: "/warehouse-management",
-      },
-      {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
         key: "supplier",
         label: "Supplier Management",
@@ -264,12 +257,14 @@ export default [
         key: "inventory-management",
         label: "Inventory Management",
         icon: "package-import",
+        url: "/inventory-management",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "check-inventory",
         label: "Check Inventory",
         icon: "checklist",
+        url: "/check-inventory",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
