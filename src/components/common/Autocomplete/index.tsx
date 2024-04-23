@@ -8,8 +8,8 @@ import { IconFilter, IconX } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 export interface AutocompleteProps extends MantineAutocompleteProps {
-  data?: string[];
   options?: OptionProps[];
+  data?: string[];
   disabled?: boolean;
   unFocusOnMatch?: boolean;
   onEnter?: (value: string) => void;
@@ -18,8 +18,8 @@ export interface AutocompleteProps extends MantineAutocompleteProps {
 }
 
 const Autocomplete = ({
-  data: _data,
   options,
+  data: _data,
   disabled,
   defaultValue,
   unFocusOnMatch = false,
@@ -30,22 +30,10 @@ const Autocomplete = ({
   ...props
 }: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const data = useMemo(() => {
-    if (options) {
-      return options.map((el) => el.label);
-    }
-    return _data || [];
-  }, [_data, options]);
-
-  const _optionMap = useMemo(() => {
-    if (options) {
-      return new Map(
-        options.map((el) => [el.label, el.value.toString()]),
-      );
-    }
-    return new Map<string, string>();
-  }, [options]);
+  const data = useMemo(
+    () => _data || options?.map((el) => el.label),
+    [options, _data],
+  );
 
   const _dataMap = useMemo(() => {
     if (onMatch && data?.length) {
@@ -62,15 +50,14 @@ const Autocomplete = ({
     (value: string) => {
       setCurrentValue(value);
       if (onChange || onMatch) {
-        const _value = _optionMap.get(value) || value;
-        onChange?.(_value);
-        if (_dataMap.has(_value)) {
-          onMatch?.(_value);
+        onChange?.(value);
+        if (_dataMap.has(value)) {
+          onMatch?.(value);
           inputRef.current?.blur();
         }
       }
     },
-    [_dataMap, _optionMap, onChange, onMatch],
+    [_dataMap, onChange, onMatch],
   );
 
   const enterHandler = useCallback(() => {

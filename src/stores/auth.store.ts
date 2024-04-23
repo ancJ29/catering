@@ -26,21 +26,10 @@ export default create<AuthStore>((set, get) => ({
   user: null,
 
   loadToken: () => {
-    if (!localStorage.__LAST_LOGIN__) {
-      return;
-    }
-    const ONE_DAY = 1000 * 60 * 60 * 24;
-    const today = Math.floor(Date.now() / ONE_DAY);
-    const lastLogin = parseInt(localStorage.__LAST_LOGIN__ || "0");
-    const loginDate = Math.floor(lastLogin / ONE_DAY);
-    if (today !== loginDate) {
-      delete localStorage.__TOKEN__;
-      delete sessionStorage.__TOKEN__;
-    } else {
-      const token =
-        localStorage.__TOKEN__ || sessionStorage.__TOKEN__;
-      get().setToken(token || "");
-    }
+    const token =
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token");
+    get().setToken(token || "");
   },
 
   setToken: (token: string, remember?: boolean) => {
@@ -63,19 +52,16 @@ export default create<AuthStore>((set, get) => ({
         token: user ? token : "",
         isCatering,
       }));
-      if (remember) {
-        localStorage.__LAST_LOGIN__ = Date.now();
-        localStorage.__TOKEN__ = token;
-      } else {
-        sessionStorage.__TOKEN__ = token;
-      }
+      remember
+        ? localStorage.setItem("token", token)
+        : sessionStorage.setItem("token", token);
     }
   },
 
   removeToken: () => {
     set(() => ({ user: null, token: "" }));
-    delete localStorage.__TOKEN__;
-    delete sessionStorage.__TOKEN__;
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
   },
 }));
 

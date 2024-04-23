@@ -9,8 +9,7 @@ import Icon from "./Icon";
 import classes from "./navbar.module.scss";
 
 // TODO: remove debug
-// const debug = window.location.hostname.includes("localhost");
-const debug = false;
+const debug = window.location.hostname.includes("localhost");
 
 type NavbarProps = {
   opened?: boolean;

@@ -10,7 +10,6 @@ export enum ActionGroups {
   BOM_MANAGEMENT = "Bom management",
   MENU_MANAGEMENT = "Menu management",
   MATERIAL_MANAGEMENT = "Material management",
-  INVENTORY_MANAGEMENT = "Inventory management",
   SUPPLIER_MANAGEMENT = "Supplier management",
 }
 
@@ -52,8 +51,6 @@ export enum Actions {
   GET_MATERIALS = "get-materials",
   PUSH_MATERIAL = "push-material",
   UPDATE_MATERIAL_SUPPLIER = "update-material-supplier",
-  GET_INVENTORY = "get-inventory",
-  UPDATE_INVENTORY = "update-inventory",
   GET_SUPPLIERS = "get-suppliers",
   ADD_SUPPLIER = "add-supplier",
   UPDATE_SUPPLIER = "update-supplier",
@@ -78,7 +75,6 @@ export enum Permissions {
   MATERIAL_FULL_ACCESS = "material-full-access",
   MATERIAL_READ_ONLY = "material-read-only",
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
-  INVENTORY_FULL_ACCESS = "inventory-full-access",
 }
 
 export enum Policy {}

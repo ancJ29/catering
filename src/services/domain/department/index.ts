@@ -10,13 +10,13 @@ import { z } from "zod";
 const response =
   actionConfigs[Actions.GET_DEPARTMENTS].schema.response;
 
-const departmentSchema = response.shape.departments.transform(
+const customerSchema = response.shape.departments.transform(
   (array) => array[0],
 );
 
 const schema = response.omit({ cursor: true, hasMore: true });
 
-export type Department = z.infer<typeof departmentSchema>;
+export type Department = z.infer<typeof customerSchema>;
 
 export async function getAllDepartments() {
   const key = "domain.department.getAllDepartments";
@@ -34,10 +34,4 @@ export async function getAllDepartments() {
   });
   cache.set(key, { departments });
   return departments;
-}
-
-export async function getInventoryDepartments() {
-  return getAllDepartments().then((departments) => {
-    return departments.filter((d) => Boolean(d.others.hasInventory));
-  });
 }

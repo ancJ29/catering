@@ -13,7 +13,6 @@ import {
   xCustomerSchema,
   xDailyMenuSchema,
   xDepartmentSchema,
-  xInventorySchema,
   xMaterialSchema,
   xProductSchema,
   xSupplierSchema,
@@ -22,7 +21,7 @@ import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
 import {
   bomOthersSchema,
   dailyMenuOthersSchema,
-  inventoryOthersSchema,
+  supplierOthersSchema,
   userOthersSchema,
 } from "./others";
 import {
@@ -534,6 +533,7 @@ export const configs = {
               supplier: z.object({
                 id: stringSchema,
                 name: stringSchema,
+                others: supplierOthersSchema,
               }),
             })
             .array(),
@@ -556,6 +556,7 @@ export const configs = {
                 supplier: z.object({
                   id: stringSchema,
                   name: stringSchema,
+                  others: supplierOthersSchema,
                 }),
               })
               .array(),
@@ -593,39 +594,10 @@ export const configs = {
           .object({
             supplierId: stringSchema,
             price: numberSchema.nonnegative(),
+            active: booleanSchema,
           })
           .array(),
       }),
-    },
-  },
-  [Actions.GET_INVENTORY]: {
-    name: Actions.GET_INVENTORY,
-    group: ActionGroups.INVENTORY_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        materialId: optionalStringSchema,
-        departmentId: stringSchema,
-      }),
-      response: listResponse.extend({
-        inventories: xInventorySchema.array(),
-      }),
-    },
-  },
-  [Actions.UPDATE_INVENTORY]: {
-    name: Actions.UPDATE_INVENTORY,
-    group: ActionGroups.INVENTORY_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: z
-        .object({
-          id: optionalStringSchema,
-          materialId: stringSchema,
-          departmentId: stringSchema,
-          amount: numberSchema,
-          others: inventoryOthersSchema,
-        })
-        .array(),
     },
   },
   [Actions.GET_SUPPLIERS]: {
@@ -672,7 +644,6 @@ export const configs = {
         .refine((v) => {
           v.others.email = v.others.email?.trim();
           v.others.phone = v.others.phone?.trim();
-          v.others.contact = v.others.contact?.trim();
           v.others.address = v.others.address?.trim();
           return v;
         }),

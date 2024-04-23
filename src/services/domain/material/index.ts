@@ -1,6 +1,7 @@
 import {
   Actions,
   configs as actionConfigs,
+  booleanSchema,
   numberSchema,
   stringSchema,
   xMaterialSchema,
@@ -31,6 +32,9 @@ const cacheSchema = xMaterialSchema
         supplier: z.object({
           id: stringSchema,
           name: stringSchema,
+          others: z.object({
+            active: booleanSchema,
+          }),
         }),
       })
       .array(),

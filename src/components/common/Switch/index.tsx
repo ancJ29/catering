@@ -5,7 +5,7 @@ import {
 import { ChangeEvent, useCallback } from "react";
 
 interface SwitchProps extends SwitchMantineProps {
-  checked: boolean;
+  checked?: boolean;
   onChangeValue: (_: boolean) => void;
 }
 

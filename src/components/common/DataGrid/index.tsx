@@ -7,6 +7,7 @@ import {
   DataGridProps,
   GenericObject,
 } from "@/types";
+import { formatTime } from "@/utils";
 import {
   Box,
   Flex,
@@ -21,11 +22,9 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import cls from "classnames";
-import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Action from "../Action";
 import Scroll from "../InfiniteScroll";
-import LastUpdated from "../LastUpdated";
 import classes from "./DataGrid.module.scss";
 
 const limitOptions = [10, 20, 50, 100].map((el) => ({
@@ -50,7 +49,6 @@ function DataGrid<
   className,
   columns,
   data,
-  noResultText,
   actionHandlers,
   onSort,
   onChangePage,
@@ -130,7 +128,6 @@ function DataGrid<
       data,
       configs.filter((el) => !el.hidden),
       {
-        noResultText,
         orderFrom: from,
         hasOrderColumn,
         actionHandlers,
@@ -142,9 +139,8 @@ function DataGrid<
     );
   }, [
     onRowClick,
-    configs,
     actionHandlers,
-    noResultText,
+    configs,
     hasActionColumn,
     hasOrderColumn,
     hasUpdateColumn,
@@ -173,7 +169,7 @@ function DataGrid<
 
   return (
     <Table.ScrollContainer minWidth={"100%"} p={0} mt={20} w="100%">
-      {Boolean(rows.length) && isPaginated && (
+      {isPaginated && (
         <Flex justify="end" align="center" mb={10} mx={5} gap={5}>
           <PaginationBar
             page={page}
@@ -259,7 +255,6 @@ function _contentBuilder<
   columns: DataGridColumnProps[],
   {
     orderFrom = 0,
-    noResultText,
     actionHandlers,
     hasUpdateColumn = true,
     hasActionColumn = false,
@@ -268,7 +263,6 @@ function _contentBuilder<
     onRowClick,
   }: {
     orderFrom?: number;
-    noResultText?: string;
     hasUpdateColumn?: boolean;
     hasOrderColumn?: boolean;
     hasActionColumn?: boolean;
@@ -303,15 +297,12 @@ function _contentBuilder<
             {columns.map((column) => (
               <Cell key={column.key} row={row} column={column} />
             ))}
-            {hasUpdateColumn ? (
-              <LastUpdated
-                hasActionColumn={hasActionColumn}
-                lastModifiedBy={row.lastModifiedBy ?? ""}
-                updatedAt={row.updatedAt ?? undefined}
-              />
-            ) : (
-              <></>
-            )}
+            <LastUpdated
+              hasUpdateColumn={hasUpdateColumn}
+              hasActionColumn={hasActionColumn}
+              lastModifiedBy={row.lastModifiedBy ?? ""}
+              updatedAt={row.updatedAt ?? undefined}
+            />
             <Actions
               key={idx + 1}
               row={row}
@@ -321,9 +312,41 @@ function _contentBuilder<
           </Box>
         ))
       ) : (
-        <EmptyBox noResultText={noResultText} />
+        <EmptyBox />
       )}
     </div>
+  );
+}
+
+function LastUpdated({
+  lastModifiedBy,
+  updatedAt,
+  hasUpdateColumn,
+  hasActionColumn,
+}: {
+  hasUpdateColumn?: boolean;
+  hasActionColumn?: boolean;
+  lastModifiedBy: string;
+  updatedAt?: Date;
+}) {
+  const t = useTranslation();
+  return hasUpdateColumn ? (
+    <Box
+      className={classes.updated}
+      style={{
+        flexGrow: !hasActionColumn ? 1 : undefined,
+      }}
+    >
+      <div className="c-catering-fz-dot8rem">
+        <b>{t("Last modifier")}</b>:&nbsp;
+        {(lastModifiedBy as string) || "-"}
+        <br />
+        <b>{t("Last updated")}</b>:&nbsp;
+        <span>{formatTime(updatedAt)}</span>
+      </div>
+    </Box>
+  ) : (
+    <></>
   );
 }
 
@@ -362,11 +385,9 @@ function Headers<T>({
         return (
           <Box
             key={idx}
-            className={clsx(
-              classes.cell,
-              column.headerClassName || column.className,
-            )}
+            className={classes.cell}
             w={column.width}
+            // bg="red.1"
             style={column.headerStyle || column.style}
             hidden={column.hidden}
             ta={
@@ -377,15 +398,17 @@ function Headers<T>({
           >
             {column.sortable ? (
               <Flex
-                gap={20}
-                justify="start"
+                justify="space-between"
                 align="center"
                 pr={10}
                 w="100%"
               >
                 {column.header || ""}
                 {column.sortable && (
-                  <UnstyledButton onClick={() => onSort(column)}>
+                  <UnstyledButton
+                    onClick={() => onSort(column)}
+                    style={{ width: column.width }}
+                  >
                     <Icon width={15} height={15} />
                   </UnstyledButton>
                 )}
@@ -465,10 +488,7 @@ function Cell<T extends GenericObject>({
     <Box
       key={column.key}
       w={column.width}
-      className={clsx(
-        classes.dataCell,
-        column.cellClassName || column.className,
-      )}
+      className={classes.dataCell}
       style={column.cellStyle || column.style}
       hidden={column.hidden}
       ta={

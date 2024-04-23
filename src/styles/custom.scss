@@ -1,15 +1,4 @@
 .c-catering {
-  &-last-column {
-    flex-grow: 1 !important;
-  }
-
-  &-last-updated {
-    display: flex;
-    justify-content: end;
-    padding-right: 1rem;
-    width: 250px;
-  }
-
   &-form-wrapper {
     display: flex;
     flex-direction: column;
@@ -102,6 +91,13 @@
     &:hover {
       // https://mantine.dev/styles/css-variables/
       background: var(--mantine-color-default-hover);
+    }
+  }
+
+  &-flex {
+    &-align-center {
+      display: flex;
+      align-items: center;
     }
   }
 }

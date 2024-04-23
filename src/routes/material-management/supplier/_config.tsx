@@ -1,13 +1,17 @@
 import NumberInput from "@/components/common/NumberInput";
+import Switch from "@/components/common/Switch";
 import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { Button } from "@mantine/core";
+import { Button, Flex } from "@mantine/core";
 
 export type SupplierMaterial = {
   price: number;
   supplier: {
     id: string;
     name: string;
+    others: {
+      active: boolean;
+    };
   };
 };
 
@@ -17,6 +21,8 @@ export const configs = (
   prices: Map<string, number>,
   setPrice: (supplierId: string, price: number) => void,
   removeSupplier: (supplierId: string) => void,
+  actives: Map<string, boolean>,
+  setActive: (supplierId: string, active: boolean) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -69,6 +75,28 @@ export const configs = (
             step={1000}
             onChange={(price) => setPrice(sm.supplier.id, price)}
           />
+        );
+      },
+    },
+    {
+      key: "active",
+      header: t("Status"),
+      width: "20%",
+      textAlign: "center",
+      renderCell: (_, sm: SupplierMaterial) => {
+        const checked =
+          actives.get(sm.supplier.id) !== undefined
+            ? actives.get(sm.supplier.id)
+            : sm.supplier.others.active;
+        return (
+          <Flex justify="center">
+            <Switch
+              defaultChecked={checked || false}
+              onChangeValue={(value) =>
+                setActive(sm.supplier.id, value)
+              }
+            />
+          </Flex>
         );
       },
     },

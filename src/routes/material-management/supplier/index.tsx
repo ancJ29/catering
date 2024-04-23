@@ -35,6 +35,7 @@ const MaterialSupplierManagement = () => {
   const [changed, setChanged] = useState(false);
   const [material, setMaterial] = useState<Material>();
   const [prices] = useState<Map<string, number>>(new Map());
+  const [actives] = useState<Map<string, boolean>>(new Map());
   const [suppliers, setSuppliers] = useState<SupplierMaterial[]>([]);
   const supplierIds = useMemo(
     () => suppliers.map((sm) => sm.supplier.id),
@@ -58,6 +59,9 @@ const MaterialSupplierManagement = () => {
           supplier: {
             id: sm.supplier.id,
             name: sm.supplier.name.split("___")[0],
+            others: {
+              active: sm.supplier.others.active,
+            },
           },
         })) || []
       ).sort((a, b) => a.price - b.price),
@@ -89,6 +93,9 @@ const MaterialSupplierManagement = () => {
             supplier: {
               id: supplier.id,
               name: supplier.name,
+              others: {
+                active: supplier.others.active,
+              },
             },
           },
         ];
@@ -104,15 +111,31 @@ const MaterialSupplierManagement = () => {
     });
   }, []);
 
+  const setActive = useCallback(
+    async (supplierId: string, active: boolean) => {
+      actives.set(supplierId, active);
+      setChanged(true);
+    },
+    [actives],
+  );
+
   const dataGridConfigs = useMemo(() => {
     if (!material) {
       return [];
     }
-    return configs(t, material, prices, setPrice, removeSupplier);
+    return configs(
+      t,
+      material,
+      prices,
+      setPrice,
+      removeSupplier,
+      actives,
+      setActive,
+    );
     function setPrice(supplierId: string, price: number) {
       prices.set(supplierId, price);
     }
-  }, [material, prices, t, removeSupplier]);
+  }, [material, prices, t, removeSupplier, actives, setActive]);
 
   const save = useCallback(() => {
     if (
@@ -144,6 +167,9 @@ const MaterialSupplierManagement = () => {
               return {
                 supplierId: sm.supplier.id,
                 price: prices.get(sm.supplier.id) ?? sm.price,
+                active:
+                  actives.get(sm.supplier.id) ??
+                  sm.supplier.others.active,
               };
             }),
           },
@@ -154,7 +180,7 @@ const MaterialSupplierManagement = () => {
         load();
       },
     });
-  }, [load, materialId, prices, suppliers, t]);
+  }, [actives, load, materialId, prices, suppliers, t]);
 
   if (!supplierById || !material) {
     return <></>;
