@@ -208,7 +208,7 @@ function _headers(
             {last && (
               <Flex>
                 <UnstyledButton
-                  className="c-catering-flex-align-center"
+                  className="flex-a-center"
                   onClick={() => setAdditionColumn((c) => c + 1)}
                 >
                   <Tooltip label={t("Add column")}>
@@ -216,7 +216,7 @@ function _headers(
                   </Tooltip>
                 </UnstyledButton>
                 <UnstyledButton
-                  className="c-catering-flex-align-center"
+                  className="flex-a-center"
                   onClick={() => setAdditionColumn((c) => c - 1)}
                 >
                   <Tooltip label={t("Remove column")}>

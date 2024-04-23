@@ -8,6 +8,7 @@ export type DataGridProps<T> = {
   page?: number;
   isPaginated?: boolean;
   className?: string;
+  noResultText?: string;
   columns: DataGridColumnProps[];
   data?: T[];
   onChangePage?: (page: number) => void;
@@ -29,6 +30,9 @@ export type DataGridColumnProps = {
   textAlign?: TextAlign | { header?: TextAlign; cell?: TextAlign };
   cellStyle?: MantineStyleProp;
   headerStyle?: MantineStyleProp;
+  headerClassName?: string;
+  cellClassName?: string;
+  className?: string;
   style?: MantineStyleProp;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sortValue?: (record: any) => string;

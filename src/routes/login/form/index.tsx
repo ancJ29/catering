@@ -29,7 +29,7 @@ type LoginResponse = z.infer<typeof response>;
 const initialValues: LoginProps = {
   userName: "",
   password: "",
-  remember: localStorage.remember === "true",
+  remember: localStorage.__REMEMBER__ === "true",
 };
 
 const LoginForm = () => {
@@ -47,7 +47,7 @@ const LoginForm = () => {
 
   const login = useCallback(
     async ({ password, userName, remember }: LoginProps) => {
-      localStorage.remember = remember?.toString();
+      localStorage.__REMEMBER__ = remember?.toString();
       const res = await callApi<unknown, LoginResponse>({
         params: {
           password: password.trim(),

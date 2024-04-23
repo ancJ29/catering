@@ -6,6 +6,7 @@ import { unitSchema } from "@/auto-generated/prisma-schema";
 import logger from "@/services/logger";
 import request from "@/services/request";
 import { Dictionary } from "@/types";
+import { buildMap } from "@/utils";
 import { z } from "zod";
 import { create } from "zustand";
 
@@ -24,8 +25,8 @@ type MetaDataStore = {
   productIdByName: Map<string, string>;
   materialNameById: Map<string, string>;
   materialIdByName: Map<string, string>;
-  enumMap: Map<string, string>;
   departmentIdByName: Map<string, string>;
+  departmentNameById: Map<string, string>;
   roleIdByName: Map<string, string>;
   loadMetaData: () => Promise<void>;
 };
@@ -33,21 +34,26 @@ type MetaDataStore = {
 const { response } = actionConfigs[Actions.GET_METADATA].schema;
 type Response = z.infer<typeof response>;
 
+const emptyMap = new Map<string, string>();
+
 export default create<MetaDataStore>((set) => ({
   units: [],
   materialGroupByType: {},
   dictionaries: JSON.parse(localStorage.__DICTIONARIES__ || "{}"),
-  productNameById: new Map<string, string>(),
-  productIdByName: new Map<string, string>(),
-  materialNameById: new Map<string, string>(),
-  materialIdByName: new Map<string, string>(),
-  enumMap: new Map<string, string>(),
-  departmentIdByName: new Map<string, string>(),
-  roleIdByName: new Map<string, string>(),
+  productNameById: emptyMap,
+  productIdByName: emptyMap,
+  materialNameById: emptyMap,
+  materialIdByName: emptyMap,
+  departmentIdByName: emptyMap,
+  departmentNameById: emptyMap,
+  roleIdByName: emptyMap,
   loadMetaData: async () => {
     if (await _checkVersion()) {
       set(() => _convert(JSON.parse(localStorage.__META_DATA__)));
       return;
+    } else {
+      delete localStorage.__ALL_MATERIALS__;
+      delete localStorage.__ALL_PRODUCTS__;
     }
     const data: Response = await request({
       action: Actions.GET_METADATA,
@@ -63,19 +69,17 @@ export default create<MetaDataStore>((set) => ({
 function _convert(data: Response) {
   return {
     units: data.units,
-    enumMap: new Map(data.enums.map((e) => [e.id, e.name])),
-    departmentIdByName: new Map(
-      data.departments.map((e) => [e.name, e.id]),
-    ),
-    roleIdByName: new Map(data.roles.map((e) => [e.name, e.id])),
+    departmentIdByName: buildMap(data.departments, "name", "id"),
+    departmentNameById: buildMap(data.departments),
+    roleIdByName: buildMap(data.roles, "name", "id"),
     materialGroupByType: data.materialGroupByType,
-    productNameById: new Map(data.products.map((p) => [p[0], p[1]])),
-    productIdByName: new Map(data.products.map((p) => [p[1], p[0]])),
-    materialNameById: new Map(
-      data.materials.map((m) => [m[0], m[1]]),
+    productNameById: new Map(data.products as [string, string][]),
+    productIdByName: new Map(
+      data.products.map((el) => el.reverse()) as [string, string][],
     ),
+    materialNameById: new Map(data.materials as [string, string][]),
     materialIdByName: new Map(
-      data.materials.map((m) => [m[1], m[0]]),
+      data.materials.map((el) => el.reverse()) as [string, string][],
     ),
     dictionaries: {
       en: data.dictionaries.en,

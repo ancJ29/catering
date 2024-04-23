@@ -20,7 +20,7 @@ export interface LanguageContextType {
 }
 
 export const LanguageContext = createContext<LanguageContextType>({
-  language: localStorage.getItem("language") || "vi",
+  language: localStorage.__LANGUAGE__ || "vi",
   dictionary: dictionaryList.vi,
 });
 
@@ -31,7 +31,7 @@ export function LanguageProvider({
   const { dictionaries } = useMetaDataStore();
 
   useEffect(() => {
-    const language = localStorage.getItem("language") || "vi";
+    const language = localStorage.__LANGUAGE__ || "vi";
     if (language in dictionaryList) {
       setLanguage(language);
     }
@@ -39,7 +39,7 @@ export function LanguageProvider({
 
   const onChangeLanguage = useCallback((selected: string) => {
     if (selected in dictionaryList) {
-      localStorage.setItem("language", selected);
+      localStorage.__LANGUAGE__ = selected;
       setLanguage(selected);
     }
   }, []);
