@@ -4,6 +4,13 @@ import { Md5 } from "ts-md5";
 export async function decode(str: unknown) {
   if (typeof str === "string") {
     /* cspell:disable-next-line */
+    const reverse = str.endsWith(".nW8h5wkTVY4pAfhb24NGtjE");
+    if (reverse) {
+      /* cspell:disable-next-line */
+      const x = _reverse(str.replace(".nW8h5wkTVY4pAfhb24NGtjE", ""));
+      return JSON.parse(decodeURIComponent(atob(x)));
+    }
+    /* cspell:disable-next-line */
     const crypt = str.endsWith(".nW9h5wkTVY4pAfhb24NGtjE");
     if (!crypt) {
       return JSON.parse(decodeURIComponent(atob(str)));
@@ -102,4 +109,8 @@ async function decryptData(
 
 export function md5(str: string) {
   return Md5.hashStr(str);
+}
+
+function _reverse(str: string) {
+  return str.split("").reverse().join("");
 }
