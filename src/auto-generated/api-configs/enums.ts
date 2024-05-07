@@ -12,6 +12,7 @@ export enum ActionGroups {
   MATERIAL_MANAGEMENT = "Material management",
   INVENTORY_MANAGEMENT = "Inventory management",
   SUPPLIER_MANAGEMENT = "Supplier management",
+  PURCHASE_ORDER_MANAGEMENT = "Purchase order management",
 }
 
 export enum Actions {
@@ -58,6 +59,8 @@ export enum Actions {
   ADD_SUPPLIER = "add-supplier",
   UPDATE_SUPPLIER = "update-supplier",
   UPDATE_SUPPLIER_MATERIAL = "update-supplier-material",
+  GET_PURCHASE_ORDERS = "get-purchase-orders",
+  GET_ALL_PURCHASE_ORDERS = "get-all-purchase-orders",
 }
 
 export enum Permissions {
@@ -79,6 +82,7 @@ export enum Permissions {
   MATERIAL_READ_ONLY = "material-read-only",
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
   INVENTORY_FULL_ACCESS = "inventory-full-access",
+  PURCHASE_ORDER_FULL_ACCESS = "purchase-order-full-access",
 }
 
 export enum Policy {}

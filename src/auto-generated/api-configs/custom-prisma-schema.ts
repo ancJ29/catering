@@ -6,6 +6,7 @@ import {
   inventorySchema,
   materialSchema,
   productSchema,
+  purchaseOrderSchema,
   supplierSchema,
   userSchema,
 } from "@/auto-generated/prisma-schema";
@@ -18,10 +19,11 @@ import {
   inventoryOthersSchema,
   materialOthersSchema,
   productOthersSchema,
+  purchaseOrderOthersSchema,
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
-import { stringSchema } from "./schema";
+import { numberSchema, stringSchema } from "./schema";
 
 export const xUserSchema = userSchema
   .omit({
@@ -105,4 +107,14 @@ export const xDailyMenuSchema = dailyMenuSchema
         ),
       })
       .optional(),
+  });
+
+export const xPurchaseOrderSchema = purchaseOrderSchema
+  .omit({
+    others: true,
+    deliveryDate: true,
+  })
+  .extend({
+    others: purchaseOrderOthersSchema,
+    deliveryDate: numberSchema,
   });

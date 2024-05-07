@@ -6,6 +6,7 @@ import {
   Switch,
   createTheme,
 } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import classes from "./theme.module.scss";
 
 const labelStyle = {
@@ -65,6 +66,11 @@ export const theme = createTheme({
     Switch: Switch.extend({
       styles: {
         label: labelStyle,
+      },
+    }),
+    DateInput: DateInput.extend({
+      classNames: {
+        input: classes.input,
       },
     }),
   },

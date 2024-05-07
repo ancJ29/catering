@@ -228,4 +228,12 @@ export default {
   "Are you sure you want to remove material?":
     "Bạn có chắc chắn muốn xoá nguyên liệu?",
   "Material list": "Danh sách nguyên liệu",
+  "Purchase order id": "Mã đơn hàng",
+  "Purchase order kitchen": "Bếp",
+  "Purchase order type": "Loại",
+  "Purchase order date": "Ngày nhận",
+  "Purchase order priority": "Độ ưu tiên",
+  "Purchase order note": "Ghi chú",
+  "No notes": "Không có ghi chú",
+  "Filter": "Lọc",
 } satisfies Record<string, string>;

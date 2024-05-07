@@ -230,4 +230,12 @@ export default {
   "Are you sure you want to remove material?":
     "Are you sure you want to remove material?",
   "Material list": "Material list",
+  "Purchase order id": "Id",
+  "Purchase order kitchen": "Kitchen",
+  "Purchase order type": "Type",
+  "Purchase order date": "Delivery date",
+  "Purchase order priority": "Priority",
+  "Purchase order note": "Note",
+  "No notes": "No notes",
+  "Filter": "Filter",
 } satisfies Record<string, string>;

@@ -284,8 +284,58 @@ export const bomOthersSchema = z.object({
   memo: z.record(stringSchema, stringSchema).optional(),
 });
 
+export const purchaseRequestOthersSchema = z.object({
+  oldId: stringSchema,
+  note: nullishStringSchema,
+});
+
+export const purchaseOrderTypeSchema = z.enum([
+  // cspell:disable
+  "HN", // Hằng ngày
+  "DK", // Định kỳ
+  // cspell:enable
+]);
+
+export const purchaseOrderPrioritySchema = z.enum([
+  // cspell:disable
+  "BT", // Bình thường
+  "KC", // Khẩn cấp
+  // cspell:enable
+]);
+
+export const purchaseOrderStatusSchema = z.enum([
+  // cspell:disable
+  "DG", // Đã gửi
+  "DD", // Đã duyệt
+  "KD", // Không duyệt
+  "DDP", // Đang điều phối
+  "MH", // Mua hàng
+  "DNH", // Đang nhận hàng
+  "NH", // Đã nhận hàng
+  "DH", // Đã huỷ
+  // cspell:enable
+]);
+
+export const purchaseOrderOthersSchema = z.object({
+  internalCode: stringSchema,
+  type: purchaseOrderTypeSchema,
+  priority: purchaseOrderPrioritySchema,
+  status: purchaseOrderStatusSchema,
+  note: nullishStringSchema,
+  departmentName: stringSchema,
+});
+
+export const purchaseOrderDetailOthersSchema = z.object({
+  unitPrice: numberSchema,
+  taxRate: numberSchema,
+  unitId: stringSchema,
+});
+
 export type ProductType = z.infer<typeof productTypeSchema>;
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type MaterialType = z.infer<typeof materialTypeSchema>;
 export type MaterialGroup = z.infer<typeof materialGroupSchema>;
 export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
+export type PurchaseOrderType = z.infer<typeof purchaseOrderTypeSchema>;
+export type PurchaseOrderPriority = z.infer<typeof purchaseOrderPrioritySchema>;
+export type PurchaseOrderStatus = z.infer<typeof purchaseOrderStatusSchema>;

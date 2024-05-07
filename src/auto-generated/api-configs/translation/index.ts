@@ -4,6 +4,9 @@ import {
   MaterialGroup,
   MaterialType,
   ProductType,
+  PurchaseOrderPriority,
+  PurchaseOrderStatus,
+  PurchaseOrderType,
 } from "../others";
 import en from "./en";
 import vi from "./vi";
@@ -16,6 +19,10 @@ type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
 type MaterialKey =
   | `materials.type.${MaterialType}`
   | `materials.group.${MaterialGroup}`;
+type PurchaseOrderKey =
+  | `purchaseOrder.type.${PurchaseOrderType}`
+  | `purchaseOrder.priority.${PurchaseOrderPriority}`
+  | `purchaseOrder.status.${PurchaseOrderStatus}`;
 
 const departmentDictionaries: {
   en: Record<DepartmentKey, string>;
@@ -201,6 +208,42 @@ const materialDictionaries: {
   },
 };
 
+const purchaseOrderDictionaries: {
+  en: Record<PurchaseOrderKey, string>;
+  vi: Record<PurchaseOrderKey, string>;
+} = {
+  en: {
+    "purchaseOrder.type.HN": "Daily",
+    "purchaseOrder.type.DK": "Recurring",
+    "purchaseOrder.priority.BT": "Normal",
+    "purchaseOrder.priority.KC": "Urgent",
+    "purchaseOrder.status.DG": "Sent",
+    "purchaseOrder.status.DD": "Approved",
+    "purchaseOrder.status.KD": "Not approved",
+    "purchaseOrder.status.DDP": "Purchasing order",
+    "purchaseOrder.status.MH": "Purchase",
+    "purchaseOrder.status.DNH": "Receiving",
+    "purchaseOrder.status.NH": "Received",
+    "purchaseOrder.status.DH": "Canceled",
+  },
+  vi: {
+    /* cspell:disable */
+    "purchaseOrder.type.HN": "Hằng ngày",
+    "purchaseOrder.type.DK": "Định kỳ",
+    "purchaseOrder.priority.BT": "Bình thường",
+    "purchaseOrder.priority.KC": "Khẩn cấp",
+    "purchaseOrder.status.DG": "Đã gửi",
+    "purchaseOrder.status.DD": "Đã duyệt",
+    "purchaseOrder.status.KD": "Không duyệt",
+    "purchaseOrder.status.DDP": "Đang điều phối",
+    "purchaseOrder.status.MH": "Mua hàng",
+    "purchaseOrder.status.DNH": "Đang nhận hàng",
+    "purchaseOrder.status.NH": "Đã nhận hàng",
+    "purchaseOrder.status.DH": "Đã huỷ",
+    /* cspell:enable */
+  },
+};
+
 export const dictionaries: {
   version: string;
   en: Record<string, string>;
@@ -212,6 +255,7 @@ export const dictionaries: {
     ...dailyMenuDictionaries.en,
     ...materialDictionaries.en,
     ...productDictionaries.en,
+    ...purchaseOrderDictionaries.en,
     ...en,
   },
   vi: {
@@ -219,6 +263,7 @@ export const dictionaries: {
     ...dailyMenuDictionaries.vi,
     ...materialDictionaries.vi,
     ...productDictionaries.vi,
+    ...purchaseOrderDictionaries.vi,
     ...vi,
   },
 };

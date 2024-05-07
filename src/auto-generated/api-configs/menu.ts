@@ -115,6 +115,7 @@ export default [
         key: "purchasing-order-management",
         label: "Purchasing Order Management",
         icon: "shopping-cart-check",
+        url: "/purchasing-order-management",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],

@@ -16,6 +16,7 @@ import {
   xInventorySchema,
   xMaterialSchema,
   xProductSchema,
+  xPurchaseOrderSchema,
   xSupplierSchema,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
@@ -708,6 +709,30 @@ export const configs = {
             price: numberSchema.nonnegative(),
           })
           .array(),
+      }),
+    },
+  },
+  [Actions.GET_ALL_PURCHASE_ORDERS]: {
+    name: Actions.GET_ALL_PURCHASE_ORDERS,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: z.object({}),
+      response: xPurchaseOrderSchema.array(),
+    },
+  },
+  [Actions.GET_PURCHASE_ORDERS]: {
+    name: Actions.GET_PURCHASE_ORDERS,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        take: numberSchema.min(1).max(1000).optional().default(20),
+        from: numberSchema,
+        to: numberSchema,
+      }),
+      response: listResponse.extend({
+        purchaseOrders: xPurchaseOrderSchema.array(),
       }),
     },
   },
