@@ -7,24 +7,25 @@ import {
 } from "@/configs/filters/purchase-order";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  PurchaseOrder,
-  getAllPurchaseOrders,
-} from "@/services/domain";
-import usePurchaseOrderStore from "@/stores/purchase-order.store";
-import { ONE_DAY } from "@/utils";
+import { PurchaseOrder, getPurchaseOrders } from "@/services/domain";
+import { ONE_DAY, endOfDay, startOfDay } from "@/utils";
 import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { configs } from "./_config";
 
 const PurchasingOrderManagement = () => {
   const t = useTranslation();
-  const { purchaseOrders, set } = usePurchaseOrderStore();
+  const [purchaseOrders, setPurchaseOrders] = useState<
+  PurchaseOrder[]
+  >([]);
+  const [from, setFrom] = useState(startOfDay(Date.now() - ONE_DAY));
+  const [to, setTo] = useState(startOfDay(Date.now() + ONE_DAY));
 
   const onOpenNote = useCallback(
     (id: string) => {
-      const note = purchaseOrders.get(id)?.others.note;
+      const note = purchaseOrders.find((po) => po.id === id)?.others
+        .note;
       modals.open({
         centered: true,
         withCloseButton: false,
@@ -38,18 +39,17 @@ const PurchasingOrderManagement = () => {
     () => configs(t, onOpenNote),
     [t, onOpenNote],
   );
-  const [from, setFrom] = useState<number | undefined>(
-    Date.now() - ONE_DAY,
-  );
-  const [to, setTo] = useState<number | undefined>(
-    Date.now() + ONE_DAY,
-  );
+
+  const getData = async (from?: number, to?: number) => {
+    setPurchaseOrders(await getPurchaseOrders(from, to));
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const dataLoader = useCallback(() => {
-    return Array.from(purchaseOrders.values()).map((el) => ({
-      ...el,
-      name: el.others.internalCode,
-    }));
+    return purchaseOrders;
   }, [purchaseOrders]);
 
   const {
@@ -63,19 +63,29 @@ const PurchasingOrderManagement = () => {
     setPage,
     updateCondition,
   } = useFilterData<PurchaseOrder, FilterType>({
-    dataLoader,
+    dataLoader: dataLoader,
     filter,
     defaultCondition,
   });
 
   const onChangeDateRange = (from?: number, to?: number) => {
+    if (!from || !to) {
+      return;
+    }
     setFrom(from);
     setTo(to);
   };
 
-  const onFilter = async () => {
-    const data = await getAllPurchaseOrders(false, from, to);
-    set(data);
+  const onFilter = () => {
+    if (condition?.from && condition?.to) {
+      const _from = startOfDay(from);
+      const _to = endOfDay(to);
+      if (from < condition.from || to > condition.to) {
+        getData(_from, _to);
+      }
+      updateCondition("from", "", _from);
+      updateCondition("to", "", _to);
+    }
   };
 
   return (

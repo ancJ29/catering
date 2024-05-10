@@ -11,7 +11,6 @@ import useCustomerStore from "@/stores/customer.store";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import useProductStore from "@/stores/product.store";
-import usePurchaseOrderStore from "@/stores/purchase-order.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
@@ -110,7 +109,6 @@ function _reload() {
       useMaterialStore.getState().reload();
       useCustomerStore.getState().reload();
       useCateringStore.getState().reload();
-      usePurchaseOrderStore.getState().reload();
     }
   }, 200);
 }

@@ -23,7 +23,7 @@ import {
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
-import { numberSchema, stringSchema } from "./schema";
+import { stringSchema } from "./schema";
 
 export const xUserSchema = userSchema
   .omit({
@@ -112,9 +112,7 @@ export const xDailyMenuSchema = dailyMenuSchema
 export const xPurchaseOrderSchema = purchaseOrderSchema
   .omit({
     others: true,
-    deliveryDate: true,
   })
   .extend({
     others: purchaseOrderOthersSchema,
-    deliveryDate: numberSchema,
   });

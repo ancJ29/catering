@@ -284,8 +284,18 @@ export const bomOthersSchema = z.object({
   memo: z.record(stringSchema, stringSchema).optional(),
 });
 
+export const purchaseRequestStatusSchema = z.enum([
+  // cspell:disable
+  "DG", // Đã gửi
+  "DD", // Đã duyệt
+  "KD", // Không duyệt
+  "NH", // Đã nhận hàng
+  "DH", // Đã huỷ
+  // cspell:enable
+]);
+
 export const purchaseRequestOthersSchema = z.object({
-  oldId: stringSchema,
+  status: purchaseRequestStatusSchema,
   note: nullishStringSchema,
 });
 
@@ -317,7 +327,6 @@ export const purchaseOrderStatusSchema = z.enum([
 ]);
 
 export const purchaseOrderOthersSchema = z.object({
-  internalCode: stringSchema,
   type: purchaseOrderTypeSchema,
   priority: purchaseOrderPrioritySchema,
   status: purchaseOrderStatusSchema,

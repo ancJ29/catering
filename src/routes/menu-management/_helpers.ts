@@ -3,7 +3,6 @@ import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import useDailyMenuStore from "@/stores/daily-menu.store";
 import useProductStore from "@/stores/product.store";
-import usePurchaseOrderStore from "@/stores/purchase-order.store";
 import {
   ONE_DAY,
   ONE_WEEK,
@@ -21,7 +20,6 @@ export function _reload() {
   useProductStore.getState().reload();
   useCustomerStore.getState().reload();
   useCateringStore.getState().reload();
-  usePurchaseOrderStore.getState().reload();
 }
 
 export function _getDailyMenu(customerId: string, markDate: number) {

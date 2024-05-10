@@ -9,7 +9,8 @@ const jsonSchema: z.ZodSchema<Json> = z.lazy(() => z.union([literalSchema, z.arr
 export const purchaseRequestSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
-  expectedDeliveryDate: z.date(),
+  deliveryDate: z.date(),
+  prCode: z.string(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

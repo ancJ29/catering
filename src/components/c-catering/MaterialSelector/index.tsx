@@ -96,7 +96,7 @@ const MaterialSelector = ({
       <Flex justify="end" align={"center"} mb="1rem">
         <Select
           key={condition?.type || ""}
-          value={condition?.type || ""}
+          value={condition?.type}
           label={t("Material type")}
           w={"20vw"}
           options={typeOptions}

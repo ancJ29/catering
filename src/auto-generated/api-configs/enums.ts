@@ -60,7 +60,6 @@ export enum Actions {
   UPDATE_SUPPLIER = "update-supplier",
   UPDATE_SUPPLIER_MATERIAL = "update-supplier-material",
   GET_PURCHASE_ORDERS = "get-purchase-orders",
-  GET_ALL_PURCHASE_ORDERS = "get-all-purchase-orders",
 }
 
 export enum Permissions {

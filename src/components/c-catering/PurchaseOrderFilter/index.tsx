@@ -1,7 +1,10 @@
 import DateRangeInput from "@/components/common/DateRangeInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { Department, getFilterData } from "@/services/domain";
+import {
+  Department,
+  typeStatusAndPriorityOptions,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { ONE_DAY } from "@/utils";
 import { Button } from "@mantine/core";
@@ -48,7 +51,7 @@ const PurchaseOrderFilter = ({
   const { caterings } = useCateringStore();
   const [typeOptions, statusOptions, priorityOptions] =
     useMemo(() => {
-      return getFilterData(t);
+      return typeStatusAndPriorityOptions(t);
     }, [t]);
 
   const _caterings: string[] = useMemo(() => {
@@ -65,10 +68,14 @@ const PurchaseOrderFilter = ({
           from={from}
           to={to}
           onChange={onChangeDateRange}
-          w={"20%"}
+          w={"25%"}
         />
-        <Button onClick={onFilter}>{t("Filter")}</Button>
-        <Button onClick={() => null}>{t("Add")}</Button>
+        <Button variant="outline" onClick={onFilter}>
+          {t("Filter")}
+        </Button>
+        <Button variant="outline" onClick={() => null}>
+          {t("Add")}
+        </Button>
       </div>
       <div className={classes.detail}>
         <AutocompleteForFilterData
@@ -79,21 +86,21 @@ const PurchaseOrderFilter = ({
           onReload={onReload}
         />
         <Select
-          value={type || ""}
+          value={type}
           label={t("Purchase order type")}
           w={"20%"}
           options={typeOptions}
           onChange={(value) => onChangeType(value || "")}
         />
         <Select
-          value={priority || ""}
+          value={priority}
           label={t("Purchase order priority")}
           w={"20%"}
           options={priorityOptions}
           onChange={(value) => onChangePriority(value || "")}
         />
         <Select
-          value={status || ""}
+          value={status}
           label={t("Status")}
           w={"20%"}
           options={statusOptions}

@@ -38,14 +38,14 @@ const MaterialFilter = ({
   return (
     <>
       <Select
-        value={type || ""}
+        value={type}
         label={t("Material type")}
         w={"20vw"}
         options={typeOptions}
         onChange={(value) => onChangeType(value || "")}
       />
       <Select
-        value={group || ""}
+        value={group}
         label={t("Material group")}
         w={"20vw"}
         options={groupOptions}

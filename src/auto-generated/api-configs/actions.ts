@@ -712,15 +712,6 @@ export const configs = {
       }),
     },
   },
-  [Actions.GET_ALL_PURCHASE_ORDERS]: {
-    name: Actions.GET_ALL_PURCHASE_ORDERS,
-    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: z.object({}),
-      response: xPurchaseOrderSchema.array(),
-    },
-  },
   [Actions.GET_PURCHASE_ORDERS]: {
     name: Actions.GET_PURCHASE_ORDERS,
     group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
@@ -728,8 +719,8 @@ export const configs = {
     schema: {
       request: getSchema.extend({
         take: numberSchema.min(1).max(1000).optional().default(20),
-        from: numberSchema,
-        to: numberSchema,
+        from: dateSchema,
+        to: dateSchema,
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),

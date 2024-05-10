@@ -17,7 +17,7 @@ export const configs = (
       header: t("Purchase order id"),
       width: "20%",
       renderCell: (_, row: PurchaseOrder) => {
-        return row.others.internalCode || "N/A";
+        return row.poCode || "N/A";
       },
     },
     {

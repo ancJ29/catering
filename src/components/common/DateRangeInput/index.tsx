@@ -39,6 +39,7 @@ const DateRangeInput = ({
             _onChange(value, new Date(to) || value)
           }
           maxDate={new Date(to)}
+          valueFormat="DD/MM/YYYY"
         />
         <span>~</span>
         <DateInput
@@ -48,6 +49,7 @@ const DateRangeInput = ({
           onChange={(value) =>
             _onChange(new Date(from) || value, value)
           }
+          valueFormat="DD/MM/YYYY"
         />
       </div>
     </div>

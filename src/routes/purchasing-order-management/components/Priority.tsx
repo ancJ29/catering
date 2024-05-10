@@ -1,22 +1,18 @@
 import { PurchaseOrderPriority } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
-import { purchaseOrderPriorityColor } from "@/services/domain";
-import { Badge, MantineColor } from "@mantine/core";
+import { poPriorityColor } from "@/services/domain";
+import { Text } from "@mantine/core";
 
 const Priority = ({
-  fz = 12,
   priority,
-  c,
 }: {
-  c?: MantineColor;
-  fz?: number;
   priority: PurchaseOrderPriority;
 }) => {
   const t = useTranslation();
   return (
-    <Badge fz={fz} color={c || purchaseOrderPriorityColor(priority)}>
+    <Text fz={16} c={poPriorityColor(priority)}>
       {t(`purchaseOrder.priority.${priority}`)}
-    </Badge>
+    </Text>
   );
 };
 

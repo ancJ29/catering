@@ -14,6 +14,7 @@ const Select = ({
   data: _data,
   options,
   disabled,
+  value = "",
   ...props
 }: ISelectProps) => {
   const data = useMemo(() => {
@@ -34,6 +35,7 @@ const Select = ({
   return (
     <MantineSelect
       data={data}
+      value={value}
       disabled={disabled ?? (data?.length || 0) < 1}
       checkIconPosition="right"
       rightSection={<IconChevronDown size={16} />}

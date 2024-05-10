@@ -295,7 +295,7 @@ const EditModal = () => {
                 <Select
                   label={t("Product type")}
                   w={"20vw"}
-                  value={condition?.type || ""}
+                  value={condition?.type}
                   onChange={updateCondition.bind(null, "type", "")}
                   options={typeOptions}
                 />
