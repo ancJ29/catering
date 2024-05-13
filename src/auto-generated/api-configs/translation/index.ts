@@ -4,9 +4,9 @@ import {
   MaterialGroup,
   MaterialType,
   ProductType,
-  PurchaseOrderPriority,
-  PurchaseOrderStatus,
-  PurchaseOrderType,
+  PRPriority,
+  PRStatus,
+  PRType,
 } from "../others";
 import en from "./en";
 import vi from "./vi";
@@ -19,10 +19,10 @@ type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
 type MaterialKey =
   | `materials.type.${MaterialType}`
   | `materials.group.${MaterialGroup}`;
-type PurchaseOrderKey =
-  | `purchaseOrder.type.${PurchaseOrderType}`
-  | `purchaseOrder.priority.${PurchaseOrderPriority}`
-  | `purchaseOrder.status.${PurchaseOrderStatus}`;
+type PurchaseRequestKey =
+  | `purchaseRequest.type.${PRType}`
+  | `purchaseRequest.priority.${PRPriority}`
+  | `purchaseRequest.status.${PRStatus}`;
 
 const departmentDictionaries: {
   en: Record<DepartmentKey, string>;
@@ -209,37 +209,37 @@ const materialDictionaries: {
 };
 
 const purchaseOrderDictionaries: {
-  en: Record<PurchaseOrderKey, string>;
-  vi: Record<PurchaseOrderKey, string>;
+  en: Record<PurchaseRequestKey, string>;
+  vi: Record<PurchaseRequestKey, string>;
 } = {
   en: {
-    "purchaseOrder.type.HN": "Daily",
-    "purchaseOrder.type.DK": "Recurring",
-    "purchaseOrder.priority.BT": "Normal",
-    "purchaseOrder.priority.KC": "Urgent",
-    "purchaseOrder.status.DG": "Sent",
-    "purchaseOrder.status.DD": "Approved",
-    "purchaseOrder.status.KD": "Not approved",
-    "purchaseOrder.status.DDP": "Purchasing order",
-    "purchaseOrder.status.MH": "Purchase",
-    "purchaseOrder.status.DNH": "Receiving",
-    "purchaseOrder.status.NH": "Received",
-    "purchaseOrder.status.DH": "Canceled",
+    "purchaseRequest.type.HN": "Daily",
+    "purchaseRequest.type.DK": "Recurring",
+    "purchaseRequest.priority.BT": "Normal",
+    "purchaseRequest.priority.KC": "Urgent",
+    "purchaseRequest.status.DG": "Sent",
+    "purchaseRequest.status.DD": "Approved",
+    "purchaseRequest.status.KD": "Not approved",
+    "purchaseRequest.status.DDP": "Purchasing order",
+    "purchaseRequest.status.MH": "Purchase",
+    "purchaseRequest.status.DNH": "Receiving",
+    "purchaseRequest.status.NH": "Received",
+    "purchaseRequest.status.DH": "Canceled",
   },
   vi: {
     /* cspell:disable */
-    "purchaseOrder.type.HN": "Hằng ngày",
-    "purchaseOrder.type.DK": "Định kỳ",
-    "purchaseOrder.priority.BT": "Bình thường",
-    "purchaseOrder.priority.KC": "Khẩn cấp",
-    "purchaseOrder.status.DG": "Đã gửi",
-    "purchaseOrder.status.DD": "Đã duyệt",
-    "purchaseOrder.status.KD": "Không duyệt",
-    "purchaseOrder.status.DDP": "Đang điều phối",
-    "purchaseOrder.status.MH": "Mua hàng",
-    "purchaseOrder.status.DNH": "Đang nhận hàng",
-    "purchaseOrder.status.NH": "Đã nhận hàng",
-    "purchaseOrder.status.DH": "Đã huỷ",
+    "purchaseRequest.type.HN": "Hằng ngày",
+    "purchaseRequest.type.DK": "Định kỳ",
+    "purchaseRequest.priority.BT": "Bình thường",
+    "purchaseRequest.priority.KC": "Khẩn cấp",
+    "purchaseRequest.status.DG": "Đã gửi",
+    "purchaseRequest.status.DD": "Đã duyệt",
+    "purchaseRequest.status.KD": "Không duyệt",
+    "purchaseRequest.status.DDP": "Đang điều phối",
+    "purchaseRequest.status.MH": "Mua hàng",
+    "purchaseRequest.status.DNH": "Đang nhận hàng",
+    "purchaseRequest.status.NH": "Đã nhận hàng",
+    "purchaseRequest.status.DH": "Đã huỷ",
     /* cspell:enable */
   },
 };

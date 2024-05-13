@@ -1,51 +1,51 @@
 import DateRangeInput from "@/components/common/DateRangeInput";
-import Select from "@/components/common/Select";
+import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
 import {
   Department,
   typeStatusAndPriorityOptions,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
+import { OptionProps } from "@/types";
 import { ONE_DAY } from "@/utils";
 import { Button } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
 import { useMemo } from "react";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
-import classes from "./PurchaseOrderFilter.module.scss";
+import classes from "./PurchaseRequestFilter.module.scss";
 
 type PurchaseOrderFilterProps = {
   keyword?: string;
   from?: number;
   to?: number;
-  type?: string;
-  priority?: string;
-  status?: string;
-  departmentName?: string;
+  types?: string[];
+  priorities?: string[];
+  statuses?: string[];
+  departmentIds?: string[];
   purchaseOrderIds: string[];
   onReload: (keyword?: string) => void;
-  onChangeType: (value: string) => void;
-  onChangePriority: (value: string) => void;
-  onChangeStatus: (value: string) => void;
-  onChangeDepartmentName: (value: string) => void;
+  onChangeTypes: (value: string[]) => void;
+  onChangePriorities: (value: string[]) => void;
+  onChangeStatuses: (value: string[]) => void;
+  onChangeDepartmentIds: (value: string[]) => void;
   onChangeDateRange: (from?: number, to?: number) => void;
-  onFilter: () => void;
 };
 
-const PurchaseOrderFilter = ({
+const PurchaseRequestFilter = ({
   keyword,
   from = Date.now() - ONE_DAY,
   to = Date.now() + ONE_DAY,
-  type,
-  priority,
-  status,
-  departmentName,
+  types,
+  priorities,
+  statuses,
+  departmentIds,
   purchaseOrderIds,
   onReload,
-  onChangeType,
-  onChangePriority,
-  onChangeStatus,
-  onChangeDepartmentName,
+  onChangeTypes,
+  onChangePriorities,
+  onChangeStatuses,
+  onChangeDepartmentIds,
   onChangeDateRange,
-  onFilter,
 }: PurchaseOrderFilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
@@ -54,68 +54,75 @@ const PurchaseOrderFilter = ({
       return typeStatusAndPriorityOptions(t);
     }, [t]);
 
-  const _caterings: string[] = useMemo(() => {
-    return Array.from(caterings.values()).map(
-      (p: Department) => p.name,
-    );
+  const _caterings: OptionProps[] = useMemo(() => {
+    return Array.from(caterings.values()).map((p: Department) => ({
+      label: p.name,
+      value: p.id,
+    }));
   }, [caterings]);
 
   return (
     <div className={classes.container}>
-      <div className={classes.detail}>
+      <div className={classes.buttonContainer}>
+        <Button
+          onClick={() => null}
+          leftSection={<IconPlus size={16} />}
+        >
+          {t("Add purchase request")}
+        </Button>
+      </div>
+      <div className={classes.rangeDateContainer}>
         <DateRangeInput
           label={t("Purchase order date")}
           from={from}
           to={to}
           onChange={onChangeDateRange}
-          w={"25%"}
+          w={"22vw"}
         />
-        <Button variant="outline" onClick={onFilter}>
-          {t("Filter")}
-        </Button>
-        <Button variant="outline" onClick={() => null}>
-          {t("Add")}
-        </Button>
       </div>
-      <div className={classes.detail}>
+      <div className={classes.filterContainer}>
         <AutocompleteForFilterData
           label={t("Purchase order id")}
-          w={"20%"}
+          w={"20vw"}
           data={purchaseOrderIds}
           defaultValue={keyword}
           onReload={onReload}
         />
-        <Select
-          value={type}
+        <MultiSelect
+          value={types}
           label={t("Purchase order type")}
-          w={"20%"}
+          w={"20vw"}
           options={typeOptions}
-          onChange={(value) => onChangeType(value || "")}
+          onChange={onChangeTypes}
+          searchable
         />
-        <Select
-          value={priority}
+        <MultiSelect
+          value={priorities}
           label={t("Purchase order priority")}
-          w={"20%"}
+          w={"20vw"}
           options={priorityOptions}
-          onChange={(value) => onChangePriority(value || "")}
+          onChange={onChangePriorities}
+          searchable
         />
-        <Select
-          value={status}
+        <MultiSelect
+          value={statuses}
           label={t("Status")}
-          w={"20%"}
+          w={"20vw"}
           options={statusOptions}
-          onChange={(value) => onChangeStatus(value || "")}
+          onChange={onChangeStatuses}
+          searchable
         />
-        <AutocompleteForFilterData
+        <MultiSelect
+          value={departmentIds}
           label={t("Purchase order kitchen")}
-          w={"20%"}
-          data={_caterings}
-          defaultValue={departmentName}
-          onReload={(value) => onChangeDepartmentName(value || "")}
+          w={"20vw"}
+          options={_caterings}
+          onChange={onChangeDepartmentIds}
+          searchable
         />
       </div>
     </div>
   );
 };
 
-export default PurchaseOrderFilter;
+export default PurchaseRequestFilter;

@@ -235,5 +235,5 @@ export default {
   "Purchase order priority": "Độ ưu tiên",
   "Purchase order note": "Ghi chú",
   "No notes": "Không có ghi chú",
-  "Filter": "Lọc",
+  "Add purchase request": "Thêm đơn hàng",
 } satisfies Record<string, string>;

@@ -1,52 +1,60 @@
-import { PurchaseOrder } from "@/services/domain";
-import { ONE_DAY, endOfDay, startOfDay } from "@/utils";
+import { PurchaseRequest } from "@/services/domain";
+import { ONE_DAY, startOfDay } from "@/utils";
 
 export type FilterType = {
   id: string;
   from: number;
   to: number;
-  type: string;
-  priority: string;
-  status: string;
-  departmentName: string;
+  types: string[];
+  priorities: string[];
+  statuses: string[];
+  departmentIds: string[];
 };
 
 export const defaultCondition: FilterType = {
   id: "",
   from: startOfDay(Date.now() - ONE_DAY),
-  to: endOfDay(Date.now() + ONE_DAY),
-  type: "",
-  priority: "",
-  status: "",
-  departmentName: "",
+  to: Date.now() + ONE_DAY,
+  types: [],
+  priorities: [],
+  statuses: [],
+  departmentIds: [],
 };
 
-export function filter(po: PurchaseOrder, condition?: FilterType) {
+export function filter(pr: PurchaseRequest, condition?: FilterType) {
   if (
-    condition?.from &&
-    po.deliveryDate.getTime() < condition?.from
+    condition?.types &&
+    condition.types.length > 0 &&
+    !condition.types.includes(pr.others.type)
   ) {
     return false;
   }
-  if (condition?.to && po.deliveryDate.getTime() > condition?.to) {
-    return false;
-  }
-  if (condition?.type && po.others.type !== condition.type) {
-    return false;
-  }
   if (
-    condition?.priority &&
-    po.others.priority !== condition.priority
+    condition?.priorities &&
+    condition.priorities.length > 0 &&
+    !condition.priorities.includes(pr.others.priority)
   ) {
     return false;
   }
-  if (condition?.status && po.others.status !== condition.status) {
+  if (
+    condition?.statuses &&
+    condition.statuses.length > 0 &&
+    !condition.statuses.includes(pr.others.status)
+  ) {
     return false;
   }
   if (
-    condition?.departmentName &&
-    po.others.departmentName !== condition.departmentName
+    condition?.departmentIds &&
+    condition.departmentIds.length > 0 &&
+    pr.departmentId &&
+    !condition.departmentIds.includes(pr.departmentId)
   ) {
+    return false;
+  }
+  if (condition?.from && pr.deliveryDate.getTime() < condition.from) {
+    return false;
+  }
+  if (condition?.to && pr.deliveryDate.getTime() > condition.to) {
     return false;
   }
   return true;

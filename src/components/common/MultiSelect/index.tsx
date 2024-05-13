@@ -6,14 +6,14 @@ import {
   MultiSelect as MantineMultiSelect,
   MultiSelectProps,
 } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
 import { useMemo } from "react";
 import classes from "./MultiSelect.module.scss";
+import { IconChevronDown } from "@tabler/icons-react";
 
 interface Props extends MultiSelectProps {
   options: OptionProps[];
   translation?: boolean;
-  value: string[];
+  value?: string[];
   placeholder?: string;
   onEnter?: () => void;
 }
@@ -21,7 +21,7 @@ interface Props extends MultiSelectProps {
 const MultiSelect = ({
   options,
   translation = false,
-  value,
+  value = [],
   placeholder,
   onEnter = blank,
   ...props

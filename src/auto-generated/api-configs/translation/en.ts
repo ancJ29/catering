@@ -237,5 +237,5 @@ export default {
   "Purchase order priority": "Priority",
   "Purchase order note": "Note",
   "No notes": "No notes",
-  "Filter": "Filter",
+  "Add purchase request": "Add order",
 } satisfies Record<string, string>;

@@ -5,5 +5,5 @@ export * from "./department";
 export * from "./inventory";
 export * from "./material";
 export * from "./product";
-export * from "./purchase-order";
+export * from "./purchase-request";
 export * from "./supplier";

@@ -7,6 +7,7 @@ import {
   materialSchema,
   productSchema,
   purchaseOrderSchema,
+  purchaseRequestSchema,
   supplierSchema,
   userSchema,
 } from "@/auto-generated/prisma-schema";
@@ -20,6 +21,7 @@ import {
   materialOthersSchema,
   productOthersSchema,
   purchaseOrderOthersSchema,
+  purchaseRequestOthersSchema,
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
@@ -115,4 +117,12 @@ export const xPurchaseOrderSchema = purchaseOrderSchema
   })
   .extend({
     others: purchaseOrderOthersSchema,
+  });
+
+export const xPurchaseRequestSchema = purchaseRequestSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: purchaseRequestOthersSchema,
   });

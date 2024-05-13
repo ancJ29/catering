@@ -284,36 +284,41 @@ export const bomOthersSchema = z.object({
   memo: z.record(stringSchema, stringSchema).optional(),
 });
 
-export const purchaseRequestStatusSchema = z.enum([
+export const prStatusSchema = z.enum([
   // cspell:disable
   "DG", // Đã gửi
   "DD", // Đã duyệt
   "KD", // Không duyệt
+  "DDP", // Đang điều phối
+  "MH", // Mua hàng
+  "DNH", // Đang nhận hàng
   "NH", // Đã nhận hàng
   "DH", // Đã huỷ
   // cspell:enable
 ]);
 
-export const purchaseRequestOthersSchema = z.object({
-  status: purchaseRequestStatusSchema,
-  note: nullishStringSchema,
-});
-
-export const purchaseOrderTypeSchema = z.enum([
+export const prTypeSchema = z.enum([
   // cspell:disable
   "HN", // Hằng ngày
   "DK", // Định kỳ
   // cspell:enable
 ]);
 
-export const purchaseOrderPrioritySchema = z.enum([
+export const prPrioritySchema = z.enum([
   // cspell:disable
   "BT", // Bình thường
   "KC", // Khẩn cấp
   // cspell:enable
 ]);
 
-export const purchaseOrderStatusSchema = z.enum([
+export const purchaseRequestOthersSchema = z.object({
+  status: prStatusSchema,
+  type: prTypeSchema,
+  priority: prPrioritySchema,
+  note: nullishStringSchema,
+});
+
+export const poStatusSchema = z.enum([
   // cspell:disable
   "DG", // Đã gửi
   "DD", // Đã duyệt
@@ -327,9 +332,9 @@ export const purchaseOrderStatusSchema = z.enum([
 ]);
 
 export const purchaseOrderOthersSchema = z.object({
-  type: purchaseOrderTypeSchema,
-  priority: purchaseOrderPrioritySchema,
-  status: purchaseOrderStatusSchema,
+  type: prTypeSchema,
+  priority: prPrioritySchema,
+  status: poStatusSchema,
   note: nullishStringSchema,
   departmentName: stringSchema,
 });
@@ -345,6 +350,7 @@ export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type MaterialType = z.infer<typeof materialTypeSchema>;
 export type MaterialGroup = z.infer<typeof materialGroupSchema>;
 export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
-export type PurchaseOrderType = z.infer<typeof purchaseOrderTypeSchema>;
-export type PurchaseOrderPriority = z.infer<typeof purchaseOrderPrioritySchema>;
-export type PurchaseOrderStatus = z.infer<typeof purchaseOrderStatusSchema>;
+export type PRType = z.infer<typeof prTypeSchema>;
+export type PRPriority = z.infer<typeof prPrioritySchema>;
+export type PRStatus = z.infer<typeof prStatusSchema>;
+export type POStatus = z.infer<typeof poStatusSchema>;

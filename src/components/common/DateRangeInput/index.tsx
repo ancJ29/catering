@@ -41,7 +41,7 @@ const DateRangeInput = ({
           maxDate={new Date(to)}
           valueFormat="DD/MM/YYYY"
         />
-        <span>~</span>
+        <span className={classes.tilde}>~</span>
         <DateInput
           placeholder={placeholder}
           value={new Date(to)}

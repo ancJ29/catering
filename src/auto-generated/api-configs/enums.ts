@@ -13,6 +13,7 @@ export enum ActionGroups {
   INVENTORY_MANAGEMENT = "Inventory management",
   SUPPLIER_MANAGEMENT = "Supplier management",
   PURCHASE_ORDER_MANAGEMENT = "Purchase order management",
+  PURCHASE_REQUEST_MANAGEMENT = "Purchase request management",
 }
 
 export enum Actions {
@@ -60,6 +61,7 @@ export enum Actions {
   UPDATE_SUPPLIER = "update-supplier",
   UPDATE_SUPPLIER_MATERIAL = "update-supplier-material",
   GET_PURCHASE_ORDERS = "get-purchase-orders",
+  GET_PURCHASE_REQUESTS = "get-purchase-requests",
 }
 
 export enum Permissions {
@@ -82,6 +84,7 @@ export enum Permissions {
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
   INVENTORY_FULL_ACCESS = "inventory-full-access",
   PURCHASE_ORDER_FULL_ACCESS = "purchase-order-full-access",
+  PURCHASE_REQUEST_FULL_ACCESS = "purchase-request-full-access",
 }
 
 export enum Policy {}

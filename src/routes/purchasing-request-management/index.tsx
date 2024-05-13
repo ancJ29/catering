@@ -1,4 +1,4 @@
-import PurchaseOrderFilter from "@/components/c-catering/PurchaseOrderFilter";
+import PurchaseRequestFilter from "@/components/c-catering/PurchaseRequestFilter";
 import DataGrid from "@/components/common/DataGrid";
 import {
   FilterType,
@@ -7,24 +7,27 @@ import {
 } from "@/configs/filters/purchase-order";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import { PurchaseOrder, getPurchaseOrders } from "@/services/domain";
-import { ONE_DAY, endOfDay, startOfDay } from "@/utils";
+import {
+  PurchaseRequest,
+  getPurchaseRequests,
+} from "@/services/domain";
+import useCateringStore from "@/stores/catering.store";
+import { endOfDay, startOfDay } from "@/utils";
 import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { configs } from "./_config";
 
-const PurchasingOrderManagement = () => {
+const PurchasingRequestManagement = () => {
   const t = useTranslation();
-  const [purchaseOrders, setPurchaseOrders] = useState<
-  PurchaseOrder[]
+  const [purchaseRequests, setPurchaseRequests] = useState<
+  PurchaseRequest[]
   >([]);
-  const [from, setFrom] = useState(startOfDay(Date.now() - ONE_DAY));
-  const [to, setTo] = useState(startOfDay(Date.now() + ONE_DAY));
+  const { caterings } = useCateringStore();
 
   const onOpenNote = useCallback(
     (id: string) => {
-      const note = purchaseOrders.find((po) => po.id === id)?.others
+      const note = purchaseRequests.find((pr) => pr.id === id)?.others
         .note;
       modals.open({
         centered: true,
@@ -32,16 +35,16 @@ const PurchasingOrderManagement = () => {
         children: <Text size="sm">{note ?? t("No notes")}</Text>,
       });
     },
-    [purchaseOrders, t],
+    [purchaseRequests, t],
   );
 
   const dataGridConfigs = useMemo(
-    () => configs(t, onOpenNote),
-    [t, onOpenNote],
+    () => configs(t, caterings, onOpenNote),
+    [t, caterings, onOpenNote],
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseOrders(await getPurchaseOrders(from, to));
+    setPurchaseRequests(await getPurchaseRequests(from, to));
   };
 
   useEffect(() => {
@@ -49,8 +52,8 @@ const PurchasingOrderManagement = () => {
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseOrders;
-  }, [purchaseOrders]);
+    return purchaseRequests;
+  }, [purchaseRequests]);
 
   const {
     condition,
@@ -62,59 +65,54 @@ const PurchasingOrderManagement = () => {
     reload,
     setPage,
     updateCondition,
-  } = useFilterData<PurchaseOrder, FilterType>({
+  } = useFilterData<PurchaseRequest, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
   });
 
   const onChangeDateRange = (from?: number, to?: number) => {
-    if (!from || !to) {
-      return;
-    }
-    setFrom(from);
-    setTo(to);
-  };
-
-  const onFilter = () => {
-    if (condition?.from && condition?.to) {
+    if (condition?.from && condition?.to && from && to) {
       const _from = startOfDay(from);
       const _to = endOfDay(to);
       if (from < condition.from || to > condition.to) {
         getData(_from, _to);
       }
       updateCondition("from", "", _from);
-      updateCondition("to", "", _to);
+      updateCondition("to", "", to);
     }
   };
 
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"end"} gap={10} key={counter}>
-        <PurchaseOrderFilter
+        <PurchaseRequestFilter
           keyword={keyword}
-          from={from}
-          to={to}
-          type={condition?.type}
-          priority={condition?.priority}
-          status={condition?.status}
-          departmentName={condition?.departmentName}
+          from={condition?.from}
+          to={condition?.to}
+          types={condition?.types}
+          priorities={condition?.priorities}
+          statuses={condition?.statuses}
+          departmentIds={condition?.departmentIds}
           purchaseOrderIds={names}
           onReload={reload}
-          onChangeType={updateCondition.bind(null, "type", "")}
-          onChangePriority={updateCondition.bind(
+          onChangeTypes={updateCondition.bind(null, "types", "")}
+          onChangePriorities={updateCondition.bind(
             null,
-            "priority",
+            "priorities",
             "",
           )}
-          onChangeStatus={updateCondition.bind(null, "status", "")}
-          onChangeDepartmentName={updateCondition.bind(
+          onChangeStatuses={updateCondition.bind(
             null,
-            "departmentName",
+            "statuses",
+            "",
+          )}
+          onChangeDepartmentIds={updateCondition.bind(
+            null,
+            "departmentIds",
             "",
           )}
           onChangeDateRange={onChangeDateRange}
-          onFilter={onFilter}
         />
       </Flex>
       <DataGrid
@@ -130,4 +128,4 @@ const PurchasingOrderManagement = () => {
   );
 };
 
-export default PurchasingOrderManagement;
+export default PurchasingRequestManagement;
