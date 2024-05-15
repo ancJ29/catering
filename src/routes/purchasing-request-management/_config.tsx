@@ -19,7 +19,7 @@ export const configs = (
       width: "18%",
       style: { fontWeight: "bold" },
       renderCell: (_, row: PurchaseRequest) => {
-        return row.prCode || "N/A";
+        return row.code || "N/A";
       },
     },
     {

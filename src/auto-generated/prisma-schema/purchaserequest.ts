@@ -10,7 +10,7 @@ export const purchaseRequestSchema = z.object({
   id: z.string(),
   clientId: z.number().int(),
   deliveryDate: z.date(),
-  prCode: z.string(),
+  code: z.string(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

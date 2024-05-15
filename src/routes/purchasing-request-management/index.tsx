@@ -65,6 +65,8 @@ const PurchasingRequestManagement = () => {
     reload,
     setPage,
     updateCondition,
+    filtered,
+    reset,
   } = useFilterData<PurchaseRequest, FilterType>({
     dataLoader: dataLoader,
     filter,
@@ -95,6 +97,8 @@ const PurchasingRequestManagement = () => {
           statuses={condition?.statuses}
           departmentIds={condition?.departmentIds}
           purchaseOrderIds={names}
+          clearable={filtered}
+          onClear={reset}
           onReload={reload}
           onChangeTypes={updateCondition.bind(null, "types", "")}
           onChangePriorities={updateCondition.bind(

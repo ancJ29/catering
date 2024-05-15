@@ -12,6 +12,7 @@ import { Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useMemo } from "react";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
+import CustomButton from "../CustomButton";
 import classes from "./PurchaseRequestFilter.module.scss";
 
 type PurchaseOrderFilterProps = {
@@ -23,6 +24,8 @@ type PurchaseOrderFilterProps = {
   statuses?: string[];
   departmentIds?: string[];
   purchaseOrderIds: string[];
+  clearable?: boolean;
+  onClear: () => void;
   onReload: (keyword?: string) => void;
   onChangeTypes: (value: string[]) => void;
   onChangePriorities: (value: string[]) => void;
@@ -40,6 +43,8 @@ const PurchaseRequestFilter = ({
   statuses,
   departmentIds,
   purchaseOrderIds,
+  clearable,
+  onClear,
   onReload,
   onChangeTypes,
   onChangePriorities,
@@ -79,6 +84,9 @@ const PurchaseRequestFilter = ({
           onChange={onChangeDateRange}
           w={"22vw"}
         />
+        <CustomButton disabled={!clearable} onClick={onClear}>
+          {t("Clear")}
+        </CustomButton>
       </div>
       <div className={classes.filterContainer}>
         <AutocompleteForFilterData
@@ -94,7 +102,6 @@ const PurchaseRequestFilter = ({
           w={"20vw"}
           options={typeOptions}
           onChange={onChangeTypes}
-          searchable
         />
         <MultiSelect
           value={priorities}
@@ -102,7 +109,6 @@ const PurchaseRequestFilter = ({
           w={"20vw"}
           options={priorityOptions}
           onChange={onChangePriorities}
-          searchable
         />
         <MultiSelect
           value={statuses}
@@ -110,7 +116,6 @@ const PurchaseRequestFilter = ({
           w={"20vw"}
           options={statusOptions}
           onChange={onChangeStatuses}
-          searchable
         />
         <MultiSelect
           value={departmentIds}
@@ -118,7 +123,6 @@ const PurchaseRequestFilter = ({
           w={"20vw"}
           options={_caterings}
           onChange={onChangeDepartmentIds}
-          searchable
         />
       </div>
     </div>

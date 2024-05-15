@@ -1,59 +1,147 @@
-import useOnEnter from "@/hooks/useOnEnter";
-import useTranslation from "@/hooks/useTranslation";
 import { OptionProps } from "@/types";
-import { blank } from "@/utils";
 import {
-  MultiSelect as MantineMultiSelect,
-  MultiSelectProps,
+  CheckIcon,
+  Combobox,
+  Group,
+  Input,
+  Pill,
+  PillsInput,
+  Text,
+  useCombobox,
 } from "@mantine/core";
-import { useMemo } from "react";
-import classes from "./MultiSelect.module.scss";
 import { IconChevronDown } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import classes from "./MultiSelect.module.scss";
 
-interface Props extends MultiSelectProps {
+type MultiSelectProps = {
+  label?: string;
   options: OptionProps[];
-  translation?: boolean;
   value?: string[];
   placeholder?: string;
-  onEnter?: () => void;
-}
-// TODO: remove it, merger with select
+  onChange: (value: string[]) => void;
+  w?: string;
+};
+
 const MultiSelect = ({
+  label,
   options,
-  translation = false,
   value = [],
   placeholder,
-  onEnter = blank,
-  ...props
-}: Props) => {
-  const t = useTranslation();
+  onChange,
+  w,
+}: MultiSelectProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
 
-  const data = options.map(({ value, label }, idx) => ({
-    value: value.toString(),
-    label: translation ? t(label) : label,
-    isLastOption: idx === options.length - 1,
-  }));
+  useEffect(() => {
+    if (ref.current) {
+      setWidth(ref.current.offsetWidth);
+    }
+  }, []);
 
-  const customPlaceholder = useMemo(
-    () => (value.length > 0 ? undefined : placeholder),
-    [placeholder, value],
-  );
-  const _onEnter = useOnEnter(onEnter);
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+    onDropdownOpen: () =>
+      combobox.updateSelectedOptionIndex("active"),
+  });
+
+  const handleValueSelect = (val: string) => {
+    onChange(
+      value.includes(val)
+        ? value.filter((v) => v !== val)
+        : [...value, val],
+    );
+  };
+
+  const handleValueRemove = (val: string) => {
+    onChange(value.filter((v) => v !== val));
+  };
+
+  const PillItems = () => {
+    let valueWidth = 0;
+    let lastIndex = value.length;
+    for (let i = 0; i < value.length; i++) {
+      valueWidth += (value[i].length * 20) + 70;
+      if (valueWidth > width) {
+        break;
+      }
+      lastIndex = i + 1;
+    }
+    return (
+      <>
+        {value.slice(0, lastIndex).map((item) => (
+          <Pill
+            key={item}
+            withRemoveButton
+            onRemove={() => handleValueRemove(item)}
+          >
+            {options.find((e) => e.value === item)?.label}
+          </Pill>
+        ))}
+        {lastIndex < value.length && <Text>...</Text>}
+      </>
+    );
+  };
+
+  const comboboxOptions = options.map((item) => {
+    const itemId = item.value.toString();
+    return (
+      <Combobox.Option
+        key={itemId}
+        value={itemId}
+        active={value.includes(itemId)}
+      >
+        <Group gap="sm">
+          {value.includes(itemId) ? <CheckIcon size={12} /> : null}
+          <span>{item.label}</span>
+        </Group>
+      </Combobox.Option>
+    );
+  });
 
   return (
-    <MantineMultiSelect
-      data={data}
-      checkIconPosition="right"
-      rightSection={<IconChevronDown size={16} />}
-      classNames={{
-        input: "c-catering-truncate h-16",
-        label: classes.label,
-      }}
-      value={value}
-      placeholder={customPlaceholder}
-      onKeyDown={_onEnter}
-      {...props}
-    />
+    <div style={{ width: w }} ref={ref}>
+      {label && <Text className={classes.label}>{label}</Text>}
+
+      <Combobox
+        store={combobox}
+        onOptionSubmit={handleValueSelect}
+        withinPortal={false}
+      >
+        <Combobox.DropdownTarget>
+          <PillsInput
+            pointer
+            rightSection={<IconChevronDown size={16} />}
+            onClick={() => combobox.toggleDropdown()}
+          >
+            <Pill.Group className={classes.pillGroup}>
+              {value.length > 0 ? (
+                <PillItems />
+              ) : (
+                <Input.Placeholder>{placeholder}</Input.Placeholder>
+              )}
+
+              <Combobox.EventsTarget>
+                <PillsInput.Field
+                  type="hidden"
+                  onBlur={() => combobox.closeDropdown()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Backspace") {
+                      event.preventDefault();
+                      handleValueRemove(value[value.length - 1]);
+                    }
+                  }}
+                />
+              </Combobox.EventsTarget>
+            </Pill.Group>
+          </PillsInput>
+        </Combobox.DropdownTarget>
+
+        <Combobox.Dropdown>
+          <Combobox.Options>{comboboxOptions}</Combobox.Options>
+        </Combobox.Dropdown>
+      </Combobox>
+    </div>
   );
 };
 

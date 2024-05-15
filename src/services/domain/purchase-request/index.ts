@@ -43,7 +43,7 @@ export async function getPurchaseRequests(
   return _getPurchaseRequests(from, to).then((purchaseRequests) => {
     return purchaseRequests.map((el) => ({
       ...el,
-      name: el.prCode,
+      name: el.code,
     }));
   });
 }
@@ -75,8 +75,8 @@ export function typeStatusAndPriorityOptions(
   return [typeOptions, statusOptions, priorityOptions];
 }
 
-export function prStatusColor(
-  status: PRStatus | undefined,
+export function statusColor(
+  status: PRStatus,
   level = 6,
 ) {
   const colors: Record<PRStatus, string> = {
@@ -95,16 +95,13 @@ export function prStatusColor(
   return `${colors[status]}.${level}`;
 }
 
-export function prPriorityColor(
-  priority: PRPriority | undefined,
+export function priorityColor(
+  priority: PRPriority,
   level = 6,
 ) {
   const colors: Record<PRPriority, string> = {
     BT: "blue",
     KC: "red",
   };
-  if (!priority) {
-    return "";
-  }
   return `${colors[priority]}.${level}`;
 }
