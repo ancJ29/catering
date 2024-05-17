@@ -7,7 +7,7 @@ import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
 import notificationStore from "@/services/api/store/notification";
 import { getBom, pushBom } from "@/services/domain";
-import { Flex, Grid, Stack } from "@mantine/core";
+import { Button, Flex, Grid, Stack } from "@mantine/core";
 import { useCounter, useDisclosure } from "@mantine/hooks";
 import {
   IconChevronsLeft,
@@ -242,35 +242,24 @@ const BomManagement = () => {
           zIndex: 0,
         }}
       >
-        {opened ? (
-          <IconChevronsRight
-            onClick={toggle}
-            size={30}
-            style={{
-              zIndex: 100,
-              color: "var(--main-color)",
-              cursor: "pointer",
-              position: "absolute",
-              top: "10vh",
-              right: 0,
-              margin: "1rem",
-            }}
-          />
-        ) : (
-          <IconChevronsLeft
-            onClick={toggle}
-            size={30}
-            style={{
-              zIndex: 100,
-              color: "var(--main-color)",
-              cursor: "pointer",
-              position: "absolute",
-              top: "10vh",
-              right: 0,
-              margin: "1rem",
-            }}
-          />
-        )}
+        <Button
+          onClick={toggle}
+          style={{
+            zIndex: 100,
+            cursor: "pointer",
+            position: "absolute",
+            top: "8.6vh",
+            right: 0,
+            margin: "1rem",
+          }}
+          leftSection={opened ? null : <IconChevronsLeft size={16} />}
+          rightSection={
+            opened ? <IconChevronsRight size={16} /> : null
+          }
+          variant="transparent"
+        >
+          {t("Material list")}
+        </Button>
       </div>
     </Stack>
   );
