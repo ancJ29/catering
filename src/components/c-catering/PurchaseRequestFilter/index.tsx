@@ -95,6 +95,7 @@ const PurchaseRequestFilter = ({
           data={purchaseOrderIds}
           defaultValue={keyword}
           onReload={onReload}
+          disabled={false}
         />
         <MultiSelect
           value={types}
