@@ -17,7 +17,9 @@ export default function useUrlHash<T extends GenericObject>(
   useEffect(() => {
     if (!loaded) {
       setLoaded(true);
-      callback(toCondition(locationHash));
+      if (locationHash) {
+        callback(toCondition(locationHash));
+      }
     }
   }, [locationHash, loaded, callback]);
 }

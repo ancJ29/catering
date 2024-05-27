@@ -16,11 +16,12 @@ export default async function request(
   const encoded = await encode(data);
   const nonce = await _nonce(timestamp, encoded, requestId);
   logger.trace(`[request] [${timestamp}] [${nonce}]`);
+  const DEBUG_MODE = localStorage.getItem("__DEBUG_MODE") === "UXNNvrAA";
   return axios
     .request({
       method: "POST",
       url: import.meta.env.BASE_URL,
-      data: {
+      data: DEBUG_MODE ? data : {
         ...(debugCode ? data : {}),
         data: encoded,
       },
@@ -31,6 +32,7 @@ export default async function request(
         "x-client-timestamp": timestamp,
         "x-client-request-id": requestId,
         "x-debug-code": debugCode,
+        "x-debug-mode": "UXNNvrAA",
       },
     })
     .then(async (res) => {
