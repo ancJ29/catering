@@ -43,7 +43,7 @@ const AddPurchasingRequest = () => {
     (value: string | null, departmentId?: string) => {
       setSelectedSource(value);
       setOpened(false);
-      const _departmentId = departmentId || values.departmentId;
+      const _departmentId = departmentId !== undefined ? departmentId : values.departmentId;
       if(_departmentId) {
         switch (value) {
           case ImportMaterialAction.LOAD_LOW_STOCK:
