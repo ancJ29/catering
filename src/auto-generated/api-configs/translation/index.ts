@@ -2,6 +2,7 @@ import {
   ClientRoles,
   DailyMenuStatus,
   MaterialGroup,
+  MaterialOrderCycle,
   MaterialType,
   ProductType,
   PRPriority,
@@ -18,7 +19,8 @@ type ProductKey = `products.type.${ProductType}`;
 type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
 type MaterialKey =
   | `materials.type.${MaterialType}`
-  | `materials.group.${MaterialGroup}`;
+  | `materials.group.${MaterialGroup}`
+  | `materials.orderCycle.${MaterialOrderCycle}`;
 type PurchaseRequestKey =
   | `purchaseRequest.type.${PRType}`
   | `purchaseRequest.priority.${PRPriority}`
@@ -163,6 +165,8 @@ const materialDictionaries: {
     "materials.group.Y": "Health, Food Safety and Hygiene",
     "materials.group.Z": "Vegetarian food",
     "materials.group.P": "Uniform",
+    "materials.orderCycle.HN": "Daily",
+    "materials.orderCycle.DK": "Periodic",
   },
   vi: {
     /* cspell:disable */
@@ -204,6 +208,8 @@ const materialDictionaries: {
     "materials.group.Y": "Y Tế,ATVSTP",
     "materials.group.Z": "Đồ chay",
     "materials.group.P": "Đồng Phục",
+    "materials.orderCycle.HN": "Hằng ngày",
+    "materials.orderCycle.DK": "Định kỳ",
     /* cspell:enable */
   },
 };

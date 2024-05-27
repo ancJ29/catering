@@ -25,7 +25,12 @@ import {
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
-import { stringSchema } from "./schema";
+import {
+  dateSchema,
+  nullishStringSchema,
+  numberSchema,
+  stringSchema,
+} from "./schema";
 
 export const xUserSchema = userSchema
   .omit({
@@ -126,3 +131,18 @@ export const xPurchaseRequestSchema = purchaseRequestSchema
   .extend({
     others: purchaseRequestOthersSchema,
   });
+
+export const xAddPurchaseRequest = z.object({
+  deliveryDate: dateSchema,
+  departmentId: stringSchema,
+  type: stringSchema,
+  priority: stringSchema,
+  note: nullishStringSchema,
+  purchaseRequestDetails: z
+    .object({
+      materialId: stringSchema,
+      amount: numberSchema,
+      note: nullishStringSchema,
+    })
+    .array(),
+});

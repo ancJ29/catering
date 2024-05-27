@@ -1,12 +1,16 @@
-import { useRef } from "react";
 import { ActionIcon, rem } from "@mantine/core";
 import {
-  TimeInput as TimeInputMantine,
-  TimeInputProps,
+  TimeInput as MantineTimeInput,
+  TimeInputProps as MantineTimeInputProps,
 } from "@mantine/dates";
 import { IconClock } from "@tabler/icons-react";
+import { ChangeEvent, useRef } from "react";
 
-const TimeInput = ({ ...props }: TimeInputProps) => {
+interface TimeInputProps extends MantineTimeInputProps {
+  onChangeValue: (value: string) => void;
+}
+
+const TimeInput = ({ onChangeValue, ...props }: TimeInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
   const pickerControl = (
@@ -21,9 +25,14 @@ const TimeInput = ({ ...props }: TimeInputProps) => {
     </ActionIcon>
   );
 
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChangeValue(event.target.value);
+  };
+
   return (
-    <TimeInputMantine
+    <MantineTimeInput
       ref={ref}
+      onChange={onChange}
       rightSection={pickerControl}
       {...props}
     />

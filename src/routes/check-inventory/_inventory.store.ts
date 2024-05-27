@@ -22,6 +22,7 @@ type Action = {
   cateringId?: string;
   inventories?: Inventory[];
   amount?: number;
+  minimumAmount?: number;
   materialId?: string;
 };
 
@@ -127,6 +128,7 @@ function reducer(action: Action, state: State): State {
             departmentId: state.cateringId,
             materialId: action.materialId,
             amount: action.amount || 0,
+            minimumAmount: action.minimumAmount || 0,
             updatedAt: new Date(),
           },
         };

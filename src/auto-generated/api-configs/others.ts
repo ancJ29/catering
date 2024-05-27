@@ -208,6 +208,13 @@ const materialGroupSchema = z.enum([
   // cspell:enable
 ]);
 
+export const materialOrderCycleSchema = z.enum([
+  // cspell:disable
+  "HN", // Hằng ngày
+  "DK", // Định kỳ
+  // cspell:enable
+]);
+
 export const materialOthersSchema = z.object({
   oldId: numberSchema,
   internalCode: stringSchema,
@@ -215,6 +222,7 @@ export const materialOthersSchema = z.object({
   type: materialTypeSchema,
   price: optionalNumberSchema,
   prices: z.record(stringSchema, numberSchema).optional(),
+  orderCycle: materialOrderCycleSchema,
   /*
     Unit:
       [kg, g] => [1000] ~ 1kg = 1000g
@@ -349,6 +357,7 @@ export type ProductType = z.infer<typeof productTypeSchema>;
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type MaterialType = z.infer<typeof materialTypeSchema>;
 export type MaterialGroup = z.infer<typeof materialGroupSchema>;
+export type MaterialOrderCycle = z.infer<typeof materialOrderCycleSchema>;
 export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
 export type PRType = z.infer<typeof prTypeSchema>;
 export type PRPriority = z.infer<typeof prPrioritySchema>;

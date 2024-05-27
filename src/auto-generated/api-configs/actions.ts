@@ -10,6 +10,7 @@ import {
 
 import { z } from "zod";
 import {
+  xAddPurchaseRequest,
   xCustomerSchema,
   xDailyMenuSchema,
   xDepartmentSchema,
@@ -629,9 +630,49 @@ export const configs = {
           materialId: stringSchema,
           departmentId: stringSchema,
           amount: numberSchema,
+          minimumAmount: numberSchema,
           others: inventoryOthersSchema,
         })
         .array(),
+    },
+  },
+  [Actions.GET_LOW_INVENTORIES]: {
+    name: Actions.GET_LOW_INVENTORIES,
+    group: ActionGroups.INVENTORY_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        departmentId: stringSchema,
+      }),
+      response: listResponse.extend({
+        inventories: xInventorySchema.array(),
+      }),
+    },
+  },
+  [Actions.GET_PERIODIC_INVENTORIES]: {
+    name: Actions.GET_PERIODIC_INVENTORIES,
+    group: ActionGroups.INVENTORY_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        departmentId: stringSchema,
+      }),
+      response: listResponse.extend({
+        inventories: xInventorySchema.array(),
+      }),
+    },
+  },
+  [Actions.GET_INVENTORIES_FOR_DAILY_MENU]: {
+    name: Actions.GET_INVENTORIES_FOR_DAILY_MENU,
+    group: ActionGroups.INVENTORY_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        departmentId: stringSchema,
+      }),
+      response: listResponse.extend({
+        inventories: xInventorySchema.array(),
+      }),
     },
   },
   [Actions.GET_SUPPLIERS]: {
@@ -739,6 +780,15 @@ export const configs = {
       response: listResponse.extend({
         purchaseRequests: xPurchaseRequestSchema.array(),
       }),
+    },
+  },
+  [Actions.ADD_PURCHASE_REQUEST]: {
+    name: Actions.ADD_PURCHASE_REQUEST,
+    group: ActionGroups.PURCHASE_REQUEST_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xAddPurchaseRequest,
+      response: addResponse,
     },
   },
 } satisfies Record<Actions, ActionConfig>;

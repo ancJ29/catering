@@ -12,6 +12,7 @@ export const inventorySchema = z.object({
   departmentId: z.string(),
   materialId: z.string(),
   amount: z.number(),
+  minimumAmount: z.number(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

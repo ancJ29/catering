@@ -56,12 +56,16 @@ export enum Actions {
   UPDATE_MATERIAL_SUPPLIER = "update-material-supplier",
   GET_INVENTORY = "get-inventory",
   UPDATE_INVENTORY = "update-inventory",
+  GET_LOW_INVENTORIES = "get-low-inventories",
+  GET_PERIODIC_INVENTORIES = "get-periodic-inventories",
+  GET_INVENTORIES_FOR_DAILY_MENU = "get-inventories-for-daily-menu",
   GET_SUPPLIERS = "get-suppliers",
   ADD_SUPPLIER = "add-supplier",
   UPDATE_SUPPLIER = "update-supplier",
   UPDATE_SUPPLIER_MATERIAL = "update-supplier-material",
   GET_PURCHASE_ORDERS = "get-purchase-orders",
   GET_PURCHASE_REQUESTS = "get-purchase-requests",
+  ADD_PURCHASE_REQUEST = "add-purchase-request",
 }
 
 export enum Permissions {

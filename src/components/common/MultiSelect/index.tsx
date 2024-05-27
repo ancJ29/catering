@@ -61,7 +61,7 @@ const MultiSelect = ({
     let valueWidth = 0;
     let lastIndex = value.length;
     for (let i = 0; i < value.length; i++) {
-      valueWidth += (value[i].length * 20) + 70;
+      valueWidth += value[i].length * 20 + 70;
       if (valueWidth > width) {
         break;
       }

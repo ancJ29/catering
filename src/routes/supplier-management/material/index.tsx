@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import MaterialListButton from "@/components/c-catering/MaterialListButton";
 import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -15,10 +16,6 @@ import { Box, Button, Flex, Grid, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import {
-  IconChevronsLeft,
-  IconChevronsRight,
-} from "@tabler/icons-react";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SupplierMaterial, configs } from "./_config";
@@ -187,19 +184,11 @@ const SupplierMaterialManagement = () => {
             <Button disabled={!changed} onClick={save}>
               {t("Save")}
             </Button>
-            <Button
+            <MaterialListButton
+              opened={opened}
               onClick={toggle}
               mt="0.5rem"
-              leftSection={
-                opened ? null : <IconChevronsLeft size={16} />
-              }
-              rightSection={
-                opened ? <IconChevronsRight size={16} /> : null
-              }
-              variant="transparent"
-            >
-              {t("Material list")}
-            </Button>
+            />
           </Flex>
         </Flex>
         <Grid mt={10}>

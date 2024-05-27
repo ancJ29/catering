@@ -7,9 +7,14 @@ import {
   prStatusSchema,
   prTypeSchema,
 } from "@/auto-generated/api-configs";
+import {
+  AddPurchaseRequestForm,
+  PurchaseDetail,
+} from "@/routes/purchasing-request-management/add/_config";
+import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import { OptionProps } from "@/types";
-import { ONE_DAY, endOfDay, startOfDay } from "@/utils";
+import { ONE_DAY, endOfDay, getDateTime, startOfDay } from "@/utils";
 import { z } from "zod";
 
 const response =
@@ -23,6 +28,10 @@ export type PurchaseRequest = z.infer<
 > & {
   name: string;
 };
+
+const { request } =
+  actionConfigs[Actions.ADD_PURCHASE_REQUEST].schema;
+type Request = z.infer<typeof request>;
 
 export async function _getPurchaseRequests(
   from = startOfDay(Date.now() - ONE_DAY),
@@ -48,6 +57,28 @@ export async function getPurchaseRequests(
   });
 }
 
+export async function addPurchaseRequest(
+  purchaseRequest: AddPurchaseRequestForm,
+  purchaseDetails: PurchaseDetail[],
+) {
+  await callApi<Request, { id: string }>({
+    action: Actions.ADD_PURCHASE_REQUEST,
+    params: {
+      deliveryDate: getDateTime(
+        purchaseRequest.deliveryDate,
+        purchaseRequest.deliveryTime,
+      ),
+      departmentId: purchaseRequest.departmentId,
+      type: purchaseRequest.type,
+      priority: purchaseRequest.priority,
+      purchaseRequestDetails: purchaseDetails.map((e) => ({
+        materialId: e.materialId,
+        amount: e.amount,
+      })),
+    },
+  });
+}
+
 export function typeStatusAndPriorityOptions(
   t: (key: string) => string,
 ) {
@@ -58,13 +89,6 @@ export function typeStatusAndPriorityOptions(
     }),
   );
 
-  const statusOptions: OptionProps[] = prStatusSchema.options.map(
-    (status) => ({
-      label: t(`purchaseRequest.status.${status}`),
-      value: status,
-    }),
-  );
-
   const priorityOptions: OptionProps[] = prPrioritySchema.options.map(
     (priority) => ({
       label: t(`purchaseRequest.priority.${priority}`),
@@ -72,13 +96,17 @@ export function typeStatusAndPriorityOptions(
     }),
   );
 
-  return [typeOptions, statusOptions, priorityOptions];
+  const statusOptions: OptionProps[] = prStatusSchema.options.map(
+    (status) => ({
+      label: t(`purchaseRequest.status.${status}`),
+      value: status,
+    }),
+  );
+
+  return [typeOptions, priorityOptions, statusOptions];
 }
 
-export function statusColor(
-  status: PRStatus,
-  level = 6,
-) {
+export function statusColor(status: PRStatus, level = 6) {
   const colors: Record<PRStatus, string> = {
     DG: "cyan",
     DD: "green",
@@ -95,10 +123,7 @@ export function statusColor(
   return `${colors[status]}.${level}`;
 }
 
-export function priorityColor(
-  priority: PRPriority,
-  level = 6,
-) {
+export function priorityColor(priority: PRPriority, level = 6) {
   const colors: Record<PRPriority, string> = {
     BT: "blue",
     KC: "red",

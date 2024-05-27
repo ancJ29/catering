@@ -1,9 +1,7 @@
 import { Text } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
 import classNames from "classnames";
+import DateInput from "../DateInput";
 import classes from "./DateRangeInput.module.scss";
-
-type DateValue = Date | null;
 
 type DateRangeInputProps = {
   from?: number;
@@ -24,8 +22,8 @@ const DateRangeInput = ({
   onChange,
   w,
 }: DateRangeInputProps) => {
-  const _onChange = (from: DateValue, to: DateValue) => {
-    onChange && onChange(from?.getTime(), to?.getTime());
+  const _onChange = (from?: number, to?: number) => {
+    onChange && onChange(from, to);
   };
 
   return (
@@ -35,21 +33,15 @@ const DateRangeInput = ({
         <DateInput
           placeholder={placeholder}
           value={new Date(from)}
-          onChange={(value) =>
-            _onChange(value, new Date(to) || value)
-          }
+          onChangeDate={(value) => _onChange(value, to || value)}
           maxDate={new Date(to)}
-          valueFormat="DD/MM/YYYY"
         />
         <span className={classes.tilde}>~</span>
         <DateInput
           placeholder={placeholder}
           value={new Date(to)}
           minDate={new Date(from)}
-          onChange={(value) =>
-            _onChange(new Date(from) || value, value)
-          }
-          valueFormat="DD/MM/YYYY"
+          onChangeDate={(value) => _onChange(from || value, value)}
         />
       </div>
     </div>

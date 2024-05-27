@@ -32,12 +32,14 @@ const MaterialSelector = ({
   labelGenerator,
   disabled,
   materialIds: _materialIds = [],
+  h,
 }: {
   disabled?: boolean;
   materialIds?: string[];
   onAdd: (id: string) => void;
   onRemove: (id: string) => void;
   labelGenerator?: (m: Material) => React.ReactNode;
+  h?: string;
 }) => {
   const [materialIds, setMaterialIds] = useState(_materialIds);
   const t = useTranslation();
@@ -92,7 +94,7 @@ const MaterialSelector = ({
   );
 
   return (
-    <>
+    <ScrollArea h={h}>
       <Flex justify="end" align={"center"} mb="1rem">
         <Select
           key={condition?.type || ""}
@@ -135,7 +137,7 @@ const MaterialSelector = ({
           {t("Clear")}
         </CustomButton>
       </Box>
-      <ScrollArea h="60vh">
+      <ScrollArea h={h ? undefined : "60vh"}>
         <Selector
           key={_materialIds.length}
           disabled={disabled}
@@ -146,7 +148,7 @@ const MaterialSelector = ({
           labelGenerator={labelGenerator}
         />
       </ScrollArea>
-    </>
+    </ScrollArea>
   );
 };
 

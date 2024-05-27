@@ -11,6 +11,7 @@ import { ONE_DAY } from "@/utils";
 import { Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
 import CustomButton from "../CustomButton";
 import classes from "./PurchaseRequestFilter.module.scss";
@@ -52,9 +53,10 @@ const PurchaseRequestFilter = ({
   onChangeDepartmentIds,
   onChangeDateRange,
 }: PurchaseOrderFilterProps) => {
+  const navigate = useNavigate();
   const t = useTranslation();
   const { caterings } = useCateringStore();
-  const [typeOptions, statusOptions, priorityOptions] =
+  const [typeOptions, priorityOptions, statusOptions] =
     useMemo(() => {
       return typeStatusAndPriorityOptions(t);
     }, [t]);
@@ -70,7 +72,9 @@ const PurchaseRequestFilter = ({
     <div className={classes.container}>
       <div className={classes.buttonContainer}>
         <Button
-          onClick={() => null}
+          onClick={() =>
+            navigate("/purchasing-request-management/add")
+          }
           leftSection={<IconPlus size={16} />}
         >
           {t("Add purchase request")}

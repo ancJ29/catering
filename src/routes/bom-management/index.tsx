@@ -1,5 +1,6 @@
 import CateringBar from "@/components/c-catering/CateringBar";
 import CustomButton from "@/components/c-catering/CustomButton";
+import MaterialListButton from "@/components/c-catering/MaterialListButton";
 import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import useLoading from "@/hooks/useLoading";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -7,12 +8,8 @@ import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
 import notificationStore from "@/services/api/store/notification";
 import { getBom, pushBom } from "@/services/domain";
-import { Button, Flex, Grid, Stack } from "@mantine/core";
+import { Flex, Grid, Stack } from "@mantine/core";
 import { useCounter, useDisclosure } from "@mantine/hooks";
-import {
-  IconChevronsLeft,
-  IconChevronsRight,
-} from "@tabler/icons-react";
 import {
   useCallback,
   useReducer,
@@ -242,7 +239,8 @@ const BomManagement = () => {
           zIndex: 0,
         }}
       >
-        <Button
+        <MaterialListButton
+          opened={opened}
           onClick={toggle}
           style={{
             zIndex: 100,
@@ -252,14 +250,7 @@ const BomManagement = () => {
             right: 0,
             margin: "1rem",
           }}
-          leftSection={opened ? null : <IconChevronsLeft size={16} />}
-          rightSection={
-            opened ? <IconChevronsRight size={16} /> : null
-          }
-          variant="transparent"
-        >
-          {t("Material list")}
-        </Button>
+        />
       </div>
     </Stack>
   );

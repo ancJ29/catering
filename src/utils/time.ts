@@ -57,3 +57,12 @@ export function formatTime(
 ) {
   return dateTime ? dayjs(dateTime).format(format) : "-";
 }
+
+export function getDateTime(date: number, time: string) {
+  const _date = new Date(date);
+  const [hours, minutes] = time.split(":").map(Number);
+  _date.setHours(hours);
+  _date.setMinutes(minutes);
+  _date.setSeconds(0);
+  return _date;
+}
