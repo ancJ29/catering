@@ -1,3 +1,4 @@
+import MaterialListButton from "@/components/c-catering/MaterialListButton";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import { Flex } from "@mantine/core";
@@ -5,6 +6,8 @@ import { Flex } from "@mantine/core";
 type ImportMaterialsProps = {
   selectedSource: string | null;
   onChangeSelectedSource: (value: string | null) => void;
+  opened: boolean;
+  toggle: () => void;
 };
 
 export enum ImportMaterialAction {
@@ -18,6 +21,8 @@ export enum ImportMaterialAction {
 const ImportMaterials = ({
   selectedSource,
   onChangeSelectedSource,
+  opened,
+  toggle,
 }: ImportMaterialsProps) => {
   const t = useTranslation();
   const materialOptions = [
@@ -44,7 +49,7 @@ const ImportMaterials = ({
   ];
 
   return (
-    <Flex justify="start" align="start" gap={10}>
+    <Flex justify="space-between" align="end" gap={10}>
       <Select
         label={t("Material source options")}
         options={materialOptions}
@@ -53,6 +58,11 @@ const ImportMaterials = ({
         allowDeselect={false}
         w="24.5%"
         required
+      />
+      <MaterialListButton
+        opened={opened}
+        onClick={toggle}
+        mt="0.5rem"
       />
     </Flex>
   );

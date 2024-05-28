@@ -24,18 +24,20 @@ const OrderInformationForm = ({
   onChangeValues,
 }: OrderInformationFormProps) => {
   const t = useTranslation();
-  const { caterings } = useCateringStore();
+  const { activeCaterings } = useCateringStore();
 
   const [typeOptions, priorityOptions] = useMemo(() => {
     return typeStatusAndPriorityOptions(t);
   }, [t]);
 
   const _caterings: OptionProps[] = useMemo(() => {
-    return Array.from(caterings.values()).map((p: Department) => ({
-      label: p.name,
-      value: p.id,
-    }));
-  }, [caterings]);
+    return Array.from(activeCaterings.values()).map(
+      (p: Department) => ({
+        label: p.name,
+        value: p.id,
+      }),
+    );
+  }, [activeCaterings]);
 
   return (
     <Flex justify="end" align="end" gap={10}>

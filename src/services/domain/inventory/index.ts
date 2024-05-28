@@ -32,7 +32,7 @@ const schema = response.omit({ cursor: true, hasMore: true });
 export async function getAllInventories(
   departmentId: string,
 ): Promise<Inventory[]> {
-  const key = "domain.inventory.getAllInventories";
+  const key = `domain.inventory.getAllInventories.${departmentId}`;
   if (cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
     if (res.success) {

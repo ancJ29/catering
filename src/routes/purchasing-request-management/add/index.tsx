@@ -34,6 +34,8 @@ const AddPurchasingRequest = () => {
   const callback = useCallback(
     (values: AddPurchaseRequestForm) => {
       setValues(values);
+      values.departmentId &&
+        store.initInventories(values.departmentId);
     },
     [setValues],
   );
@@ -43,8 +45,11 @@ const AddPurchasingRequest = () => {
     (selectedSource: string | null, departmentId?: string) => {
       setSelectedSource(selectedSource);
       setOpened(false);
-      const _departmentId = departmentId !== undefined ? departmentId : values.departmentId;
-      if(_departmentId !== null) {
+      const _departmentId =
+        departmentId !== undefined
+          ? departmentId
+          : values.departmentId;
+      if (_departmentId !== null) {
         switch (selectedSource) {
           case ImportMaterialAction.LOAD_LOW_STOCK:
             store.loadLowInventories(_departmentId);
@@ -73,11 +78,14 @@ const AddPurchasingRequest = () => {
         return;
       }
       setFieldValue(key, value);
-      if (key === "departmentId" && selectedSource !== null) {
-        handleChangeSelectedSource(
-          selectedSource,
-          value as string | undefined,
-        );
+      if (key === "departmentId") {
+        value && store.initInventories(value.toString());
+        if (selectedSource !== null) {
+          handleChangeSelectedSource(
+            selectedSource,
+            value as string | undefined,
+          );
+        }
       }
     },
     [handleChangeSelectedSource, selectedSource, setFieldValue],
@@ -113,7 +121,11 @@ const AddPurchasingRequest = () => {
         />
         <ImportMaterials
           selectedSource={selectedSource}
-          onChangeSelectedSource={(value) => handleChangeSelectedSource(value, undefined)}
+          onChangeSelectedSource={(value) =>
+            handleChangeSelectedSource(value, undefined)
+          }
+          opened={opened}
+          toggle={() => setOpened(!opened)}
         />
         <PurchaseRequestTable opened={opened} />
       </Flex>

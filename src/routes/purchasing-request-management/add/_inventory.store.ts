@@ -22,6 +22,7 @@ type State = {
 export enum ActionType {
   RESET = "RESET",
   INIT_DATA = "INIT_DATA",
+  INIT_INVENTORIES = "INIT_INVENTORIES",
   IMPORT_FROM_EXCEL = "IMPORT_FROM_EXCEL",
   ADD_MATERIAL = "ADD_MATERIAL",
   REMOVE_MATERIAL = "REMOVE_MATERIAL",
@@ -62,6 +63,10 @@ export default {
   async reset(cateringId: string) {
     const inventories = await getAllInventories(cateringId);
     dispatch({ type: ActionType.RESET, inventories });
+  },
+  async initInventories(cateringId: string) {
+    const inventories = await getAllInventories(cateringId);
+    dispatch({ type: ActionType.INIT_INVENTORIES, inventories });
   },
   async loadLowInventories(cateringId: string) {
     const inventories = await getAllLowInventories(cateringId);
@@ -179,12 +184,27 @@ function reducer(action: Action, state: State): State {
         };
       }
     }
+    case ActionType.INIT_INVENTORIES: {
+      if (action.inventories) {
+        const inventories = Object.fromEntries(
+          action.inventories.map((inventory) => [
+            inventory.materialId,
+            inventory,
+          ]),
+        );
+        return {
+          ...state,
+          inventories,
+        };
+      }
+      break;
+    }
     case ActionType.INIT_DATA:
       if (action.inventories && action.cateringId) {
         const currents = initInventories(action.inventories);
         state.count === action.inventories.length;
         return {
-          ...defaultState,
+          ...state,
           currents,
           updates: cloneDeep(currents),
           materialIds: Object.keys(currents),
