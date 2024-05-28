@@ -40,14 +40,10 @@ const AddPurchasingRequest = () => {
   useUrlHash(values, callback);
 
   const handleChangeSelectedSource = useCallback(
-    (value: string | null, departmentId?: string | null) => {
+    (value: string | null, departmentId?: string) => {
       setSelectedSource(value);
       setOpened(false);
       const _departmentId = departmentId !== undefined ? departmentId : values.departmentId;
-      notifications.show({
-        color: "red.5",
-        message: _departmentId,
-      });
       if(_departmentId !== null) {
         switch (value) {
           case ImportMaterialAction.LOAD_LOW_STOCK:
