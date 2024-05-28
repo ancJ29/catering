@@ -113,7 +113,7 @@ const AddPurchasingRequest = () => {
         />
         <ImportMaterials
           selectedSource={selectedSource}
-          onChangeSelectedSource={handleChangeSelectedSource}
+          onChangeSelectedSource={(value) => handleChangeSelectedSource(value, undefined)}
         />
         <PurchaseRequestTable opened={opened} />
       </Flex>
