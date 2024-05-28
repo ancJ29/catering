@@ -40,12 +40,12 @@ const AddPurchasingRequest = () => {
   useUrlHash(values, callback);
 
   const handleChangeSelectedSource = useCallback(
-    (value: string | null, departmentId?: string) => {
-      setSelectedSource(value);
+    (selectedSource: string | null, departmentId?: string) => {
+      setSelectedSource(selectedSource);
       setOpened(false);
       const _departmentId = departmentId !== undefined ? departmentId : values.departmentId;
       if(_departmentId !== null) {
-        switch (value) {
+        switch (selectedSource) {
           case ImportMaterialAction.LOAD_LOW_STOCK:
             store.loadLowInventories(_departmentId);
             break;
