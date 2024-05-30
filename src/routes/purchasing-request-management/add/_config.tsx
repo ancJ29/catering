@@ -21,7 +21,6 @@ export type PurchaseDetail = {
   inventory: number;
   needToOrder: number;
   amount: number;
-  difference: number;
   supplierNote: string;
   internalNote: string;
 };

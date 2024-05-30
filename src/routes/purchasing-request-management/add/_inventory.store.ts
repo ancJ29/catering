@@ -6,6 +6,10 @@ import {
   getAllLowInventories,
   getAllPeriodicInventories,
 } from "@/services/domain";
+import {
+  PreferredSupplier,
+  getAllPreferredSuppliers,
+} from "@/services/domain/preferred-supplier";
 import { cloneDeep, createStore } from "@/utils";
 import { AddPurchaseRequestForm, PurchaseDetail } from "./_config";
 
@@ -13,16 +17,16 @@ type State = {
   currents: Record<string, PurchaseDetail>;
   updates: Record<string, PurchaseDetail>;
   isSelectAll: boolean;
-  count: number;
   materialIds: string[];
   selectedMaterialIds: string[];
   inventories: Record<string, Inventory>;
+  preferredSuppliers: Record<string, PreferredSupplier>;
 };
 
 export enum ActionType {
   RESET = "RESET",
   INIT_DATA = "INIT_DATA",
-  INIT_INVENTORIES = "INIT_INVENTORIES",
+  INIT_BACKGROUND_DATA = "INIT_BACKGROUND_DATA",
   IMPORT_FROM_EXCEL = "IMPORT_FROM_EXCEL",
   ADD_MATERIAL = "ADD_MATERIAL",
   REMOVE_MATERIAL = "REMOVE_MATERIAL",
@@ -37,6 +41,7 @@ type Action = {
   type: ActionType;
   cateringId?: string;
   inventories?: Inventory[];
+  preferredSuppliers?: PreferredSupplier[];
   materialId?: string;
   amount?: number;
   note?: string;
@@ -48,10 +53,10 @@ const defaultState = {
   currents: {},
   updates: {},
   isSelectAll: true,
-  count: 0,
   materialIds: [],
   selectedMaterialIds: [],
   inventories: {},
+  preferredSuppliers: {},
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -62,11 +67,25 @@ export default {
   ...store,
   async reset(cateringId: string) {
     const inventories = await getAllInventories(cateringId);
-    dispatch({ type: ActionType.RESET, inventories });
+    const preferredSuppliers = await getAllPreferredSuppliers(
+      cateringId,
+    );
+    dispatch({
+      type: ActionType.RESET,
+      inventories,
+      preferredSuppliers,
+    });
   },
-  async initInventories(cateringId: string) {
+  async initBackgroundData(cateringId: string) {
     const inventories = await getAllInventories(cateringId);
-    dispatch({ type: ActionType.INIT_INVENTORIES, inventories });
+    const preferredSuppliers = await getAllPreferredSuppliers(
+      cateringId,
+    );
+    dispatch({
+      type: ActionType.INIT_BACKGROUND_DATA,
+      inventories,
+      preferredSuppliers,
+    });
   },
   async loadLowInventories(cateringId: string) {
     const inventories = await getAllLowInventories(cateringId);
@@ -105,7 +124,20 @@ export default {
     });
   },
   getTotalMaterial() {
-    return Object.keys(store.getSnapshot().currents).length;
+    return store.getSnapshot().selectedMaterialIds.length;
+  },
+  getTotalPrice() {
+    const state = store.getSnapshot();
+    const total = state.selectedMaterialIds.reduce(
+      (sum, materialId) => {
+        const price =
+          state.preferredSuppliers[materialId]?.price || 0;
+        const amount = state.updates[materialId].amount;
+        return sum + price * amount;
+      },
+      0,
+    );
+    return total;
   },
   setAmount(materialId: string, amount: number) {
     dispatch({
@@ -163,16 +195,23 @@ export default {
 function reducer(action: Action, state: State): State {
   switch (action.type) {
     case ActionType.RESET: {
-      if (action.inventories) {
+      if (action.inventories && action.preferredSuppliers) {
         const inventories = Object.fromEntries(
           action.inventories.map((inventory) => [
             inventory.materialId,
             inventory,
           ]),
         );
+        const preferredSuppliers = Object.fromEntries(
+          action.preferredSuppliers.map((preferredSupplier) => [
+            preferredSupplier.materialId,
+            preferredSupplier,
+          ]),
+        );
         return {
           ...defaultState,
           inventories,
+          preferredSuppliers,
           updates: {},
           currents: {},
         };
@@ -184,17 +223,24 @@ function reducer(action: Action, state: State): State {
         };
       }
     }
-    case ActionType.INIT_INVENTORIES: {
-      if (action.inventories) {
+    case ActionType.INIT_BACKGROUND_DATA: {
+      if (action.inventories && action.preferredSuppliers) {
         const inventories = Object.fromEntries(
           action.inventories.map((inventory) => [
             inventory.materialId,
             inventory,
           ]),
         );
+        const preferredSuppliers = Object.fromEntries(
+          action.preferredSuppliers.map((preferredSupplier) => [
+            preferredSupplier.materialId,
+            preferredSupplier,
+          ]),
+        );
         return {
           ...state,
           inventories,
+          preferredSuppliers,
         };
       }
       break;
@@ -202,7 +248,6 @@ function reducer(action: Action, state: State): State {
     case ActionType.INIT_DATA:
       if (action.inventories && action.cateringId) {
         const currents = initInventories(action.inventories);
-        state.count === action.inventories.length;
         return {
           ...state,
           currents,
@@ -220,18 +265,18 @@ function reducer(action: Action, state: State): State {
         !(action.materialId in state.currents)
       ) {
         const inventory = state.inventories[action.materialId];
-        state.currents[action.materialId] = {
-          materialId: action.materialId,
-          inventory: inventory.amount,
-          needToOrder: inventory.minimumAmount - inventory.amount,
-          amount: inventory.minimumAmount - inventory.amount,
-          difference: 0,
-          supplierNote: "",
-          internalNote: "",
-        };
-        state.updates[action.materialId] =
-          state.currents[action.materialId];
-        state.count += 1;
+        if (inventory) {
+          state.currents[action.materialId] = {
+            materialId: action.materialId,
+            inventory: inventory.amount,
+            needToOrder: inventory.minimumAmount - inventory.amount,
+            amount: inventory.minimumAmount - inventory.amount,
+            supplierNote: "",
+            internalNote: "",
+          };
+          state.updates[action.materialId] =
+            state.currents[action.materialId];
+        }
         return {
           ...state,
           materialIds: [...state.materialIds, action.materialId],
@@ -246,7 +291,6 @@ function reducer(action: Action, state: State): State {
       if (action.materialId && action.materialId in state.currents) {
         delete state.currents[action.materialId];
         delete state.updates[action.materialId];
-        state.count -= 1;
         return {
           ...state,
           updates: { ...state.updates },
@@ -261,9 +305,6 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_IS_SELECTED:
       if (action.materialId && action.isSelected !== undefined) {
-        state.count = action.isSelected
-          ? state.count + 1
-          : state.count - 1;
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
@@ -330,7 +371,6 @@ function initInventories(inventories: Inventory[]) {
         inventory: inventory.amount,
         needToOrder: inventory.minimumAmount - inventory.amount,
         amount: inventory.minimumAmount - inventory.amount,
-        difference: 0,
         supplierNote: "",
         internalNote: "",
       },

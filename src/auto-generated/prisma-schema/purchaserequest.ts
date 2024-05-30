@@ -15,5 +15,5 @@ export const purchaseRequestSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
-  departmentId: z.string().nullish(),
+  departmentId: z.string(),
 })

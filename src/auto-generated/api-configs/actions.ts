@@ -16,6 +16,7 @@ import {
   xDepartmentSchema,
   xInventorySchema,
   xMaterialSchema,
+  xPreferredSupplier,
   xProductSchema,
   xPurchaseOrderSchema,
   xPurchaseRequestSchema,
@@ -789,6 +790,19 @@ export const configs = {
     schema: {
       request: xAddPurchaseRequest,
       response: addResponse,
+    },
+  },
+  [Actions.GET_PREFERRED_SUPPLIERS]: {
+    name: Actions.GET_PREFERRED_SUPPLIERS,
+    group: ActionGroups.PREFERRED_SUPPLIER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        departmentId: stringSchema,
+      }),
+      response: listResponse.extend({
+        preferredSuppliers: xPreferredSupplier.array(),
+      }),
     },
   },
 } satisfies Record<Actions, ActionConfig>;

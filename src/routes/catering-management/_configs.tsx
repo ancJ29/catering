@@ -2,9 +2,10 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import IconBadge from "@/components/c-catering/IconBadge";
 import { DataGridColumnProps } from "@/types";
+import { unique } from "@/utils";
 import { z } from "zod";
-import SupplierSettingForm from "./SupplierSettingForm";
 
 const { response } = actionConfigs[Actions.GET_DEPARTMENTS].schema;
 const departmentSchema = response.shape.departments.transform(
@@ -62,15 +63,17 @@ export const configs = (
       key: "suppliers",
       header: t("Suppliers"),
       width: "10%",
-      style: { textAlign: "right", paddingRight: "1rem" },
-      renderCell: (_, department) => {
-        const totalSupplier = parseInt(
-          department.others?.totalSupplier || "0",
+      textAlign: "right",
+      renderCell: (_, row: Department) => {
+        const suppliers = unique(
+          row.supplierMaterials.map(
+            (supplierMaterial) => supplierMaterial.supplier.id,
+          ),
         );
         return (
-          <SupplierSettingForm
-            department={department}
-            totalSupplier={totalSupplier}
+          <IconBadge
+            total={suppliers.length}
+            navigateUrl={`/catering-management/supplier/${row.id}`}
           />
         );
       },

@@ -3,7 +3,7 @@ import useTranslation from "@/hooks/useTranslation";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
 import { Button, Checkbox, Table, TextInput } from "@mantine/core";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import store from "../../_inventory.store";
 
 type ItemProps = {
@@ -19,6 +19,12 @@ const Item = ({ materialId }: ItemProps) => {
     store.getSnapshot,
   );
   const purchaseDetail = currents[materialId];
+  const [amount, setAmount] = useState(purchaseDetail.amount);
+
+  const onChangeAmount = (value: number) => {
+    setAmount(value);
+    store.setAmount(purchaseDetail?.materialId, value);
+  };
 
   const columns = [
     {
@@ -47,16 +53,17 @@ const Item = ({ materialId }: ItemProps) => {
           isInteger={false}
           w="10vw"
           defaultValue={purchaseDetail?.amount}
-          onChange={(value) =>
-            store.setAmount(purchaseDetail?.materialId, value)
-          }
+          // onChange={(value) =>
+          //   store.setAmount(purchaseDetail?.materialId, value)
+          // }
+          onChange={onChangeAmount}
         />
       ),
       align: "left",
       pr: 10,
     },
     {
-      content: purchaseDetail?.amount - purchaseDetail?.needToOrder,
+      content: amount - purchaseDetail?.needToOrder,
       align: "right",
     },
     { content: material?.others.unit?.name, align: "center" },

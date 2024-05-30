@@ -251,4 +251,5 @@ export default {
   "Daily Menu": "Thực đơn ngày",
   "Material source options": "Tùy chọn nguồn nguyên liệu",
   "Please complete all information": "Vui lòng hoàn thành tất cả thông tin",
+  "Add purchase request successfully": "Thêm đơn hàng thành công",
 } satisfies Record<string, string>;

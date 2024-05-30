@@ -68,9 +68,9 @@ export async function addPurchaseRequest(
         purchaseRequest.deliveryDate,
         purchaseRequest.deliveryTime,
       ),
-      departmentId: purchaseRequest.departmentId,
-      type: purchaseRequest.type,
-      priority: purchaseRequest.priority,
+      departmentId: purchaseRequest.departmentId || "",
+      type: purchaseRequest.type || "",
+      priority: purchaseRequest.priority || "",
       purchaseRequestDetails: purchaseDetails.map((e) => ({
         materialId: e.materialId,
         amount: e.amount,

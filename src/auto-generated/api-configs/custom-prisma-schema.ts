@@ -54,6 +54,15 @@ export const xDepartmentSchema = departmentSchema
   })
   .extend({
     others: departmentOthersSchema,
+    supplierMaterials: z
+      .object({
+        price: numberSchema.nonnegative(),
+        supplier: z.object({
+          id: stringSchema,
+          name: stringSchema,
+        }),
+      })
+      .array(),
   });
 
 export const xInventorySchema = inventorySchema
@@ -145,4 +154,11 @@ export const xAddPurchaseRequest = z.object({
       note: nullishStringSchema,
     })
     .array(),
+});
+
+export const xPreferredSupplier = z.object({
+  departmentId: stringSchema,
+  materialId: stringSchema,
+  supplierId: stringSchema,
+  price: numberSchema,
 });

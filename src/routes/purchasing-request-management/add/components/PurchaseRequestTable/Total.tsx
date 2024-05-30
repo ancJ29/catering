@@ -6,7 +6,7 @@ import store from "../../_inventory.store";
 
 const Total = () => {
   const t = useTranslation();
-  const total = 10573245;
+
   return (
     <Flex
       justify="space-between"
@@ -24,7 +24,7 @@ const Total = () => {
       <Title order={3}>
         {t("Total")}:{" "}
         <CustomText c="primary" span>
-          {numberWithDelimiter(total)}
+          {numberWithDelimiter(store.getTotalPrice())}
         </CustomText>
       </Title>
     </Flex>

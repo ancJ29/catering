@@ -253,4 +253,5 @@ export default {
   "Daily Menu": "Daily Menu",
   "Material source options": "Material source options",
   "Please complete all information": "Please complete all information",
+  "Add purchase request successfully": "Add purchase request successfully",
 } satisfies Record<string, string>;

@@ -35,7 +35,7 @@ const AddPurchasingRequest = () => {
     (values: AddPurchaseRequestForm) => {
       setValues(values);
       values.departmentId &&
-        store.initInventories(values.departmentId);
+        store.initBackgroundData(values.departmentId);
     },
     [setValues],
   );
@@ -79,7 +79,7 @@ const AddPurchasingRequest = () => {
       }
       setFieldValue(key, value);
       if (key === "departmentId") {
-        value && store.initInventories(value.toString());
+        value && store.initBackgroundData(value.toString());
         if (selectedSource !== null) {
           handleChangeSelectedSource(
             selectedSource,
@@ -102,6 +102,10 @@ const AddPurchasingRequest = () => {
     await store.createPurchasingRequest(values);
     setValues(initialValues);
     setSelectedSource(null);
+    notifications.show({
+      color: "green.5",
+      message: t("Add purchase request successfully"),
+    });
   };
 
   return (
