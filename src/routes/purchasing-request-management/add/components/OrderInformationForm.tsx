@@ -18,7 +18,7 @@ type OrderInformationFormProps = {
     key: string,
     value?: string | number | null,
   ) => void;
-  getInputProps: GetInputProps<AddPurchaseRequestForm>
+  getInputProps: GetInputProps<AddPurchaseRequestForm>;
 };
 
 const OrderInformationForm = ({

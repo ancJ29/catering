@@ -11,7 +11,11 @@ import {
   getAllPreferredSuppliers,
 } from "@/services/domain/preferred-supplier";
 import { cloneDeep, createStore } from "@/utils";
-import { AddPurchaseRequestForm, PurchaseDetail } from "./_config";
+import {
+  AddPurchaseRequestForm,
+  MaterialExcel,
+  PurchaseDetail,
+} from "./_config";
 
 type State = {
   currents: Record<string, PurchaseDetail>;
@@ -21,6 +25,7 @@ type State = {
   selectedMaterialIds: string[];
   inventories: Record<string, Inventory>;
   preferredSuppliers: Record<string, PreferredSupplier>;
+  internalCodeInventories: Record<string, Inventory>;
 };
 
 export enum ActionType {
@@ -47,6 +52,7 @@ type Action = {
   note?: string;
   isSelected?: boolean;
   isSelectedAll?: boolean;
+  materials?: MaterialExcel[];
 };
 
 const defaultState = {
@@ -57,6 +63,7 @@ const defaultState = {
   selectedMaterialIds: [],
   inventories: {},
   preferredSuppliers: {},
+  internalCodeInventories: {},
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -65,16 +72,22 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  async reset(cateringId: string) {
-    const inventories = await getAllInventories(cateringId);
-    const preferredSuppliers = await getAllPreferredSuppliers(
-      cateringId,
-    );
-    dispatch({
-      type: ActionType.RESET,
-      inventories,
-      preferredSuppliers,
-    });
+  async reset(cateringId?: string) {
+    if (cateringId) {
+      const inventories = await getAllInventories(cateringId);
+      const preferredSuppliers = await getAllPreferredSuppliers(
+        cateringId,
+      );
+      dispatch({
+        type: ActionType.RESET,
+        inventories,
+        preferredSuppliers,
+      });
+    } else {
+      dispatch({
+        type: ActionType.RESET,
+      });
+    }
   },
   async initBackgroundData(cateringId: string) {
     const inventories = await getAllInventories(cateringId);
@@ -109,6 +122,12 @@ export default {
       type: ActionType.INIT_DATA,
       cateringId,
       inventories,
+    });
+  },
+  loadDataFromExcel(materials: MaterialExcel[]) {
+    dispatch({
+      type: ActionType.IMPORT_FROM_EXCEL,
+      materials,
     });
   },
   addMaterial(materialId: string) {
@@ -202,6 +221,12 @@ function reducer(action: Action, state: State): State {
             inventory,
           ]),
         );
+        const internalCodeInventories = Object.fromEntries(
+          action.inventories.map((inventory) => [
+            inventory.others.materialInternalCode,
+            inventory,
+          ]),
+        );
         const preferredSuppliers = Object.fromEntries(
           action.preferredSuppliers.map((preferredSupplier) => [
             preferredSupplier.materialId,
@@ -211,6 +236,7 @@ function reducer(action: Action, state: State): State {
         return {
           ...defaultState,
           inventories,
+          internalCodeInventories,
           preferredSuppliers,
           updates: {},
           currents: {},
@@ -231,6 +257,12 @@ function reducer(action: Action, state: State): State {
             inventory,
           ]),
         );
+        const internalCodeInventories = Object.fromEntries(
+          action.inventories.map((inventory) => [
+            inventory.others.materialInternalCode,
+            inventory,
+          ]),
+        );
         const preferredSuppliers = Object.fromEntries(
           action.preferredSuppliers.map((preferredSupplier) => [
             preferredSupplier.materialId,
@@ -240,6 +272,7 @@ function reducer(action: Action, state: State): State {
         return {
           ...state,
           inventories,
+          internalCodeInventories,
           preferredSuppliers,
         };
       }
@@ -247,7 +280,7 @@ function reducer(action: Action, state: State): State {
     }
     case ActionType.INIT_DATA:
       if (action.inventories && action.cateringId) {
-        const currents = initInventories(action.inventories);
+        const currents = initPurchaseDetails(action.inventories);
         return {
           ...state,
           currents,
@@ -258,6 +291,23 @@ function reducer(action: Action, state: State): State {
       }
       break;
     case ActionType.IMPORT_FROM_EXCEL:
+      if (action.materials) {
+        action.materials.map((e) => {
+          const inventory =
+            state.internalCodeInventories[e.materialInternalCode];
+          if (inventory) {
+            state.currents[inventory.materialId] =
+              initPurchaseDetail(inventory);
+          }
+        });
+        return {
+          ...state,
+          currents: state.currents,
+          updates: cloneDeep(state.currents),
+          materialIds: Object.keys(state.currents),
+          selectedMaterialIds: Object.keys(state.currents),
+        };
+      }
       break;
     case ActionType.ADD_MATERIAL:
       if (
@@ -266,14 +316,8 @@ function reducer(action: Action, state: State): State {
       ) {
         const inventory = state.inventories[action.materialId];
         if (inventory) {
-          state.currents[action.materialId] = {
-            materialId: action.materialId,
-            inventory: inventory.amount,
-            needToOrder: inventory.minimumAmount - inventory.amount,
-            amount: inventory.minimumAmount - inventory.amount,
-            supplierNote: "",
-            internalNote: "",
-          };
+          state.currents[action.materialId] =
+            initPurchaseDetail(inventory);
           state.updates[action.materialId] =
             state.currents[action.materialId];
         }
@@ -361,19 +405,30 @@ function reducer(action: Action, state: State): State {
   return state;
 }
 
-function initInventories(inventories: Inventory[]) {
+function initPurchaseDetails(inventories: Inventory[]) {
   return Object.fromEntries(
     inventories.map((inventory) => [
       inventory.materialId,
-      {
-        isSelected: true,
-        materialId: inventory.materialId,
-        inventory: inventory.amount,
-        needToOrder: inventory.minimumAmount - inventory.amount,
-        amount: inventory.minimumAmount - inventory.amount,
-        supplierNote: "",
-        internalNote: "",
-      },
+      initPurchaseDetail(inventory),
+      // {
+      //   materialId: inventory.materialId,
+      //   inventory: inventory.amount,
+      //   needToOrder: inventory.minimumAmount - inventory.amount,
+      //   amount: inventory.minimumAmount - inventory.amount,
+      //   supplierNote: "",
+      //   internalNote: "",
+      // },
     ]),
   );
+}
+
+function initPurchaseDetail(inventory: Inventory) {
+  return {
+    materialId: inventory.materialId,
+    inventory: inventory.amount,
+    needToOrder: inventory.minimumAmount - inventory.amount,
+    amount: inventory.minimumAmount - inventory.amount,
+    supplierNote: "",
+    internalNote: "",
+  };
 }

@@ -254,5 +254,5 @@ export default {
   "Add purchase request successfully": "Thêm đơn hàng thành công",
   "Return to purchase request list": "Quay lại danh sách yêu cầu mua hàng",
   "Please select type": "Vui lòng chọn loại",
-  "Please select priority": "Please chọn độ ưu tiên",
+  "Please select priority": "Vui lòng chọn độ ưu tiên",
 } satisfies Record<string, string>;

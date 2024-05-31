@@ -4,8 +4,9 @@ import { Button, Flex, Stack } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import { AddPurchaseRequestForm, initialValues } from "./_config";
 import store from "./_inventory.store";
 import ImportMaterials, {
@@ -18,20 +19,30 @@ const AddPurchasingRequest = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedSource, setSelectedSource] = useState<string | null>(
     null,
   );
-  const { values, setValues, setFieldValue, validate, getInputProps } =
-    useForm<AddPurchaseRequestForm>({
-      initialValues: initialValues,
-      validate: {
-        departmentId: isNotEmpty(),
-        deliveryDate: isNotEmpty(),
-        deliveryTime: isNotEmpty(),
-        type: isNotEmpty(t("Please select type")),
-        priority: isNotEmpty(t("Please select priority")),
-      },
-    });
+  const {
+    values,
+    setValues,
+    setFieldValue,
+    validate,
+    getInputProps,
+  } = useForm<AddPurchaseRequestForm>({
+    initialValues: initialValues,
+    validate: {
+      departmentId: isNotEmpty(),
+      deliveryDate: isNotEmpty(),
+      deliveryTime: isNotEmpty(),
+      type: isNotEmpty(t("Please select type")),
+      priority: isNotEmpty(t("Please select priority")),
+    },
+  });
+
+  useEffect(() => {
+    store.reset();
+  }, []);
 
   const callback = useCallback(
     (values: AddPurchaseRequestForm) => {
@@ -69,10 +80,47 @@ const AddPurchasingRequest = () => {
             store.reset(_departmentId);
             break;
           }
+          case ImportMaterialAction.IMPORT_FROM_EXCEL:
+            if (fileInputRef.current) {
+              fileInputRef.current.click();
+            }
+            break;
         }
       }
     },
     [setFieldValue, values.departmentId],
+  );
+
+  const handleFileUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const binaryStr = event.target?.result as string;
+        const workbook = XLSX.read(binaryStr, { type: "binary" });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        const jsonData = XLSX.utils.sheet_to_json<string[]>(
+          worksheet,
+          { header: 1 },
+        );
+        const processedData = (jsonData as string[][])
+          .map((row) => ({
+            materialInternalCode: row[0],
+            amount: Number(row[1]),
+          }))
+          .filter(
+            (row) => row.materialInternalCode && !isNaN(row.amount),
+          );
+        store.loadDataFromExcel(processedData);
+      };
+      reader.readAsArrayBuffer(file);
+    },
+    [],
   );
 
   const handleChangeValues = useCallback(
@@ -140,6 +188,13 @@ const AddPurchasingRequest = () => {
           }
           opened={opened}
           toggle={() => setOpened(!opened)}
+        />
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          ref={fileInputRef}
+          onChange={handleFileUpload}
+          style={{ display: "none" }}
         />
         <PurchaseRequestTable opened={opened} />
       </Flex>

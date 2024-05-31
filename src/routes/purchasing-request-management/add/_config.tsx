@@ -24,3 +24,8 @@ export type PurchaseDetail = {
   supplierNote: string;
   internalNote: string;
 };
+
+export type MaterialExcel = {
+  materialInternalCode: string;
+  amount: number;
+};
