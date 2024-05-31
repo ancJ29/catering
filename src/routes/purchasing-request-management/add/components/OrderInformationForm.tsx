@@ -8,6 +8,7 @@ import {
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
+import { GetInputProps } from "@mantine/form/lib/types";
 import { useMemo } from "react";
 import { AddPurchaseRequestForm } from "../_config";
 
@@ -17,11 +18,13 @@ type OrderInformationFormProps = {
     key: string,
     value?: string | number | null,
   ) => void;
+  getInputProps: GetInputProps<AddPurchaseRequestForm>
 };
 
 const OrderInformationForm = ({
   values,
   onChangeValues,
+  getInputProps,
 }: OrderInformationFormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
@@ -40,7 +43,7 @@ const OrderInformationForm = ({
   }, [activeCaterings]);
 
   return (
-    <Flex justify="end" align="end" gap={10}>
+    <Flex justify="start" align="start" gap={10}>
       <Select
         value={values.departmentId}
         label={t("Purchase order kitchen")}
@@ -64,20 +67,18 @@ const OrderInformationForm = ({
         required
       />
       <Select
-        value={values.type}
         label={t("Purchase order type")}
         w={"25vw"}
         options={typeOptions}
-        onChange={(value) => onChangeValues("type", value)}
         required
+        {...getInputProps("type")}
       />
       <Select
-        value={values.priority}
         label={t("Purchase order priority")}
         w={"25vw"}
         options={priorityOptions}
-        onChange={(value) => onChangeValues("priority", value)}
         required
+        {...getInputProps("priority")}
       />
     </Flex>
   );

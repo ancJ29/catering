@@ -254,4 +254,7 @@ export default {
   "Material source options": "Material source options",
   "Please complete all information": "Please complete all information",
   "Add purchase request successfully": "Add purchase request successfully",
+  "Return to purchase request list": "Return to purchase request list",
+  "Please select type": "Please enter type",
+  "Please select priority": "Please enter priority",
 } satisfies Record<string, string>;

@@ -20,6 +20,7 @@ const NumberInput = ({
   onChange,
   onBlur,
   onBlurWithValue,
+  thousandSeparator,
   ...props
 }: NumberInputProps) => {
   const [value, setValue] = useState<number>(
@@ -47,7 +48,7 @@ const NumberInput = ({
     <MantineNumberInput
       {...props}
       value={value}
-      thousandSeparator="."
+      thousandSeparator={thousandSeparator !== "" ? "." : ""}
       decimalSeparator=","
       onChange={change}
       onBlur={blur}

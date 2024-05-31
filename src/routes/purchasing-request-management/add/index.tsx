@@ -5,6 +5,7 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AddPurchaseRequestForm, initialValues } from "./_config";
 import store from "./_inventory.store";
 import ImportMaterials, {
@@ -15,19 +16,20 @@ import PurchaseRequestTable from "./components/PurchaseRequestTable";
 
 const AddPurchasingRequest = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
   const [selectedSource, setSelectedSource] = useState<string | null>(
     null,
   );
-  const { values, setValues, setFieldValue, validate } =
+  const { values, setValues, setFieldValue, validate, getInputProps } =
     useForm<AddPurchaseRequestForm>({
       initialValues: initialValues,
       validate: {
         departmentId: isNotEmpty(),
         deliveryDate: isNotEmpty(),
         deliveryTime: isNotEmpty(),
-        type: isNotEmpty(),
-        priority: isNotEmpty(),
+        type: isNotEmpty(t("Please select type")),
+        priority: isNotEmpty(t("Please select priority")),
       },
     });
 
@@ -54,12 +56,13 @@ const AddPurchasingRequest = () => {
           case ImportMaterialAction.LOAD_LOW_STOCK:
             store.loadLowInventories(_departmentId);
             break;
-          case ImportMaterialAction.LOAD_DAILY_MENU: {
-            store.loadDailyMenuInventories(_departmentId);
+          case ImportMaterialAction.LOAD_PERIODIC: {
+            setFieldValue("type", "DK");
+            store.loadPeriodicInventories(_departmentId);
             break;
           }
-          case ImportMaterialAction.LOAD_PERIODIC:
-            store.loadPeriodicInventories(_departmentId);
+          case ImportMaterialAction.LOAD_DAILY_MENU:
+            store.loadDailyMenuInventories(_departmentId);
             break;
           case ImportMaterialAction.ADD_MATERIAL: {
             setOpened(true);
@@ -69,7 +72,7 @@ const AddPurchasingRequest = () => {
         }
       }
     },
-    [values.departmentId],
+    [setFieldValue, values.departmentId],
   );
 
   const handleChangeValues = useCallback(
@@ -92,7 +95,7 @@ const AddPurchasingRequest = () => {
   );
 
   const complete = async () => {
-    if (validate().hasErrors) {
+    if (validate().hasErrors || store.getTotalMaterial() === 0) {
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),
@@ -113,6 +116,12 @@ const AddPurchasingRequest = () => {
       <Flex direction="column" gap={10}>
         <Flex justify="end" align="end" gap={10}>
           <Button
+            onClick={() => navigate("/purchasing-request-management")}
+            variant="outline"
+          >
+            {t("Return to purchase request list")}
+          </Button>
+          <Button
             leftSection={<IconCheck size={16} />}
             onClick={complete}
           >
@@ -122,6 +131,7 @@ const AddPurchasingRequest = () => {
         <OrderInformationForm
           values={values}
           onChangeValues={handleChangeValues}
+          getInputProps={getInputProps}
         />
         <ImportMaterials
           selectedSource={selectedSource}

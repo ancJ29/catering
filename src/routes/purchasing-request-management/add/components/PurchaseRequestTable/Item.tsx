@@ -50,12 +50,10 @@ const Item = ({ materialId }: ItemProps) => {
     {
       content: (
         <NumberInput
-          isInteger={false}
           w="10vw"
+          thousandSeparator=""
+          isPositive={true}
           defaultValue={purchaseDetail?.amount}
-          // onChange={(value) =>
-          //   store.setAmount(purchaseDetail?.materialId, value)
-          // }
           onChange={onChangeAmount}
         />
       ),

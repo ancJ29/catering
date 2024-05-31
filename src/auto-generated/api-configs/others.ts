@@ -109,7 +109,6 @@ export const departmentOthersSchema = z.object({
 
 export const inventoryOthersSchema = z.object({
   memo: optionalStringSchema,
-  materialInternalCode: stringSchema,
 });
 
 export const customerOthersSchema = z.object({
