@@ -224,6 +224,7 @@ export const materialOthersSchema = z.object({
   price: optionalNumberSchema,
   prices: z.record(stringSchema, numberSchema).optional(),
   orderCycle: materialOrderCycleSchema,
+  allowFloat: booleanSchema,
   /*
     Unit:
       [kg, g] => [1000] ~ 1kg = 1000g

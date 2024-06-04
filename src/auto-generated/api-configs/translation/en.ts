@@ -240,7 +240,7 @@ export default {
   "Add purchase request": "Add order",
   "Complete": "Complete",
   "Import from excel": "Import from excel",
-  "Add material": "Add material",
+  "Add manually": "Add manually",
   "Inventory": "Inventory",
   "Adjust": "Adjust",
   "Need to order": "Need to order",
@@ -257,4 +257,6 @@ export default {
   "Return to purchase request list": "Return to purchase request list",
   "Please select type": "Please enter type",
   "Please select priority": "Please enter priority",
+  "Please select catering": "Please select catering",
+  "Please select material source": "Please select material source",
 } satisfies Record<string, string>;

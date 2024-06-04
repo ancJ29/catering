@@ -8,7 +8,7 @@ import {
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
-import { GetInputProps } from "@mantine/form/lib/types";
+import { FormErrors, GetInputProps } from "@mantine/form/lib/types";
 import { useMemo } from "react";
 import { AddPurchaseRequestForm } from "../_config";
 
@@ -19,12 +19,14 @@ type OrderInformationFormProps = {
     value?: string | number | null,
   ) => void;
   getInputProps: GetInputProps<AddPurchaseRequestForm>;
+  errors: FormErrors;
 };
 
 const OrderInformationForm = ({
   values,
   onChangeValues,
   getInputProps,
+  errors,
 }: OrderInformationFormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
@@ -51,6 +53,7 @@ const OrderInformationForm = ({
         options={_caterings}
         onChange={(value) => onChangeValues("departmentId", value)}
         required
+        error={errors["departmentId"]}
       />
       <DateTimeInput
         label={t("Purchase order date")}

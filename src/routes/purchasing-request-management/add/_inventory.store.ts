@@ -1,5 +1,7 @@
+import Action from "@/components/common/Action";
 import {
   Inventory,
+  Material,
   addPurchaseRequest,
   getAllDailyMenuInventories,
   getAllInventories,
@@ -10,7 +12,9 @@ import {
   PreferredSupplier,
   getAllPreferredSuppliers,
 } from "@/services/domain/preferred-supplier";
+import useMaterialStore from "@/stores/material.store";
 import { cloneDeep, createStore } from "@/utils";
+import { getConvertedAmount } from "@/utils/unit";
 import {
   AddPurchaseRequestForm,
   MaterialExcel,
@@ -64,6 +68,7 @@ const defaultState = {
   inventories: {},
   preferredSuppliers: {},
   internalCodeInventories: {},
+  materials: {},
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -201,10 +206,18 @@ export default {
     purchaseRequest: AddPurchaseRequestForm,
   ) {
     const state = store.getSnapshot();
+    const { materials } = useMaterialStore.getState();
     await addPurchaseRequest(
       purchaseRequest,
-      state.selectedMaterialIds.map((e) => {
-        return state.updates[e];
+      state.selectedMaterialIds.map((materialId) => {
+        const material = materials.get(materialId);
+        return {
+          ...state.updates[materialId],
+          amount: getConvertedAmount({
+            material,
+            amount: state.updates[materialId].amount,
+          }),
+        };
       }),
     );
     dispatch({ type: ActionType.RESET });
@@ -212,6 +225,7 @@ export default {
 };
 
 function reducer(action: Action, state: State): State {
+  const { materials } = useMaterialStore.getState();
   switch (action.type) {
     case ActionType.RESET: {
       if (action.inventories && action.preferredSuppliers) {
@@ -280,7 +294,10 @@ function reducer(action: Action, state: State): State {
     }
     case ActionType.INIT_DATA:
       if (action.inventories && action.cateringId) {
-        const currents = initPurchaseDetails(action.inventories);
+        const currents = initPurchaseDetails(
+          action.inventories,
+          materials,
+        );
         return {
           ...state,
           currents,
@@ -296,8 +313,10 @@ function reducer(action: Action, state: State): State {
           const inventory =
             state.internalCodeInventories[e.materialInternalCode];
           if (inventory) {
-            state.currents[inventory.materialId] =
-              initPurchaseDetail(inventory);
+            state.currents[inventory.materialId] = initPurchaseDetail(
+              inventory,
+              materials,
+            );
           }
         });
         return {
@@ -316,8 +335,10 @@ function reducer(action: Action, state: State): State {
       ) {
         const inventory = state.inventories[action.materialId];
         if (inventory) {
-          state.currents[action.materialId] =
-            initPurchaseDetail(inventory);
+          state.currents[action.materialId] = initPurchaseDetail(
+            inventory,
+            materials,
+          );
           state.updates[action.materialId] =
             state.currents[action.materialId];
         }
@@ -405,29 +426,38 @@ function reducer(action: Action, state: State): State {
   return state;
 }
 
-function initPurchaseDetails(inventories: Inventory[]) {
+function initPurchaseDetails(
+  inventories: Inventory[],
+  materials: Map<string, Material>,
+) {
   return Object.fromEntries(
     inventories.map((inventory) => [
       inventory.materialId,
-      initPurchaseDetail(inventory),
-      // {
-      //   materialId: inventory.materialId,
-      //   inventory: inventory.amount,
-      //   needToOrder: inventory.minimumAmount - inventory.amount,
-      //   amount: inventory.minimumAmount - inventory.amount,
-      //   supplierNote: "",
-      //   internalNote: "",
-      // },
+      initPurchaseDetail(inventory, materials),
     ]),
   );
 }
 
-function initPurchaseDetail(inventory: Inventory) {
+function initPurchaseDetail(
+  inventory: Inventory,
+  materials: Map<string, Material>,
+) {
+  const material = materials.get(inventory.materialId);
+  const amount = getConvertedAmount({
+    material,
+    amount: inventory.amount,
+    reverse: true,
+  });
+  const minimumAmount = getConvertedAmount({
+    material,
+    amount: inventory.minimumAmount,
+    reverse: true,
+  });
   return {
     materialId: inventory.materialId,
-    inventory: inventory.amount,
-    needToOrder: inventory.minimumAmount - inventory.amount,
-    amount: inventory.minimumAmount - inventory.amount,
+    inventory: amount,
+    needToOrder: minimumAmount - amount,
+    amount: minimumAmount - amount,
     supplierNote: "",
     internalNote: "",
   };

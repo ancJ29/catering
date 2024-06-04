@@ -55,6 +55,8 @@ const Item = ({ materialId }: ItemProps) => {
           isPositive={true}
           defaultValue={purchaseDetail?.amount}
           onChange={onChangeAmount}
+          allowDecimal={material?.others.allowFloat}
+          isInteger={!material?.others.allowFloat}
         />
       ),
       align: "left",

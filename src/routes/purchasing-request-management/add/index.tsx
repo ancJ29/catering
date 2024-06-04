@@ -23,16 +23,18 @@ const AddPurchasingRequest = () => {
   const [selectedSource, setSelectedSource] = useState<string | null>(
     null,
   );
+  const [sourceError, setSourceError] = useState("");
   const {
     values,
     setValues,
     setFieldValue,
     validate,
     getInputProps,
+    errors,
   } = useForm<AddPurchaseRequestForm>({
     initialValues: initialValues,
     validate: {
-      departmentId: isNotEmpty(),
+      departmentId: isNotEmpty(t("Please select catering")),
       deliveryDate: isNotEmpty(),
       deliveryTime: isNotEmpty(),
       type: isNotEmpty(t("Please select type")),
@@ -75,7 +77,7 @@ const AddPurchasingRequest = () => {
           case ImportMaterialAction.LOAD_DAILY_MENU:
             store.loadDailyMenuInventories(_departmentId);
             break;
-          case ImportMaterialAction.ADD_MATERIAL: {
+          case ImportMaterialAction.ADD_MANUALLY: {
             setOpened(true);
             store.reset(_departmentId);
             break;
@@ -144,6 +146,8 @@ const AddPurchasingRequest = () => {
 
   const complete = async () => {
     if (validate().hasErrors || store.getTotalMaterial() === 0) {
+      selectedSource === null &&
+        setSourceError(t("Please select material source"));
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),
@@ -180,6 +184,7 @@ const AddPurchasingRequest = () => {
           values={values}
           onChangeValues={handleChangeValues}
           getInputProps={getInputProps}
+          errors={errors}
         />
         <ImportMaterials
           selectedSource={selectedSource}
@@ -188,6 +193,7 @@ const AddPurchasingRequest = () => {
           }
           opened={opened}
           toggle={() => setOpened(!opened)}
+          error={sourceError}
         />
         <input
           type="file"

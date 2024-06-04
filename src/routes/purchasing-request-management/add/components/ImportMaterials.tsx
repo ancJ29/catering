@@ -8,6 +8,7 @@ type ImportMaterialsProps = {
   onChangeSelectedSource: (value: string | null) => void;
   opened: boolean;
   toggle: () => void;
+  error: string;
 };
 
 export enum ImportMaterialAction {
@@ -15,7 +16,7 @@ export enum ImportMaterialAction {
   LOAD_PERIODIC = "LOAD_PERIODIC",
   LOAD_DAILY_MENU = "LOAD_DAILY_MENU",
   IMPORT_FROM_EXCEL = "IMPORT_FROM_EXCEL",
-  ADD_MATERIAL = "ADD_MATERIAL",
+  ADD_MANUALLY = "ADD_MANUALLY",
 }
 
 const ImportMaterials = ({
@@ -23,6 +24,7 @@ const ImportMaterials = ({
   onChangeSelectedSource,
   opened,
   toggle,
+  error,
 }: ImportMaterialsProps) => {
   const t = useTranslation();
   const materialOptions = [
@@ -43,8 +45,8 @@ const ImportMaterials = ({
       label: t("Import from excel"),
     },
     {
-      value: ImportMaterialAction.ADD_MATERIAL,
-      label: t("Add material"),
+      value: ImportMaterialAction.ADD_MANUALLY,
+      label: t("Add manually"),
     },
   ];
 
@@ -58,6 +60,7 @@ const ImportMaterials = ({
         allowDeselect={false}
         w="24.5%"
         required
+        error={error}
       />
       <MaterialListButton
         opened={opened}

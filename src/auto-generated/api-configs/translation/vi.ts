@@ -238,7 +238,7 @@ export default {
   "Add purchase request": "Thêm đơn hàng",
   "Complete": "Hoàn thành",
   "Import from excel": "Nhập từ excel",
-  "Add material": "Thêm nguyên liệu",
+  "Add manually": "Thêm thủ công",
   "Inventory": "Tồn",
   "Adjust": "Điều chỉnh",
   "Need to order": "Cần đặt",
@@ -255,4 +255,6 @@ export default {
   "Return to purchase request list": "Quay lại danh sách yêu cầu mua hàng",
   "Please select type": "Vui lòng chọn loại",
   "Please select priority": "Vui lòng chọn độ ưu tiên",
+  "Please select catering": "Vui lòng chọn bếp",
+  "Please select material source": "Vui lòng chọn nguồn nguyên liệu",
 } satisfies Record<string, string>;
