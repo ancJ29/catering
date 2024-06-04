@@ -38,6 +38,7 @@ const componentMap: Record<string, LazyExoticComponent> = {
   MenuManagementDetail: lazy(() => import("@/routes/menu-management/detail")),
   BomManagement: lazy(() => import("@/routes/bom-management")),
   PurchasingRequestManagement: lazy(() => import("@/routes/purchasing-request-management")),
+  PurchasingRequestDetail: lazy(() => import("@/routes/purchasing-request-management/detail")),
   AddPurchasingRequest: lazy(() => import("@/routes/purchasing-request-management/add")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
@@ -231,6 +232,16 @@ const configs: Config[] = [
       element: ServiceWrapper as Wrapper,
       props: {
         title: "Purchasing Request Management",
+      },
+    },
+  },
+  {
+    path: "/purchasing-request-management/detail/:purchaseRequestId",
+    element: "PurchasingRequestDetail",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Purchasing Request Detail",
       },
     },
   },

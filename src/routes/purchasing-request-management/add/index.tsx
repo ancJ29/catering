@@ -146,8 +146,7 @@ const AddPurchasingRequest = () => {
 
   const complete = async () => {
     if (validate().hasErrors || store.getTotalMaterial() === 0) {
-      selectedSource === null &&
-        setSourceError(t("Please select material source"));
+      setSourceError(t(selectedSource === null ? "Please select material source" : ""));
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),

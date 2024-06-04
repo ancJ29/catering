@@ -17,9 +17,11 @@ import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { configs } from "./_config";
+import { useNavigate } from "react-router-dom";
 
 const PurchasingRequestManagement = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const [purchaseRequests, setPurchaseRequests] = useState<
   PurchaseRequest[]
   >([]);
@@ -85,6 +87,10 @@ const PurchasingRequestManagement = () => {
     }
   };
 
+  const onRowClick = (item: PurchaseRequest) => {
+    navigate(`/purchasing-request-management/detail/${item.id}`);
+  };
+
   return (
     <Stack gap={10}>
       <Flex justify="end" align={"end"} gap={10} key={counter}>
@@ -120,6 +126,7 @@ const PurchasingRequestManagement = () => {
         />
       </Flex>
       <DataGrid
+        onRowClick={onRowClick}
         page={page}
         limit={10}
         isPaginated
