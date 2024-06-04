@@ -59,6 +59,7 @@ const AddPurchasingRequest = () => {
   const handleChangeSelectedSource = useCallback(
     (selectedSource: string | null, departmentId?: string) => {
       setSelectedSource(selectedSource);
+      setSourceError("");
       setOpened(false);
       const _departmentId =
         departmentId !== undefined
@@ -146,7 +147,7 @@ const AddPurchasingRequest = () => {
 
   const complete = async () => {
     if (validate().hasErrors || store.getTotalMaterial() === 0) {
-      setSourceError(t(selectedSource === null ? "Please select material source" : ""));
+      setSourceError(selectedSource === null ? t("Please select material source") : "");
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),
