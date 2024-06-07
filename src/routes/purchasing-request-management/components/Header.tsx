@@ -4,13 +4,13 @@ import { Checkbox, Table } from "@mantine/core";
 
 type HeaderProps = {
   isSelectAll: boolean;
-  store: any;
+  onChangeIsSelectAll: (value: boolean) => void;
   disabled?: boolean;
 };
 
 const Header = ({
   isSelectAll,
-  store,
+  onChangeIsSelectAll,
   disabled = false,
 }: HeaderProps) => {
   const t = useTranslation();
@@ -22,7 +22,7 @@ const Header = ({
         <Checkbox
           checked={isSelectAll}
           onChange={(event) =>
-            store.setIsSelectAll(event.currentTarget.checked)
+            onChangeIsSelectAll(event.currentTarget.checked)
           }
           disabled={disabled}
         />
@@ -31,7 +31,7 @@ const Header = ({
     { width: "20%", content: t("Material name") },
     { width: "8%", content: t("Inventory"), textAlign: "right" },
     { width: "8%", content: t("Need to order"), textAlign: "right" },
-    { width: "10%", content: t("Adjust"), textAlign: "right" },
+    { width: "10%", content: t("Total order quantity"), textAlign: "right" },
     { width: "10%", content: t("Difference"), textAlign: "right" },
     { width: "8%", content: t("Unit"), textAlign: "center" },
     { width: "15%", content: t("Supplier note") },

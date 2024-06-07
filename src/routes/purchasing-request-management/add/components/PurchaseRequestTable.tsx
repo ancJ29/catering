@@ -52,7 +52,7 @@ const PurchaseRequestTable = ({
         <div>
           <ScrollTable
             header={
-              <Header isSelectAll={isSelectAll} store={store} />
+              <Header isSelectAll={isSelectAll} onChangeIsSelectAll={store.setIsSelectAll} />
             }
             h="calc(-8.5rem - 200px + 100vh)"
           >

@@ -28,7 +28,7 @@ const PurchaseRequestTable = ({
             header={
               <Header
                 isSelectAll={isSelectAll}
-                store={store}
+                onChangeIsSelectAll={store.setIsSelectAll}
                 disabled={disabled}
               />
             }

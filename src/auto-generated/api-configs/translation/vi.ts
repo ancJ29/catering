@@ -258,4 +258,5 @@ export default {
   "Please select catering": "Vui lòng chọn bếp",
   "Please select material source": "Vui lòng chọn nguồn nguyên liệu",
   "Purchasing Request Detail": "Chi tiết đơn hàng",
+  "Total order quantity": "Tổng số lượng đặt",
 } satisfies Record<string, string>;
