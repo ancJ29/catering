@@ -2,12 +2,13 @@ import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import ScrollTable from "@/components/c-catering/ScrollTable";
 import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
+import useMaterialStore from "@/stores/material.store";
 import { Grid } from "@mantine/core";
 import { useCallback, useSyncExternalStore } from "react";
-import store from "../../_inventory.store";
-import Header from "./Header";
-import Item from "./Item";
-import Total from "./Total";
+import Header from "../../components/Header";
+import Item from "../../components/Item";
+import Total from "../../components/Total";
+import store from "../_add-purchase-request.store";
 
 type PurchaseRequestTableProps = {
   opened: boolean;
@@ -17,7 +18,8 @@ const PurchaseRequestTable = ({
   opened,
 }: PurchaseRequestTableProps) => {
   const t = useTranslation();
-  const { materialIds } = useSyncExternalStore(
+  const { materials } = useMaterialStore();
+  const { materialIds, currents, isSelectAll } = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
   );
@@ -49,14 +51,39 @@ const PurchaseRequestTable = ({
       <Grid.Col span={opened ? 9 : 12} pb={0}>
         <div>
           <ScrollTable
-            header={<Header />}
+            header={
+              <Header isSelectAll={isSelectAll} store={store} />
+            }
             h="calc(-8.5rem - 200px + 100vh)"
           >
             {materialIds.map((materialId) => (
-              <Item key={materialId} materialId={materialId} />
+              <Item
+                key={materialId}
+                material={materials.get(materialId)}
+                purchaseDetail={currents[materialId]}
+                isSelected={store.isSelected(materialId)}
+                onChangeAmount={(value) =>
+                  store.setAmount(materialId, value)
+                }
+                onChangeIsSelected={(value) =>
+                  store.setIsSelected(materialId, value)
+                }
+                onChangSupplierNote={(value) =>
+                  store.setSupplierNote(materialId, value)
+                }
+                onChangeInternalNote={(value) =>
+                  store.setInternalNote(materialId, value)
+                }
+                removeMaterial={() =>
+                  store.removeMaterial(materialId)
+                }
+              />
             ))}
           </ScrollTable>
-          <Total />
+          <Total
+            totalMaterial={store.getTotalMaterial()}
+            totalPrice={store.getTotalPrice()}
+          />
         </div>
       </Grid.Col>
       <Grid.Col

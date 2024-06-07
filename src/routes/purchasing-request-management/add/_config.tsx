@@ -1,3 +1,4 @@
+import { PRStatus } from "@/auto-generated/api-configs";
 import { ONE_DAY } from "@/utils";
 
 export const initialValues: AddPurchaseRequestForm = {
@@ -9,20 +10,24 @@ export const initialValues: AddPurchaseRequestForm = {
 };
 
 export type AddPurchaseRequestForm = {
+  id?: string;
   departmentId: string | null;
   deliveryDate: number;
   deliveryTime: string;
   type: string | null;
   priority: string | null;
+  status?: PRStatus;
 };
 
 export type PurchaseDetail = {
+  id?: string;
   materialId: string;
   inventory: number;
   needToOrder: number;
   amount: number;
   supplierNote: string;
   internalNote: string;
+  price?: number;
 };
 
 export type MaterialExcel = {

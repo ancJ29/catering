@@ -7,12 +7,12 @@ import { IconCheck } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import OrderInformationForm from "../components/OrderInformationForm";
+import store from "./_add-purchase-request.store";
 import { AddPurchaseRequestForm, initialValues } from "./_config";
-import store from "./_inventory.store";
 import ImportMaterials, {
   ImportMaterialAction,
 } from "./components/ImportMaterials";
-import OrderInformationForm from "./components/OrderInformationForm";
 import PurchaseRequestTable from "./components/PurchaseRequestTable";
 
 const AddPurchasingRequest = () => {
@@ -59,7 +59,6 @@ const AddPurchasingRequest = () => {
   const handleChangeSelectedSource = useCallback(
     (selectedSource: string | null, departmentId?: string) => {
       setSelectedSource(selectedSource);
-      setSourceError("");
       setOpened(false);
       const _departmentId =
         departmentId !== undefined
@@ -147,7 +146,8 @@ const AddPurchasingRequest = () => {
 
   const complete = async () => {
     if (validate().hasErrors || store.getTotalMaterial() === 0) {
-      setSourceError(selectedSource === null ? t("Please select material source") : "");
+      selectedSource === null &&
+        setSourceError(t("Please select material source"));
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),

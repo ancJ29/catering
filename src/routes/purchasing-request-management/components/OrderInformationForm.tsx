@@ -10,7 +10,7 @@ import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { FormErrors, GetInputProps } from "@mantine/form/lib/types";
 import { useMemo } from "react";
-import { AddPurchaseRequestForm } from "../_config";
+import { AddPurchaseRequestForm } from "../add/_config";
 
 type OrderInformationFormProps = {
   values: AddPurchaseRequestForm;
@@ -20,6 +20,7 @@ type OrderInformationFormProps = {
   ) => void;
   getInputProps: GetInputProps<AddPurchaseRequestForm>;
   errors: FormErrors;
+  disabled?: boolean;
 };
 
 const OrderInformationForm = ({
@@ -27,6 +28,7 @@ const OrderInformationForm = ({
   onChangeValues,
   getInputProps,
   errors,
+  disabled = false,
 }: OrderInformationFormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
@@ -54,6 +56,7 @@ const OrderInformationForm = ({
         onChange={(value) => onChangeValues("departmentId", value)}
         required
         error={errors["departmentId"]}
+        disabled={disabled}
       />
       <DateTimeInput
         label={t("Purchase order date")}
@@ -68,6 +71,7 @@ const OrderInformationForm = ({
         }
         w={"25vw"}
         required
+        disabled={disabled}
       />
       <Select
         label={t("Purchase order type")}
@@ -75,6 +79,7 @@ const OrderInformationForm = ({
         options={typeOptions}
         required
         {...getInputProps("type")}
+        disabled={disabled}
       />
       <Select
         label={t("Purchase order priority")}
@@ -82,6 +87,7 @@ const OrderInformationForm = ({
         options={priorityOptions}
         required
         {...getInputProps("priority")}
+        disabled={disabled}
       />
     </Flex>
   );

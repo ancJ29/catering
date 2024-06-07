@@ -2,11 +2,14 @@ import useTranslation from "@/hooks/useTranslation";
 import { numberWithDelimiter } from "@/utils";
 import { Flex, Text, TextProps, Title } from "@mantine/core";
 import { ReactNode } from "react";
-import store from "../../_inventory.store";
 
-const Total = () => {
+type TotalProps = {
+  totalMaterial: number;
+  totalPrice: number;
+};
+
+const Total = ({ totalMaterial, totalPrice }: TotalProps) => {
   const t = useTranslation();
-
   return (
     <Flex
       justify="space-between"
@@ -18,13 +21,13 @@ const Total = () => {
       <Title order={3}>
         {t("Quantity of material")}:{" "}
         <CustomText c="primary" span>
-          {store.getTotalMaterial()}
+          {totalMaterial}
         </CustomText>
       </Title>
       <Title order={3}>
         {t("Total")}:{" "}
         <CustomText c="primary" span>
-          {numberWithDelimiter(store.getTotalPrice())}
+          {numberWithDelimiter(totalPrice)}
         </CustomText>
       </Title>
     </Flex>

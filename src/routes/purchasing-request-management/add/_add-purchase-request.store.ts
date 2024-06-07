@@ -14,7 +14,7 @@ import {
 } from "@/services/domain/preferred-supplier";
 import useMaterialStore from "@/stores/material.store";
 import { cloneDeep, createStore } from "@/utils";
-import { getConvertedAmount } from "@/utils/unit";
+import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
 import {
   AddPurchaseRequestForm,
   MaterialExcel,
@@ -68,7 +68,6 @@ const defaultState = {
   inventories: {},
   preferredSuppliers: {},
   internalCodeInventories: {},
-  materials: {},
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -217,6 +216,7 @@ export default {
             material,
             amount: state.updates[materialId].amount,
           }),
+          price: state.preferredSuppliers[materialId]?.price || 0,
         };
       }),
     );
@@ -456,8 +456,8 @@ function initPurchaseDetail(
   return {
     materialId: inventory.materialId,
     inventory: amount,
-    needToOrder: minimumAmount - amount,
-    amount: minimumAmount - amount,
+    needToOrder: roundToDecimals(minimumAmount - amount, 3),
+    amount: roundToDecimals(minimumAmount - amount, 3),
     supplierNote: "",
     internalNote: "",
   };

@@ -13,11 +13,10 @@ import {
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
-import { Flex, Stack, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { configs } from "./_config";
 import { useNavigate } from "react-router-dom";
+import { configs } from "./_config";
 
 const PurchasingRequestManagement = () => {
   const t = useTranslation();
@@ -27,22 +26,9 @@ const PurchasingRequestManagement = () => {
   >([]);
   const { caterings } = useCateringStore();
 
-  const onOpenNote = useCallback(
-    (id: string) => {
-      const note = purchaseRequests.find((pr) => pr.id === id)?.others
-        .note;
-      modals.open({
-        centered: true,
-        withCloseButton: false,
-        children: <Text size="sm">{note ?? t("No notes")}</Text>,
-      });
-    },
-    [purchaseRequests, t],
-  );
-
   const dataGridConfigs = useMemo(
-    () => configs(t, caterings, onOpenNote),
-    [t, caterings, onOpenNote],
+    () => configs(t, caterings),
+    [t, caterings],
   );
 
   const getData = async (from?: number, to?: number) => {

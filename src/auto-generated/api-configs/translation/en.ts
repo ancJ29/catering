@@ -259,4 +259,5 @@ export default {
   "Please select priority": "Please enter priority",
   "Please select catering": "Please select catering",
   "Please select material source": "Please select material source",
+  "Purchasing Request Detail": "Purchasing Request Detail",
 } satisfies Record<string, string>;

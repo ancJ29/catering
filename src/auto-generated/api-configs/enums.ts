@@ -67,6 +67,7 @@ export enum Actions {
   GET_PURCHASE_ORDERS = "get-purchase-orders",
   GET_PURCHASE_REQUESTS = "get-purchase-requests",
   ADD_PURCHASE_REQUEST = "add-purchase-request",
+  UPDATE_PURCHASE_REQUEST = "update-purchase-request",
   GET_PREFERRED_SUPPLIERS = "get-preferred-suppliers",
 }
 

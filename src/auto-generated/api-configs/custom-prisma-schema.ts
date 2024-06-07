@@ -7,6 +7,7 @@ import {
   materialSchema,
   productSchema,
   purchaseOrderSchema,
+  purchaseRequestDetailSchema,
   purchaseRequestSchema,
   supplierSchema,
   userSchema,
@@ -21,6 +22,7 @@ import {
   materialOthersSchema,
   productOthersSchema,
   purchaseOrderOthersSchema,
+  purchaseRequestDetailOthersSchema,
   purchaseRequestOthersSchema,
   supplierOthersSchema,
   userOthersSchema,
@@ -139,6 +141,14 @@ export const xPurchaseRequestSchema = purchaseRequestSchema
   })
   .extend({
     others: purchaseRequestOthersSchema,
+    purchaseRequestDetails: purchaseRequestDetailSchema
+      .omit({
+        others: true,
+      })
+      .extend({
+        others: purchaseRequestDetailOthersSchema,
+      })
+      .array(),
   });
 
 export const xAddPurchaseRequest = z.object({
@@ -146,14 +156,35 @@ export const xAddPurchaseRequest = z.object({
   departmentId: stringSchema,
   type: stringSchema,
   priority: stringSchema,
-  note: nullishStringSchema,
   purchaseRequestDetails: z
     .object({
       materialId: stringSchema,
       amount: numberSchema,
-      note: nullishStringSchema,
+      price: numberSchema,
+      supplierNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
     })
     .array(),
+});
+
+export const xUpdatePurchaseRequest = z.object({
+  id: stringSchema,
+  deliveryDate: dateSchema,
+  departmentId: stringSchema,
+  type: stringSchema,
+  priority: stringSchema,
+  status: stringSchema,
+  purchaseRequestDetails: z
+    .object({
+      id: stringSchema,
+      materialId: stringSchema,
+      amount: numberSchema,
+      price: numberSchema,
+      supplierNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
+    })
+    .array(),
+  deletePurchaseRequestDetailIds: stringSchema.array(),
 });
 
 export const xPreferredSupplier = z.object({

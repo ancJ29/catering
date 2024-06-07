@@ -14,6 +14,7 @@ type DateTimeInputProps = {
   w?: string;
   dateTimeClassName?: string;
   required?: boolean;
+  disabled: boolean;
 };
 
 const DateTimeInput = ({
@@ -26,6 +27,7 @@ const DateTimeInput = ({
   w,
   dateTimeClassName,
   required = false,
+  disabled,
 }: DateTimeInputProps) => {
   return (
     <div className={classes.container} style={{ width: w }}>
@@ -46,11 +48,13 @@ const DateTimeInput = ({
           onChangeDate={onChangeDate}
           minDate={minDate}
           w={"70%"}
+          disabled={disabled}
         />
         <TimeInput
           value={time}
           onChangeValue={onChangeTime}
           w={"30%"}
+          disabled={disabled}
         />
       </div>
     </div>

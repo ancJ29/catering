@@ -21,6 +21,7 @@ import {
   xPurchaseOrderSchema,
   xPurchaseRequestSchema,
   xSupplierSchema,
+  xUpdatePurchaseRequest,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
 import {
@@ -775,8 +776,8 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
-        from: dateSchema,
-        to: dateSchema,
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
       }),
       response: listResponse.extend({
         purchaseRequests: xPurchaseRequestSchema.array(),
@@ -790,6 +791,14 @@ export const configs = {
     schema: {
       request: xAddPurchaseRequest,
       response: addResponse,
+    },
+  },
+  [Actions.UPDATE_PURCHASE_REQUEST]: {
+    name: Actions.UPDATE_PURCHASE_REQUEST,
+    group: ActionGroups.PURCHASE_REQUEST_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xUpdatePurchaseRequest,
     },
   },
   [Actions.GET_PREFERRED_SUPPLIERS]: {

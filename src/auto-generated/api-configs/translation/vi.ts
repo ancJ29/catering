@@ -257,4 +257,5 @@ export default {
   "Please select priority": "Vui lòng chọn độ ưu tiên",
   "Please select catering": "Vui lòng chọn bếp",
   "Please select material source": "Vui lòng chọn nguồn nguyên liệu",
+  "Purchasing Request Detail": "Chi tiết đơn hàng",
 } satisfies Record<string, string>;

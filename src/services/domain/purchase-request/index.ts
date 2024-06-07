@@ -1,5 +1,6 @@
 import {
   Actions,
+  ClientRoles,
   PRPriority,
   PRStatus,
   configs as actionConfigs,
@@ -29,11 +30,18 @@ export type PurchaseRequest = z.infer<
   name: string;
 };
 
-const { request } =
-  actionConfigs[Actions.ADD_PURCHASE_REQUEST].schema;
-type Request = z.infer<typeof request>;
+export type PurchaseRequestDetail =
+  PurchaseRequest["purchaseRequestDetails"][0];
 
-export async function _getPurchaseRequests(
+const { request: addRequest } =
+  actionConfigs[Actions.ADD_PURCHASE_REQUEST].schema;
+type AddRequest = z.infer<typeof addRequest>;
+
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_REQUEST].schema;
+type UpdateRequest = z.infer<typeof updateRequest>;
+
+async function _getPurchaseRequests(
   from = startOfDay(Date.now() - ONE_DAY),
   to = endOfDay(Date.now() + ONE_DAY),
 ): Promise<PurchaseRequest[]> {
@@ -57,11 +65,23 @@ export async function getPurchaseRequests(
   });
 }
 
+export async function getPurchaseRequestById(
+  id: string,
+): Promise<PurchaseRequest | undefined> {
+  const purchaseRequests = await loadAll<PurchaseRequest>({
+    key: "purchaseRequests",
+    action: Actions.GET_PURCHASE_REQUESTS,
+    params: { id },
+    noCache: true,
+  });
+  return purchaseRequests.length ? purchaseRequests[0] : undefined;
+}
+
 export async function addPurchaseRequest(
   purchaseRequest: AddPurchaseRequestForm,
   purchaseDetails: PurchaseDetail[],
 ) {
-  await callApi<Request, { id: string }>({
+  await callApi<AddRequest, { id: string }>({
     action: Actions.ADD_PURCHASE_REQUEST,
     params: {
       deliveryDate: getDateTime(
@@ -74,7 +94,42 @@ export async function addPurchaseRequest(
       purchaseRequestDetails: purchaseDetails.map((e) => ({
         materialId: e.materialId,
         amount: e.amount,
+        price: e.price || 0,
+        supplierNote: e.supplierNote,
+        internalNote: e.internalNote,
       })),
+    },
+  });
+}
+
+export async function updatePurchaseRequest(
+  purchaseRequest: PurchaseRequest,
+  purchaseDetails: PurchaseDetail[],
+  deletedPurchaseDetailIds: string[],
+  status: PRStatus,
+) {
+  if (!purchaseRequest) {
+    return;
+  }
+
+  await callApi<UpdateRequest, { id: string }>({
+    action: Actions.UPDATE_PURCHASE_REQUEST,
+    params: {
+      id: purchaseRequest.id,
+      deliveryDate: purchaseRequest.deliveryDate,
+      departmentId: purchaseRequest.departmentId,
+      type: purchaseRequest.others.type,
+      priority: purchaseRequest.others.priority,
+      status,
+      purchaseRequestDetails: purchaseDetails.map((e) => ({
+        id: e?.id || "",
+        materialId: e.materialId,
+        amount: e.amount,
+        price: e.price || 0,
+        supplierNote: e.supplierNote,
+        internalNote: e.internalNote,
+      })),
+      deletePurchaseRequestDetailIds: deletedPurchaseDetailIds,
     },
   });
 }
@@ -129,4 +184,40 @@ export function priorityColor(priority: PRPriority, level = 6) {
     KC: "red",
   };
   return `${colors[priority]}.${level}`;
+}
+
+export function changeablePurchaseRequestStatus(
+  current: PRStatus,
+  next: PRStatus,
+  role?: ClientRoles,
+) {
+  if (current === "KD" || current === "DH") {
+    return false;
+  }
+  if (!role) {
+    return false;
+  }
+  if (role === ClientRoles.OWNER) {
+    return true;
+  }
+  if (next === "DNH" || next === "NH") {
+    return false;
+  }
+  if (role === ClientRoles.PRODUCTION) {
+    if (current === "DG" && (next === "DD" || next === "KD")) {
+      return true;
+    }
+  }
+  if (role === ClientRoles.SUPPLIER) {
+    if (current === "DD" && next === "DDP") {
+      return true;
+    }
+    if (current === "DDP" && next === "MH") {
+      return true;
+    }
+    if (next === "DH") {
+      return true;
+    }
+  }
+  return false;
 }

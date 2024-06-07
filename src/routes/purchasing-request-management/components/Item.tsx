@@ -1,42 +1,53 @@
 import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
-import useMaterialStore from "@/stores/material.store";
+import { Material } from "@/services/domain";
 import { TextAlign } from "@/types";
 import { Button, Checkbox, Table, TextInput } from "@mantine/core";
-import { useState, useSyncExternalStore } from "react";
-import store from "../../_inventory.store";
+import { useState } from "react";
+import { PurchaseDetail } from "../add/_config";
 
 type ItemProps = {
-  materialId: string;
+  material?: Material;
+  purchaseDetail?: PurchaseDetail;
+  disabled?: boolean;
+  isSelected: boolean;
+  onChangeAmount: (value: number) => void;
+  onChangeIsSelected: (value: boolean) => void;
+  onChangSupplierNote: (value: string) => void;
+  onChangeInternalNote: (value: string) => void;
+  removeMaterial: () => void;
 };
 
-const Item = ({ materialId }: ItemProps) => {
+const Item = ({
+  material,
+  purchaseDetail,
+  disabled = false,
+  isSelected,
+  onChangeAmount,
+  onChangeIsSelected,
+  onChangSupplierNote,
+  onChangeInternalNote,
+  removeMaterial,
+}: ItemProps) => {
   const t = useTranslation();
-  const { materials } = useMaterialStore();
-  const material = materials.get(materialId);
-  const { currents } = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-  );
-  const purchaseDetail = currents[materialId];
-  const [amount, setAmount] = useState(purchaseDetail.amount);
+  const [amount, setAmount] = useState(purchaseDetail?.amount || 0);
 
-  const onChangeAmount = (value: number) => {
-    setAmount(value);
-    store.setAmount(purchaseDetail?.materialId, value);
+  const _onChangeAmount = (value: number) => {
+    if (purchaseDetail) {
+      setAmount(value);
+      onChangeAmount(value);
+    }
   };
 
   const columns = [
     {
       content: (
         <Checkbox
-          checked={store.isSelected(materialId)}
+          checked={isSelected}
           onChange={(event) =>
-            store.setIsSelected(
-              materialId,
-              event.currentTarget.checked,
-            )
+            onChangeIsSelected(event.currentTarget.checked)
           }
+          disabled={disabled}
         />
       ),
       align: "left",
@@ -53,17 +64,18 @@ const Item = ({ materialId }: ItemProps) => {
           w="10vw"
           thousandSeparator=""
           isPositive={true}
-          defaultValue={purchaseDetail?.amount}
-          onChange={onChangeAmount}
+          defaultValue={amount}
+          onChange={_onChangeAmount}
           allowDecimal={material?.others.allowFloat}
           isInteger={!material?.others.allowFloat}
+          disabled={disabled}
         />
       ),
       align: "left",
       pr: 10,
     },
     {
-      content: amount - purchaseDetail?.needToOrder,
+      content: amount - (purchaseDetail?.needToOrder || 0),
       align: "right",
     },
     { content: material?.others.unit?.name, align: "center" },
@@ -72,11 +84,9 @@ const Item = ({ materialId }: ItemProps) => {
         <TextInput
           defaultValue={purchaseDetail?.supplierNote}
           onChange={(event) =>
-            store.setSupplierNote(
-              purchaseDetail?.materialId,
-              event.currentTarget.value,
-            )
+            onChangSupplierNote(event.currentTarget.value)
           }
+          disabled={disabled}
         />
       ),
       align: "left",
@@ -86,11 +96,9 @@ const Item = ({ materialId }: ItemProps) => {
         <TextInput
           defaultValue={purchaseDetail?.internalNote}
           onChange={(event) =>
-            store.setInternalNote(
-              purchaseDetail?.materialId,
-              event.currentTarget.value,
-            )
+            onChangeInternalNote(event.currentTarget.value)
           }
+          disabled={disabled}
         />
       ),
       align: "left",
@@ -101,9 +109,7 @@ const Item = ({ materialId }: ItemProps) => {
           size="compact-xs"
           variant="light"
           color="error"
-          onClick={() =>
-            store.removeMaterial(purchaseDetail?.materialId)
-          }
+          onClick={removeMaterial}
         >
           {t("Remove")}
         </Button>

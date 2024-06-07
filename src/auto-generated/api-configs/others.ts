@@ -325,7 +325,12 @@ export const purchaseRequestOthersSchema = z.object({
   status: prStatusSchema,
   type: prTypeSchema,
   priority: prPrioritySchema,
-  note: nullishStringSchema,
+});
+
+export const purchaseRequestDetailOthersSchema = z.object({
+  price: numberSchema,
+  supplierNote: nullishStringSchema,
+  internalNote: nullishStringSchema,
 });
 
 export const poStatusSchema = z.enum([

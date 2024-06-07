@@ -1,15 +1,19 @@
 import useTranslation from "@/hooks/useTranslation";
 import { TextAlign } from "@/types";
 import { Checkbox, Table } from "@mantine/core";
-import { useSyncExternalStore } from "react";
-import store from "../../_inventory.store";
 
-const Header = () => {
+type HeaderProps = {
+  isSelectAll: boolean;
+  store: any;
+  disabled?: boolean;
+};
+
+const Header = ({
+  isSelectAll,
+  store,
+  disabled = false,
+}: HeaderProps) => {
   const t = useTranslation();
-  const { isSelectAll } = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-  );
 
   const columns = [
     {
@@ -20,6 +24,7 @@ const Header = () => {
           onChange={(event) =>
             store.setIsSelectAll(event.currentTarget.checked)
           }
+          disabled={disabled}
         />
       ),
     },
