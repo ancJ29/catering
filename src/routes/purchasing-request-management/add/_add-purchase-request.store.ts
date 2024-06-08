@@ -162,6 +162,11 @@ export default {
     );
     return total;
   },
+  getPrice(materialId: string) {
+    return (
+      store.getSnapshot().preferredSuppliers[materialId]?.price || 0
+    );
+  },
   setAmount(materialId: string, amount: number) {
     dispatch({
       type: ActionType.SET_AMOUNT,
@@ -298,12 +303,16 @@ function reducer(action: Action, state: State): State {
           action.inventories,
           materials,
         );
+        const materialIds = sortMaterialIds(
+          currents,
+          state.preferredSuppliers,
+        );
         return {
           ...state,
           currents,
           updates: cloneDeep(currents),
-          materialIds: Object.keys(currents),
-          selectedMaterialIds: Object.keys(currents),
+          materialIds,
+          selectedMaterialIds: materialIds,
         };
       }
       break;
@@ -319,12 +328,16 @@ function reducer(action: Action, state: State): State {
             );
           }
         });
+        const materialIds = sortMaterialIds(
+          state.currents,
+          state.preferredSuppliers,
+        );
         return {
           ...state,
           currents: state.currents,
           updates: cloneDeep(state.currents),
-          materialIds: Object.keys(state.currents),
-          selectedMaterialIds: Object.keys(state.currents),
+          materialIds,
+          selectedMaterialIds: materialIds,
         };
       }
       break;
@@ -389,6 +402,9 @@ function reducer(action: Action, state: State): State {
         state.updates[action.materialId] = {
           ...state.updates[action.materialId],
           amount: action.amount,
+        };
+        return {
+          ...state,
         };
       }
       break;
@@ -461,4 +477,20 @@ function initPurchaseDetail(
     supplierNote: "",
     internalNote: "",
   };
+}
+
+function sortMaterialIds(
+  currents: Record<string, PurchaseDetail>,
+  preferredSuppliers: Record<string, PreferredSupplier>,
+) {
+  const materialIds = Object.keys(currents);
+  const nonZeroPriceIds = materialIds.filter(
+    (materialId) =>
+      preferredSuppliers[materialId]?.price !== undefined,
+  );
+  const zeroPriceIds = materialIds.filter(
+    (materialId) =>
+      preferredSuppliers[materialId]?.price === undefined,
+  );
+  return nonZeroPriceIds.concat(zeroPriceIds);
 }

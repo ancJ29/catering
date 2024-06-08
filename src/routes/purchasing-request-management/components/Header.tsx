@@ -31,7 +31,11 @@ const Header = ({
     { width: "20%", content: t("Material name") },
     { width: "8%", content: t("Inventory"), textAlign: "right" },
     { width: "8%", content: t("Need to order"), textAlign: "right" },
-    { width: "10%", content: t("Total order quantity"), textAlign: "right" },
+    {
+      width: "10%",
+      content: t("Total order quantity"),
+      textAlign: "right",
+    },
     { width: "10%", content: t("Difference"), textAlign: "right" },
     { width: "8%", content: t("Unit"), textAlign: "center" },
     { width: "15%", content: t("Supplier note") },

@@ -242,7 +242,6 @@ export default {
   "Import from excel": "Import from excel",
   "Add manually": "Add manually",
   "Inventory": "Inventory",
-  "Adjust": "Adjust",
   "Need to order": "Need to order",
   "Supplier note": "Supplier note",
   "Internal note": "Internal note",

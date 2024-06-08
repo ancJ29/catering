@@ -240,7 +240,6 @@ export default {
   "Import from excel": "Nhập từ excel",
   "Add manually": "Thêm thủ công",
   "Inventory": "Tồn",
-  "Adjust": "Điều chỉnh",
   "Need to order": "Cần đặt",
   "Supplier note": "Ghi chú nhà cung cấp",
   "Internal note": "Ghi chú nội bộ",

@@ -40,6 +40,7 @@ const PurchaseRequestTable = ({
                 material={materials.get(materialId)}
                 purchaseDetail={currents[materialId]}
                 isSelected={store.isSelected(materialId)}
+                price={store.getPrice(materialId)}
                 onChangeAmount={(value) =>
                   store.setAmount(materialId, value)
                 }

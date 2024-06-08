@@ -143,6 +143,9 @@ export default {
     );
     return total;
   },
+  getPrice(materialId: string) {
+    return store.getSnapshot().currents[materialId]?.price || 0;
+  },
   async update(status: PRStatus) {
     const state = store.getSnapshot();
     if (!state.purchaseRequest) {
@@ -190,12 +193,13 @@ function reducer(action: Action, state: State): State {
           materials,
           inventories,
         );
+        const materialIds = sortMaterialIds(currents);
         return {
           ...state,
           purchaseRequest: action.purchaseRequest,
           currents,
-          materialIds: Object.keys(currents),
-          selectedMaterialIds: Object.keys(currents),
+          materialIds,
+          selectedMaterialIds: materialIds,
           isSelectAll: true,
         };
       }
@@ -243,6 +247,9 @@ function reducer(action: Action, state: State): State {
         state.updates[action.materialId] = {
           ...purchaseRequest,
           amount: action.amount,
+        };
+        return {
+          ...state,
         };
       }
       break;
@@ -329,4 +336,15 @@ function initPurchaseDetail(
     internalNote: purchaseRequestDetail.others.internalNote || "",
     price: purchaseRequestDetail.others.price,
   };
+}
+
+function sortMaterialIds(currents: Record<string, PurchaseDetail>) {
+  const materialIds = Object.keys(currents);
+  const nonZeroPriceIds = materialIds.filter(
+    (materialId) => currents[materialId]?.price !== 0,
+  );
+  const zeroPriceIds = materialIds.filter(
+    (materialId) => currents[materialId]?.price === 0,
+  );
+  return nonZeroPriceIds.concat(zeroPriceIds);
 }
