@@ -8,10 +8,7 @@ import {
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { ONE_DAY } from "@/utils";
-import { Button } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
 import CustomButton from "../CustomButton";
 import classes from "./PurchaseRequestFilter.module.scss";
@@ -33,6 +30,7 @@ type PurchaseOrderFilterProps = {
   onChangeStatuses: (value: string[]) => void;
   onChangeDepartmentIds: (value: string[]) => void;
   onChangeDateRange: (from?: number, to?: number) => void;
+  showStatusSelect?: boolean;
 };
 
 const PurchaseRequestFilter = ({
@@ -52,8 +50,8 @@ const PurchaseRequestFilter = ({
   onChangeStatuses,
   onChangeDepartmentIds,
   onChangeDateRange,
+  showStatusSelect = true,
 }: PurchaseOrderFilterProps) => {
-  const navigate = useNavigate();
   const t = useTranslation();
   const { caterings } = useCateringStore();
   const [typeOptions, priorityOptions, statusOptions] =
@@ -70,16 +68,6 @@ const PurchaseRequestFilter = ({
 
   return (
     <div className={classes.container}>
-      <div className={classes.buttonContainer}>
-        <Button
-          onClick={() =>
-            navigate("/purchasing-request-management/add")
-          }
-          leftSection={<IconPlus size={16} />}
-        >
-          {t("Add purchase request")}
-        </Button>
-      </div>
       <div className={classes.rangeDateContainer}>
         <DateRangeInput
           label={t("Purchase order date")}
@@ -115,13 +103,15 @@ const PurchaseRequestFilter = ({
           options={priorityOptions}
           onChange={onChangePriorities}
         />
-        <MultiSelect
-          value={statuses}
-          label={t("Status")}
-          w={"20vw"}
-          options={statusOptions}
-          onChange={onChangeStatuses}
-        />
+        {showStatusSelect && (
+          <MultiSelect
+            value={statuses}
+            label={t("Status")}
+            w={"20vw"}
+            options={statusOptions}
+            onChange={onChangeStatuses}
+          />
+        )}
         <MultiSelect
           value={departmentIds}
           label={t("Purchase order kitchen")}

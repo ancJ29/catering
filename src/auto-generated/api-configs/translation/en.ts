@@ -260,4 +260,5 @@ export default {
   "Please select material source": "Please select material source",
   "Purchasing Request Detail": "Purchasing Request Detail",
   "Total order quantity": "Total order quantity",
+  "Purchasing Order Coordination": "Purchasing Order Coordination",
 } satisfies Record<string, string>;

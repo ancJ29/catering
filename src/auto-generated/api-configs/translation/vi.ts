@@ -258,4 +258,5 @@ export default {
   "Please select material source": "Vui lòng chọn nguồn nguyên liệu",
   "Purchasing Request Detail": "Chi tiết đơn hàng",
   "Total order quantity": "Tổng số lượng đặt",
+  "Purchasing Order Coordination": "Danh sách điều phối nguồn cung",
 } satisfies Record<string, string>;

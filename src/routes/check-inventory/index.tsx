@@ -110,7 +110,7 @@ const CheckInventory = () => {
 
   return (
     <Stack gap={10}>
-      <Flex justify="space-between" align={"end"} gap={10} w="100%">
+      <Flex justify="space-between" align="end" gap={10} w="100%">
         <CateringSelector
           style={{ width: "20vw" }}
           cateringName={cateringName}
@@ -118,7 +118,7 @@ const CheckInventory = () => {
           setCatering={setCatering}
         />
         {cateringId && (
-          <Flex justify="end" align={"end"} gap={10} key={counter}>
+          <Flex justify="end" align="end" gap={10} key={counter}>
             <MaterialFilter
               type={condition?.type}
               group={condition?.group}

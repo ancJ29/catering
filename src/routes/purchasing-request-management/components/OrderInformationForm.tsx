@@ -10,15 +10,15 @@ import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { FormErrors, GetInputProps } from "@mantine/form/lib/types";
 import { useMemo } from "react";
-import { AddPurchaseRequestForm } from "../add/_config";
+import { PurchaseRequestForm } from "../add/_config";
 
 type OrderInformationFormProps = {
-  values: AddPurchaseRequestForm;
+  values: PurchaseRequestForm;
   onChangeValues: (
     key: string,
     value?: string | number | null,
   ) => void;
-  getInputProps: GetInputProps<AddPurchaseRequestForm>;
+  getInputProps: GetInputProps<PurchaseRequestForm>;
   errors: FormErrors;
   disabled?: boolean;
 };

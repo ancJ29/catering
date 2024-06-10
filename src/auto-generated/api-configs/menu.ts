@@ -124,10 +124,11 @@ export default [
         icon: "package-import",
       },
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.SUPPLIER],
         key: "purchasing-order-coordination",
         label: "Supply Coordination",
         icon: "affiliate",
+        url: "/purchasing-order-coordination",
       },
     ],
   },

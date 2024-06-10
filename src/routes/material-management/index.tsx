@@ -43,7 +43,7 @@ const MaterialManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex justify="end" align={"end"} gap={10} key={counter}>
+      <Flex justify="end" align="end" gap={10} key={counter}>
         <MaterialFilter
           type={condition?.type}
           group={condition?.group}

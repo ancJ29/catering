@@ -1,25 +1,17 @@
 import PurchaseRequestFilter from "@/components/c-catering/PurchaseRequestFilter";
 import DataGrid from "@/components/common/DataGrid";
-import {
-  FilterType,
-  defaultCondition,
-  filter,
-} from "@/configs/filters/purchase-request";
+import { FilterType, defaultCondition, filter } from "@/configs/filters/purchase-request";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  PurchaseRequest,
-  getPurchaseRequests,
-} from "@/services/domain";
+import { PurchaseRequest, getPurchaseRequests } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
-import { Button, Flex, Stack } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { configs } from "./_config";
+import { configs } from "../purchasing-request-management/_config";
 
-const PurchasingRequestManagement = () => {
+const PurchasingOrderCoordination = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseRequests, setPurchaseRequests] = useState<
@@ -33,7 +25,7 @@ const PurchasingRequestManagement = () => {
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseRequests(await getPurchaseRequests(from, to));
+    setPurchaseRequests(await getPurchaseRequests(from, to, "DD"));
   };
 
   useEffect(() => {
@@ -80,16 +72,6 @@ const PurchasingRequestManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex justify="end" align="end">
-        <Button
-          onClick={() =>
-            navigate("/purchasing-request-management/add")
-          }
-          leftSection={<IconPlus size={16} />}
-        >
-          {t("Add purchase request")}
-        </Button>
-      </Flex>
       <Flex justify="end" align="end" gap={10} key={counter}>
         <PurchaseRequestFilter
           keyword={keyword}
@@ -120,6 +102,7 @@ const PurchasingRequestManagement = () => {
             "",
           )}
           onChangeDateRange={onChangeDateRange}
+          showStatusSelect={false}
         />
       </Flex>
       <DataGrid
@@ -136,4 +119,4 @@ const PurchasingRequestManagement = () => {
   );
 };
 
-export default PurchasingRequestManagement;
+export default PurchasingOrderCoordination;

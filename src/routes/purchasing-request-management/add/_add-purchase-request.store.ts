@@ -16,9 +16,9 @@ import useMaterialStore from "@/stores/material.store";
 import { cloneDeep, createStore } from "@/utils";
 import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
 import {
-  AddPurchaseRequestForm,
   MaterialExcel,
   PurchaseDetail,
+  PurchaseRequestForm,
 } from "./_config";
 
 type State = {
@@ -207,7 +207,7 @@ export default {
       .selectedMaterialIds.includes(materialId);
   },
   async createPurchasingRequest(
-    purchaseRequest: AddPurchaseRequestForm,
+    purchaseRequest: PurchaseRequestForm,
   ) {
     const state = store.getSnapshot();
     const { materials } = useMaterialStore.getState();

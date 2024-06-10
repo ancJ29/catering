@@ -70,7 +70,7 @@ const ProductManagement = () => {
           )}
           label={t("On sale ONLY")}
         />
-        <Flex justify="end" align={"end"} gap={10}>
+        <Flex justify="end" align="end" gap={10}>
           <Select
             value={condition?.type || null}
             label={t("Product type")}

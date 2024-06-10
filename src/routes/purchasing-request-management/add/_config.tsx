@@ -1,7 +1,7 @@
 import { PRStatus } from "@/auto-generated/api-configs";
 import { ONE_DAY } from "@/utils";
 
-export const initialValues: AddPurchaseRequestForm = {
+export const initialValues: PurchaseRequestForm = {
   departmentId: null,
   deliveryDate: Date.now() + ONE_DAY,
   deliveryTime: "06:00",
@@ -9,7 +9,7 @@ export const initialValues: AddPurchaseRequestForm = {
   priority: null,
 };
 
-export type AddPurchaseRequestForm = {
+export type PurchaseRequestForm = {
   id?: string;
   departmentId: string | null;
   deliveryDate: number;

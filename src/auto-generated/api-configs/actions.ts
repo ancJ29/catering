@@ -28,6 +28,7 @@ import {
   bomOthersSchema,
   dailyMenuOthersSchema,
   inventoryOthersSchema,
+  prStatusSchema,
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
@@ -778,6 +779,7 @@ export const configs = {
       request: getSchema.extend({
         from: dateSchema.optional(),
         to: dateSchema.optional(),
+        status: prStatusSchema.optional(),
       }),
       response: listResponse.extend({
         purchaseRequests: xPurchaseRequestSchema.array(),

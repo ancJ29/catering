@@ -9,8 +9,8 @@ import {
   prTypeSchema,
 } from "@/auto-generated/api-configs";
 import {
-  AddPurchaseRequestForm,
   PurchaseDetail,
+  PurchaseRequestForm,
 } from "@/routes/purchasing-request-management/add/_config";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
@@ -44,20 +44,22 @@ type UpdateRequest = z.infer<typeof updateRequest>;
 async function _getPurchaseRequests(
   from = startOfDay(Date.now() - ONE_DAY),
   to = endOfDay(Date.now() + ONE_DAY),
+  status?: PRStatus,
 ): Promise<PurchaseRequest[]> {
   return await loadAll<PurchaseRequest>({
     key: "purchaseRequests",
     action: Actions.GET_PURCHASE_REQUESTS,
     take: 20,
-    params: { from, to },
+    params: { from, to, status },
   });
 }
 
 export async function getPurchaseRequests(
   from?: number,
   to?: number,
+  status?: PRStatus,
 ) {
-  return _getPurchaseRequests(from, to).then((purchaseRequests) => {
+  return _getPurchaseRequests(from, to, status).then((purchaseRequests) => {
     return purchaseRequests.map((el) => ({
       ...el,
       name: el.code,
@@ -78,7 +80,7 @@ export async function getPurchaseRequestById(
 }
 
 export async function addPurchaseRequest(
-  purchaseRequest: AddPurchaseRequestForm,
+  purchaseRequest: PurchaseRequestForm,
   purchaseDetails: PurchaseDetail[],
 ) {
   await callApi<AddRequest, { id: string }>({

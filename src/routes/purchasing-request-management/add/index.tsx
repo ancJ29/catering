@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import OrderInformationForm from "../components/OrderInformationForm";
 import store from "./_add-purchase-request.store";
-import { AddPurchaseRequestForm, initialValues } from "./_config";
+import { PurchaseRequestForm, initialValues } from "./_config";
 import ImportMaterials, {
   ImportMaterialAction,
 } from "./components/ImportMaterials";
@@ -31,7 +31,7 @@ const AddPurchasingRequest = () => {
     validate,
     getInputProps,
     errors,
-  } = useForm<AddPurchaseRequestForm>({
+  } = useForm<PurchaseRequestForm>({
     initialValues: initialValues,
     validate: {
       departmentId: isNotEmpty(t("Please select catering")),
@@ -47,7 +47,7 @@ const AddPurchasingRequest = () => {
   }, []);
 
   const callback = useCallback(
-    (values: AddPurchaseRequestForm) => {
+    (values: PurchaseRequestForm) => {
       setValues(values);
       values.departmentId &&
         store.initBackgroundData(values.departmentId);
@@ -59,6 +59,7 @@ const AddPurchasingRequest = () => {
   const handleChangeSelectedSource = useCallback(
     (selectedSource: string | null, departmentId?: string) => {
       setSelectedSource(selectedSource);
+      setSourceError("");
       setOpened(false);
       const _departmentId =
         departmentId !== undefined
@@ -146,8 +147,7 @@ const AddPurchasingRequest = () => {
 
   const complete = async () => {
     if (validate().hasErrors || store.getTotalMaterial() === 0) {
-      selectedSource === null &&
-        setSourceError(t("Please select material source"));
+      setSourceError(selectedSource === null ? t("Please select material source") : "");
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),

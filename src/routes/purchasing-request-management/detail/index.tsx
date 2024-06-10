@@ -8,10 +8,7 @@ import { useForm } from "@mantine/form";
 import { IconCheck } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  AddPurchaseRequestForm,
-  initialValues,
-} from "../add/_config";
+import { PurchaseRequestForm, initialValues } from "../add/_config";
 import OrderInformationForm from "../components/OrderInformationForm";
 import store from "./_purchase-request-detail.store";
 import PurchaseRequestTable from "./components/PurchaseRequestTable";
@@ -24,7 +21,7 @@ const PurchasingRequestDetail = () => {
   const { purchaseRequestId } = useParams();
   const [disabled, setDisabled] = useState(true);
   const { values, setValues, setFieldValue, getInputProps, errors } =
-    useForm<AddPurchaseRequestForm>({
+    useForm<PurchaseRequestForm>({
       initialValues: initialValues,
     });
 
