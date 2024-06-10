@@ -125,7 +125,7 @@ const Item = ({
   ];
 
   return (
-    <Table.Tr bg={price === 0 ? "blue.2" : "white"}>
+    <Table.Tr bg={price === 0 ? "primary.0" : "white"}>
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign} pr={col.pr}>
           {col.content}
