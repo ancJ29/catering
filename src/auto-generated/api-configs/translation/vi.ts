@@ -259,4 +259,8 @@ export default {
   "Purchasing Request Detail": "Chi tiết đơn hàng",
   "Total order quantity": "Tổng số lượng đặt",
   "Purchasing Order Coordination": "Danh sách điều phối nguồn cung",
+  "Return to purchase order coordination": "Quay lại danh sách điều phối nguồn cùng",
+  "The kitchen delivers the entire order": "Bếp giao toàn bộ đơn",
+  "All outside purchase": "Tất cả mua ngoài",
+  "All internal purchase": "Tất cả nội bộ",
 } satisfies Record<string, string>;

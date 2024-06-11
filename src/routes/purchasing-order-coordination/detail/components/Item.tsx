@@ -1,14 +1,16 @@
 import NumberInput from "@/components/common/NumberInput";
+import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { Material } from "@/services/domain";
-import { PurchaseDetail, TextAlign } from "@/types";
-import { roundToDecimals } from "@/utils/unit";
-import { Button, Checkbox, Table, TextInput } from "@mantine/core";
-import { useState } from "react";
+import { Department, Material } from "@/services/domain";
+import useCateringStore from "@/stores/catering.store";
+import { OptionProps, TextAlign } from "@/types";
+import { Button, Checkbox, Flex, Table, Text, TextInput } from "@mantine/core";
+import { useMemo } from "react";
+import { CoordinationDetail } from "../_purchase-request-detail.store";
 
 type ItemProps = {
   material?: Material;
-  purchaseDetail?: PurchaseDetail;
+  coordinationDetail?: CoordinationDetail;
   disabled?: boolean;
   isSelected: boolean;
   price: number;
@@ -21,7 +23,7 @@ type ItemProps = {
 
 const Item = ({
   material,
-  purchaseDetail,
+  coordinationDetail,
   disabled = false,
   isSelected,
   price,
@@ -32,14 +34,15 @@ const Item = ({
   removeMaterial,
 }: ItemProps) => {
   const t = useTranslation();
-  const [amount, setAmount] = useState(purchaseDetail?.amount || 0);
-
-  const _onChangeAmount = (value: number) => {
-    if (purchaseDetail) {
-      setAmount(value);
-      onChangeAmount(value);
-    }
-  };
+  const { activeCaterings } = useCateringStore();
+  const _caterings: OptionProps[] = useMemo(() => {
+    return Array.from(activeCaterings.values()).map(
+      (p: Department) => ({
+        label: p.name,
+        value: p.id,
+      }),
+    );
+  }, [activeCaterings]);
 
   const columns = [
     {
@@ -52,22 +55,33 @@ const Item = ({
           disabled={disabled}
         />
       ),
-      align: "left",
     },
     {
       content: material?.name,
       align: "left",
     },
-    { content: purchaseDetail?.inventory, align: "right" },
-    { content: purchaseDetail?.needToOrder, align: "right" },
+    { content: <Text>{coordinationDetail?.isSupply ? t("Yes") : t("No")}</Text> },
+    { content: isSelected
+      ? coordinationDetail?.deliveryCatering
+      :
+      <Select
+        value={""}
+        w={"8vw"}
+        options={_caterings}
+        onChange={() => null}
+        required
+      />
+    },
+    { content: coordinationDetail?.orderQuantity, align: "right" },
+    { content: coordinationDetail?.kitchenQuantity, align: "right" },
     {
       content: (
         <NumberInput
           w="10vw"
           thousandSeparator=""
           isPositive={true}
-          defaultValue={amount}
-          onChange={_onChangeAmount}
+          defaultValue={coordinationDetail?.dispatchQuantity}
+          onChange={onChangeAmount}
           allowDecimal={material?.others.allowFloat}
           isInteger={!material?.others.allowFloat}
           disabled={disabled}
@@ -76,18 +90,11 @@ const Item = ({
       align: "left",
       pr: 10,
     },
-    {
-      content: roundToDecimals(
-        amount - (purchaseDetail?.needToOrder || 0),
-        3,
-      ),
-      align: "right",
-    },
     { content: material?.others.unit?.name, align: "center" },
     {
       content: (
         <TextInput
-          defaultValue={purchaseDetail?.supplierNote}
+          defaultValue={coordinationDetail?.supplierNote}
           onChange={(event) =>
             onChangSupplierNote(event.currentTarget.value)
           }
@@ -99,7 +106,7 @@ const Item = ({
     {
       content: (
         <TextInput
-          defaultValue={purchaseDetail?.internalNote}
+          defaultValue={coordinationDetail?.internalNote}
           onChange={(event) =>
             onChangeInternalNote(event.currentTarget.value)
           }
@@ -110,14 +117,26 @@ const Item = ({
     },
     {
       content: (
-        <Button
-          size="compact-xs"
-          variant="light"
-          color="error"
-          onClick={removeMaterial}
-        >
-          {t("Remove")}
-        </Button>
+        <Flex justify="center" columnGap={10}>
+          {!isSelected &&
+            <Button
+              size="compact-xs"
+              variant="light"
+              color="primary"
+              onClick={() => null}
+            >
+              {t("Separate")}
+            </Button>
+          }
+          <Button
+            size="compact-xs"
+            variant="light"
+            color="error"
+            onClick={removeMaterial}
+          >
+            {t("Remove")}
+          </Button>
+        </Flex>
       ),
       align: "center",
     },

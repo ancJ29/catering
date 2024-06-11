@@ -67,7 +67,7 @@ const PurchasingOrderCoordination = () => {
   };
 
   const onRowClick = (item: PurchaseRequest) => {
-    navigate(`/purchasing-request-management/detail/${item.id}`);
+    navigate(`/purchasing-order-coordination/detail/${item.id}`);
   };
 
   return (

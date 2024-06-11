@@ -1,26 +1,20 @@
 import { PRStatus } from "@/auto-generated/api-configs";
 import {
-  Inventory,
   Material,
-  PurchaseRequest,
-  PurchaseRequestDetail,
-  getAllInventories,
-  getPurchaseRequestById,
-  updatePurchaseRequest,
+  PurchaseRequest, PurchaseRequestDetail,
+  getPurchaseRequestById
 } from "@/services/domain";
+import logger from "@/services/logger";
 import useMaterialStore from "@/stores/material.store";
-import { PurchaseDetail } from "@/types";
 import { createStore } from "@/utils";
-import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
+import { getConvertedAmount } from "@/utils/unit";
 
 type State = {
   purchaseRequest?: PurchaseRequest;
-  currents: Record<string, PurchaseDetail>;
-  updates: Record<string, PurchaseDetail>;
-  isSelectAll: boolean;
+  currents: Record<string, CoordinationDetail>;
+  updates: Record<string, CoordinationDetail>;
   materialIds: string[];
   selectedMaterialIds: string[];
-  inventories: Record<string, Inventory>;
   deletedPurchaseDetailIds: string[];
 };
 
@@ -32,13 +26,11 @@ export enum ActionType {
   SET_AMOUNT = "SET_AMOUNT",
   SET_SUPPLIER_NOTE = "SET_SUPPLIER_NOTE",
   SET_INTERNAL_NOTE = "SET_INTERNAL_NOTE",
-  SET_IS_SELECT_ALL = "SET_IS_SELECT_ALL",
 }
 
 type Action = {
   type: ActionType;
   purchaseRequest?: PurchaseRequest;
-  inventories?: Inventory[];
   materialId?: string;
   amount?: number;
   note?: string;
@@ -49,10 +41,8 @@ type Action = {
 const defaultState = {
   currents: {},
   updates: {},
-  isSelectAll: true,
   materialIds: [],
   selectedMaterialIds: [],
-  inventories: {},
   deletedPurchaseDetailIds: [],
 };
 
@@ -69,13 +59,9 @@ export default {
     if (!purchaseRequest) {
       return;
     }
-    const inventories = await getAllInventories(
-      purchaseRequest.departmentId,
-    );
     dispatch({
       type: ActionType.INIT_DATA,
       purchaseRequest,
-      inventories,
     });
   },
   getPurchaseRequest() {
@@ -115,12 +101,6 @@ export default {
       isSelected,
     });
   },
-  setIsSelectAll(checked: boolean) {
-    dispatch({
-      type: ActionType.SET_IS_SELECT_ALL,
-      isSelectedAll: checked,
-    });
-  },
   isSelected(materialId: string) {
     return store
       .getSnapshot()
@@ -129,46 +109,11 @@ export default {
   getTotalMaterial() {
     return store.getSnapshot().selectedMaterialIds.length;
   },
-  getTotalPrice() {
-    const state = store.getSnapshot();
-    const total = state.selectedMaterialIds.reduce(
-      (sum, materialId) => {
-        const price = state.currents[materialId]?.price || 0;
-        const amount =
-          state.updates[materialId]?.amount ||
-          state.currents[materialId].amount;
-        return sum + price * amount;
-      },
-      0,
-    );
-    return total;
-  },
   getPrice(materialId: string) {
     return store.getSnapshot().currents[materialId]?.price || 0;
   },
   async update(status: PRStatus) {
-    const state = store.getSnapshot();
-    if (!state.purchaseRequest) {
-      return;
-    }
-    const _ids = state.materialIds.filter(
-      (id) => !state.selectedMaterialIds.includes(id),
-    );
-    const ids_ = _ids.map((id) => state.currents[id]?.id || "");
-    const ids = [...ids_, ...state.deletedPurchaseDetailIds];
-    await updatePurchaseRequest(
-      state.purchaseRequest,
-      state.selectedMaterialIds
-        .map((materialId) => {
-          const purchaseDetail = state.updates[materialId];
-          return purchaseDetail;
-        })
-        .filter(
-          (update): update is PurchaseDetail => update !== undefined,
-        ),
-      ids,
-      status,
-    );
+    logger.info(status);
     dispatch({
       type: ActionType.RESET,
     });
@@ -184,14 +129,10 @@ function reducer(action: Action, state: State): State {
       };
       break;
     case ActionType.INIT_DATA:
-      if (action.purchaseRequest && action.inventories) {
-        const inventories = new Map(
-          action.inventories.map((e) => [e.materialId, e]),
-        );
+      if (action.purchaseRequest) {
         const currents = initPurchaseDetails(
           action.purchaseRequest,
           materials,
-          inventories,
         );
         const materialIds = sortMaterialIds(currents);
         return {
@@ -200,7 +141,6 @@ function reducer(action: Action, state: State): State {
           currents,
           materialIds,
           selectedMaterialIds: materialIds,
-          isSelectAll: true,
         };
       }
       break;
@@ -232,25 +172,22 @@ function reducer(action: Action, state: State): State {
           : state.selectedMaterialIds.filter(
             (id) => id !== action.materialId,
           );
-        const isSelectAll =
-          selectedMaterialIds.length === state.materialIds.length;
         return {
           ...state,
-          isSelectAll,
           selectedMaterialIds,
         };
       }
       break;
     case ActionType.SET_AMOUNT:
       if (action.materialId && action.amount) {
-        const purchaseRequest = state.currents[action.materialId];
-        state.updates[action.materialId] = {
-          ...purchaseRequest,
-          amount: action.amount,
-        };
-        return {
-          ...state,
-        };
+        // const purchaseRequest = state.currents[action.materialId];
+        // state.updates[action.materialId] = {
+        //   ...purchaseRequest,
+        //   amount: action.amount,
+        // };
+        // return {
+        //   ...state,
+        // };
       }
       break;
     case ActionType.SET_SUPPLIER_NOTE:
@@ -271,20 +208,6 @@ function reducer(action: Action, state: State): State {
         };
       }
       break;
-    case ActionType.SET_IS_SELECT_ALL:
-      if (action.isSelectedAll !== undefined) {
-        const isSelectAll = action.isSelectedAll ?? false;
-        const selectedMaterialIds = isSelectAll
-          ? state.materialIds
-          : [];
-        state.isSelectAll = isSelectAll;
-        return {
-          ...state,
-          isSelectAll,
-          selectedMaterialIds,
-        };
-      }
-      break;
   }
   return state;
 }
@@ -292,12 +215,11 @@ function reducer(action: Action, state: State): State {
 function initPurchaseDetails(
   purchaseRequest: PurchaseRequest,
   materials: Map<string, Material>,
-  inventories: Map<string, Inventory>,
 ) {
   return Object.fromEntries(
     purchaseRequest?.purchaseRequestDetails.map((e) => [
       e.materialId,
-      initPurchaseDetail(e, materials, inventories),
+      initPurchaseDetail(e, materials),
     ]),
   );
 }
@@ -305,7 +227,6 @@ function initPurchaseDetails(
 function initPurchaseDetail(
   purchaseRequestDetail: PurchaseRequestDetail,
   materials: Map<string, Material>,
-  inventories: Map<string, Inventory>,
 ) {
   const material = materials.get(purchaseRequestDetail.materialId);
   const amount = getConvertedAmount({
@@ -313,32 +234,21 @@ function initPurchaseDetail(
     amount: purchaseRequestDetail.amount,
     reverse: true,
   });
-  const inventory = getConvertedAmount({
-    material,
-    amount:
-      inventories.get(purchaseRequestDetail.materialId)?.amount || 0,
-    reverse: true,
-  });
-  const minimumAmount = getConvertedAmount({
-    material,
-    amount:
-      inventories.get(purchaseRequestDetail.materialId)
-        ?.minimumAmount || 0,
-    reverse: true,
-  });
   return {
     id: purchaseRequestDetail.id,
     materialId: purchaseRequestDetail.materialId,
-    inventory,
-    needToOrder: roundToDecimals(minimumAmount - inventory, 3),
-    amount: amount,
+    isSupply: true,
+    deliveryCatering: "NCC",
+    orderQuantity: amount,
+    kitchenQuantity: amount,
+    dispatchQuantity: amount,
     supplierNote: purchaseRequestDetail.others.supplierNote || "",
     internalNote: purchaseRequestDetail.others.internalNote || "",
     price: purchaseRequestDetail.others.price,
   };
 }
 
-function sortMaterialIds(currents: Record<string, PurchaseDetail>) {
+function sortMaterialIds(currents: Record<string, CoordinationDetail>) {
   const materialIds = Object.keys(currents);
   const nonZeroPriceIds = materialIds.filter(
     (materialId) => currents[materialId]?.price !== 0,
@@ -348,3 +258,16 @@ function sortMaterialIds(currents: Record<string, PurchaseDetail>) {
   );
   return nonZeroPriceIds.concat(zeroPriceIds);
 }
+
+export type CoordinationDetail = {
+  id: string;
+  materialId: string;
+  isSupply: boolean;
+  deliveryCatering: string;
+  orderQuantity: number;
+  kitchenQuantity: number;
+  dispatchQuantity: number;
+  supplierNote: string;
+  internalNote: string;
+  price: number;
+};

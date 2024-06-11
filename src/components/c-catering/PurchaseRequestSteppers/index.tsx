@@ -29,17 +29,17 @@ const map = new Map<number, PRStatus>(statuses.map((s, i) => [i, s]));
 
 const size = 16;
 
-type SteppersProps = {
+type PurchaseRequestSteppersProps = {
   status?: PRStatus;
   disabled?: boolean;
   onChange: (status: PRStatus) => void;
 };
 
-const Steppers = ({
+const PurchaseRequestSteppers = ({
   status = "DG",
   disabled = false,
   onChange,
-}: SteppersProps) => {
+}: PurchaseRequestSteppersProps) => {
   const t = useTranslation();
   const { role } = useAuthStore();
   const [active, setActive] = useState<number>(
@@ -105,4 +105,4 @@ const Steppers = ({
   );
 };
 
-export default Steppers;
+export default PurchaseRequestSteppers;

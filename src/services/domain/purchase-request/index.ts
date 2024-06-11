@@ -8,13 +8,9 @@ import {
   prStatusSchema,
   prTypeSchema,
 } from "@/auto-generated/api-configs";
-import {
-  PurchaseDetail,
-  PurchaseRequestForm,
-} from "@/routes/purchasing-request-management/add/_config";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
-import { OptionProps } from "@/types";
+import { OptionProps, PurchaseDetail, PurchaseRequestForm } from "@/types";
 import { ONE_DAY, endOfDay, getDateTime, startOfDay } from "@/utils";
 import { z } from "zod";
 

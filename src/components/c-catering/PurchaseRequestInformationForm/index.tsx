@@ -6,13 +6,12 @@ import {
   typeStatusAndPriorityOptions,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
-import { OptionProps } from "@/types";
+import { OptionProps, PurchaseRequestForm } from "@/types";
 import { Flex } from "@mantine/core";
 import { FormErrors, GetInputProps } from "@mantine/form/lib/types";
 import { useMemo } from "react";
-import { PurchaseRequestForm } from "../add/_config";
 
-type OrderInformationFormProps = {
+type PurchaseRequestInformationFormProps = {
   values: PurchaseRequestForm;
   onChangeValues: (
     key: string,
@@ -23,13 +22,13 @@ type OrderInformationFormProps = {
   disabled?: boolean;
 };
 
-const OrderInformationForm = ({
+const PurchaseRequestInformationForm = ({
   values,
   onChangeValues,
   getInputProps,
   errors,
   disabled = false,
-}: OrderInformationFormProps) => {
+}: PurchaseRequestInformationFormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
 
@@ -93,4 +92,4 @@ const OrderInformationForm = ({
   );
 };
 
-export default OrderInformationForm;
+export default PurchaseRequestInformationForm;

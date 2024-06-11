@@ -1,29 +1,26 @@
-import { ClientRoles } from "@/auto-generated/api-configs";
 import PurchaseRequestActions from "@/components/c-catering/PurchaseRequestActions";
 import PurchaseRequestInformationForm from "@/components/c-catering/PurchaseRequestInformationForm";
 import PurchaseRequestSteppers from "@/components/c-catering/PurchaseRequestSteppers";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import useAuthStore from "@/stores/auth.store";
+import logger from "@/services/logger";
 import { PurchaseRequestForm, initialValues } from "@/types";
 import { formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useCallback, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useCallback } from "react";
+import { useParams } from "react-router-dom";
 import store from "./_purchase-request-detail.store";
-import PurchaseRequestTable from "./components/PurchaseRequestTable";
+import PurchasingOrderCoordinationTable from "./components/PurchasingOrderCoordinationTable";
+import Supply from "./components/Supply";
 
-const PurchasingRequestDetail = () => {
+const PurchasingOrderCoordinationDetail = () => {
   const t = useTranslation();
-  const { role } = useAuthStore();
-  const navigate = useNavigate();
   const { purchaseRequestId } = useParams();
-  const [disabled, setDisabled] = useState(true);
   const { values, setValues, setFieldValue, getInputProps, errors } =
-    useForm<PurchaseRequestForm>({
-      initialValues: initialValues,
-    });
+  useForm<PurchaseRequestForm>({
+    initialValues: initialValues,
+  });
 
   const load = useCallback(async () => {
     if (!purchaseRequestId) {
@@ -42,28 +39,18 @@ const PurchasingRequestDetail = () => {
       priority: purchaseRequest?.others.priority,
       status: purchaseRequest?.others.status,
     });
-    setDisabled(
-      !(
-        purchaseRequest?.others.status === "DG" &&
-        (role === ClientRoles.CATERING || role === ClientRoles.OWNER)
-      ),
-    );
-  }, [purchaseRequestId, role, setValues]);
+  }, [purchaseRequestId, setValues]);
   useOnMounted(load);
 
-  const complete = async () => {
-    if (!values.status) {
-      return;
-    }
-    await store.update(values.status);
-    navigate("/purchasing-request-management");
+  const complete = () => {
+    logger.info("complete");
   };
 
   return (
     <Stack gap={0}>
       <Flex direction="column" gap={10}>
         <PurchaseRequestActions
-          returnButtonTitle={t("Return to purchase request list")}
+          returnButtonTitle={t("Return to purchase order coordination")}
           returnUrl="/purchasing-request-management"
           complete={complete}
         />
@@ -78,10 +65,15 @@ const PurchasingRequestDetail = () => {
           status={values.status}
           onChange={(value) => setFieldValue("status", value)}
         />
-        <PurchaseRequestTable disabled={disabled} />
+        <Supply
+          onChangeCateringSupplier={() => null}
+          onPurchaseOutside={() => null}
+          onPurchaseInternal={() => null}
+        />
+        <PurchasingOrderCoordinationTable />
       </Flex>
     </Stack>
   );
 };
 
-export default PurchasingRequestDetail;
+export default PurchasingOrderCoordinationDetail;

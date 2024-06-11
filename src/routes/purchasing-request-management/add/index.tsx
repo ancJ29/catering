@@ -1,15 +1,14 @@
+import PurchaseRequestActions from "@/components/c-catering/PurchaseRequestActions";
+import PurchaseRequestInformationForm from "@/components/c-catering/PurchaseRequestInformationForm";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
-import { Button, Flex, Stack } from "@mantine/core";
+import { PurchaseRequestForm, initialValues } from "@/types";
+import { Flex, Stack } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconCheck } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
-import OrderInformationForm from "../components/OrderInformationForm";
 import store from "./_add-purchase-request.store";
-import { PurchaseRequestForm, initialValues } from "./_config";
 import ImportMaterials, {
   ImportMaterialAction,
 } from "./components/ImportMaterials";
@@ -17,7 +16,6 @@ import PurchaseRequestTable from "./components/PurchaseRequestTable";
 
 const AddPurchasingRequest = () => {
   const t = useTranslation();
-  const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedSource, setSelectedSource] = useState<string | null>(
@@ -166,7 +164,7 @@ const AddPurchasingRequest = () => {
   return (
     <Stack gap={0}>
       <Flex direction="column" gap={10}>
-        <Flex justify="end" align="end" gap={10}>
+        {/* <Flex justify="end" align="end" gap={10}>
           <Button
             onClick={() => navigate("/purchasing-request-management")}
             variant="outline"
@@ -179,8 +177,13 @@ const AddPurchasingRequest = () => {
           >
             {t("Complete")}
           </Button>
-        </Flex>
-        <OrderInformationForm
+        </Flex> */}
+        <PurchaseRequestActions
+          returnButtonTitle={t("Return to purchase request list")}
+          returnUrl="/purchasing-request-management"
+          complete={complete}
+        />
+        <PurchaseRequestInformationForm
           values={values}
           onChangeValues={handleChangeValues}
           getInputProps={getInputProps}

@@ -261,4 +261,8 @@ export default {
   "Purchasing Request Detail": "Purchasing Request Detail",
   "Total order quantity": "Total order quantity",
   "Purchasing Order Coordination": "Purchasing Order Coordination",
+  "Return to purchase order coordination": "Return to purchase order coordination",
+  "The kitchen delivers the entire order": "The kitchen delivers the entire order",
+  "All outside purchase": "All outside purchase",
+  "All internal purchase": "All internal purchase",
 } satisfies Record<string, string>;
