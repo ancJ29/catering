@@ -1,6 +1,6 @@
 import { PRStatus } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
-import { statusColor } from "@/services/domain";
+import { statusRequestColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
 const Status = ({
@@ -14,7 +14,7 @@ const Status = ({
 }) => {
   const t = useTranslation();
   return (
-    <Badge fz={fz} color={c || statusColor(status, 9)}>
+    <Badge fz={fz} color={c || statusRequestColor(status, 9)}>
       {t(`purchaseRequest.status.${status}`)}
     </Badge>
   );

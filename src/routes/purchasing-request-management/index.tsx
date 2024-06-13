@@ -10,6 +10,7 @@ import useTranslation from "@/hooks/useTranslation";
 import {
   PurchaseRequest,
   getPurchaseRequests,
+  typePriorityAndStatusRequestOptions,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
@@ -31,6 +32,11 @@ const PurchasingRequestManagement = () => {
     () => configs(t, caterings),
     [t, caterings],
   );
+
+  const [typeOptions, priorityOptions, statusOptions] =
+    useMemo(() => {
+      return typePriorityAndStatusRequestOptions(t);
+    }, [t]);
 
   const getData = async (from?: number, to?: number) => {
     setPurchaseRequests(await getPurchaseRequests(from, to));
@@ -100,6 +106,9 @@ const PurchasingRequestManagement = () => {
           statuses={condition?.statuses}
           departmentIds={condition?.departmentIds}
           purchaseOrderIds={names}
+          typeOptions={typeOptions}
+          priorityOptions={priorityOptions}
+          statusOptions={statusOptions}
           clearable={filtered}
           onClear={reset}
           onReload={reload}

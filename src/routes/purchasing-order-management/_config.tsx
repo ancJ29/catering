@@ -1,7 +1,8 @@
-import { Department, PurchaseRequest } from "@/services/domain";
+import { PurchaseOrder } from "@/services/domain/purchase-order";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
-import Priority from "./components/Priority";
+import { Department } from "../catering-management/_configs";
+import Priority from "../purchasing-request-management/components/Priority";
 import Status from "./components/Status";
 
 export const configs = (
@@ -15,17 +16,19 @@ export const configs = (
       header: t("Purchase request id"),
       width: "15%",
       style: { fontWeight: "bold" },
-      renderCell: (_, row: PurchaseRequest) => {
+      renderCell: (_, row: PurchaseOrder) => {
         return row.code || "N/A";
       },
     },
     {
       key: "kitchen",
       header: t("Purchase request kitchen"),
-      width: "25%",
-      renderCell: (_, row: PurchaseRequest) => {
+      width: "20%",
+      renderCell: (_, row: PurchaseOrder) => {
         return (
-          <span>{caterings.get(row.departmentId || "")?.name}</span>
+          <span>
+            {caterings.get(row.others.departmentId || "")?.name}
+          </span>
         );
       },
     },
@@ -33,7 +36,7 @@ export const configs = (
       key: "type",
       header: t("Purchase request type"),
       width: "15%",
-      renderCell: (_, row: PurchaseRequest) => {
+      renderCell: (_, row: PurchaseOrder) => {
         if (!row.others.type) {
           return "N/A";
         }
@@ -44,17 +47,17 @@ export const configs = (
     {
       key: "deliveryDate",
       header: t("Purchase request date"),
-      width: "15%",
-      renderCell: (_, row: PurchaseRequest) => {
+      width: "10%",
+      renderCell: (_, row: PurchaseOrder) => {
         return formatTime(row.deliveryDate, "DD/MM/YYYY");
       },
     },
     {
       key: "priority",
       header: t("Purchase request priority"),
-      width: "15%",
+      width: "10%",
       textAlign: "center",
-      renderCell: (_, row: PurchaseRequest) => {
+      renderCell: (_, row: PurchaseOrder) => {
         if (!row.others.priority) {
           return "N/A";
         }
@@ -64,9 +67,9 @@ export const configs = (
     {
       key: "status",
       header: t("Status"),
-      width: "15%",
+      width: "20%",
       textAlign: "center",
-      renderCell: (_, row: PurchaseRequest) => {
+      renderCell: (_, row: PurchaseOrder) => {
         if (!row.others.status) {
           return "N/A";
         }

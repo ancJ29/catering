@@ -6,6 +6,7 @@ import {
   inventorySchema,
   materialSchema,
   productSchema,
+  purchaseOrderDetailSchema,
   purchaseOrderSchema,
   purchaseRequestDetailSchema,
   purchaseRequestSchema,
@@ -21,8 +22,8 @@ import {
   inventoryOthersSchema,
   materialOthersSchema,
   productOthersSchema,
-  purchaseOrderOthersSchema,
-  purchaseRequestDetailOthersSchema,
+  purchaseOrderDetailOthersSchema,
+  purchaseOrderOthersSchema, purchaseRequestDetailOthersSchema,
   purchaseRequestOthersSchema,
   supplierOthersSchema,
   userOthersSchema,
@@ -133,6 +134,14 @@ export const xPurchaseOrderSchema = purchaseOrderSchema
   })
   .extend({
     others: purchaseOrderOthersSchema,
+    purchaseOrderDetails: purchaseOrderDetailSchema
+      .omit({
+        others: true,
+      })
+      .extend({
+        others: purchaseOrderDetailOthersSchema,
+      })
+      .array(),
   });
 
 export const xPurchaseRequestSchema = purchaseRequestSchema

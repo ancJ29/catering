@@ -351,14 +351,14 @@ export const purchaseOrderOthersSchema = z.object({
   type: prTypeSchema,
   priority: prPrioritySchema,
   status: poStatusSchema,
-  departmentName: nullishStringSchema,
+  departmentId: nullishStringSchema,
 });
 
 export const purchaseOrderDetailOthersSchema = z.object({
   supplierNote: nullishStringSchema,
   internalNote: nullishStringSchema,
-  unitPrice: numberSchema.nullish(),
-  taxRate: numberSchema.nullish(),
+  price: numberSchema,
+  taxRate: numberSchema,
   unitId: nullishStringSchema,
 });
 

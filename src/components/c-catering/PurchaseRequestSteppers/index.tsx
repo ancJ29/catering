@@ -2,7 +2,7 @@ import { PRStatus } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import {
   changeablePurchaseRequestStatus,
-  statusColor,
+  statusRequestColor,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import { Stepper } from "@mantine/core";
@@ -56,8 +56,8 @@ const PurchaseRequestSteppers = ({
 
   const [color, c] = useMemo(
     () => [
-      statusColor(map.get(active || 0) || "DG", 9),
-      statusColor(statuses[active], 9),
+      statusRequestColor(map.get(active || 0) || "DG", 9),
+      statusRequestColor(statuses[active], 9),
     ],
     [active],
   );

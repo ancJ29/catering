@@ -3,7 +3,7 @@ import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import {
   Department,
-  typeStatusAndPriorityOptions,
+  typePriorityAndStatusRequestOptions,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps, PurchaseRequestForm } from "@/types";
@@ -33,7 +33,7 @@ const PurchaseRequestInformationForm = ({
   const { activeCaterings } = useCateringStore();
 
   const [typeOptions, priorityOptions] = useMemo(() => {
-    return typeStatusAndPriorityOptions(t);
+    return typePriorityAndStatusRequestOptions(t);
   }, [t]);
 
   const _caterings: OptionProps[] = useMemo(() => {
@@ -49,7 +49,7 @@ const PurchaseRequestInformationForm = ({
     <Flex justify="start" align="start" gap={10}>
       <Select
         value={values.departmentId}
-        label={t("Purchase order kitchen")}
+        label={t("Purchase request kitchen")}
         w={"25vw"}
         options={_caterings}
         onChange={(value) => onChangeValues("departmentId", value)}
@@ -58,7 +58,7 @@ const PurchaseRequestInformationForm = ({
         disabled={disabled}
       />
       <DateTimeInput
-        label={t("Purchase order date")}
+        label={t("Purchase request date")}
         date={values.deliveryDate}
         onChangeDate={(value) =>
           onChangeValues("deliveryDate", value)
@@ -73,7 +73,7 @@ const PurchaseRequestInformationForm = ({
         disabled={disabled}
       />
       <Select
-        label={t("Purchase order type")}
+        label={t("Purchase request type")}
         w={"25vw"}
         options={typeOptions}
         required
@@ -81,7 +81,7 @@ const PurchaseRequestInformationForm = ({
         disabled={disabled}
       />
       <Select
-        label={t("Purchase order priority")}
+        label={t("Purchase request priority")}
         w={"25vw"}
         options={priorityOptions}
         required

@@ -809,8 +809,8 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
-        from: dateSchema,
-        to: dateSchema,
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),

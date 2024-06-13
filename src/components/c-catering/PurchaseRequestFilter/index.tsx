@@ -1,10 +1,7 @@
 import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  Department,
-  typeStatusAndPriorityOptions,
-} from "@/services/domain";
+import { Department } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { ONE_DAY } from "@/utils";
@@ -22,6 +19,9 @@ type PurchaseOrderFilterProps = {
   statuses?: string[];
   departmentIds?: string[];
   purchaseOrderIds: string[];
+  typeOptions: OptionProps[];
+  priorityOptions: OptionProps[];
+  statusOptions: OptionProps[];
   clearable?: boolean;
   onClear: () => void;
   onReload: (keyword?: string) => void;
@@ -42,6 +42,9 @@ const PurchaseRequestFilter = ({
   statuses,
   departmentIds,
   purchaseOrderIds,
+  typeOptions,
+  priorityOptions,
+  statusOptions,
   clearable,
   onClear,
   onReload,
@@ -54,11 +57,6 @@ const PurchaseRequestFilter = ({
 }: PurchaseOrderFilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
-  const [typeOptions, priorityOptions, statusOptions] =
-    useMemo(() => {
-      return typeStatusAndPriorityOptions(t);
-    }, [t]);
-
   const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(caterings.values()).map((p: Department) => ({
       label: p.name,
@@ -70,7 +68,7 @@ const PurchaseRequestFilter = ({
     <div className={classes.container}>
       <div className={classes.rangeDateContainer}>
         <DateRangeInput
-          label={t("Purchase order date")}
+          label={t("Purchase request date")}
           from={from}
           to={to}
           onChange={onChangeDateRange}
@@ -82,7 +80,7 @@ const PurchaseRequestFilter = ({
       </div>
       <div className={classes.filterContainer}>
         <AutocompleteForFilterData
-          label={t("Purchase order id")}
+          label={t("Purchase request id")}
           w={"20vw"}
           data={purchaseOrderIds}
           defaultValue={keyword}
@@ -91,14 +89,14 @@ const PurchaseRequestFilter = ({
         />
         <MultiSelect
           value={types}
-          label={t("Purchase order type")}
+          label={t("Purchase request type")}
           w={"20vw"}
           options={typeOptions}
           onChange={onChangeTypes}
         />
         <MultiSelect
           value={priorities}
-          label={t("Purchase order priority")}
+          label={t("Purchase request priority")}
           w={"20vw"}
           options={priorityOptions}
           onChange={onChangePriorities}
@@ -114,7 +112,7 @@ const PurchaseRequestFilter = ({
         )}
         <MultiSelect
           value={departmentIds}
-          label={t("Purchase order kitchen")}
+          label={t("Purchase request kitchen")}
           w={"20vw"}
           options={_caterings}
           onChange={onChangeDepartmentIds}

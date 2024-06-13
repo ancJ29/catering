@@ -17,6 +17,10 @@ export function startOfWeek(timestamp: number) {
   return res + ONE_WEEK > timestamp ? res : res + ONE_WEEK;
 }
 
+export function endOfWeek(timestamp: number) {
+  return startOfWeek(timestamp) + ONE_WEEK - ONE_DAY;
+}
+
 export function startOfDay(timestamp: number) {
   return timestamp - (timestamp % ONE_DAY);
 }

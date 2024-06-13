@@ -138,7 +138,7 @@ export async function updatePurchaseRequest(
   });
 }
 
-export function typeStatusAndPriorityOptions(
+export function typePriorityAndStatusRequestOptions(
   t: (key: string) => string,
 ) {
   const typeOptions: OptionProps[] = prTypeSchema.options.map(
@@ -147,25 +147,22 @@ export function typeStatusAndPriorityOptions(
       value: type,
     }),
   );
-
   const priorityOptions: OptionProps[] = prPrioritySchema.options.map(
     (priority) => ({
       label: t(`purchaseRequest.priority.${priority}`),
       value: priority,
     }),
   );
-
   const statusOptions: OptionProps[] = prStatusSchema.options.map(
     (status) => ({
       label: t(`purchaseRequest.status.${status}`),
       value: status,
     }),
   );
-
   return [typeOptions, priorityOptions, statusOptions];
 }
 
-export function statusColor(status: PRStatus, level = 6) {
+export function statusRequestColor(status: PRStatus, level = 6) {
   const colors: Record<PRStatus, string> = {
     DG: "cyan",
     DD: "green",

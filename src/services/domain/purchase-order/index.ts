@@ -2,10 +2,14 @@ import {
   Actions,
   POStatus,
   configs as actionConfigs,
+  poStatusSchema,
+  prPrioritySchema,
+  prTypeSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
-import { ONE_DAY, endOfDay, startOfDay } from "@/utils";
+import { OptionProps } from "@/types";
+import { endOfWeek, startOfWeek } from "@/utils";
 import { z } from "zod";
 
 const response =
@@ -24,8 +28,8 @@ const { request: addRequest } =
 type AddRequest = z.infer<typeof addRequest>;
 
 async function _getPurchaseOrders(
-  from = startOfDay(Date.now() - ONE_DAY),
-  to = endOfDay(Date.now() + ONE_DAY),
+  from = startOfWeek(Date.now()),
+  to = endOfWeek(Date.now()),
   status?: POStatus,
 ): Promise<PurchaseOrder[]> {
   return await loadAll<PurchaseOrder>({
@@ -69,4 +73,48 @@ export async function addPurchaseOrders(params: AddRequest) {
     params,
   });
   return addResponse?.id;
+}
+
+export function typePriorityAndStatusOrderOptions(
+  t: (key: string) => string,
+) {
+  const typeOptions: OptionProps[] = prTypeSchema.options.map(
+    (type) => ({
+      label: t(`purchaseRequest.type.${type}`),
+      value: type,
+    }),
+  );
+  const priorityOptions: OptionProps[] = prPrioritySchema.options.map(
+    (priority) => ({
+      label: t(`purchaseRequest.priority.${priority}`),
+      value: priority,
+    }),
+  );
+  const statusOptions: OptionProps[] = poStatusSchema.options.map(
+    (status) => ({
+      label: t(`purchaseOrder.status.${status}`),
+      value: status,
+    }),
+  );
+  return [typeOptions, priorityOptions, statusOptions];
+}
+
+export function statusOrderColor(status: POStatus, level = 6) {
+  const colors: Record<POStatus, string> = {
+    // cspell:disable
+    CXL: "cyan",
+    CPH: "green",
+    PH: "orange",
+    SSGH: "violet",
+    DGH: "grape",
+    NK1P: "blue",
+    DNK: "teal",
+    DKT: "lime",
+    DTDNTT: "yellow",
+    // cspell:disable
+  };
+  if (!status) {
+    return "";
+  }
+  return `${colors[status]}.${level}`;
 }

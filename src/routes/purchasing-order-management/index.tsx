@@ -4,41 +4,39 @@ import {
   FilterType,
   defaultCondition,
   filter,
-} from "@/configs/filters/purchase-request";
+} from "@/configs/filters/purchase-order";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  PurchaseRequest,
-  getPurchaseRequests,
-  typePriorityAndStatusRequestOptions,
-} from "@/services/domain";
+  PurchaseOrder,
+  getPurchaseOrders,
+  typePriorityAndStatusOrderOptions,
+} from "@/services/domain/purchase-order";
 import useCateringStore from "@/stores/catering.store";
-import { endOfDay, startOfDay } from "@/utils";
+import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { configs } from "../purchasing-request-management/_config";
+import { configs } from "./_config";
 
-const PurchasingOrderCoordination = () => {
+const PurchasingOrderManagement = () => {
   const t = useTranslation();
-  const navigate = useNavigate();
-  const [purchaseRequests, setPurchaseRequests] = useState<
-  PurchaseRequest[]
+  const [purchaseOrders, setPurchaseOrders] = useState<
+  PurchaseOrder[]
   >([]);
   const { caterings } = useCateringStore();
+
+  const [typeOptions, priorityOptions, statusOptions] =
+    useMemo(() => {
+      return typePriorityAndStatusOrderOptions(t);
+    }, [t]);
 
   const dataGridConfigs = useMemo(
     () => configs(t, caterings),
     [t, caterings],
   );
 
-  const [typeOptions, priorityOptions, statusOptions] =
-    useMemo(() => {
-      return typePriorityAndStatusRequestOptions(t);
-    }, [t]);
-
   const getData = async (from?: number, to?: number) => {
-    setPurchaseRequests(await getPurchaseRequests(from, to, "DD"));
+    setPurchaseOrders(await getPurchaseOrders(from, to));
   };
 
   useEffect(() => {
@@ -46,8 +44,8 @@ const PurchasingOrderCoordination = () => {
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseRequests;
-  }, [purchaseRequests]);
+    return purchaseOrders;
+  }, [purchaseOrders]);
 
   const {
     condition,
@@ -61,7 +59,7 @@ const PurchasingOrderCoordination = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseRequest, FilterType>({
+  } = useFilterData<PurchaseOrder, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -70,17 +68,13 @@ const PurchasingOrderCoordination = () => {
   const onChangeDateRange = (from?: number, to?: number) => {
     if (condition?.from && condition?.to && from && to) {
       const _from = startOfDay(from);
-      const _to = endOfDay(to);
+      const _to = endOfWeek(to);
       if (from < condition.from || to > condition.to) {
         getData(_from, _to);
       }
       updateCondition("from", "", _from);
       updateCondition("to", "", to);
     }
-  };
-
-  const onRowClick = (item: PurchaseRequest) => {
-    navigate(`/purchasing-order-coordination/detail/${item.id}`);
   };
 
   return (
@@ -118,11 +112,10 @@ const PurchasingOrderCoordination = () => {
             "",
           )}
           onChangeDateRange={onChangeDateRange}
-          showStatusSelect={false}
         />
       </Flex>
       <DataGrid
-        onRowClick={onRowClick}
+        // onRowClick={onRowClick}
         page={page}
         limit={10}
         isPaginated
@@ -135,4 +128,4 @@ const PurchasingOrderCoordination = () => {
   );
 };
 
-export default PurchasingOrderCoordination;
+export default PurchasingOrderManagement;
