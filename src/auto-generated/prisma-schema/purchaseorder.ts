@@ -16,5 +16,6 @@ export const purchaseOrderSchema = z.object({
   updatedAt: z.date(),
   lastModifiedBy: z.string().nullish(),
   purchaseRequestId: z.string(),
-  supplierId: z.string(),
+  supplierId: z.string().nullish(),
+  departmentId: z.string().nullish(),
 })

@@ -2,11 +2,19 @@ import ScrollTable from "@/components/c-catering/ScrollTable";
 import useMaterialStore from "@/stores/material.store";
 import { Grid } from "@mantine/core";
 import { useSyncExternalStore } from "react";
-import store from "../_purchase-request-detail.store";
+import store from "../_purchase-coordination-detail.store";
 import Header from "./Header";
 import Item from "./Item";
 
-const PurchasingOrderCoordinationTable = () => {
+type PurchasingOrderCoordinationTableProps = {
+  currentCateringId: string | null;
+  disabled: boolean;
+};
+
+const PurchasingOrderCoordinationTable = ({
+  currentCateringId,
+  disabled,
+}: PurchasingOrderCoordinationTableProps) => {
   const { materials } = useMaterialStore();
   const { materialIds, currents } = useSyncExternalStore(
     store.subscribe,
@@ -17,19 +25,16 @@ const PurchasingOrderCoordinationTable = () => {
     <Grid mt={10}>
       <Grid.Col span={12} pb={0}>
         <div>
-          <ScrollTable
-            header={
-              <Header />
-            }
-            h="calc(-8.5rem - 200px + 100vh)"
-          >
+          <ScrollTable header={<Header />}>
             {materialIds.map((materialId) => (
               <Item
                 key={materialId}
+                currentCateringId={currentCateringId}
                 material={materials.get(materialId)}
                 coordinationDetail={currents[materialId]}
                 isSelected={store.isSelected(materialId)}
                 price={store.getPrice(materialId)}
+                kitchenQuantity={store.getInventory(materialId)}
                 onChangeAmount={(value) =>
                   store.setAmount(materialId, value)
                 }
@@ -45,7 +50,10 @@ const PurchasingOrderCoordinationTable = () => {
                 removeMaterial={() =>
                   store.removeMaterial(materialId)
                 }
-                // disabled={disabled}
+                onChangeDeliveryCatering={(value) =>
+                  store.setDeliveryCatering(materialId, value)
+                }
+                disabled={disabled}
               />
             ))}
           </ScrollTable>

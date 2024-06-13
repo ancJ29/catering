@@ -335,14 +335,15 @@ export const purchaseRequestDetailOthersSchema = z.object({
 
 export const poStatusSchema = z.enum([
   // cspell:disable
-  "DG", // Đã gửi
-  "DD", // Đã duyệt
-  "KD", // Không duyệt
-  "DDP", // Đang điều phối
-  "MH", // Mua hàng
-  "DNH", // Đang nhận hàng
-  "NH", // Đã nhận hàng
-  "DH", // Đã huỷ
+  "CXL", // Chờ xử lý
+  "CPH", // Chờ NCC phản hồi
+  "PH", // NCC có phản hồi
+  "SSGH", // NCC sẵn sàng giao hàng
+  "DGH", // NCC đã giao hàng
+  "NK1P", // Nhập kho 1 phần
+  "DNK", // Đã nhập kho
+  "DKT", // Đã kiểm tra sai lệch
+  "DTDNTT", // Đã tạo đề nghị thanh toán
   // cspell:enable
 ]);
 
@@ -350,14 +351,15 @@ export const purchaseOrderOthersSchema = z.object({
   type: prTypeSchema,
   priority: prPrioritySchema,
   status: poStatusSchema,
-  note: nullishStringSchema,
-  departmentName: stringSchema,
+  departmentName: nullishStringSchema,
 });
 
 export const purchaseOrderDetailOthersSchema = z.object({
-  unitPrice: numberSchema,
-  taxRate: numberSchema,
-  unitId: stringSchema,
+  supplierNote: nullishStringSchema,
+  internalNote: nullishStringSchema,
+  unitPrice: numberSchema.nullish(),
+  taxRate: numberSchema.nullish(),
+  unitId: nullishStringSchema,
 });
 
 export type ProductType = z.infer<typeof productTypeSchema>;

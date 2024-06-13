@@ -1,12 +1,15 @@
 import { PRStatus } from "@/auto-generated/api-configs";
 import {
+  Inventory,
   Material,
-  PurchaseRequest, PurchaseRequestDetail,
-  getPurchaseRequestById
+  PurchaseRequest,
+  PurchaseRequestDetail,
+  getMaterialInventories,
+  getPurchaseRequestById,
 } from "@/services/domain";
-import logger from "@/services/logger";
+import { addPurchaseOrders } from "@/services/domain/purchase-order";
 import useMaterialStore from "@/stores/material.store";
-import { createStore } from "@/utils";
+import { cloneDeep, createStore } from "@/utils";
 import { getConvertedAmount } from "@/utils/unit";
 
 type State = {
@@ -16,6 +19,8 @@ type State = {
   materialIds: string[];
   selectedMaterialIds: string[];
   deletedPurchaseDetailIds: string[];
+  isAllPurchaseInternal: boolean | null;
+  inventories: Record<string, Inventory>;
 };
 
 export enum ActionType {
@@ -26,6 +31,8 @@ export enum ActionType {
   SET_AMOUNT = "SET_AMOUNT",
   SET_SUPPLIER_NOTE = "SET_SUPPLIER_NOTE",
   SET_INTERNAL_NOTE = "SET_INTERNAL_NOTE",
+  SET_DELIVERY_CATERING = "SET_DELIVERY_CATERING",
+  SET_IS_ALL_PURCHASE_INTERNAL = "SET_IS_ALL_PURCHASE_INTERNAL",
 }
 
 type Action = {
@@ -35,7 +42,9 @@ type Action = {
   amount?: number;
   note?: string;
   isSelected?: boolean;
-  isSelectedAll?: boolean;
+  isAllPurchaseInternal?: boolean;
+  cateringId?: string | null;
+  inventories?: Inventory[];
 };
 
 const defaultState = {
@@ -44,6 +53,8 @@ const defaultState = {
   materialIds: [],
   selectedMaterialIds: [],
   deletedPurchaseDetailIds: [],
+  isAllPurchaseInternal: false,
+  inventories: {},
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -56,12 +67,16 @@ export default {
     const purchaseRequest = await getPurchaseRequestById(
       purchaseRequestId,
     );
-    if (!purchaseRequest) {
+    if (!purchaseRequest?.purchaseRequestDetails) {
       return;
     }
+    const inventories = await getMaterialInventories(
+      purchaseRequest.purchaseRequestDetails.map((e) => e.materialId),
+    );
     dispatch({
       type: ActionType.INIT_DATA,
       purchaseRequest,
+      inventories,
     });
   },
   getPurchaseRequest() {
@@ -106,17 +121,73 @@ export default {
       .getSnapshot()
       .selectedMaterialIds.includes(materialId);
   },
-  getTotalMaterial() {
-    return store.getSnapshot().selectedMaterialIds.length;
+  setIsAllPurchaseInternal(
+    isAllPurchaseInternal: boolean,
+    cateringId: string | null,
+  ) {
+    dispatch({
+      type: ActionType.SET_IS_ALL_PURCHASE_INTERNAL,
+      isAllPurchaseInternal,
+      cateringId: cateringId === null ? NCC : cateringId,
+    });
+  },
+  setDeliveryCatering(materialId: string, cateringId: string | null) {
+    dispatch({
+      type: ActionType.SET_DELIVERY_CATERING,
+      materialId,
+      cateringId,
+    });
   },
   getPrice(materialId: string) {
     return store.getSnapshot().currents[materialId]?.price || 0;
   },
-  async update(status: PRStatus) {
-    logger.info(status);
-    dispatch({
-      type: ActionType.RESET,
+  getInventory(materialId: string) {
+    const state = store.getSnapshot();
+    const { materials } = useMaterialStore.getState();
+    const deliveryCatering =
+      state.currents[materialId].deliveryCatering;
+    const inventory =
+      state.inventories[`${deliveryCatering}-${materialId}`];
+    return getConvertedAmount({
+      material: materials.get(materialId),
+      amount: inventory?.amount || 0,
+      reverse: true,
     });
+  },
+  async update(status?: PRStatus) {
+    if (!status) {
+      return;
+    }
+    const state = store.getSnapshot();
+    const grouped: { [key: string]: CoordinationDetail[] } = {};
+
+    for (const key of Object.keys(state.updates)) {
+      const detail = state.updates[key];
+      const deliveryCatering = detail.deliveryCatering;
+      if (!grouped[deliveryCatering]) {
+        grouped[deliveryCatering] = [];
+      }
+      grouped[deliveryCatering].push(detail);
+    }
+    const purchaseOrders = Object.keys(grouped).map((key) => {
+      const coordinationDetails = grouped[key];
+      return {
+        type: state.purchaseRequest?.others.type || "",
+        deliveryDate:
+          state.purchaseRequest?.deliveryDate || new Date(),
+        priority: state.purchaseRequest?.others.priority || "",
+        purchaseRequestId: state.purchaseRequest?.id || "",
+        departmentId: key === NCC ? null : key,
+        purchaseOrderDetails: coordinationDetails.map((e) => ({
+          materialId: e.materialId,
+          amount: e.dispatchQuantity,
+          supplierNote: e.supplierNote,
+          internalNote: e.internalNote,
+        })),
+      };
+    });
+
+    await addPurchaseOrders(purchaseOrders);
   },
 };
 
@@ -129,18 +200,29 @@ function reducer(action: Action, state: State): State {
       };
       break;
     case ActionType.INIT_DATA:
-      if (action.purchaseRequest) {
+      if (
+        action.purchaseRequest &&
+        action.inventories !== undefined
+      ) {
         const currents = initPurchaseDetails(
           action.purchaseRequest,
           materials,
         );
         const materialIds = sortMaterialIds(currents);
+        const inventories = Object.fromEntries(
+          action.inventories.map((e) => [
+            `${e.departmentId}-${e.materialId}`,
+            e,
+          ]),
+        );
         return {
           ...state,
           purchaseRequest: action.purchaseRequest,
           currents,
+          updates: cloneDeep(currents),
           materialIds,
           selectedMaterialIds: materialIds,
+          inventories,
         };
       }
       break;
@@ -172,6 +254,14 @@ function reducer(action: Action, state: State): State {
           : state.selectedMaterialIds.filter(
             (id) => id !== action.materialId,
           );
+        if (action.isSelected) {
+          state.currents[action.materialId].deliveryCatering = NCC;
+          state.updates[action.materialId].deliveryCatering = NCC;
+        }
+        state.isAllPurchaseInternal =
+          selectedMaterialIds.length !== state.materialIds.length
+            ? null
+            : false;
         return {
           ...state,
           selectedMaterialIds,
@@ -180,14 +270,11 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_AMOUNT:
       if (action.materialId && action.amount) {
-        // const purchaseRequest = state.currents[action.materialId];
-        // state.updates[action.materialId] = {
-        //   ...purchaseRequest,
-        //   amount: action.amount,
-        // };
-        // return {
-        //   ...state,
-        // };
+        const purchaseRequest = state.currents[action.materialId];
+        state.updates[action.materialId] = {
+          ...purchaseRequest,
+          dispatchQuantity: action.amount,
+        };
       }
       break;
     case ActionType.SET_SUPPLIER_NOTE:
@@ -205,6 +292,45 @@ function reducer(action: Action, state: State): State {
         state.updates[action.materialId] = {
           ...purchaseRequest,
           internalNote: action.note,
+        };
+      }
+      break;
+    case ActionType.SET_IS_ALL_PURCHASE_INTERNAL:
+      if (
+        action.isAllPurchaseInternal !== undefined &&
+        action.cateringId
+      ) {
+        const isAllPurchaseInternal =
+          action.isAllPurchaseInternal ?? false;
+        let selectedMaterialIds: string[];
+        if (isAllPurchaseInternal) {
+          selectedMaterialIds = [];
+          for (const key of Object.keys(state.currents)) {
+            state.currents[key].deliveryCatering = action.cateringId;
+            state.updates[key].deliveryCatering = action.cateringId;
+          }
+        } else {
+          selectedMaterialIds = state.materialIds;
+          for (const key of Object.keys(state.currents)) {
+            state.currents[key].deliveryCatering = NCC;
+            state.updates[key].deliveryCatering = NCC;
+          }
+        }
+        return {
+          ...state,
+          isAllPurchaseInternal,
+          selectedMaterialIds,
+        };
+      }
+      break;
+    case ActionType.SET_DELIVERY_CATERING:
+      if (action.materialId && action.cateringId) {
+        state.currents[action.materialId].deliveryCatering =
+          action.cateringId;
+        state.updates[action.materialId].deliveryCatering =
+          action.cateringId;
+        return {
+          ...state,
         };
       }
       break;
@@ -238,9 +364,8 @@ function initPurchaseDetail(
     id: purchaseRequestDetail.id,
     materialId: purchaseRequestDetail.materialId,
     isSupply: true,
-    deliveryCatering: "NCC",
+    deliveryCatering: NCC,
     orderQuantity: amount,
-    kitchenQuantity: amount,
     dispatchQuantity: amount,
     supplierNote: purchaseRequestDetail.others.supplierNote || "",
     internalNote: purchaseRequestDetail.others.internalNote || "",
@@ -248,7 +373,9 @@ function initPurchaseDetail(
   };
 }
 
-function sortMaterialIds(currents: Record<string, CoordinationDetail>) {
+function sortMaterialIds(
+  currents: Record<string, CoordinationDetail>,
+) {
   const materialIds = Object.keys(currents);
   const nonZeroPriceIds = materialIds.filter(
     (materialId) => currents[materialId]?.price !== 0,
@@ -265,9 +392,10 @@ export type CoordinationDetail = {
   isSupply: boolean;
   deliveryCatering: string;
   orderQuantity: number;
-  kitchenQuantity: number;
   dispatchQuantity: number;
   supplierNote: string;
   internalNote: string;
   price: number;
 };
+
+const NCC = "NCC";

@@ -115,3 +115,11 @@ export async function updateInventory(materials: Inventory[]) {
     params: materials,
   });
 }
+
+export async function getMaterialInventories(materialIds: string[]) {
+  return await loadAll<Inventory>({
+    key: "inventories",
+    action: Actions.GET_MATERIAL_INVENTORIES,
+    params: { materialIds },
+  });
+}

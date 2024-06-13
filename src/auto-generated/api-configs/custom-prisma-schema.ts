@@ -187,6 +187,24 @@ export const xUpdatePurchaseRequest = z.object({
   deletePurchaseRequestDetailIds: stringSchema.array(),
 });
 
+export const xAddPurchaseOrders = z
+  .object({
+    purchaseRequestId: stringSchema,
+    deliveryDate: dateSchema,
+    departmentId: nullishStringSchema,
+    type: stringSchema,
+    priority: stringSchema,
+    purchaseOrderDetails: z
+      .object({
+        materialId: stringSchema,
+        amount: numberSchema,
+        supplierNote: nullishStringSchema,
+        internalNote: nullishStringSchema,
+      })
+      .array(),
+  })
+  .array();
+
 export const xPreferredSupplier = z.object({
   departmentId: stringSchema,
   materialId: stringSchema,

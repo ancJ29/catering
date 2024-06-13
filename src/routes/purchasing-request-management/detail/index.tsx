@@ -5,7 +5,10 @@ import PurchaseRequestSteppers from "@/components/c-catering/PurchaseRequestStep
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useAuthStore from "@/stores/auth.store";
-import { PurchaseRequestForm, initialValues } from "@/types";
+import {
+  PurchaseRequestForm,
+  initialPurchaseRequestForm,
+} from "@/types";
 import { formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -22,7 +25,7 @@ const PurchasingRequestDetail = () => {
   const [disabled, setDisabled] = useState(true);
   const { values, setValues, setFieldValue, getInputProps, errors } =
     useForm<PurchaseRequestForm>({
-      initialValues: initialValues,
+      initialValues: initialPurchaseRequestForm,
     });
 
   const load = useCallback(async () => {

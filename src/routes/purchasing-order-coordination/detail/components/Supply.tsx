@@ -4,44 +4,82 @@ import { Department } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { Button, Flex, Text } from "@mantine/core";
-import { useMemo } from "react";
+import { IconCheck } from "@tabler/icons-react";
+import { useMemo, useSyncExternalStore } from "react";
+import store from "../_purchase-coordination-detail.store";
 
 type SupplyProps = {
+  currentCateringId: string | null;
+  cateringId: string | null;
+  cateringError: string;
   onChangeCateringSupplier: (value: string | null) => void;
   onPurchaseOutside: () => void;
   onPurchaseInternal: () => void;
+  disabled: boolean;
 };
 
 const Supply = ({
+  currentCateringId,
+  cateringId,
+  cateringError,
   onChangeCateringSupplier,
   onPurchaseOutside,
-  onPurchaseInternal
+  onPurchaseInternal,
+  disabled,
 }: SupplyProps) => {
   const t = useTranslation();
+  const { isAllPurchaseInternal } = useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+  );
   const { activeCaterings } = useCateringStore();
   const _caterings: OptionProps[] = useMemo(() => {
-    return Array.from(activeCaterings.values()).map(
-      (p: Department) => ({
+    return Array.from(activeCaterings.values())
+      .map((p: Department) => ({
         label: p.name,
         value: p.id,
-      }),
-    );
-  }, [activeCaterings]);
+      }))
+      .filter((e) => e.value !== currentCateringId);
+  }, [activeCaterings, currentCateringId]);
 
   return (
-    <Flex justify="start" align="center" gap={10}>
-      <Text>{t("The kitchen delivers the entire order")}</Text>
+    <Flex justify="start" align="start" gap={10}>
+      <Text mt={4}>{t("The kitchen delivers the entire order")}</Text>
       <Select
-        value={""}
-        w={"15vw"}
+        value={cateringId}
+        w="15vw"
         options={_caterings}
         onChange={onChangeCateringSupplier}
         required
+        error={cateringError}
+        disabled={disabled}
       />
-      <Button onClick={onPurchaseOutside}>
+      <Button
+        leftSection={
+          isAllPurchaseInternal === false ? (
+            <IconCheck size={16} />
+          ) : null
+        }
+        variant={
+          isAllPurchaseInternal === false ? "filled" : "outline"
+        }
+        onClick={onPurchaseOutside}
+        disabled={disabled}
+      >
         {t("All outside purchase")}
       </Button>
-      <Button onClick={onPurchaseInternal}>
+      <Button
+        leftSection={
+          isAllPurchaseInternal === true ? (
+            <IconCheck size={16} />
+          ) : null
+        }
+        variant={
+          isAllPurchaseInternal === true ? "filled" : "outline"
+        }
+        onClick={onPurchaseInternal}
+        disabled={disabled}
+      >
         {t("All internal purchase")}
       </Button>
     </Flex>

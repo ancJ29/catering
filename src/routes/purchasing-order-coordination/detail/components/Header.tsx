@@ -10,8 +10,16 @@ const Header = () => {
     { width: "3%", content: t("Sup") },
     { width: "10%", content: t("Delivery catering") },
     { width: "6%", content: t("Order quantity"), textAlign: "right" },
-    { width: "6%", content: t("Kitchen quantity"), textAlign: "right" },
-    { width: "8%", content: t("Dispatch quantity"), textAlign: "right" },
+    {
+      width: "6%",
+      content: t("Kitchen quantity"),
+      textAlign: "right",
+    },
+    {
+      width: "8%",
+      content: t("Dispatch quantity"),
+      textAlign: "right",
+    },
     { width: "8%", content: t("Unit"), textAlign: "center" },
     { width: "15%", content: t("Supplier note") },
     { width: "15%", content: t("Internal note") },

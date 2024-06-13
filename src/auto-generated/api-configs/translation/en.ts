@@ -261,8 +261,19 @@ export default {
   "Purchasing Request Detail": "Purchasing Request Detail",
   "Total order quantity": "Total order quantity",
   "Purchasing Order Coordination": "Purchasing Order Coordination",
-  "Return to purchase order coordination": "Return to purchase order coordination",
-  "The kitchen delivers the entire order": "The kitchen delivers the entire order",
+  "Return to purchase order coordination":
+    "Return to purchase order coordination",
+  "The kitchen delivers the entire order":
+    "The kitchen delivers the entire order",
   "All outside purchase": "All outside purchase",
   "All internal purchase": "All internal purchase",
+  "Purchase outside": "Purchase outside",
+  "Sup": "Sup",
+  "Delivery catering": "Delivery catering",
+  "Order quantity": "Order quantity",
+  "Kitchen quantity": "Kitchen quantity",
+  "Dispatch quantity": "Dispatch quantity",
+  "Yes": "Yes",
+  "No": "No",
+  "Separate": "Separate",
 } satisfies Record<string, string>;

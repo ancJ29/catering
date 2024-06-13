@@ -10,6 +10,7 @@ import {
 
 import { z } from "zod";
 import {
+  xAddPurchaseOrders,
   xAddPurchaseRequest,
   xCustomerSchema,
   xDailyMenuSchema,
@@ -678,6 +679,19 @@ export const configs = {
       }),
     },
   },
+  [Actions.GET_MATERIAL_INVENTORIES]: {
+    name: Actions.GET_MATERIAL_INVENTORIES,
+    group: ActionGroups.INVENTORY_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        materialIds: stringSchema.array(),
+      }),
+      response: listResponse.extend({
+        inventories: xInventorySchema.array(),
+      }),
+    },
+  },
   [Actions.GET_SUPPLIERS]: {
     name: Actions.GET_SUPPLIERS,
     group: ActionGroups.SUPPLIER_MANAGEMENT,
@@ -757,20 +771,6 @@ export const configs = {
       }),
     },
   },
-  [Actions.GET_PURCHASE_ORDERS]: {
-    name: Actions.GET_PURCHASE_ORDERS,
-    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        from: dateSchema,
-        to: dateSchema,
-      }),
-      response: listResponse.extend({
-        purchaseOrders: xPurchaseOrderSchema.array(),
-      }),
-    },
-  },
   [Actions.GET_PURCHASE_REQUESTS]: {
     name: Actions.GET_PURCHASE_REQUESTS,
     group: ActionGroups.PURCHASE_REQUEST_MANAGEMENT,
@@ -801,6 +801,29 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: xUpdatePurchaseRequest,
+    },
+  },
+  [Actions.GET_PURCHASE_ORDERS]: {
+    name: Actions.GET_PURCHASE_ORDERS,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema,
+        to: dateSchema,
+      }),
+      response: listResponse.extend({
+        purchaseOrders: xPurchaseOrderSchema.array(),
+      }),
+    },
+  },
+  [Actions.ADD_PURCHASE_ORDER]: {
+    name: Actions.ADD_PURCHASE_ORDER,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xAddPurchaseOrders,
+      response: addResponse,
     },
   },
   [Actions.GET_PREFERRED_SUPPLIERS]: {

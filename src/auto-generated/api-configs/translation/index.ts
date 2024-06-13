@@ -4,6 +4,7 @@ import {
   MaterialGroup,
   MaterialOrderCycle,
   MaterialType,
+  POStatus,
   ProductType,
   PRPriority,
   PRStatus,
@@ -25,6 +26,7 @@ type PurchaseRequestKey =
   | `purchaseRequest.type.${PRType}`
   | `purchaseRequest.priority.${PRPriority}`
   | `purchaseRequest.status.${PRStatus}`;
+type PurchaseOrderKey = `purchaseOrder.status.${POStatus}`;
 
 const departmentDictionaries: {
   en: Record<DepartmentKey, string>;
@@ -214,7 +216,7 @@ const materialDictionaries: {
   },
 };
 
-const purchaseOrderDictionaries: {
+const purchaseRequestDictionaries: {
   en: Record<PurchaseRequestKey, string>;
   vi: Record<PurchaseRequestKey, string>;
 } = {
@@ -250,6 +252,38 @@ const purchaseOrderDictionaries: {
   },
 };
 
+const purchaseOrderDictionaries: {
+  en: Record<PurchaseOrderKey, string>;
+  vi: Record<PurchaseOrderKey, string>;
+} = {
+  en: {
+    /* cspell:disable */
+    "purchaseOrder.status.CXL": "Pending",
+    "purchaseOrder.status.CPH": "Waiting for supplier response",
+    "purchaseOrder.status.PH": "Supplier responded",
+    "purchaseOrder.status.SSGH": "Supplier ready to deliver",
+    "purchaseOrder.status.DGH": "Supplier delivered",
+    "purchaseOrder.status.NK1P": "Partially warehoused",
+    "purchaseOrder.status.DNK": "Warehoused",
+    "purchaseOrder.status.DKT": "Checked for discrepancies",
+    "purchaseOrder.status.DTDNTT": "Payment request created",
+    /* cspell:enable */
+  },
+  vi: {
+    /* cspell:disable */
+    "purchaseOrder.status.CXL": "Chờ xử lý",
+    "purchaseOrder.status.CPH": "Chờ NCC phản hồi",
+    "purchaseOrder.status.PH": "NCC có phản hồi",
+    "purchaseOrder.status.SSGH": "NCC sẵn sàng giao hàng",
+    "purchaseOrder.status.DGH": "NCC đã giao hàng",
+    "purchaseOrder.status.NK1P": "Nhập kho 1 phần",
+    "purchaseOrder.status.DNK": "Đã nhập kho",
+    "purchaseOrder.status.DKT": "Đã kiểm tra sai lệch",
+    "purchaseOrder.status.DTDNTT": "Đã tạo đề nghị thanh toán",
+    /* cspell:enable */
+  },
+};
+
 export const dictionaries: {
   version: string;
   en: Record<string, string>;
@@ -261,6 +295,7 @@ export const dictionaries: {
     ...dailyMenuDictionaries.en,
     ...materialDictionaries.en,
     ...productDictionaries.en,
+    ...purchaseRequestDictionaries.en,
     ...purchaseOrderDictionaries.en,
     ...en,
   },
@@ -269,6 +304,7 @@ export const dictionaries: {
     ...dailyMenuDictionaries.vi,
     ...materialDictionaries.vi,
     ...productDictionaries.vi,
+    ...purchaseRequestDictionaries.vi,
     ...purchaseOrderDictionaries.vi,
     ...vi,
   },

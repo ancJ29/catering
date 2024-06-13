@@ -2,7 +2,10 @@ import PurchaseRequestActions from "@/components/c-catering/PurchaseRequestActio
 import PurchaseRequestInformationForm from "@/components/c-catering/PurchaseRequestInformationForm";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
-import { PurchaseRequestForm, initialValues } from "@/types";
+import {
+  PurchaseRequestForm,
+  initialPurchaseRequestForm,
+} from "@/types";
 import { Flex, Stack } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -30,7 +33,7 @@ const AddPurchasingRequest = () => {
     getInputProps,
     errors,
   } = useForm<PurchaseRequestForm>({
-    initialValues: initialValues,
+    initialValues: initialPurchaseRequestForm,
     validate: {
       departmentId: isNotEmpty(t("Please select catering")),
       deliveryDate: isNotEmpty(),
@@ -126,7 +129,7 @@ const AddPurchasingRequest = () => {
 
   const handleChangeValues = useCallback(
     (key: string, value?: string | number | null) => {
-      if (key in initialValues === false) {
+      if (key in initialPurchaseRequestForm === false) {
         return;
       }
       setFieldValue(key, value);
@@ -145,7 +148,11 @@ const AddPurchasingRequest = () => {
 
   const complete = async () => {
     if (validate().hasErrors || store.getTotalMaterial() === 0) {
-      setSourceError(selectedSource === null ? t("Please select material source") : "");
+      setSourceError(
+        selectedSource === null
+          ? t("Please select material source")
+          : "",
+      );
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),
@@ -153,7 +160,7 @@ const AddPurchasingRequest = () => {
       return;
     }
     await store.createPurchasingRequest(values);
-    setValues(initialValues);
+    setValues(initialPurchaseRequestForm);
     setSelectedSource(null);
     notifications.show({
       color: "green.5",
@@ -164,20 +171,6 @@ const AddPurchasingRequest = () => {
   return (
     <Stack gap={0}>
       <Flex direction="column" gap={10}>
-        {/* <Flex justify="end" align="end" gap={10}>
-          <Button
-            onClick={() => navigate("/purchasing-request-management")}
-            variant="outline"
-          >
-            {t("Return to purchase request list")}
-          </Button>
-          <Button
-            leftSection={<IconCheck size={16} />}
-            onClick={complete}
-          >
-            {t("Complete")}
-          </Button>
-        </Flex> */}
         <PurchaseRequestActions
           returnButtonTitle={t("Return to purchase request list")}
           returnUrl="/purchasing-request-management"

@@ -115,6 +115,7 @@ const Item = ({
           variant="light"
           color="error"
           onClick={removeMaterial}
+          disabled={disabled}
         >
           {t("Remove")}
         </Button>

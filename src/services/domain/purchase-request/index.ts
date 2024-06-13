@@ -10,7 +10,11 @@ import {
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
-import { OptionProps, PurchaseDetail, PurchaseRequestForm } from "@/types";
+import {
+  OptionProps,
+  PurchaseDetail,
+  PurchaseRequestForm,
+} from "@/types";
 import { ONE_DAY, endOfDay, getDateTime, startOfDay } from "@/utils";
 import { z } from "zod";
 
@@ -55,12 +59,14 @@ export async function getPurchaseRequests(
   to?: number,
   status?: PRStatus,
 ) {
-  return _getPurchaseRequests(from, to, status).then((purchaseRequests) => {
-    return purchaseRequests.map((el) => ({
-      ...el,
-      name: el.code,
-    }));
-  });
+  return _getPurchaseRequests(from, to, status).then(
+    (purchaseRequests) => {
+      return purchaseRequests.map((el) => ({
+        ...el,
+        name: el.code,
+      }));
+    },
+  );
 }
 
 export async function getPurchaseRequestById(

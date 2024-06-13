@@ -9,15 +9,16 @@ type PurchaseRequestActionsProps = {
   complete: () => void;
 };
 
-const PurchaseRequestActions = ({ returnButtonTitle, returnUrl, complete }: PurchaseRequestActionsProps) => {
+const PurchaseRequestActions = ({
+  returnButtonTitle,
+  returnUrl,
+  complete,
+}: PurchaseRequestActionsProps) => {
   const t = useTranslation();
   const navigate = useNavigate();
   return (
     <Flex justify="end" align="end" gap={10}>
-      <Button
-        onClick={() => navigate(returnUrl)}
-        variant="outline"
-      >
+      <Button onClick={() => navigate(returnUrl)} variant="outline">
         {returnButtonTitle}
       </Button>
       <Button
