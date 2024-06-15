@@ -46,8 +46,8 @@ export function filter(po: PurchaseOrder, condition?: FilterType) {
   if (
     condition?.departmentIds &&
     condition.departmentIds.length > 0 &&
-    po.others.departmentId &&
-    !condition.departmentIds.includes(po.others.departmentId)
+    po.others.cateringId &&
+    !condition.departmentIds.includes(po.others.cateringId)
   ) {
     return false;
   }
