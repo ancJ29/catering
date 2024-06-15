@@ -27,7 +27,7 @@ const statuses: PRStatus[] = [
 
 const map = new Map<number, PRStatus>(statuses.map((s, i) => [i, s]));
 
-const size = 16;
+const size = 12;
 
 type PurchaseRequestSteppersProps = {
   status?: PRStatus;
@@ -73,7 +73,7 @@ const PurchaseRequestSteppers = ({
   return (
     <Stepper
       w="100%"
-      size="sm"
+      size="xs"
       onStepClick={click}
       color={color}
       my={10}

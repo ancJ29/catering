@@ -7,6 +7,7 @@ import {
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps, PurchaseRequestForm } from "@/types";
+import { formatTime, isSameDate } from "@/utils";
 import { Flex } from "@mantine/core";
 import { FormErrors, GetInputProps } from "@mantine/form/lib/types";
 import { useMemo } from "react";
@@ -71,6 +72,12 @@ const PurchaseRequestInformationForm = ({
         w={"25vw"}
         required
         disabled={disabled}
+        minTime={
+          isSameDate(new Date(), new Date(values.deliveryDate))
+            ? formatTime(new Date(), "HH:mm")
+            : undefined
+        }
+        maxTime="23:59"
       />
       <Select
         label={t("Purchase request type")}

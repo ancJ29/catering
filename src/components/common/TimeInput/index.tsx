@@ -7,10 +7,18 @@ import { IconClock } from "@tabler/icons-react";
 import { ChangeEvent, useRef } from "react";
 
 interface TimeInputProps extends MantineTimeInputProps {
+  minTime?: string;
+  maxTime?: string;
   onChangeValue: (value: string) => void;
 }
 
-const TimeInput = ({ onChangeValue, ...props }: TimeInputProps) => {
+const TimeInput = ({
+  minTime,
+  maxTime,
+  withSeconds,
+  onChangeValue,
+  ...props
+}: TimeInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
 
   const pickerControl = (
@@ -25,14 +33,54 @@ const TimeInput = ({ onChangeValue, ...props }: TimeInputProps) => {
     </ActionIcon>
   );
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChangeValue(event.target.value);
+  const onTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (minTime !== undefined && maxTime !== undefined) {
+      const val = event.currentTarget.value;
+
+      if (val) {
+        const [hours, minutes, seconds] = val.split(":").map(Number);
+        if (minTime) {
+          const [minHours, minMinutes, minSeconds] = minTime
+            .split(":")
+            .map(Number);
+
+          if (
+            hours < minHours ||
+            (hours === minHours && minutes < minMinutes) ||
+            (withSeconds &&
+              hours === minHours &&
+              minutes === minMinutes &&
+              seconds < minSeconds)
+          ) {
+            event.currentTarget.value = minTime;
+          }
+        }
+
+        if (maxTime) {
+          const [maxHours, maxMinutes, maxSeconds] = maxTime
+            .split(":")
+            .map(Number);
+
+          if (
+            hours > maxHours ||
+            (hours === maxHours && minutes > maxMinutes) ||
+            (withSeconds &&
+              hours === maxHours &&
+              minutes === maxMinutes &&
+              seconds > maxSeconds)
+          ) {
+            event.currentTarget.value = maxTime;
+          }
+        }
+      }
+    }
+    onChangeValue(event.currentTarget.value);
   };
 
   return (
     <MantineTimeInput
       ref={ref}
-      onChange={onChange}
+      onChange={onTimeChange}
       rightSection={pickerControl}
       {...props}
     />

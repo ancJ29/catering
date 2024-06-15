@@ -15,6 +15,8 @@ type DateTimeInputProps = {
   dateTimeClassName?: string;
   required?: boolean;
   disabled: boolean;
+  minTime?: string;
+  maxTime?: string;
 };
 
 const DateTimeInput = ({
@@ -28,6 +30,8 @@ const DateTimeInput = ({
   dateTimeClassName,
   required = false,
   disabled,
+  minTime,
+  maxTime,
 }: DateTimeInputProps) => {
   return (
     <div className={classes.container} style={{ width: w }}>
@@ -55,6 +59,8 @@ const DateTimeInput = ({
           onChangeValue={onChangeTime}
           w={"30%"}
           disabled={disabled}
+          minTime={minTime}
+          maxTime={maxTime}
         />
       </div>
     </div>

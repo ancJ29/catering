@@ -6,6 +6,7 @@ import {
   PurchaseRequestForm,
   initialPurchaseRequestForm,
 } from "@/types";
+import { formatTime, isSameDate } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -139,6 +140,14 @@ const AddPurchasingRequest = () => {
           handleChangeSelectedSource(
             selectedSource,
             value as string | undefined,
+          );
+        }
+      }
+      if (key === "deliveryDate" && typeof value === "number") {
+        if (isSameDate(new Date(), new Date(value))) {
+          setFieldValue(
+            "deliveryTime",
+            formatTime(new Date(), "HH:mm"),
           );
         }
       }
