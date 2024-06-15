@@ -106,10 +106,7 @@ export default [
         url: "/purchasing-request-management",
       },
       {
-        roles: [
-          ClientRoles.OWNER,
-          ClientRoles.SUPPLIER,
-        ],
+        roles: [ClientRoles.OWNER, ClientRoles.SUPPLIER],
         key: "purchasing-order-management",
         label: "Purchasing Order Management",
         icon: "shopping-cart-check",

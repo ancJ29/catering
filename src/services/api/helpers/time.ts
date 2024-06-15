@@ -9,6 +9,7 @@ const dateKeys = new Map<string, boolean>(
     from: true,
     to: true,
     deliveryDate: true,
+    approvedAt: true,
   }),
 );
 

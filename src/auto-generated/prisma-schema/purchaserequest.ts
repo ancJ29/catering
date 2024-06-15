@@ -12,8 +12,11 @@ export const purchaseRequestSchema = z.object({
   deliveryDate: z.date(),
   code: z.string(),
   others: jsonSchema,
+  createdById: z.string(),
   createdAt: z.date(),
+  approvedById: z.string().nullish(),
+  approvedAt: z.date().nullish(),
   updatedAt: z.date(),
-  lastModifiedBy: z.string().nullish(),
   departmentId: z.string(),
+  lastModifiedBy: z.string().nullish(),
 })

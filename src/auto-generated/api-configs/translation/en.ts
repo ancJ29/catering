@@ -275,4 +275,6 @@ export default {
   "Yes": "Yes",
   "No": "No",
   "Separate": "Separate",
+  "Purchase order create - date": "Creator - Date",
+  "Purchase order approve - date": "Approver - Date",
 } satisfies Record<string, string>;

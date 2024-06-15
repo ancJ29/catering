@@ -272,4 +272,6 @@ export default {
   "Yes": "Có",
   "No": "Không",
   "Separate": "Tách",
+  "Purchase order create - date": "Người tạo - Ngày",
+  "Purchase order approve - date": "Người duyệt - Ngày",
 } satisfies Record<string, string>;

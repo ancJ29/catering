@@ -13,6 +13,7 @@ import {
   typePriorityAndStatusOrderOptions,
 } from "@/services/domain/purchase-order";
 import useCateringStore from "@/stores/catering.store";
+import useUserStore from "@/stores/user.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -24,6 +25,7 @@ const PurchasingOrderManagement = () => {
   PurchaseOrder[]
   >([]);
   const { caterings } = useCateringStore();
+  const { users } = useUserStore();
 
   const [typeOptions, priorityOptions, statusOptions] =
     useMemo(() => {
@@ -31,8 +33,8 @@ const PurchasingOrderManagement = () => {
     }, [t]);
 
   const dataGridConfigs = useMemo(
-    () => configs(t, caterings),
-    [t, caterings],
+    () => configs(t, caterings, users),
+    [t, caterings, users],
   );
 
   const getData = async (from?: number, to?: number) => {

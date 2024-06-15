@@ -351,7 +351,11 @@ export const purchaseOrderOthersSchema = z.object({
   type: prTypeSchema,
   priority: prPrioritySchema,
   status: poStatusSchema,
-  departmentId: nullishStringSchema,
+  cateringId: stringSchema,
+  createdById: stringSchema,
+  createAt: dateSchema,
+  approvedById: stringSchema,
+  approvedAt: dateSchema,
 });
 
 export const purchaseOrderDetailOthersSchema = z.object({
