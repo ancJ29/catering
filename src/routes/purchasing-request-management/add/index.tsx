@@ -48,16 +48,6 @@ const AddPurchasingRequest = () => {
     store.reset();
   }, []);
 
-  const callback = useCallback(
-    (values: PurchaseRequestForm) => {
-      setValues(values);
-      values.departmentId &&
-        store.initBackgroundData(values.departmentId);
-    },
-    [setValues],
-  );
-  useUrlHash(values, callback);
-
   const handleChangeSelectedSource = useCallback(
     (selectedSource: string | null, departmentId?: string) => {
       setSelectedSource(selectedSource);
@@ -96,6 +86,44 @@ const AddPurchasingRequest = () => {
     [setFieldValue, values.departmentId],
   );
 
+  const handleChangeValues = useCallback(
+    (key: string, value?: string | number | null) => {
+      if (key in initialPurchaseRequestForm === false) {
+        return;
+      }
+      setFieldValue(key, value);
+      if (key === "departmentId") {
+        value && store.initBackgroundData(value.toString());
+        if (selectedSource !== null) {
+          handleChangeSelectedSource(
+            selectedSource,
+            value as string | undefined,
+          );
+        }
+      }
+      if (key === "deliveryDate" && typeof value === "number") {
+        if (isSameDate(new Date(), new Date(value))) {
+          setFieldValue(
+            "deliveryTime",
+            formatTime(new Date(), "HH:mm"),
+          );
+        }
+      }
+    },
+    [handleChangeSelectedSource, selectedSource, setFieldValue],
+  );
+
+  const callback = useCallback(
+    (values: PurchaseRequestForm) => {
+      setValues(values);
+      handleChangeValues("deliveryDate", values.deliveryDate);
+      values.departmentId &&
+        store.initBackgroundData(values.departmentId);
+    },
+    [handleChangeValues, setValues],
+  );
+  useUrlHash(values, callback);
+
   const handleFileUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -126,33 +154,6 @@ const AddPurchasingRequest = () => {
       reader.readAsArrayBuffer(file);
     },
     [],
-  );
-
-  const handleChangeValues = useCallback(
-    (key: string, value?: string | number | null) => {
-      if (key in initialPurchaseRequestForm === false) {
-        return;
-      }
-      setFieldValue(key, value);
-      if (key === "departmentId") {
-        value && store.initBackgroundData(value.toString());
-        if (selectedSource !== null) {
-          handleChangeSelectedSource(
-            selectedSource,
-            value as string | undefined,
-          );
-        }
-      }
-      if (key === "deliveryDate" && typeof value === "number") {
-        if (isSameDate(new Date(), new Date(value))) {
-          setFieldValue(
-            "deliveryTime",
-            formatTime(new Date(), "HH:mm"),
-          );
-        }
-      }
-    },
-    [handleChangeSelectedSource, selectedSource, setFieldValue],
   );
 
   const complete = async () => {
