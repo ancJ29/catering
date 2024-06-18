@@ -80,7 +80,7 @@ const InternalPurchasingOrderManagement = () => {
   };
 
   return (
-    <Stack gap={10}>
+    <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
         <PurchaseRequestFilter
           keyword={keyword}

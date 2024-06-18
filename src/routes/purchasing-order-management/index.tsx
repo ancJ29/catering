@@ -3,18 +3,21 @@ import DataGrid from "@/components/common/DataGrid";
 import {
   FilterType,
   defaultCondition,
-  filter
+  filter,
 } from "@/configs/filters/purchase-order";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import { PurchaseOrder, getPurchaseOrders, typePriorityAndStatusOrderOptions } from "@/services/domain";
+import {
+  PurchaseOrder,
+  getPurchaseOrders,
+  typePriorityAndStatusOrderOptions,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { configs } from "./_config";
-
 
 const PurchasingOrderManagement = () => {
   const t = useTranslation();
@@ -79,7 +82,7 @@ const PurchasingOrderManagement = () => {
   };
 
   return (
-    <Stack gap={10}>
+    <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
         <PurchaseRequestFilter
           keyword={keyword}
