@@ -1,20 +1,18 @@
 import PurchaseOrderStatus from "@/components/c-catering/PurchaseOrderStatus";
-import { Supplier } from "@/services/domain";
 import { PurchaseOrder } from "@/services/domain/purchase-order";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
 import { Department } from "../catering-management/_configs";
-import AddressPopover from "../internal-purchasing-order-management/components/AddressPopover";
+import AddressPopover from "./components/AddressPopover";
 
 export const configs = (
   t: (key: string) => string,
   caterings: Map<string, Department>,
-  suppliers: Map<string, Supplier>,
 ): DataGridColumnProps[] => {
   return [
     {
-      key: "poCode",
-      header: t("Purchase order po code"),
+      key: "ioCode",
+      header: t("Purchase order io code"),
       width: "12%",
       style: { fontWeight: "bold" },
       renderCell: (_, row: PurchaseOrder) => {
@@ -31,8 +29,8 @@ export const configs = (
       },
     },
     {
-      key: "kitchen",
-      header: t("Purchase order kitchen"),
+      key: "receivingKitchen",
+      header: t("Purchase order receiving kitchen"),
       width: "17%",
       renderCell: (_, row: PurchaseOrder) => {
         return (
@@ -43,12 +41,12 @@ export const configs = (
       },
     },
     {
-      key: "supplier",
-      header: t("Purchase order supplier"),
+      key: "dispatchKitchen",
+      header: t("Purchase order dispatch kitchen"),
       width: "17%",
       renderCell: (_, row: PurchaseOrder) => {
         return (
-          <span>{suppliers.get(row.supplierId || "")?.name}</span>
+          <span>{caterings.get(row.departmentId || "")?.name}</span>
         );
       },
     },

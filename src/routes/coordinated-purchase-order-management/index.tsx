@@ -3,26 +3,29 @@ import DataGrid from "@/components/common/DataGrid";
 import {
   FilterType,
   defaultCondition,
-  filter
+  filter,
 } from "@/configs/filters/purchase-order";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import { PurchaseOrder, getPurchaseOrders, typePriorityAndStatusOrderOptions } from "@/services/domain";
+import {
+  PurchaseOrder,
+  getPurchaseOrders,
+  typePriorityAndStatusOrderOptions,
+} from "@/services/domain/purchase-order";
 import useCateringStore from "@/stores/catering.store";
-import useSupplierStore from "@/stores/supplier.store";
+import useUserStore from "@/stores/user.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { configs } from "./_config";
 
-
-const PurchasingOrderManagement = () => {
+const CoordinatedPurchaseOrderManagement = () => {
   const t = useTranslation();
   const [purchaseOrders, setPurchaseOrders] = useState<
   PurchaseOrder[]
   >([]);
   const { caterings } = useCateringStore();
-  const { suppliers } = useSupplierStore();
+  const { users } = useUserStore();
 
   const [typeOptions, priorityOptions, statusOptions] =
     useMemo(() => {
@@ -30,14 +33,12 @@ const PurchasingOrderManagement = () => {
     }, [t]);
 
   const dataGridConfigs = useMemo(
-    () => configs(t, caterings, suppliers),
-    [t, caterings, suppliers],
+    () => configs(t, caterings, users),
+    [t, caterings, users],
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseOrders(
-      await getPurchaseOrders({ from, to, hasSupplier: true }),
-    );
+    setPurchaseOrders(await getPurchaseOrders({ from, to }));
   };
 
   useEffect(() => {
@@ -129,4 +130,4 @@ const PurchasingOrderManagement = () => {
   );
 };
 
-export default PurchasingOrderManagement;
+export default CoordinatedPurchaseOrderManagement;

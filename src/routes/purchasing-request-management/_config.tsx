@@ -46,7 +46,7 @@ export const configs = (
       header: t("Purchase request date"),
       width: "15%",
       renderCell: (_, row: PurchaseRequest) => {
-        return formatTime(row.deliveryDate, "DD/MM/YYYY");
+        return formatTime(row.deliveryDate);
       },
     },
     {

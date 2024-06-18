@@ -41,6 +41,7 @@ import {
   getSchema,
   idAndNameSchema,
   listResponse,
+  notNullSchema,
   numberSchema,
   optionalBooleanSchema,
   optionalStringSchema,
@@ -811,6 +812,8 @@ export const configs = {
       request: getSchema.extend({
         from: dateSchema.optional(),
         to: dateSchema.optional(),
+        departmentId: z.union([z.null(), notNullSchema]),
+        supplierId: z.union([z.null(), notNullSchema]),
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),

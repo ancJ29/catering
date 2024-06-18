@@ -30,29 +30,51 @@ type AddRequest = z.infer<typeof addRequest>;
 async function _getPurchaseOrders(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
+  hasDepartment: boolean,
+  hasSupplier: boolean,
   status?: POStatus,
 ): Promise<PurchaseOrder[]> {
   return await loadAll<PurchaseOrder>({
     key: "purchaseOrders",
     action: Actions.GET_PURCHASE_ORDERS,
     take: 20,
-    params: { from, to, status },
+    params: {
+      from,
+      to,
+      status,
+      departmentId: hasDepartment ? { not: null } : null,
+      supplierId: hasSupplier ? { not: null } : null,
+    },
   });
 }
 
-export async function getPurchaseOrders(
-  from?: number,
-  to?: number,
-  status?: POStatus,
-) {
-  return _getPurchaseOrders(from, to, status).then(
-    (purchaseOrders) => {
-      return purchaseOrders.map((el) => ({
-        ...el,
-        name: el.code,
-      }));
-    },
-  );
+type PurchaseOrderProps = {
+  from?: number;
+  to?: number;
+  status?: POStatus;
+  hasDepartment?: boolean;
+  hasSupplier?: boolean;
+};
+
+export async function getPurchaseOrders({
+  from,
+  to,
+  status,
+  hasDepartment = false,
+  hasSupplier = false,
+}: PurchaseOrderProps) {
+  return _getPurchaseOrders(
+    from,
+    to,
+    hasDepartment,
+    hasSupplier,
+    status,
+  ).then((purchaseOrders) => {
+    return purchaseOrders.map((el) => ({
+      ...el,
+      name: el.code,
+    }));
+  });
 }
 
 export async function getPurchaseOrderById(

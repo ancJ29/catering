@@ -348,6 +348,8 @@ export const poStatusSchema = z.enum([
 ]);
 
 export const purchaseOrderOthersSchema = z.object({
+  prCode: stringSchema,
+  dispatchCode: stringSchema,
   type: prTypeSchema,
   priority: prPrioritySchema,
   status: poStatusSchema,

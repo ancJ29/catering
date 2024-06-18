@@ -113,10 +113,18 @@ export default [
         url: "/purchasing-order-management",
       },
       {
+        roles: [ClientRoles.OWNER, ClientRoles.SUPPLIER],
+        key: "coordinated-purchase-order-management",
+        label: "Coordinated Purchase Order Management",
+        icon: "truck-loading",
+        url: "/coordinated-purchase-order-management",
+      },
+      {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
         key: "internal-purchasing-order-management",
         label: "Internal Purchasing Order Management",
         icon: "package-import",
+        url: "/internal-purchasing-order-management",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.SUPPLIER],

@@ -272,6 +272,11 @@ export default {
   "Yes": "Có",
   "No": "Không",
   "Separate": "Tách",
-  "Purchase order create - date": "Người tạo - Ngày",
-  "Purchase order approve - date": "Người duyệt - Ngày",
+  "Purchase order dispatch code": "Mã điều phối",
+  "Create by": "Người tạo",
+  "Create at": "Ngày tạo",
+  "Approved by": "Người duyệt",
+  "Approved at": "Ngày duyệt",
+  "Other information": "Thông tin khác",
+  "Coordinated Purchase Order Management": "Quản lý đơn hàng đã điều phối",
 } satisfies Record<string, string>;

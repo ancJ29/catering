@@ -43,6 +43,8 @@ const componentMap: Record<string, LazyExoticComponent> = {
   PurchasingOrderCoordination: lazy(() => import("@/routes/purchasing-order-coordination")),
   PurchasingOrderCoordinationDetail: lazy(() => import("@/routes/purchasing-order-coordination/detail")),
   PurchasingOrderManagement: lazy(() => import("@/routes/purchasing-order-management")),
+  InternalPurchasingOrderManagement: lazy(() => import("@/routes/internal-purchasing-order-management")),
+  CoordinatedPurchaseOrderManagement: lazy(() => import("@/routes/coordinated-purchase-order-management")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -285,6 +287,26 @@ const configs: Config[] = [
       element: ServiceWrapper as Wrapper,
       props: {
         title: "Purchasing Order Management",
+      },
+    },
+  },
+  {
+    path: "/internal-purchasing-order-management",
+    element: "InternalPurchasingOrderManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Internal Purchasing Order Management",
+      },
+    },
+  },
+  {
+    path: "/coordinated-purchase-order-management",
+    element: "CoordinatedPurchaseOrderManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Coordinated Purchase Order Management",
       },
     },
   },

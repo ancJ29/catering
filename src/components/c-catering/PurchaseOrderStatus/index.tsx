@@ -3,7 +3,7 @@ import useTranslation from "@/hooks/useTranslation";
 import { statusOrderColor } from "@/services/domain";
 import { Badge } from "@mantine/core";
 
-const Status = ({ status }: { status: POStatus }) => {
+const PurchaseOrderStatus = ({ status }: { status: POStatus }) => {
   const t = useTranslation();
   return (
     <Badge fz={12} color={statusOrderColor(status)}>
@@ -12,4 +12,4 @@ const Status = ({ status }: { status: POStatus }) => {
   );
 };
 
-export default Status;
+export default PurchaseOrderStatus;

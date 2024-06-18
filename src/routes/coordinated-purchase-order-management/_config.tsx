@@ -1,26 +1,18 @@
 import PurchaseOrderStatus from "@/components/c-catering/PurchaseOrderStatus";
-import { Supplier } from "@/services/domain";
 import { PurchaseOrder } from "@/services/domain/purchase-order";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
 import { Department } from "../catering-management/_configs";
-import AddressPopover from "../internal-purchasing-order-management/components/AddressPopover";
+import Priority from "../purchasing-request-management/components/Priority";
+import { User } from "../user-management/_configs";
+import MemoPopover from "./components/MemoPopover";
 
 export const configs = (
   t: (key: string) => string,
   caterings: Map<string, Department>,
-  suppliers: Map<string, Supplier>,
+  users: Map<string, User>,
 ): DataGridColumnProps[] => {
   return [
-    {
-      key: "poCode",
-      header: t("Purchase order po code"),
-      width: "12%",
-      style: { fontWeight: "bold" },
-      renderCell: (_, row: PurchaseOrder) => {
-        return row.code || "N/A";
-      },
-    },
     {
       key: "prCode",
       header: t("Purchase order id"),
@@ -31,9 +23,18 @@ export const configs = (
       },
     },
     {
+      key: "dispatchCode",
+      header: t("Purchase order dispatch code"),
+      width: "12%",
+      style: { fontWeight: "bold" },
+      renderCell: (_, row: PurchaseOrder) => {
+        return row.others.dispatchCode || "N/A";
+      },
+    },
+    {
       key: "kitchen",
       header: t("Purchase order kitchen"),
-      width: "17%",
+      width: "16%",
       renderCell: (_, row: PurchaseOrder) => {
         return (
           <span>
@@ -43,13 +44,15 @@ export const configs = (
       },
     },
     {
-      key: "supplier",
-      header: t("Purchase order supplier"),
-      width: "17%",
+      key: "type",
+      header: t("Purchase order type"),
+      width: "10%",
       renderCell: (_, row: PurchaseOrder) => {
-        return (
-          <span>{suppliers.get(row.supplierId || "")?.name}</span>
-        );
+        if (!row.others.type) {
+          return "N/A";
+        }
+        const type = t(`purchaseRequest.type.${row.others.type}`);
+        return <span>{type}</span>;
       },
     },
     {
@@ -58,6 +61,18 @@ export const configs = (
       width: "12%",
       renderCell: (_, row: PurchaseOrder) => {
         return formatTime(row.deliveryDate);
+      },
+    },
+    {
+      key: "priority",
+      header: t("Purchase order priority"),
+      width: "10%",
+      textAlign: "center",
+      renderCell: (_, row: PurchaseOrder) => {
+        if (!row.others.priority) {
+          return "N/A";
+        }
+        return <Priority priority={row.others.priority} />;
       },
     },
     {
@@ -73,8 +88,8 @@ export const configs = (
       },
     },
     {
-      key: "address",
-      header: t("Purchase order address"),
+      key: "memo",
+      header: t("Memo"),
       width: "5%",
       textAlign: "center",
       cellStyle: {
@@ -82,9 +97,7 @@ export const configs = (
         justifyContent: "center",
       },
       renderCell: (_, row: PurchaseOrder) => {
-        return (
-          <AddressPopover purchaseOrder={row} caterings={caterings} />
-        );
+        return <MemoPopover purchaseOrder={row} users={users} />;
       },
     },
   ];
