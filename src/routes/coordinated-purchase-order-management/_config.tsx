@@ -16,7 +16,7 @@ export const configs = (
     {
       key: "prCode",
       header: t("Purchase order id"),
-      width: "12%",
+      width: "14%",
       style: { fontWeight: "bold" },
       renderCell: (_, row: PurchaseOrder) => {
         return row.others.prCode || "N/A";
@@ -25,7 +25,7 @@ export const configs = (
     {
       key: "dispatchCode",
       header: t("Purchase order dispatch code"),
-      width: "12%",
+      width: "14%",
       style: { fontWeight: "bold" },
       renderCell: (_, row: PurchaseOrder) => {
         return row.others.dispatchCode || "N/A";
@@ -34,7 +34,7 @@ export const configs = (
     {
       key: "kitchen",
       header: t("Purchase order kitchen"),
-      width: "16%",
+      width: "20%",
       renderCell: (_, row: PurchaseOrder) => {
         return (
           <span>
@@ -78,7 +78,7 @@ export const configs = (
     {
       key: "status",
       header: t("Status"),
-      width: "25%",
+      width: "15%",
       textAlign: "center",
       renderCell: (_, row: PurchaseOrder) => {
         if (!row.others.status) {

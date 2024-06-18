@@ -114,6 +114,7 @@ const CoordinatedPurchaseOrderManagement = () => {
             "",
           )}
           onChangeDateRange={onChangeDateRange}
+          showStatusSelect={false}
         />
       </Flex>
       <DataGrid
