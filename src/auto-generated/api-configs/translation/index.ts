@@ -4,6 +4,8 @@ import {
   MaterialGroup,
   MaterialOrderCycle,
   MaterialType,
+  PCStatus,
+  PIStatus,
   POStatus,
   ProductType,
   PRPriority,
@@ -26,6 +28,8 @@ type PurchaseRequestKey =
   | `purchaseRequest.type.${PRType}`
   | `purchaseRequest.priority.${PRPriority}`
   | `purchaseRequest.status.${PRStatus}`;
+type PurchaseInternalKey = `purchaseInternal.status.${PIStatus}`;
+type PurchaseCoordinationKey = `purchaseCoordination.status.${PCStatus}`;
 type PurchaseOrderKey = `purchaseOrder.status.${POStatus}`;
 
 const departmentDictionaries: {
@@ -252,34 +256,86 @@ const purchaseRequestDictionaries: {
   },
 };
 
+const purchaseInternalDictionaries: {
+  en: Record<PurchaseInternalKey, string>;
+  vi: Record<PurchaseInternalKey, string>;
+} = {
+  en: {
+    "purchaseInternal.status.DG": "Sent",
+    "purchaseInternal.status.DD": "Approved",
+    "purchaseInternal.status.SSGH": "Ready to deliver",
+    "purchaseInternal.status.NK1P": "Partially warehoused",
+    "purchaseInternal.status.DNK": "Stocked",
+  },
+  vi: {
+    /* cspell:disable */
+    "purchaseInternal.status.DG": "Đã gửi",
+    "purchaseInternal.status.DD": "Đã duyệt",
+    "purchaseInternal.status.SSGH": "Sẵn sàng giao hàng",
+    "purchaseInternal.status.NK1P": "Nhập kho một phần",
+    "purchaseInternal.status.DNK": "Đã nhập kho",
+    /* cspell:enable */
+  },
+};
+
+const purchaseCoordinationDictionaries: {
+  en: Record<PurchaseCoordinationKey, string>;
+  vi: Record<PurchaseCoordinationKey, string>;
+} = {
+  en: {
+    /* cspell:disable */
+    "purchaseCoordination.status.CXL": "Pending",
+    "purchaseCoordination.status.CNCCPH": "Waiting for supplier response",
+    "purchaseCoordination.status.NCCPH": "Supplier responded",
+    "purchaseCoordination.status.NCCSSGH": "Supplier ready to deliver",
+    "purchaseCoordination.status.NCCDGH": "Supplier delivered",
+    /* cspell:enable */
+  },
+  vi: {
+    /* cspell:disable */
+    "purchaseCoordination.status.CXL": "Chờ xử lý",
+    "purchaseCoordination.status.CNCCPH": "Chờ nhà cung cấp phản hồi",
+    "purchaseCoordination.status.NCCPH": "Nhà cung cấp phản hồi",
+    "purchaseCoordination.status.NCCSSGH": "Nhà cung cấp sẵn sàng giao hàng",
+    "purchaseCoordination.status.NCCDGH": "Nhà cung cấp đã giao hàng",
+    /* cspell:enable */
+  },
+};
+
 const purchaseOrderDictionaries: {
   en: Record<PurchaseOrderKey, string>;
   vi: Record<PurchaseOrderKey, string>;
 } = {
   en: {
     /* cspell:disable */
-    "purchaseOrder.status.CXL": "Pending",
-    "purchaseOrder.status.CPH": "Waiting for supplier response",
-    "purchaseOrder.status.PH": "Supplier responded",
-    "purchaseOrder.status.SSGH": "Supplier ready to deliver",
-    "purchaseOrder.status.DGH": "Supplier delivered",
-    "purchaseOrder.status.NK1P": "Partially warehoused",
-    "purchaseOrder.status.DNK": "Warehoused",
-    "purchaseOrder.status.DKT": "Checked for discrepancies",
+    "purchaseOrder.status.DG": "Sent",
+    "purchaseOrder.status.DTC": "The supplier refused",
+    "purchaseOrder.status.DD": "Supplier approved",
+    "purchaseOrder.status.SSGH": "Ready to deliver",
+    "purchaseOrder.status.NK1P": "Warehouse 1 part",
+    "purchaseOrder.status.DNK": "Stocked",
+    "purchaseOrder.status.DKTSL": "Checked for errors",
     "purchaseOrder.status.DTDNTT": "Payment request created",
+    "purchaseOrder.status.DCBSHD": "Updated invoice number",
+    "purchaseOrder.status.DLLTT": "Payment scheduled",
+    "purchaseOrder.status.TT1P": "Partial payment",
+    "purchaseOrder.status.DTT": "Paid",
     /* cspell:enable */
   },
   vi: {
     /* cspell:disable */
-    "purchaseOrder.status.CXL": "Chờ xử lý",
-    "purchaseOrder.status.CPH": "Chờ NCC phản hồi",
-    "purchaseOrder.status.PH": "NCC có phản hồi",
-    "purchaseOrder.status.SSGH": "NCC sẵn sàng giao hàng",
-    "purchaseOrder.status.DGH": "NCC đã giao hàng",
+    "purchaseOrder.status.DG": "Đã gửi",
+    "purchaseOrder.status.DTC": "NCC đã từ chối",
+    "purchaseOrder.status.DD": "NCC đã duyệt",
+    "purchaseOrder.status.SSGH": "Sẵn sàng giao hàng",
     "purchaseOrder.status.NK1P": "Nhập kho 1 phần",
     "purchaseOrder.status.DNK": "Đã nhập kho",
-    "purchaseOrder.status.DKT": "Đã kiểm tra sai lệch",
+    "purchaseOrder.status.DKTSL": "Đã kiểm tra sai lệch",
     "purchaseOrder.status.DTDNTT": "Đã tạo đề nghị thanh toán",
+    "purchaseOrder.status.DCBSHD": "Đã cập nhật số hoá đơn",
+    "purchaseOrder.status.DLLTT": "Đã lập lịch thanh toán",
+    "purchaseOrder.status.TT1P": "Thanh toán 1 phần",
+    "purchaseOrder.status.DTT": "Đã thanh toán",
     /* cspell:enable */
   },
 };
@@ -296,6 +352,8 @@ export const dictionaries: {
     ...materialDictionaries.en,
     ...productDictionaries.en,
     ...purchaseRequestDictionaries.en,
+    ...purchaseInternalDictionaries.en,
+    ...purchaseCoordinationDictionaries.en,
     ...purchaseOrderDictionaries.en,
     ...en,
   },
@@ -305,6 +363,8 @@ export const dictionaries: {
     ...materialDictionaries.vi,
     ...productDictionaries.vi,
     ...purchaseRequestDictionaries.vi,
+    ...purchaseInternalDictionaries.vi,
+    ...purchaseCoordinationDictionaries.vi,
     ...purchaseOrderDictionaries.vi,
     ...vi,
   },

@@ -13,6 +13,8 @@ export enum ActionGroups {
   INVENTORY_MANAGEMENT = "Inventory management",
   SUPPLIER_MANAGEMENT = "Supplier management",
   PURCHASE_ORDER_MANAGEMENT = "Purchase order management",
+  PURCHASE_INTERNAL_MANAGEMENT = "Purchase internal management",
+  PURCHASE_COORDINATION_MANAGEMENT = "Purchase coordination management",
   PURCHASE_REQUEST_MANAGEMENT = "Purchase request management",
   PREFERRED_SUPPLIER_MANAGEMENT = "Preferred supplier management",
 }
@@ -68,6 +70,10 @@ export enum Actions {
   GET_PURCHASE_REQUESTS = "get-purchase-requests",
   ADD_PURCHASE_REQUEST = "add-purchase-request",
   UPDATE_PURCHASE_REQUEST = "update-purchase-request",
+  GET_PURCHASE_INTERNALS = "get-purchase-internals",
+  ADD_PURCHASE_INTERNAL = "add-purchase-internal",
+  GET_PURCHASE_COORDINATIONS = "get-purchase-coordinations",
+  ADD_PURCHASE_COORDINATION = "add-purchase-coordination",
   GET_PURCHASE_ORDERS = "get-purchase-orders",
   ADD_PURCHASE_ORDER = "add-purchase-order",
   GET_PREFERRED_SUPPLIERS = "get-preferred-suppliers",
@@ -93,6 +99,8 @@ export enum Permissions {
   SUPPLIER_FULL_ACCESS = "supplier-full-access",
   INVENTORY_FULL_ACCESS = "inventory-full-access",
   PURCHASE_ORDER_FULL_ACCESS = "purchase-order-full-access",
+  PURCHASE_INTERNAL_FULL_ACCESS = "purchase-internal-full-access",
+  PURCHASE_COORDINATION_FULL_ACCESS = "purchase-coordination-full-access",
   PURCHASE_REQUEST_FULL_ACCESS = "purchase-request-full-access",
   PREFERRED_SUPPLIER_FULL_ACCESS = "preferred-supplier-full-access",
 }

@@ -49,7 +49,6 @@ async function _getPurchaseRequests(
   return await loadAll<PurchaseRequest>({
     key: "purchaseRequests",
     action: Actions.GET_PURCHASE_REQUESTS,
-    take: 20,
     params: { from, to, status },
   });
 }
@@ -198,27 +197,38 @@ export function changeablePurchaseRequestStatus(
   if (!role) {
     return false;
   }
-  if (role === ClientRoles.OWNER) {
-    return true;
-  }
-  if (next === "DNH" || next === "NH") {
-    return false;
-  }
-  if (role === ClientRoles.PRODUCTION) {
-    if (current === "DG" && (next === "DD" || next === "KD")) {
+  if (
+    (current === "DG" || current === "DD" || current === "DDP") &&
+    (next === "DD" ||
+      next === "KD" ||
+      next === "DDP" ||
+      next === "DH")
+  ) {
+    if (role === ClientRoles.OWNER) {
       return true;
     }
   }
-  if (role === ClientRoles.SUPPLIER) {
-    if (current === "DD" && next === "DDP") {
-      return true;
-    }
-    if (current === "DDP" && next === "MH") {
-      return true;
-    }
-    if (next === "DH") {
-      return true;
-    }
-  }
+  // if (role === ClientRoles.OWNER) {
+  //   return true;
+  // }
+  // if (next === "DNH" || next === "NH") {
+  //   return false;
+  // }
+  // if (role === ClientRoles.PRODUCTION) {
+  //   if (current === "DG" && (next === "DD" || next === "KD")) {
+  //     return true;
+  //   }
+  // }
+  // if (role === ClientRoles.SUPPLIER) {
+  //   if (current === "DD" && next === "DDP") {
+  //     return true;
+  //   }
+  //   if (current === "DDP" && next === "MH") {
+  //     return true;
+  //   }
+  //   if (next === "DH") {
+  //     return true;
+  //   }
+  // }
   return false;
 }

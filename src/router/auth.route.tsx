@@ -37,14 +37,14 @@ const componentMap: Record<string, LazyExoticComponent> = {
   CheckInventory: lazy(() => import("@/routes/check-inventory")),
   MenuManagementDetail: lazy(() => import("@/routes/menu-management/detail")),
   BomManagement: lazy(() => import("@/routes/bom-management")),
-  PurchasingRequestManagement: lazy(() => import("@/routes/purchasing-request-management")),
-  PurchasingRequestDetail: lazy(() => import("@/routes/purchasing-request-management/detail")),
-  AddPurchasingRequest: lazy(() => import("@/routes/purchasing-request-management/add")),
-  PurchasingOrderCoordination: lazy(() => import("@/routes/purchasing-order-coordination")),
-  PurchasingOrderCoordinationDetail: lazy(() => import("@/routes/purchasing-order-coordination/detail")),
-  PurchasingOrderManagement: lazy(() => import("@/routes/purchasing-order-management")),
-  InternalPurchasingOrderManagement: lazy(() => import("@/routes/internal-purchasing-order-management")),
-  CoordinatedPurchaseOrderManagement: lazy(() => import("@/routes/coordinated-purchase-order-management")),
+  PurchaseRequestManagement: lazy(() => import("@/routes/purchase-request-management")),
+  PurchaseRequestDetail: lazy(() => import("@/routes/purchase-request-management/detail")),
+  AddPurchaseRequest: lazy(() => import("@/routes/purchase-request-management/add")),
+  PurchaseOrderManagement: lazy(() => import("@/routes/purchase-order-management")),
+  PurchaseCoordinationManagement: lazy(() => import("@/routes/purchase-coordination-management")),
+  PurchaseInternalManagement: lazy(() => import("@/routes/purchase-internal-management")),
+  SupplyCoordination: lazy(() => import("@/routes/supply-coordination")),
+  SupplyCoordinationDetail: lazy(() => import("@/routes/supply-coordination/detail")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -231,28 +231,28 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/purchasing-request-management",
-    element: "PurchasingRequestManagement",
+    path: "/purchase-request-management",
+    element: "PurchaseRequestManagement",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Purchasing Request Management",
+        title: "Purchase Request Management",
       },
     },
   },
   {
-    path: "/purchasing-request-management/detail/:purchaseRequestId",
-    element: "PurchasingRequestDetail",
+    path: "/purchase-request-management/detail/:purchaseRequestId",
+    element: "PurchaseRequestDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Purchasing Request Detail",
+        title: "Purchase Request Detail",
       },
     },
   },
   {
-    path: "/purchasing-request-management/add",
-    element: "AddPurchasingRequest",
+    path: "/purchase-request-management/add",
+    element: "AddPurchaseRequest",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
@@ -261,52 +261,52 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/purchasing-order-coordination",
-    element: "PurchasingOrderCoordination",
+    path: "/supply-coordination",
+    element: "SupplyCoordination",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Purchasing Order Coordination",
+        title: "Supply Coordination",
       },
     },
   },
   {
-    path: "/purchasing-order-coordination/detail/:purchaseRequestId",
-    element: "PurchasingOrderCoordinationDetail",
+    path: "/supply-coordination/detail/:purchaseRequestId",
+    element: "SupplyCoordinationDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Purchasing Request Detail",
+        title: "Purchase Request Detail",
       },
     },
   },
   {
-    path: "/purchasing-order-management",
-    element: "PurchasingOrderManagement",
+    path: "/purchase-order-management",
+    element: "PurchaseOrderManagement",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Purchasing Order Management",
+        title: "Purchase Order Management",
       },
     },
   },
   {
-    path: "/internal-purchasing-order-management",
-    element: "InternalPurchasingOrderManagement",
+    path: "/purchase-internal-management",
+    element: "PurchaseInternalManagement",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Internal Purchasing Order Management",
+        title: "Purchase Internal Management",
       },
     },
   },
   {
-    path: "/coordinated-purchase-order-management",
-    element: "CoordinatedPurchaseOrderManagement",
+    path: "/purchase-coordination-management",
+    element: "PurchaseCoordinationManagement",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Coordinated Purchase Order Management",
+        title: "Purchase Coordination Management",
       },
     },
   },

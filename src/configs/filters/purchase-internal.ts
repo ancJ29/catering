@@ -1,4 +1,4 @@
-import { PurchaseOrder } from "@/services/domain";
+import { PurchaseInternal } from "@/services/domain";
 import { endOfWeek, startOfWeek } from "@/utils";
 
 export type FilterType = {
@@ -6,8 +6,8 @@ export type FilterType = {
   from: number;
   to: number;
   statuses: string[];
-  supplierIds: string[];
   receivingCateringIds: string[];
+  deliveryCateringIds: string[];
 };
 
 export const defaultCondition: FilterType = {
@@ -15,40 +15,40 @@ export const defaultCondition: FilterType = {
   from: startOfWeek(Date.now()),
   to: endOfWeek(Date.now()),
   statuses: [],
-  supplierIds: [],
   receivingCateringIds: [],
+  deliveryCateringIds: [],
 };
 
-export function filter(po: PurchaseOrder, condition?: FilterType) {
+export function filter(pi: PurchaseInternal, condition?: FilterType) {
   if (
     condition?.statuses &&
     condition.statuses.length > 0 &&
-    !condition.statuses.includes(po.others.status)
-  ) {
-    return false;
-  }
-  if (
-    condition?.supplierIds &&
-    condition.supplierIds.length > 0 &&
-    po.supplierId &&
-    !condition.supplierIds.includes(po.supplierId)
+    !condition.statuses.includes(pi.others.status)
   ) {
     return false;
   }
   if (
     condition?.receivingCateringIds &&
     condition.receivingCateringIds.length > 0 &&
-    po.others.receivingCateringId &&
+    pi.others.receivingCateringId &&
     !condition.receivingCateringIds.includes(
-      po.others.receivingCateringId,
+      pi.others.receivingCateringId,
     )
   ) {
     return false;
   }
-  if (condition?.from && po.deliveryDate.getTime() < condition.from) {
+  if (
+    condition?.deliveryCateringIds &&
+    condition.deliveryCateringIds.length > 0 &&
+    pi.deliveryCateringId &&
+    !condition.deliveryCateringIds.includes(pi.deliveryCateringId)
+  ) {
     return false;
   }
-  if (condition?.to && po.deliveryDate.getTime() > condition.to) {
+  if (condition?.from && pi.deliveryDate.getTime() < condition.from) {
+    return false;
+  }
+  if (condition?.to && pi.deliveryDate.getTime() > condition.to) {
     return false;
   }
   return true;

@@ -3,10 +3,7 @@ import {
   POStatus,
   configs as actionConfigs,
   poStatusSchema,
-  prPrioritySchema,
-  prTypeSchema,
 } from "@/auto-generated/api-configs";
-import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import { OptionProps } from "@/types";
 import { endOfWeek, startOfWeek } from "@/utils";
@@ -23,27 +20,22 @@ export type PurchaseOrder = z.infer<typeof purchaseOrderSchema> & {
   name: string;
 };
 
-const { request: addRequest } =
-  actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
-type AddRequest = z.infer<typeof addRequest>;
+// const { request: addRequest } =
+//   actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
+// type AddRequest = z.infer<typeof addRequest>;
 
 async function _getPurchaseOrders(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
-  hasDepartment: boolean,
-  hasSupplier: boolean,
   status?: POStatus,
 ): Promise<PurchaseOrder[]> {
   return await loadAll<PurchaseOrder>({
     key: "purchaseOrders",
     action: Actions.GET_PURCHASE_ORDERS,
-    take: 20,
     params: {
       from,
       to,
       status,
-      departmentId: hasDepartment ? { not: null } : null,
-      supplierId: hasSupplier ? { not: null } : null,
     },
   });
 }
@@ -52,29 +44,21 @@ type PurchaseOrderProps = {
   from?: number;
   to?: number;
   status?: POStatus;
-  hasDepartment?: boolean;
-  hasSupplier?: boolean;
 };
 
 export async function getPurchaseOrders({
   from,
   to,
   status,
-  hasDepartment = false,
-  hasSupplier = false,
 }: PurchaseOrderProps) {
-  return _getPurchaseOrders(
-    from,
-    to,
-    hasDepartment,
-    hasSupplier,
-    status,
-  ).then((purchaseOrders) => {
-    return purchaseOrders.map((el) => ({
-      ...el,
-      name: el.code,
-    }));
-  });
+  return _getPurchaseOrders(from, to, status).then(
+    (purchaseOrders) => {
+      return purchaseOrders.map((el) => ({
+        ...el,
+        name: el.code,
+      }));
+    },
+  );
 }
 
 export async function getPurchaseOrderById(
@@ -89,50 +73,40 @@ export async function getPurchaseOrderById(
   return purchaseOrder.length ? purchaseOrder[0] : undefined;
 }
 
-export async function addPurchaseOrders(params: AddRequest) {
-  const addResponse = await callApi<AddRequest, { id: string }>({
-    action: Actions.ADD_PURCHASE_ORDER,
-    params,
-  });
-  return addResponse?.id;
-}
+// export async function addPurchaseOrders(params: AddRequest) {
+//   logger.info(params);
+//   // const addResponse = await callApi<AddRequest, { id: string }>({
+//   //   action: Actions.ADD_PURCHASE_ORDER,
+//   //   params,
+//   // });
+//   // return addResponse?.id;
+// }
 
-export function typePriorityAndStatusOrderOptions(
-  t: (key: string) => string,
-) {
-  const typeOptions: OptionProps[] = prTypeSchema.options.map(
-    (type) => ({
-      label: t(`purchaseRequest.type.${type}`),
-      value: type,
-    }),
-  );
-  const priorityOptions: OptionProps[] = prPrioritySchema.options.map(
-    (priority) => ({
-      label: t(`purchaseRequest.priority.${priority}`),
-      value: priority,
-    }),
-  );
+export function statusOrderOptions(t: (key: string) => string) {
   const statusOptions: OptionProps[] = poStatusSchema.options.map(
     (status) => ({
       label: t(`purchaseOrder.status.${status}`),
       value: status,
     }),
   );
-  return [typeOptions, priorityOptions, statusOptions];
+  return [statusOptions];
 }
 
 export function statusOrderColor(status: POStatus, level = 6) {
   const colors: Record<POStatus, string> = {
     // cspell:disable
-    CXL: "cyan",
-    CPH: "green",
-    PH: "orange",
-    SSGH: "violet",
-    DGH: "grape",
-    NK1P: "blue",
-    DNK: "teal",
-    DKT: "lime",
-    DTDNTT: "yellow",
+    DG: "cyan", // Đã gửi: đã tạo & gửi PO đến NCC
+    DTC: "red", // Đã từ chối: NCC từ chối PO
+    DD: "green", // Đã duyệt: NCC duyệt PO
+    SSGH: "blue", // Sẵn sàng giao hàng
+    NK1P: "teal", // Nhập kho 1 phần
+    DNK: "teal", // Đã nhập kho
+    DKTSL: "violet", // Đã kiểm tra sai lệch
+    DTDNTT: "lime", // Đã tạo đề nghị thanh toán
+    DCBSHD: "yellow", // Đã cập nhật số hoá đơn
+    DLLTT: "yellow", // Đã lập lịch thanh toán
+    TT1P: "orange", // Thanh toán 1 phần
+    DTT: "orange", // Đã thanh toán
     // cspell:disable
   };
   if (!status) {

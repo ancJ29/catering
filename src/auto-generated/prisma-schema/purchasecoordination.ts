@@ -6,13 +6,14 @@ type Json = Literal | { [key: string]: Json } | Json[]
 const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()])
 const jsonSchema: z.ZodSchema<Json> = z.lazy(() => z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)]))
 
-export const purchaseRequestDetailSchema = z.object({
+export const purchaseCoordinationSchema = z.object({
   id: z.string(),
-  amount: z.number().int(),
+  clientId: z.number().int(),
+  deliveryDate: z.date(),
+  code: z.string(),
   others: jsonSchema,
-  materialId: z.string(),
-  purchaseRequestId: z.string(),
-  lastModifiedBy: z.string().nullish(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  lastModifiedBy: z.string().nullish(),
+  purchaseRequestId: z.string(),
 })

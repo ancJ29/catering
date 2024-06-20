@@ -6,6 +6,10 @@ import {
   inventorySchema,
   materialSchema,
   productSchema,
+  purchaseCoordinationDetailSchema,
+  purchaseCoordinationSchema,
+  purchaseInternalDetailSchema,
+  purchaseInternalSchema,
   purchaseOrderDetailSchema,
   purchaseOrderSchema,
   purchaseRequestDetailSchema,
@@ -22,6 +26,10 @@ import {
   inventoryOthersSchema,
   materialOthersSchema,
   productOthersSchema,
+  purchaseCoordinationDetailOthersSchema,
+  purchaseCoordinationOthersSchema,
+  purchaseInternalDetailOthersSchema,
+  purchaseInternalOthersSchema,
   purchaseOrderDetailOthersSchema,
   purchaseOrderOthersSchema,
   purchaseRequestDetailOthersSchema,
@@ -29,12 +37,7 @@ import {
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
-import {
-  dateSchema,
-  nullishStringSchema,
-  numberSchema,
-  stringSchema,
-} from "./schema";
+import { dateSchema, nullishStringSchema, numberSchema, stringSchema } from "./schema";
 
 export const xUserSchema = userSchema
   .omit({
@@ -129,22 +132,6 @@ export const xDailyMenuSchema = dailyMenuSchema
       .optional(),
   });
 
-export const xPurchaseOrderSchema = purchaseOrderSchema
-  .omit({
-    others: true,
-  })
-  .extend({
-    others: purchaseOrderOthersSchema,
-    purchaseOrderDetails: purchaseOrderDetailSchema
-      .omit({
-        others: true,
-      })
-      .extend({
-        others: purchaseOrderDetailOthersSchema,
-      })
-      .array(),
-  });
-
 export const xPurchaseRequestSchema = purchaseRequestSchema
   .omit({
     others: true,
@@ -157,6 +144,54 @@ export const xPurchaseRequestSchema = purchaseRequestSchema
       })
       .extend({
         others: purchaseRequestDetailOthersSchema,
+      })
+      .array(),
+  });
+
+export const xPurchaseInternalSchema = purchaseInternalSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: purchaseInternalOthersSchema,
+    purchaseInternalDetails: purchaseInternalDetailSchema
+      .omit({
+        others: true,
+      })
+      .extend({
+        others: purchaseInternalDetailOthersSchema,
+      })
+      .array(),
+  });
+
+export const xPurchaseCoordinationSchema = purchaseCoordinationSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: purchaseCoordinationOthersSchema,
+    purchaseCoordinationDetails: purchaseCoordinationDetailSchema
+      .omit({
+        others: true,
+      })
+      .extend({
+        others: purchaseCoordinationDetailOthersSchema,
+      })
+      .array(),
+  });
+
+export const xPurchaseOrderSchema = purchaseOrderSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: purchaseOrderOthersSchema,
+    purchaseOrderDetails: purchaseOrderDetailSchema
+      .omit({
+        others: true,
+      })
+      .extend({
+        others: purchaseOrderDetailOthersSchema,
       })
       .array(),
   });
@@ -197,23 +232,58 @@ export const xUpdatePurchaseRequest = z.object({
   deletePurchaseRequestDetailIds: stringSchema.array(),
 });
 
-export const xAddPurchaseOrders = z
+export const xAddPurchaseInternal = z
   .object({
-    purchaseRequestId: stringSchema,
     deliveryDate: dateSchema,
-    departmentId: nullishStringSchema,
+    receivingCateringId: stringSchema,
+    deliveryCateringId: stringSchema,
+    purchaseRequestId: stringSchema,
+    prCode: stringSchema,
+    purchaseInternalDetails: z.object({
+      amount: numberSchema,
+      materialId: stringSchema,
+      supplierNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
+    }).array(),
+  });
+
+export const xAddPurchaseCoordination = z
+  .object({
+    deliveryDate: dateSchema,
+    purchaseRequestId: stringSchema,
+    receivingCateringId: stringSchema,
+    prCode: stringSchema,
     type: stringSchema,
     priority: stringSchema,
-    purchaseOrderDetails: z
-      .object({
-        materialId: stringSchema,
-        amount: numberSchema,
-        supplierNote: nullishStringSchema,
-        internalNote: nullishStringSchema,
-      })
-      .array(),
-  })
-  .array();
+    createdById: stringSchema,
+    createAt: dateSchema,
+    approvedById: stringSchema,
+    approvedAt: dateSchema,
+    purchaseCoordinationDetails: z.object({
+      price: numberSchema,
+      amount: numberSchema,
+      materialId: stringSchema,
+      supplierNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
+    }).array(),
+  });
+
+export const xAddPurchaseOrder = z
+  .object({
+//     purchaseRequestId: stringSchema,
+//     deliveryDate: dateSchema,
+//     departmentId: nullishStringSchema,
+//     type: stringSchema,
+//     priority: stringSchema,
+//     purchaseOrderDetails: z
+//       .object({
+//         materialId: stringSchema,
+//         amount: numberSchema,
+//         supplierNote: nullishStringSchema,
+//         internalNote: nullishStringSchema,
+//       })
+//       .array(),
+  });
 
 export const xPreferredSupplier = z.object({
   departmentId: stringSchema,

@@ -333,39 +333,84 @@ export const purchaseRequestDetailOthersSchema = z.object({
   internalNote: nullishStringSchema,
 });
 
-export const poStatusSchema = z.enum([
+export const piStatusSchema = z.enum([
   // cspell:disable
-  "CXL", // Chờ xử lý
-  "CPH", // Chờ NCC phản hồi
-  "PH", // NCC có phản hồi
-  "SSGH", // NCC sẵn sàng giao hàng
-  "DGH", // NCC đã giao hàng
-  "NK1P", // Nhập kho 1 phần
+  "DG", // Đã gửi
+  "DD", // Đã duyệt
+  "SSGH", // Sẵn sàng giao hàng
+  "NK1P", // Nhập kho một phần
   "DNK", // Đã nhập kho
-  "DKT", // Đã kiểm tra sai lệch
-  "DTDNTT", // Đã tạo đề nghị thanh toán
   // cspell:enable
 ]);
 
-export const purchaseOrderOthersSchema = z.object({
+export const purchaseInternalOthersSchema = z.object({
   prCode: stringSchema,
-  dispatchCode: stringSchema,
+  receivingCateringId: stringSchema,
+  status: piStatusSchema,
+});
+
+export const purchaseInternalDetailOthersSchema = z.object({
+  supplierNote: nullishStringSchema,
+  internalNote: nullishStringSchema,
+});
+
+export const pcStatusSchema = z.enum([
+  // cspell:disable
+  "CXL", // Chờ xử lý
+  "CNCCPH", // Chờ nhà cung cấp phản hồi
+  "NCCPH", // Nhà cung cấp phản hồi
+  "NCCSSGH", // Nhà cung cấp sẵn sàng giao hàng
+  "NCCDGH", // Nhà cung cấp đã giao hàng
+  // cspell:enable
+]);
+
+export const purchaseCoordinationOthersSchema = z.object({
+  prCode: stringSchema,
+  receivingCateringId: stringSchema,
+  status: pcStatusSchema,
   type: prTypeSchema,
   priority: prPrioritySchema,
-  status: poStatusSchema,
-  cateringId: stringSchema,
   createdById: stringSchema,
   createAt: dateSchema,
   approvedById: stringSchema,
   approvedAt: dateSchema,
 });
 
+export const purchaseCoordinationDetailOthersSchema = z.object({
+  price: numberSchema,
+  supplierNote: nullishStringSchema,
+  internalNote: nullishStringSchema,
+});
+
+export const poStatusSchema = z.enum([
+  // cspell:disable
+  "DG", // Đã gửi: đã tạo & gửi PO đến NCC
+  "DTC", // Đã từ chối: NCC từ chối PO
+  "DD", // Đã duyệt: NCC duyệt PO
+  "SSGH", // Sẵn sàng giao hàng
+  "NK1P", // Nhập kho 1 phần
+  "DNK", // Đã nhập kho
+  "DKTSL", // Đã kiểm tra sai lệch
+  "DTDNTT", // Đã tạo đề nghị thanh toán
+  "DCBSHD", // Đã cập nhật số hoá đơn
+  "DLLTT", // Đã lập lịch thanh toán
+  "TT1P", // Thanh toán 1 phần
+  "DTT", // Đã thanh toán
+  // cspell:enable
+]);
+
+export const purchaseOrderOthersSchema = z.object({
+  prCode: stringSchema,
+  status: poStatusSchema,
+  type: prTypeSchema,
+  priority: prPrioritySchema,
+  receivingCateringId: stringSchema,
+});
+
 export const purchaseOrderDetailOthersSchema = z.object({
   supplierNote: nullishStringSchema,
   internalNote: nullishStringSchema,
   price: numberSchema,
-  taxRate: numberSchema,
-  unitId: nullishStringSchema,
 });
 
 export type ProductType = z.infer<typeof productTypeSchema>;
@@ -377,4 +422,6 @@ export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
 export type PRType = z.infer<typeof prTypeSchema>;
 export type PRPriority = z.infer<typeof prPrioritySchema>;
 export type PRStatus = z.infer<typeof prStatusSchema>;
+export type PIStatus = z.infer<typeof piStatusSchema>;
+export type PCStatus = z.infer<typeof pcStatusSchema>;
 export type POStatus = z.infer<typeof poStatusSchema>;

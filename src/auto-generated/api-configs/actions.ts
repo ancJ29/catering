@@ -10,7 +10,9 @@ import {
 
 import { z } from "zod";
 import {
-  xAddPurchaseOrders,
+  xAddPurchaseCoordination,
+  xAddPurchaseInternal,
+  xAddPurchaseOrder,
   xAddPurchaseRequest,
   xCustomerSchema,
   xDailyMenuSchema,
@@ -19,6 +21,8 @@ import {
   xMaterialSchema,
   xPreferredSupplier,
   xProductSchema,
+  xPurchaseCoordinationSchema,
+  xPurchaseInternalSchema,
   xPurchaseOrderSchema,
   xPurchaseRequestSchema,
   xSupplierSchema,
@@ -41,7 +45,6 @@ import {
   getSchema,
   idAndNameSchema,
   listResponse,
-  notNullSchema,
   numberSchema,
   optionalBooleanSchema,
   optionalStringSchema,
@@ -793,7 +796,9 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: xAddPurchaseRequest,
-      response: addResponse,
+      response: z.object({
+        id: stringSchema,
+      }),
     },
   },
   [Actions.UPDATE_PURCHASE_REQUEST]: {
@@ -804,6 +809,50 @@ export const configs = {
       request: xUpdatePurchaseRequest,
     },
   },
+  [Actions.GET_PURCHASE_INTERNALS]: {
+    name: Actions.GET_PURCHASE_INTERNALS,
+    group: ActionGroups.PURCHASE_INTERNAL_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
+      }),
+      response: listResponse.extend({
+        purchaseInternals: xPurchaseInternalSchema.array(),
+      }),
+    },
+  },
+  [Actions.ADD_PURCHASE_INTERNAL]: {
+    name: Actions.ADD_PURCHASE_INTERNAL,
+    group: ActionGroups.PURCHASE_INTERNAL_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xAddPurchaseInternal.array(),
+    },
+  },
+  [Actions.GET_PURCHASE_COORDINATIONS]: {
+    name: Actions.GET_PURCHASE_COORDINATIONS,
+    group: ActionGroups.PURCHASE_COORDINATION_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
+      }),
+      response: listResponse.extend({
+        purchaseCoordinations: xPurchaseCoordinationSchema.array(),
+      }),
+    },
+  },
+  [Actions.ADD_PURCHASE_COORDINATION]: {
+    name: Actions.ADD_PURCHASE_COORDINATION,
+    group: ActionGroups.PURCHASE_COORDINATION_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xAddPurchaseCoordination.array(),
+    },
+  },
   [Actions.GET_PURCHASE_ORDERS]: {
     name: Actions.GET_PURCHASE_ORDERS,
     group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
@@ -812,8 +861,6 @@ export const configs = {
       request: getSchema.extend({
         from: dateSchema.optional(),
         to: dateSchema.optional(),
-        departmentId: z.union([z.null(), notNullSchema]),
-        supplierId: z.union([z.null(), notNullSchema]),
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),
@@ -825,8 +872,7 @@ export const configs = {
     group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
-      request: xAddPurchaseOrders,
-      response: addResponse,
+      request: xAddPurchaseOrder.array(),
     },
   },
   [Actions.GET_PREFERRED_SUPPLIERS]: {
