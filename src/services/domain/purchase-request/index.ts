@@ -110,6 +110,7 @@ export async function updatePurchaseRequest(
   purchaseDetails: PurchaseDetail[],
   deletedPurchaseDetailIds: string[],
   status: PRStatus,
+  priority: string,
 ) {
   if (!purchaseRequest) {
     return;
@@ -122,7 +123,7 @@ export async function updatePurchaseRequest(
       deliveryDate: purchaseRequest.deliveryDate,
       departmentId: purchaseRequest.departmentId,
       type: purchaseRequest.others.type,
-      priority: purchaseRequest.others.priority,
+      priority: priority ?? purchaseRequest.others.priority,
       status,
       purchaseRequestDetails: purchaseDetails.map((e) => ({
         id: e?.id || "",

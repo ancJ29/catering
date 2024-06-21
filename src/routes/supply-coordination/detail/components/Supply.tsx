@@ -10,8 +10,6 @@ import store from "../_purchase-coordination-detail.store";
 
 type SupplyProps = {
   currentCateringId: string | null;
-  cateringId: string | null;
-  onChangeCateringId: (value: string | null) => void;
   onPurchaseOutside: () => void;
   onPurchaseInternal: () => void;
   disabled: boolean;
@@ -19,17 +17,13 @@ type SupplyProps = {
 
 const Supply = ({
   currentCateringId,
-  cateringId,
-  onChangeCateringId,
   onPurchaseOutside,
   onPurchaseInternal,
   disabled,
 }: SupplyProps) => {
   const t = useTranslation();
-  const { isAllPurchaseInternal } = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-  );
+  const { isAllPurchaseInternal, generalCatering } =
+    useSyncExternalStore(store.subscribe, store.getSnapshot);
   const { activeCaterings } = useCateringStore();
   const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values())
@@ -44,10 +38,10 @@ const Supply = ({
     <Flex justify="start" align="start" gap={10}>
       <Text mt={4}>{t("The kitchen delivers the entire order")}</Text>
       <Select
-        value={cateringId}
+        value={generalCatering}
         w="15vw"
         options={_caterings}
-        onChange={onChangeCateringId}
+        onChange={store.setGeneralCatering}
         required
         // disabled={disabled}
         disabled={!isAllPurchaseInternal ?? disabled}

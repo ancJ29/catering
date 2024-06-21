@@ -146,7 +146,7 @@ export default {
   getPrice(materialId: string) {
     return store.getSnapshot().currents[materialId]?.price || 0;
   },
-  async update(status: PRStatus) {
+  async update(status: PRStatus, priority: string) {
     const state = store.getSnapshot();
     if (!state.purchaseRequest) {
       return;
@@ -168,6 +168,7 @@ export default {
         ),
       ids,
       status,
+      priority,
     );
     dispatch({
       type: ActionType.RESET,

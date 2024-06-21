@@ -4,7 +4,7 @@ import { IconInfoCircle } from "@tabler/icons-react";
 
 const fz = 14;
 
-const AddressPopover = ({ value }: {value?: string | null}) => {
+const AddressPopover = ({ value }: { value?: string | null }) => {
   const [opened, { close, open }] = useDisclosure(false);
   return (
     <Popover

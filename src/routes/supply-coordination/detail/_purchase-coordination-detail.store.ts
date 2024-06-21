@@ -16,6 +16,8 @@ import useMaterialStore from "@/stores/material.store";
 import { cloneDeep, createStore } from "@/utils";
 import { getConvertedAmount } from "@/utils/unit";
 
+const NCC = "NCC";
+
 type State = {
   purchaseRequest?: PurchaseRequest;
   currents: Record<string, CoordinationDetail>;
@@ -25,6 +27,7 @@ type State = {
   deletedPurchaseDetailIds: string[];
   isAllPurchaseInternal: boolean | null;
   inventories: Record<string, Inventory>;
+  generalCatering: string | null;
 };
 
 export enum ActionType {
@@ -36,6 +39,7 @@ export enum ActionType {
   SET_SUPPLIER_NOTE = "SET_SUPPLIER_NOTE",
   SET_INTERNAL_NOTE = "SET_INTERNAL_NOTE",
   SET_DELIVERY_CATERING = "SET_DELIVERY_CATERING",
+  SET_GENERAL_CATERING = "SET_GENERAL_CATERING",
   SET_IS_ALL_PURCHASE_INTERNAL = "SET_IS_ALL_PURCHASE_INTERNAL",
 }
 
@@ -59,6 +63,7 @@ const defaultState = {
   deletedPurchaseDetailIds: [],
   isAllPurchaseInternal: false,
   inventories: {},
+  generalCatering: null,
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -127,18 +132,24 @@ export default {
   },
   setIsAllPurchaseInternal(
     isAllPurchaseInternal: boolean,
-    cateringId: string | null,
+    // cateringId: string | null,
   ) {
     dispatch({
       type: ActionType.SET_IS_ALL_PURCHASE_INTERNAL,
       isAllPurchaseInternal,
-      cateringId: cateringId === null ? NCC : cateringId,
+      // cateringId: cateringId === null ? NCC : cateringId,
     });
   },
   setDeliveryCatering(materialId: string, cateringId: string | null) {
     dispatch({
       type: ActionType.SET_DELIVERY_CATERING,
       materialId,
+      cateringId,
+    });
+  },
+  setGeneralCatering(cateringId: string | null) {
+    dispatch({
+      type: ActionType.SET_GENERAL_CATERING,
       cateringId,
     });
   },
@@ -158,10 +169,10 @@ export default {
       reverse: true,
     });
   },
-  async update(status?: PRStatus) {
+  async update(status: PRStatus, priority: string) {
     const state = store.getSnapshot();
     if (!status || !state.purchaseRequest) {
-      return;
+      return false;
     }
     if (status === "DDP" && state.purchaseRequest) {
       await updatePurchaseRequest(
@@ -169,10 +180,13 @@ export default {
         [],
         [],
         status,
+        priority,
       );
-
       const grouped: { [key: string]: CoordinationDetail[] } = {};
       for (const key of Object.keys(state.updates)) {
+        if (key === null) {
+          return false;
+        }
         const detail = state.updates[key];
         const deliveryCatering = detail.deliveryCatering;
         if (!grouped[deliveryCatering]) {
@@ -231,7 +245,9 @@ export default {
       });
       await addPurchaseInternal(purchaseInternal);
       await addPurchaseCoordination(purchaseCoordination);
+      return true;
     }
+    return false;
   },
 };
 
@@ -242,7 +258,6 @@ function reducer(action: Action, state: State): State {
       return {
         ...defaultState,
       };
-      break;
     case ActionType.INIT_DATA:
       if (
         action.purchaseRequest &&
@@ -340,21 +355,15 @@ function reducer(action: Action, state: State): State {
       }
       break;
     case ActionType.SET_IS_ALL_PURCHASE_INTERNAL:
-      if (
-        action.isAllPurchaseInternal !== undefined &&
-        action.cateringId
-      ) {
+      if (action.isAllPurchaseInternal !== undefined) {
         const isAllPurchaseInternal =
           action.isAllPurchaseInternal ?? false;
         let selectedMaterialIds: string[];
         if (isAllPurchaseInternal) {
           selectedMaterialIds = [];
-          for (const key of Object.keys(state.currents)) {
-            state.currents[key].deliveryCatering = action.cateringId;
-            state.updates[key].deliveryCatering = action.cateringId;
-          }
         } else {
           selectedMaterialIds = state.materialIds;
+          state.generalCatering = null;
           for (const key of Object.keys(state.currents)) {
             state.currents[key].deliveryCatering = NCC;
             state.updates[key].deliveryCatering = NCC;
@@ -369,12 +378,31 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_DELIVERY_CATERING:
       if (action.materialId && action.cateringId) {
+        if (action.cateringId !== state.generalCatering) {
+          state.isAllPurchaseInternal = null;
+        }
+        state.generalCatering = null;
         state.currents[action.materialId].deliveryCatering =
           action.cateringId;
         state.updates[action.materialId].deliveryCatering =
           action.cateringId;
         return {
           ...state,
+        };
+      }
+      break;
+    case ActionType.SET_GENERAL_CATERING:
+      if (action.cateringId) {
+        const isAllPurchaseInternal =
+          state.isAllPurchaseInternal ?? false;
+        for (const key of Object.keys(state.currents)) {
+          state.currents[key].deliveryCatering = action.cateringId;
+          state.updates[key].deliveryCatering = action.cateringId;
+        }
+        return {
+          ...state,
+          isAllPurchaseInternal,
+          generalCatering: action.cateringId,
         };
       }
       break;
@@ -441,5 +469,3 @@ export type CoordinationDetail = {
   internalNote: string;
   price: number;
 };
-
-const NCC = "NCC";

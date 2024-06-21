@@ -12,8 +12,9 @@ import {
 import { formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import store from "./_purchase-coordination-detail.store";
 import PurchasingOrderCoordinationTable from "./components/PurchasingOrderCoordinationTable";
 import Supply from "./components/Supply";
@@ -21,14 +22,12 @@ import Supply from "./components/Supply";
 const SupplyCoordinationDetail = () => {
   const t = useTranslation();
   const { purchaseRequestId } = useParams();
-  const navigate = useNavigate();
   const { role } = useAuthStore();
   const { values, setValues, setFieldValue, getInputProps, errors } =
     useForm<PurchaseRequestForm>({
       initialValues: initialPurchaseRequestForm,
     });
   const [disabled, setDisabled] = useState(true);
-  const [cateringId, setCateringId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!purchaseRequestId) {
@@ -57,21 +56,35 @@ const SupplyCoordinationDetail = () => {
   useOnMounted(load);
 
   const handlePurchaseOutside = () => {
-    store.setIsAllPurchaseInternal(false, cateringId);
+    store.setIsAllPurchaseInternal(false);
   };
 
   const handlePurchaseInternal = () => {
-    store.setIsAllPurchaseInternal(true, cateringId);
+    store.setIsAllPurchaseInternal(true);
   };
 
-  const handleChangeCateringId = (cateringId: string | null) => {
-    setCateringId(cateringId);
-    store.setIsAllPurchaseInternal(true, cateringId);
+  const showFailNotification = () => {
+    notifications.show({
+      color: "red.5",
+      message: t("Please complete all information"),
+    });
   };
 
   const complete = async () => {
-    await store.update(values.status);
-    navigate("/supply-coordination");
+    if (!values.status || !values.priority) {
+      showFailNotification();
+      return;
+    }
+    const result = await store.update(values.status, values.priority);
+    if (result) {
+      notifications.show({
+        color: "green.5",
+        message: t("Update purchase request successfully"),
+      });
+      load();
+    } else {
+      showFailNotification();
+    }
   };
 
   return (
@@ -90,6 +103,7 @@ const SupplyCoordinationDetail = () => {
           getInputProps={getInputProps}
           errors={errors}
           disabled={true}
+          disabledPriority={disabled}
         />
         <PurchaseRequestSteppers
           status={values.status}
@@ -97,8 +111,6 @@ const SupplyCoordinationDetail = () => {
         />
         <Supply
           currentCateringId={values.departmentId}
-          cateringId={cateringId}
-          onChangeCateringId={handleChangeCateringId}
           onPurchaseOutside={handlePurchaseOutside}
           onPurchaseInternal={handlePurchaseInternal}
           disabled={disabled}

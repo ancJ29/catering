@@ -57,6 +57,11 @@ const Item = ({
       .filter((e) => e.value !== currentCateringId);
   }, [activeCaterings, currentCateringId]);
 
+  const bg = () => {
+    const isSold = kitchenQuantity === 0 && !isSelected;
+    return isSold ? "error.0" : price === 0 ? "primary.0" : "white";
+  };
+
   const columns = [
     {
       content: (
@@ -166,7 +171,7 @@ const Item = ({
   ];
 
   return (
-    <Table.Tr bg={price === 0 ? "primary.0" : "white"}>
+    <Table.Tr bg={bg()}>
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign} pr={col.pr}>
           {col.content}

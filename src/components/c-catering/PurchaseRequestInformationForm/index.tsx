@@ -21,6 +21,7 @@ type PurchaseRequestInformationFormProps = {
   getInputProps: GetInputProps<PurchaseRequestForm>;
   errors: FormErrors;
   disabled?: boolean;
+  disabledPriority?: boolean;
 };
 
 const PurchaseRequestInformationForm = ({
@@ -29,6 +30,7 @@ const PurchaseRequestInformationForm = ({
   getInputProps,
   errors,
   disabled = false,
+  disabledPriority = false,
 }: PurchaseRequestInformationFormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
@@ -93,7 +95,7 @@ const PurchaseRequestInformationForm = ({
         options={priorityOptions}
         required
         {...getInputProps("priority")}
-        disabled={disabled}
+        disabled={disabledPriority}
       />
     </Flex>
   );

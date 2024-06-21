@@ -12,15 +12,15 @@ import {
 import { formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import store from "./_purchase-request-detail.store";
 import PurchaseRequestTable from "./components/PurchaseRequestTable";
 
 const PurchaseRequestDetail = () => {
   const t = useTranslation();
   const { role } = useAuthStore();
-  const navigate = useNavigate();
   const { purchaseRequestId } = useParams();
   const [disabled, setDisabled] = useState(true);
   const { values, setValues, setFieldValue, getInputProps, errors } =
@@ -55,11 +55,19 @@ const PurchaseRequestDetail = () => {
   useOnMounted(load);
 
   const complete = async () => {
-    if (!values.status) {
+    if (!values.status || !values.priority) {
+      notifications.show({
+        color: "red.5",
+        message: t("Please complete all information"),
+      });
       return;
     }
-    await store.update(values.status);
-    navigate("/purchase-request-management");
+    await store.update(values.status, values.priority);
+    notifications.show({
+      color: "green.5",
+      message: t("Update purchase request successfully"),
+    });
+    load();
   };
 
   return (
@@ -69,6 +77,7 @@ const PurchaseRequestDetail = () => {
           returnButtonTitle={t("Return to purchase request list")}
           returnUrl="/purchase-request-management"
           complete={complete}
+          disabledCompleteButton={disabled}
         />
         <PurchaseRequestInformationForm
           values={values}
@@ -76,6 +85,7 @@ const PurchaseRequestDetail = () => {
           getInputProps={getInputProps}
           errors={errors}
           disabled={true}
+          disabledPriority={disabled}
         />
         <PurchaseRequestSteppers
           status={values.status}
