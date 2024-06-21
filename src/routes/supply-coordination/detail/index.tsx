@@ -14,13 +14,14 @@ import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import store from "./_purchase-coordination-detail.store";
 import PurchasingOrderCoordinationTable from "./components/PurchasingOrderCoordinationTable";
 import Supply from "./components/Supply";
 
 const SupplyCoordinationDetail = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const { purchaseRequestId } = useParams();
   const { role } = useAuthStore();
   const { values, setValues, setFieldValue, getInputProps, errors } =
@@ -81,7 +82,10 @@ const SupplyCoordinationDetail = () => {
         color: "green.5",
         message: t("Update purchase request successfully"),
       });
-      load();
+      setTimeout(() => {
+        navigate("/supply-coordination");
+        window.location.reload();
+      }, 500);
     } else {
       showFailNotification();
     }
