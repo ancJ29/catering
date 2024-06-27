@@ -1,5 +1,6 @@
 import {
   Actions,
+  ClientRoles,
   PCStatus,
   configs as actionConfigs,
   pcStatusSchema,
@@ -24,10 +25,19 @@ export type PurchaseCoordination = z.infer<
   name: string;
 };
 
+export type PurchaseCoordinationDetail =
+  PurchaseCoordination["purchaseCoordinationDetails"][0];
+
 const { request: addRequest } =
   actionConfigs[Actions.ADD_PURCHASE_COORDINATION].schema;
 export type AddPurchaseCoordinationRequest = z.infer<
   typeof addRequest
+>;
+
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_COORDINATION].schema;
+export type UpdatePurchaseCoordinationRequest = z.infer<
+  typeof updateRequest
 >;
 
 async function _getPurchaseCoordinations(
@@ -58,12 +68,53 @@ export async function getPurchaseCoordinations(
   );
 }
 
+export async function getPurchaseCoordinationById(
+  id: string,
+): Promise<PurchaseCoordination | undefined> {
+  const purchaseCoordination = await loadAll<PurchaseCoordination>({
+    key: "purchaseCoordinations",
+    action: Actions.GET_PURCHASE_COORDINATIONS,
+    params: { id },
+    noCache: true,
+  });
+  return purchaseCoordination.length
+    ? purchaseCoordination[0]
+    : undefined;
+}
+
 export async function addPurchaseCoordination(
   params: AddPurchaseCoordinationRequest,
 ) {
   await callApi<AddPurchaseCoordinationRequest, { id: string }>({
     action: Actions.ADD_PURCHASE_COORDINATION,
     params: params,
+  });
+}
+
+export async function updatePurchaseCoordination(
+  status: PCStatus,
+  purchaseCoordination?: PurchaseCoordination,
+) {
+  if (!purchaseCoordination) {
+    return;
+  }
+
+  await callApi<UpdatePurchaseCoordinationRequest, { id: string }>({
+    action: Actions.UPDATE_PURCHASE_COORDINATION,
+    params: {
+      id: purchaseCoordination.id,
+      prCode: purchaseCoordination.others.prCode,
+      receivingCateringId:
+        purchaseCoordination.others.receivingCateringId,
+      createdById: purchaseCoordination.others.createdById,
+      createAt: purchaseCoordination.others.createAt,
+      approvedById: purchaseCoordination.others.approvedById,
+      approvedAt: purchaseCoordination.others.approvedAt,
+      deliveryDate: purchaseCoordination.deliveryDate,
+      type: purchaseCoordination.others.type,
+      priority: purchaseCoordination.others.priority,
+      status,
+    },
   });
 }
 
@@ -105,4 +156,15 @@ export function statusCoordinationColor(status: PCStatus, level = 6) {
     return "";
   }
   return `${colors[status]}.${level}`;
+}
+
+export function changeablePurchaseCoordinationStatus(
+  current: PCStatus,
+  next: PCStatus,
+  role?: ClientRoles,
+) {
+  if (!role) {
+    return false;
+  }
+  return false;
 }

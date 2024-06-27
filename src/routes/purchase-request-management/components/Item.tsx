@@ -1,14 +1,14 @@
 import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
-import { PurchaseDetail, TextAlign } from "@/types";
+import { RequestDetail, TextAlign } from "@/types";
 import { roundToDecimals } from "@/utils/unit";
 import { Button, Checkbox, Table, TextInput } from "@mantine/core";
 import { useState } from "react";
 
 type ItemProps = {
   material?: Material;
-  purchaseDetail?: PurchaseDetail;
+  requestDetail?: RequestDetail;
   disabled?: boolean;
   isSelected: boolean;
   price: number;
@@ -21,7 +21,7 @@ type ItemProps = {
 
 const Item = ({
   material,
-  purchaseDetail,
+  requestDetail,
   disabled = false,
   isSelected,
   price,
@@ -32,10 +32,10 @@ const Item = ({
   removeMaterial,
 }: ItemProps) => {
   const t = useTranslation();
-  const [amount, setAmount] = useState(purchaseDetail?.amount || 0);
+  const [amount, setAmount] = useState(requestDetail?.amount || 0);
 
   const _onChangeAmount = (value: number) => {
-    if (purchaseDetail) {
+    if (requestDetail) {
       setAmount(value);
       onChangeAmount(value);
     }
@@ -58,8 +58,8 @@ const Item = ({
       content: material?.name,
       align: "left",
     },
-    { content: purchaseDetail?.inventory, align: "right" },
-    { content: purchaseDetail?.needToOrder, align: "right" },
+    { content: requestDetail?.inventory, align: "right" },
+    { content: requestDetail?.needToOrder, align: "right" },
     {
       content: (
         <NumberInput
@@ -78,7 +78,7 @@ const Item = ({
     },
     {
       content: roundToDecimals(
-        amount - (purchaseDetail?.needToOrder || 0),
+        amount - (requestDetail?.needToOrder || 0),
         3,
       ),
       align: "right",
@@ -87,7 +87,7 @@ const Item = ({
     {
       content: (
         <TextInput
-          defaultValue={purchaseDetail?.supplierNote}
+          defaultValue={requestDetail?.supplierNote}
           onChange={(event) =>
             onChangSupplierNote(event.currentTarget.value)
           }
@@ -99,7 +99,7 @@ const Item = ({
     {
       content: (
         <TextInput
-          defaultValue={purchaseDetail?.internalNote}
+          defaultValue={requestDetail?.internalNote}
           onChange={(event) =>
             onChangeInternalNote(event.currentTarget.value)
           }

@@ -1,3 +1,4 @@
+import PurchaseRequestStatus from "@/components/c-catering/PurchaseRequestSteppers/PurchaseRequestStatus";
 import { PurchaseCoordination } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
@@ -23,18 +24,9 @@ export const configs = (
       },
     },
     {
-      key: "dispatchCode",
-      header: t("Purchase coordination code"),
-      width: "12%",
-      style: { fontWeight: "bold" },
-      renderCell: (_, row: PurchaseCoordination) => {
-        return row.code || "N/A";
-      },
-    },
-    {
       key: "kitchen",
       header: t("Purchase coordination catering"),
-      width: "15%",
+      width: "10%",
       renderCell: (_, row: PurchaseCoordination) => {
         return (
           <span>
@@ -47,29 +39,25 @@ export const configs = (
       },
     },
     {
-      key: "type",
-      header: t("Purchase coordination type"),
-      width: "10%",
+      key: "purchaseStatus",
+      header: t("Purchase status"),
+      width: "15%",
+      textAlign: "center",
       renderCell: (_, row: PurchaseCoordination) => {
-        if (!row.others.type) {
+        if (!row.others.status) {
           return "N/A";
         }
-        const type = t(`purchaseRequest.type.${row.others.type}`);
-        return <span>{type}</span>;
-      },
-    },
-    {
-      key: "deliveryDate",
-      header: t("Purchase coordination date"),
-      width: "12%",
-      renderCell: (_, row: PurchaseCoordination) => {
-        return formatTime(row.deliveryDate);
+        return (
+          <PurchaseRequestStatus
+            status={row.others.purchaseRequestStatus}
+          />
+        );
       },
     },
     {
       key: "priority",
       header: t("Purchase coordination priority"),
-      width: "10%",
+      width: "9%",
       textAlign: "center",
       renderCell: (_, row: PurchaseCoordination) => {
         if (!row.others.priority) {
@@ -79,9 +67,30 @@ export const configs = (
       },
     },
     {
-      key: "status",
-      header: t("Status"),
-      width: "25%",
+      key: "type",
+      header: t("Purchase coordination type"),
+      width: "9%",
+      renderCell: (_, row: PurchaseCoordination) => {
+        if (!row.others.type) {
+          return "N/A";
+        }
+        const type = t(`purchaseRequest.type.${row.others.type}`);
+        return <span>{type}</span>;
+      },
+    },
+    {
+      key: "dispatchCode",
+      header: t("Purchase coordination code"),
+      width: "11%",
+      style: { fontWeight: "bold" },
+      renderCell: (_, row: PurchaseCoordination) => {
+        return row.code || "N/A";
+      },
+    },
+    {
+      key: "coordinationStatus",
+      header: t("Coordination status"),
+      width: "20%",
       textAlign: "center",
       renderCell: (_, row: PurchaseCoordination) => {
         if (!row.others.status) {
@@ -93,9 +102,17 @@ export const configs = (
       },
     },
     {
+      key: "deliveryDate",
+      header: t("Purchase coordination date"),
+      width: "12%",
+      renderCell: (_, row: PurchaseCoordination) => {
+        return formatTime(row.deliveryDate);
+      },
+    },
+    {
       key: "memo",
       header: t("Memo"),
-      width: "5%",
+      width: "3%",
       textAlign: "center",
       cellStyle: {
         display: "flex",

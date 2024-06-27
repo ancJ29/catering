@@ -4,6 +4,7 @@ import {
   configs as actionConfigs,
   poStatusSchema,
 } from "@/auto-generated/api-configs";
+import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import { OptionProps } from "@/types";
 import { endOfWeek, startOfWeek } from "@/utils";
@@ -20,9 +21,9 @@ export type PurchaseOrder = z.infer<typeof purchaseOrderSchema> & {
   name: string;
 };
 
-// const { request: addRequest } =
-//   actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
-// type AddRequest = z.infer<typeof addRequest>;
+const { request: addRequest } =
+  actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
+export type AddPurchaseOrderRequest = z.infer<typeof addRequest>;
 
 async function _getPurchaseOrders(
   from = startOfWeek(Date.now()),
@@ -73,14 +74,14 @@ export async function getPurchaseOrderById(
   return purchaseOrder.length ? purchaseOrder[0] : undefined;
 }
 
-// export async function addPurchaseOrders(params: AddRequest) {
-//   logger.info(params);
-//   // const addResponse = await callApi<AddRequest, { id: string }>({
-//   //   action: Actions.ADD_PURCHASE_ORDER,
-//   //   params,
-//   // });
-//   // return addResponse?.id;
-// }
+export async function addPurchaseOrders(
+  params: AddPurchaseOrderRequest,
+) {
+  await callApi<AddPurchaseOrderRequest, { id: string }>({
+    action: Actions.ADD_PURCHASE_ORDER,
+    params,
+  });
+}
 
 export function statusOrderOptions(t: (key: string) => string) {
   const statusOptions: OptionProps[] = poStatusSchema.options.map(

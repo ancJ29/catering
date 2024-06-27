@@ -9,19 +9,19 @@ import {
   updatePurchaseRequest,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
-import { PurchaseDetail } from "@/types";
+import { RequestDetail } from "@/types";
 import { createStore } from "@/utils";
 import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
 
 type State = {
   purchaseRequest?: PurchaseRequest;
-  currents: Record<string, PurchaseDetail>;
-  updates: Record<string, PurchaseDetail>;
+  currents: Record<string, RequestDetail>;
+  updates: Record<string, RequestDetail>;
   isSelectAll: boolean;
   materialIds: string[];
   selectedMaterialIds: string[];
   inventories: Record<string, Inventory>;
-  deletedPurchaseDetailIds: string[];
+  deletedRequestDetailIds: string[];
 };
 
 export enum ActionType {
@@ -53,7 +53,7 @@ const defaultState = {
   materialIds: [],
   selectedMaterialIds: [],
   inventories: {},
-  deletedPurchaseDetailIds: [],
+  deletedRequestDetailIds: [],
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -155,7 +155,7 @@ export default {
       (id) => !state.selectedMaterialIds.includes(id),
     );
     const ids_ = _ids.map((id) => state.currents[id]?.id || "");
-    const ids = [...ids_, ...state.deletedPurchaseDetailIds];
+    const ids = [...ids_, ...state.deletedRequestDetailIds];
     await updatePurchaseRequest(
       state.purchaseRequest,
       state.selectedMaterialIds
@@ -164,7 +164,7 @@ export default {
           return purchaseDetail;
         })
         .filter(
-          (update): update is PurchaseDetail => update !== undefined,
+          (update): update is RequestDetail => update !== undefined,
         ),
       ids,
       status,
@@ -189,7 +189,7 @@ function reducer(action: Action, state: State): State {
         const inventories = new Map(
           action.inventories.map((e) => [e.materialId, e]),
         );
-        const currents = initPurchaseDetails(
+        const currents = initRequestDetails(
           action.purchaseRequest,
           materials,
           inventories,
@@ -207,8 +207,8 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.REMOVE_MATERIAL:
       if (action.materialId && action.materialId in state.currents) {
-        state.deletedPurchaseDetailIds = [
-          ...state.deletedPurchaseDetailIds,
+        state.deletedRequestDetailIds = [
+          ...state.deletedRequestDetailIds,
           state.currents[action.materialId].id || "",
         ];
         delete state.currents[action.materialId];
@@ -222,7 +222,7 @@ function reducer(action: Action, state: State): State {
           selectedMaterialIds: state.materialIds.filter(
             (id) => id !== action.materialId,
           ),
-          deletedPurchaseDetailIds: state.deletedPurchaseDetailIds,
+          deletedRequestDetailIds: state.deletedRequestDetailIds,
         };
       }
       break;
@@ -290,7 +290,7 @@ function reducer(action: Action, state: State): State {
   return state;
 }
 
-function initPurchaseDetails(
+function initRequestDetails(
   purchaseRequest: PurchaseRequest,
   materials: Map<string, Material>,
   inventories: Map<string, Inventory>,
@@ -298,12 +298,12 @@ function initPurchaseDetails(
   return Object.fromEntries(
     purchaseRequest?.purchaseRequestDetails.map((e) => [
       e.materialId,
-      initPurchaseDetail(e, materials, inventories),
+      initRequestDetail(e, materials, inventories),
     ]),
   );
 }
 
-function initPurchaseDetail(
+function initRequestDetail(
   purchaseRequestDetail: PurchaseRequestDetail,
   materials: Map<string, Material>,
   inventories: Map<string, Inventory>,
@@ -339,7 +339,7 @@ function initPurchaseDetail(
   };
 }
 
-function sortMaterialIds(currents: Record<string, PurchaseDetail>) {
+function sortMaterialIds(currents: Record<string, RequestDetail>) {
   const materialIds = Object.keys(currents);
   const nonZeroPriceIds = materialIds.filter(
     (materialId) => currents[materialId]?.price !== 0,

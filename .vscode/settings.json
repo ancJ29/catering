@@ -9,13 +9,12 @@
     "clsx",
     "Controll",
     "mantine",
-    "ndyenchi",
     "tabler",
     "toastify",
     "usehooks",
     "zustand"
   ],
-  "editor.formatOnSave": true,
+  // "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
     "source.addMissingImports": "explicit",

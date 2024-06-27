@@ -2,28 +2,26 @@ import Action from "@/components/common/Action";
 import {
   Inventory,
   Material,
+  PreferredSupplier,
   addPurchaseRequest,
   getAllDailyMenuInventories,
   getAllInventories,
   getAllLowInventories,
   getAllPeriodicInventories,
+  getPreferredSuppliersByDepartmentId,
 } from "@/services/domain";
-import {
-  PreferredSupplier,
-  getAllPreferredSuppliers,
-} from "@/services/domain/preferred-supplier";
 import useMaterialStore from "@/stores/material.store";
 import {
   MaterialExcel,
-  PurchaseDetail,
   PurchaseRequestForm,
+  RequestDetail,
 } from "@/types";
 import { cloneDeep, createStore } from "@/utils";
 import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
 
 type State = {
-  currents: Record<string, PurchaseDetail>;
-  updates: Record<string, PurchaseDetail>;
+  currents: Record<string, RequestDetail>;
+  updates: Record<string, RequestDetail>;
   isSelectAll: boolean;
   materialIds: string[];
   selectedMaterialIds: string[];
@@ -79,9 +77,8 @@ export default {
   async reset(cateringId?: string) {
     if (cateringId) {
       const inventories = await getAllInventories(cateringId);
-      const preferredSuppliers = await getAllPreferredSuppliers(
-        cateringId,
-      );
+      const preferredSuppliers =
+        await getPreferredSuppliersByDepartmentId(cateringId);
       dispatch({
         type: ActionType.RESET,
         inventories,
@@ -95,9 +92,8 @@ export default {
   },
   async initBackgroundData(cateringId: string) {
     const inventories = await getAllInventories(cateringId);
-    const preferredSuppliers = await getAllPreferredSuppliers(
-      cateringId,
-    );
+    const preferredSuppliers =
+      await getPreferredSuppliersByDepartmentId(cateringId);
     dispatch({
       type: ActionType.INIT_BACKGROUND_DATA,
       inventories,
@@ -480,7 +476,7 @@ function initPurchaseDetail(
 }
 
 function sortMaterialIds(
-  currents: Record<string, PurchaseDetail>,
+  currents: Record<string, RequestDetail>,
   preferredSuppliers: Record<string, PreferredSupplier>,
 ) {
   const materialIds = Object.keys(currents);

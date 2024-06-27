@@ -64,18 +64,19 @@ const PurchaseRequestDetail = () => {
     }
     await store.update(values.status, values.priority);
     notifications.show({
-      color: "green.5",
+      color: "blue.5",
       message: t("Update purchase request successfully"),
     });
     load();
   };
 
   return (
-    <Stack gap={0}>
+    <Stack>
       <Flex direction="column" gap={10}>
         <PurchaseActions
           returnButtonTitle={t("Return to purchase request list")}
           returnUrl="/purchase-request-management"
+          completeButtonTitle={t("Complete")}
           complete={complete}
           disabledCompleteButton={disabled}
         />

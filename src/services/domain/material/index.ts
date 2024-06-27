@@ -50,6 +50,8 @@ export type Material = z.infer<typeof materialSchema> & {
   typeName?: string;
 };
 
+export type SupplierMaterial = Material["supplierMaterials"][0];
+
 export async function getMaterialById(
   id: string,
 ): Promise<Material | undefined> {

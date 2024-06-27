@@ -285,19 +285,19 @@ const purchaseCoordinationDictionaries: {
   en: {
     /* cspell:disable */
     "purchaseCoordination.status.CXL": "Pending",
-    "purchaseCoordination.status.CNCCPH": "Waiting for supplier response",
-    "purchaseCoordination.status.NCCPH": "Supplier responded",
-    "purchaseCoordination.status.NCCSSGH": "Supplier ready to deliver",
-    "purchaseCoordination.status.NCCDGH": "Supplier delivered",
+    "purchaseCoordination.status.CNCCPH": "Waiting for sup response",
+    "purchaseCoordination.status.NCCPH": "Sup responded",
+    "purchaseCoordination.status.NCCSSGH": "Sup ready to deliver",
+    "purchaseCoordination.status.NCCDGH": "Sup delivered",
     /* cspell:enable */
   },
   vi: {
     /* cspell:disable */
     "purchaseCoordination.status.CXL": "Chờ xử lý",
-    "purchaseCoordination.status.CNCCPH": "Chờ nhà cung cấp phản hồi",
-    "purchaseCoordination.status.NCCPH": "Nhà cung cấp phản hồi",
-    "purchaseCoordination.status.NCCSSGH": "Nhà cung cấp sẵn sàng giao hàng",
-    "purchaseCoordination.status.NCCDGH": "Nhà cung cấp đã giao hàng",
+    "purchaseCoordination.status.CNCCPH": "Chờ NCC phản hồi",
+    "purchaseCoordination.status.NCCPH": "NCC phản hồi",
+    "purchaseCoordination.status.NCCSSGH": "NCC sẵn sàng giao hàng",
+    "purchaseCoordination.status.NCCDGH": "NCC đã giao hàng",
     /* cspell:enable */
   },
 };

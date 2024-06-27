@@ -4,6 +4,7 @@ export * from "./daily-menu";
 export * from "./department";
 export * from "./inventory";
 export * from "./material";
+export * from "./preferred-supplier";
 export * from "./product";
 export * from "./purchase-coordination";
 export * from "./purchase-internal";

@@ -1,5 +1,5 @@
 import Action from "@/components/common/Action";
-import { Bom } from "@/services/domain/bom";
+import { Bom } from "@/services/domain";
 import materialStore from "@/stores/material.store";
 import { cloneDeep, compareDeep, createStore } from "@/utils";
 

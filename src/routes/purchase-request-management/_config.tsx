@@ -1,8 +1,8 @@
+import PurchaseRequestStatus from "@/components/c-catering/PurchaseRequestSteppers/PurchaseRequestStatus";
 import { Department, PurchaseRequest } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
 import Priority from "./components/Priority";
-import Status from "./components/Status";
 
 export const configs = (
   t: (key: string) => string,
@@ -70,7 +70,7 @@ export const configs = (
         if (!row.others.status) {
           return "N/A";
         }
-        return <Status status={row.others.status} />;
+        return <PurchaseRequestStatus status={row.others.status} />;
       },
     },
   ];

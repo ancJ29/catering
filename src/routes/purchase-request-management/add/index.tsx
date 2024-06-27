@@ -173,7 +173,7 @@ const AddPurchaseRequest = () => {
     setValues(initialPurchaseRequestForm);
     setSelectedSource(null);
     notifications.show({
-      color: "green.5",
+      color: "blue.5",
       message: t("Add purchase request successfully"),
     });
   };
@@ -184,6 +184,7 @@ const AddPurchaseRequest = () => {
         <PurchaseActions
           returnButtonTitle={t("Return to purchase request list")}
           returnUrl="/purchase-request-management"
+          completeButtonTitle={t("Complete")}
           complete={complete}
         />
         <PurchaseRequestInformationForm

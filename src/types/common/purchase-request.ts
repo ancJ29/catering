@@ -19,7 +19,7 @@ export type PurchaseRequestForm = {
   status?: PRStatus;
 };
 
-export type PurchaseDetail = {
+export type RequestDetail = {
   id?: string;
   materialId: string;
   inventory: number;

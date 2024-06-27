@@ -1,8 +1,11 @@
-import { PRStatus } from "@/auto-generated/api-configs";
+import {
+  PIStatus,
+  piStatusSchema,
+} from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  changeablePurchaseRequestStatus,
-  statusRequestColor,
+  changeablePurchaseInternalStatus,
+  statusInternalColor,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import { Stepper } from "@mantine/core";
@@ -11,35 +14,23 @@ import {
   IconCircleCheckFilled,
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import PurchaseRequestStatus from "./PurchaseRequestStatus";
+import PurchaseInternalStatus from "../../components/PurchaseInternalStatus";
 
-const statuses: PRStatus[] = [
-  // cspell:disable
-  "DG", // Đã gửi
-  "DD", // Đã duyệt
-  "DDP", // Đang điều phối
-  "MH", // Mua hàng
-  "DNH", // Đang nhận hàng
-  "NH", // Đã nhận hàng
-  "DH", // Đã huỷ
-  // cspell:enable
-];
+const statuses = piStatusSchema.options;
 
-const map = new Map<number, PRStatus>(statuses.map((s, i) => [i, s]));
+const map = new Map<number, PIStatus>(statuses.map((s, i) => [i, s]));
 
-const size = 12;
+const size = 14;
 
-type PurchaseRequestSteppersProps = {
-  status?: PRStatus;
+type PurchaseInternalSteppersProps = {
+  status: PIStatus;
   disabled?: boolean;
-  onChange: (status: PRStatus) => void;
 };
 
-const PurchaseRequestSteppers = ({
-  status = "DG",
-  disabled = false,
-  onChange,
-}: PurchaseRequestSteppersProps) => {
+const PurchaseInternalSteppers = ({
+  status,
+  disabled,
+}: PurchaseInternalSteppersProps) => {
   const t = useTranslation();
   const { role } = useAuthStore();
   const [active, setActive] = useState<number>(
@@ -47,33 +38,26 @@ const PurchaseRequestSteppers = ({
   );
 
   useEffect(() => {
-    if (status === "KD") {
-      statuses[1] = "KD";
-      map.set(1, "KD");
-    }
     setActive(statuses.indexOf(status));
   }, [status]);
 
   const [color, c] = useMemo(
     () => [
-      statusRequestColor(map.get(active || 0) || "DG", 9),
-      statusRequestColor(statuses[active], 9),
+      statusInternalColor(map.get(active || 0) || "DG", 9),
+      statusInternalColor(statuses[active], 9),
     ],
     [active],
   );
 
-  const click = useCallback(
-    (idx: number) => {
-      setActive(idx);
-      onChange(statuses[idx]);
-    },
-    [onChange],
-  );
+  const click = useCallback((idx: number) => {
+    setActive(idx);
+    // onChange(statuses[idx]);
+  }, []);
 
   return (
     <Stepper
       w="100%"
-      size="xs"
+      size="sm"
       onStepClick={click}
       color={color}
       my={10}
@@ -83,13 +67,13 @@ const PurchaseRequestSteppers = ({
       {statuses.map((s, idx) => {
         const _disabled =
           disabled ||
-          !changeablePurchaseRequestStatus(status, s, role);
+          !changeablePurchaseInternalStatus(status, s, role);
         const cursor = _disabled ? "not-allowed" : "pointer";
         const label =
           idx <= active ? (
-            <PurchaseRequestStatus status={s} fz={size} c={c} />
+            <PurchaseInternalStatus status={s} fz={size} c={c} />
           ) : (
-            t(`purchaseRequest.status.${s}`)
+            t(`purchaseInternal.status.${s}`)
           );
         return (
           <Stepper.Step
@@ -105,4 +89,4 @@ const PurchaseRequestSteppers = ({
   );
 };
 
-export default PurchaseRequestSteppers;
+export default PurchaseInternalSteppers;

@@ -15,11 +15,13 @@ import useCateringStore from "@/stores/catering.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { configs } from "./_config";
 import PurchaseInternalFilter from "./components/PurchaseInternalFilter";
 
 const PurchaseInternalManagement = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const [purchaseInternals, setPurchaseInternals] = useState<
   PurchaseInternal[]
   >([]);
@@ -76,6 +78,10 @@ const PurchaseInternalManagement = () => {
     }
   };
 
+  const onRowClick = (item: PurchaseInternal) => {
+    navigate(`/purchase-internal-management/detail/${item.id}`);
+  };
+
   return (
     <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
@@ -110,7 +116,7 @@ const PurchaseInternalManagement = () => {
         />
       </Flex>
       <DataGrid
-        // onRowClick={onRowClick}
+        onRowClick={onRowClick}
         page={page}
         limit={10}
         isPaginated

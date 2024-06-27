@@ -4,15 +4,18 @@ import {
   AddPurchaseInternalRequest,
   Inventory,
   Material,
+  PreferredSupplier,
   PurchaseRequest,
   PurchaseRequestDetail,
   addPurchaseCoordination,
   addPurchaseInternal,
   getMaterialInventories,
+  getPreferredSuppliersByDepartmentId,
   getPurchaseRequestById,
   updatePurchaseRequest,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
+import useSupplierStore from "@/stores/supplier.store";
 import { cloneDeep, createStore } from "@/utils";
 import { getConvertedAmount } from "@/utils/unit";
 
@@ -24,7 +27,7 @@ type State = {
   updates: Record<string, CoordinationDetail>;
   materialIds: string[];
   selectedMaterialIds: string[];
-  deletedPurchaseDetailIds: string[];
+  deletedRequestDetailIds: string[];
   isAllPurchaseInternal: boolean | null;
   inventories: Record<string, Inventory>;
   generalCatering: string | null;
@@ -53,6 +56,7 @@ type Action = {
   isAllPurchaseInternal?: boolean;
   cateringId?: string | null;
   inventories?: Inventory[];
+  preferredSuppliers?: PreferredSupplier[];
 };
 
 const defaultState = {
@@ -60,7 +64,7 @@ const defaultState = {
   updates: {},
   materialIds: [],
   selectedMaterialIds: [],
-  deletedPurchaseDetailIds: [],
+  deletedRequestDetailIds: [],
   isAllPurchaseInternal: false,
   inventories: {},
   generalCatering: null,
@@ -79,13 +83,21 @@ export default {
     if (!purchaseRequest?.purchaseRequestDetails) {
       return;
     }
-    const inventories = await getMaterialInventories(
-      purchaseRequest.purchaseRequestDetails.map((e) => e.materialId),
-    );
+    const [inventories, preferredSuppliers] = await Promise.all([
+      getMaterialInventories(
+        purchaseRequest.purchaseRequestDetails.map(
+          (e) => e.materialId,
+        ),
+      ),
+      getPreferredSuppliersByDepartmentId(
+        purchaseRequest.departmentId,
+      ),
+    ]);
     dispatch({
       type: ActionType.INIT_DATA,
       purchaseRequest,
       inventories,
+      preferredSuppliers,
     });
   },
   getPurchaseRequest() {
@@ -130,14 +142,10 @@ export default {
       .getSnapshot()
       .selectedMaterialIds.includes(materialId);
   },
-  setIsAllPurchaseInternal(
-    isAllPurchaseInternal: boolean,
-    // cateringId: string | null,
-  ) {
+  setIsAllPurchaseInternal(isAllPurchaseInternal: boolean) {
     dispatch({
       type: ActionType.SET_IS_ALL_PURCHASE_INTERNAL,
       isAllPurchaseInternal,
-      // cateringId: cateringId === null ? NCC : cateringId,
     });
   },
   setDeliveryCatering(materialId: string, cateringId: string | null) {
@@ -175,13 +183,6 @@ export default {
       return false;
     }
     if (status === "DDP" && state.purchaseRequest) {
-      await updatePurchaseRequest(
-        state.purchaseRequest,
-        [],
-        [],
-        status,
-        priority,
-      );
       const grouped: { [key: string]: CoordinationDetail[] } = {};
       for (const key of Object.keys(state.updates)) {
         if (key === null) {
@@ -218,7 +219,7 @@ export default {
                 price: cd.price,
                 amount: cd.dispatchQuantity,
                 materialId: cd.materialId,
-                supplierNote: cd.supplierNote,
+                supplierNote: "",
                 internalNote: cd.internalNote,
               }),
             ),
@@ -243,8 +244,17 @@ export default {
           });
         }
       });
-      await addPurchaseInternal(purchaseInternal);
-      await addPurchaseCoordination(purchaseCoordination);
+      await Promise.all([
+        updatePurchaseRequest(
+          state.purchaseRequest,
+          [],
+          [],
+          status,
+          priority,
+        ),
+        addPurchaseInternal(purchaseInternal),
+        addPurchaseCoordination(purchaseCoordination),
+      ]);
       return true;
     }
     return false;
@@ -253,6 +263,7 @@ export default {
 
 function reducer(action: Action, state: State): State {
   const { materials } = useMaterialStore.getState();
+  const { suppliers } = useSupplierStore.getState();
   switch (action.type) {
     case ActionType.RESET:
       return {
@@ -261,11 +272,19 @@ function reducer(action: Action, state: State): State {
     case ActionType.INIT_DATA:
       if (
         action.purchaseRequest &&
-        action.inventories !== undefined
+        action.inventories !== undefined &&
+        action.preferredSuppliers !== undefined
       ) {
+        const preferredSuppliers = new Map(
+          action.preferredSuppliers.map((e) => [
+            e.materialId,
+            suppliers.get(e.supplierId)?.name || "",
+          ]),
+        );
         const currents = initPurchaseDetails(
           action.purchaseRequest,
           materials,
+          preferredSuppliers,
         );
         const materialIds = sortMaterialIds(currents);
         const inventories = Object.fromEntries(
@@ -287,8 +306,8 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.REMOVE_MATERIAL:
       if (action.materialId && action.materialId in state.currents) {
-        state.deletedPurchaseDetailIds = [
-          ...state.deletedPurchaseDetailIds,
+        state.deletedRequestDetailIds = [
+          ...state.deletedRequestDetailIds,
           state.currents[action.materialId].id || "",
         ];
         delete state.currents[action.materialId];
@@ -302,7 +321,7 @@ function reducer(action: Action, state: State): State {
           selectedMaterialIds: state.materialIds.filter(
             (id) => id !== action.materialId,
           ),
-          deletedPurchaseDetailIds: state.deletedPurchaseDetailIds,
+          deletedRequestDetailIds: state.deletedRequestDetailIds,
         };
       }
       break;
@@ -413,11 +432,12 @@ function reducer(action: Action, state: State): State {
 function initPurchaseDetails(
   purchaseRequest: PurchaseRequest,
   materials: Map<string, Material>,
+  preferredSuppliers: Map<string, string>,
 ) {
   return Object.fromEntries(
     purchaseRequest?.purchaseRequestDetails.map((e) => [
       e.materialId,
-      initPurchaseDetail(e, materials),
+      initPurchaseDetail(e, materials, preferredSuppliers),
     ]),
   );
 }
@@ -425,6 +445,7 @@ function initPurchaseDetails(
 function initPurchaseDetail(
   purchaseRequestDetail: PurchaseRequestDetail,
   materials: Map<string, Material>,
+  preferredSuppliers: Map<string, string>,
 ) {
   const material = materials.get(purchaseRequestDetail.materialId);
   const amount = getConvertedAmount({
@@ -439,7 +460,8 @@ function initPurchaseDetail(
     deliveryCatering: NCC,
     orderQuantity: amount,
     dispatchQuantity: amount,
-    supplierNote: purchaseRequestDetail.others.supplierNote || "",
+    supplierNote:
+      preferredSuppliers.get(purchaseRequestDetail.materialId) || "",
     internalNote: purchaseRequestDetail.others.internalNote || "",
     price: purchaseRequestDetail.others.price,
   };

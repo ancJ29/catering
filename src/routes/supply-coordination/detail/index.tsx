@@ -79,7 +79,7 @@ const SupplyCoordinationDetail = () => {
     const result = await store.update(values.status, values.priority);
     if (result) {
       notifications.show({
-        color: "green.5",
+        color: "blue.5",
         message: t("Update purchase request successfully"),
       });
       setTimeout(() => {
@@ -99,6 +99,7 @@ const SupplyCoordinationDetail = () => {
             "Return to purchase order coordination",
           )}
           returnUrl="/supply-coordination"
+          completeButtonTitle={t("Complete")}
           complete={complete}
         />
         <PurchaseRequestInformationForm

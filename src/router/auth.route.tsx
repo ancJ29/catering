@@ -42,7 +42,9 @@ const componentMap: Record<string, LazyExoticComponent> = {
   AddPurchaseRequest: lazy(() => import("@/routes/purchase-request-management/add")),
   PurchaseOrderManagement: lazy(() => import("@/routes/purchase-order-management")),
   PurchaseCoordinationManagement: lazy(() => import("@/routes/purchase-coordination-management")),
+  PurchaseCoordinationDetail: lazy(() => import("@/routes/purchase-coordination-management/detail")),
   PurchaseInternalManagement: lazy(() => import("@/routes/purchase-internal-management")),
+  PurchaseInternalDetail: lazy(() => import("@/routes/purchase-internal-management/detail")),
   SupplyCoordination: lazy(() => import("@/routes/supply-coordination")),
   SupplyCoordinationDetail: lazy(() => import("@/routes/supply-coordination/detail")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
@@ -301,12 +303,32 @@ const configs: Config[] = [
     },
   },
   {
+    path: "/purchase-internal-management/detail/:purchaseInternalId",
+    element: "PurchaseInternalDetail",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Purchase Internal Detail",
+      },
+    },
+  },
+  {
     path: "/purchase-coordination-management",
     element: "PurchaseCoordinationManagement",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
         title: "Purchase Coordination Management",
+      },
+    },
+  },
+  {
+    path: "/purchase-coordination-management/detail/:purchaseCoordinationId",
+    element: "PurchaseCoordinationDetail",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Purchase Coordination Detail",
       },
     },
   },

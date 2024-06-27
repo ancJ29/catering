@@ -1,5 +1,6 @@
 import {
   Actions,
+  ClientRoles,
   PIStatus,
   configs as actionConfigs,
   piStatusSchema,
@@ -21,6 +22,8 @@ export type PurchaseInternal = z.infer<
 > & {
   name: string;
 };
+export type PurchaseInternalDetail =
+  PurchaseInternal["purchaseInternalDetails"][0];
 
 const { request: addRequest } =
   actionConfigs[Actions.ADD_PURCHASE_INTERNAL].schema;
@@ -52,12 +55,24 @@ export async function getPurchaseInternals(
   });
 }
 
+export async function getPurchaseInternalById(
+  id: string,
+): Promise<PurchaseInternal | undefined> {
+  const purchaseInternal = await loadAll<PurchaseInternal>({
+    key: "purchaseInternals",
+    action: Actions.GET_PURCHASE_INTERNALS,
+    params: { id },
+    noCache: true,
+  });
+  return purchaseInternal.length ? purchaseInternal[0] : undefined;
+}
+
 export async function addPurchaseInternal(
   params: AddPurchaseInternalRequest,
 ) {
   await callApi<AddPurchaseInternalRequest, { id: string }>({
     action: Actions.ADD_PURCHASE_INTERNAL,
-    params: params,
+    params,
   });
 }
 
@@ -85,4 +100,15 @@ export function statusInternalColor(status: PIStatus, level = 6) {
     return "";
   }
   return `${colors[status]}.${level}`;
+}
+
+export function changeablePurchaseInternalStatus(
+  current: PIStatus,
+  next: PIStatus,
+  role?: ClientRoles,
+) {
+  if (!role) {
+    return false;
+  }
+  return false;
 }

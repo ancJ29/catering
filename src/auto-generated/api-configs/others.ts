@@ -350,7 +350,7 @@ export const purchaseInternalOthersSchema = z.object({
 });
 
 export const purchaseInternalDetailOthersSchema = z.object({
-  supplierNote: nullishStringSchema,
+  kitchenDeliveryNote: nullishStringSchema,
   internalNote: nullishStringSchema,
 });
 

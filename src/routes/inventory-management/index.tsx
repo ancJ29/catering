@@ -5,7 +5,7 @@ import useTranslation from "@/hooks/useTranslation";
 import {
   Department,
   getInventoryDepartments,
-} from "@/services/domain/department";
+} from "@/services/domain";
 import { Flex, Stack } from "@mantine/core";
 import { useMemo } from "react";
 import { configs } from "./_configs";

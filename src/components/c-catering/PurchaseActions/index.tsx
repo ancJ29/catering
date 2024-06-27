@@ -1,4 +1,3 @@
-import useTranslation from "@/hooks/useTranslation";
 import { Button, Flex } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 type PurchaseActionsProps = {
   returnButtonTitle: string;
   returnUrl: string;
+  completeButtonTitle: string;
   complete: () => void;
   disabledCompleteButton?: boolean;
 };
@@ -13,10 +13,10 @@ type PurchaseActionsProps = {
 const PurchaseActions = ({
   returnButtonTitle,
   returnUrl,
+  completeButtonTitle,
   complete,
   disabledCompleteButton = false,
 }: PurchaseActionsProps) => {
-  const t = useTranslation();
   const navigate = useNavigate();
 
   const onClick = () => {
@@ -34,7 +34,7 @@ const PurchaseActions = ({
         onClick={complete}
         disabled={disabledCompleteButton}
       >
-        {t("Complete")}
+        {completeButtonTitle}
       </Button>
     </Flex>
   );

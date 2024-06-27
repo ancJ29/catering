@@ -1,6 +1,5 @@
 import AddressPopover from "@/components/c-catering/AddressPopover";
-import { Supplier } from "@/services/domain";
-import { PurchaseOrder } from "@/services/domain/purchase-order";
+import { PurchaseOrder, Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
 import { Department } from "../catering-management/_configs";

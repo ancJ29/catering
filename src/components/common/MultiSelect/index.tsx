@@ -20,6 +20,7 @@ type MultiSelectProps = {
   placeholder?: string;
   onChange: (value: string[]) => void;
   w?: string;
+  disabled?: boolean;
 };
 
 const MultiSelect = ({
@@ -29,6 +30,7 @@ const MultiSelect = ({
   placeholder,
   onChange,
   w,
+  disabled = false,
 }: MultiSelectProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -107,6 +109,7 @@ const MultiSelect = ({
         store={combobox}
         onOptionSubmit={handleValueSelect}
         withinPortal={false}
+        disabled={disabled}
       >
         <Combobox.DropdownTarget>
           <PillsInput

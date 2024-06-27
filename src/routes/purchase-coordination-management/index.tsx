@@ -16,11 +16,13 @@ import useUserStore from "@/stores/user.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { configs } from "./_config";
 import PurchaseCoordinationFilter from "./components/PurchaseCoordinationFilter";
 
 const PurchaseCoordinationManagement = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const [purchaseCoordinations, setPurchaseCoordinations] = useState<
   PurchaseCoordination[]
   >([]);
@@ -78,6 +80,10 @@ const PurchaseCoordinationManagement = () => {
     }
   };
 
+  const onRowClick = (item: PurchaseCoordination) => {
+    navigate(`/purchase-coordination-management/detail/${item.id}`);
+  };
+
   return (
     <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
@@ -113,7 +119,7 @@ const PurchaseCoordinationManagement = () => {
         />
       </Flex>
       <DataGrid
-        // onRowClick={onRowClick}
+        onRowClick={onRowClick}
         page={page}
         limit={10}
         isPaginated

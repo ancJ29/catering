@@ -25,6 +25,7 @@ import {
   departmentOthersSchema,
   inventoryOthersSchema,
   materialOthersSchema,
+  prStatusSchema,
   productOthersSchema,
   purchaseCoordinationDetailOthersSchema,
   purchaseCoordinationOthersSchema,
@@ -37,7 +38,12 @@ import {
   supplierOthersSchema,
   userOthersSchema,
 } from "./others";
-import { dateSchema, nullishStringSchema, numberSchema, stringSchema } from "./schema";
+import {
+  dateSchema,
+  nullishStringSchema,
+  numberSchema,
+  stringSchema,
+} from "./schema";
 
 export const xUserSchema = userSchema
   .omit({
@@ -169,7 +175,9 @@ export const xPurchaseCoordinationSchema = purchaseCoordinationSchema
     others: true,
   })
   .extend({
-    others: purchaseCoordinationOthersSchema,
+    others: purchaseCoordinationOthersSchema.extend({
+      purchaseRequestStatus: prStatusSchema,
+    }),
     purchaseCoordinationDetails: purchaseCoordinationDetailSchema
       .omit({
         others: true,
@@ -232,58 +240,75 @@ export const xUpdatePurchaseRequest = z.object({
   deletePurchaseRequestDetailIds: stringSchema.array(),
 });
 
-export const xAddPurchaseInternal = z
-  .object({
-    deliveryDate: dateSchema,
-    receivingCateringId: stringSchema,
-    deliveryCateringId: stringSchema,
-    purchaseRequestId: stringSchema,
-    prCode: stringSchema,
-    purchaseInternalDetails: z.object({
+export const xAddPurchaseInternal = z.object({
+  deliveryDate: dateSchema,
+  receivingCateringId: stringSchema,
+  deliveryCateringId: stringSchema,
+  purchaseRequestId: stringSchema,
+  prCode: stringSchema,
+  purchaseInternalDetails: z
+    .object({
       amount: numberSchema,
       materialId: stringSchema,
       supplierNote: nullishStringSchema,
       internalNote: nullishStringSchema,
-    }).array(),
-  });
+    })
+    .array(),
+});
 
-export const xAddPurchaseCoordination = z
-  .object({
-    deliveryDate: dateSchema,
-    purchaseRequestId: stringSchema,
-    receivingCateringId: stringSchema,
-    prCode: stringSchema,
-    type: stringSchema,
-    priority: stringSchema,
-    createdById: stringSchema,
-    createAt: dateSchema,
-    approvedById: stringSchema,
-    approvedAt: dateSchema,
-    purchaseCoordinationDetails: z.object({
+export const xAddPurchaseCoordination = z.object({
+  deliveryDate: dateSchema,
+  purchaseRequestId: stringSchema,
+  receivingCateringId: stringSchema,
+  prCode: stringSchema,
+  type: stringSchema,
+  priority: stringSchema,
+  createdById: stringSchema,
+  createAt: dateSchema,
+  approvedById: stringSchema,
+  approvedAt: dateSchema,
+  purchaseCoordinationDetails: z
+    .object({
       price: numberSchema,
       amount: numberSchema,
       materialId: stringSchema,
       supplierNote: nullishStringSchema,
       internalNote: nullishStringSchema,
-    }).array(),
-  });
+    })
+    .array(),
+});
 
-export const xAddPurchaseOrder = z
-  .object({
-//     purchaseRequestId: stringSchema,
-//     deliveryDate: dateSchema,
-//     departmentId: nullishStringSchema,
-//     type: stringSchema,
-//     priority: stringSchema,
-//     purchaseOrderDetails: z
-//       .object({
-//         materialId: stringSchema,
-//         amount: numberSchema,
-//         supplierNote: nullishStringSchema,
-//         internalNote: nullishStringSchema,
-//       })
-//       .array(),
-  });
+export const xUpdatePurchaseCoordination = z.object({
+  id: stringSchema,
+  prCode: stringSchema,
+  receivingCateringId: stringSchema,
+  createdById: stringSchema,
+  createAt: dateSchema,
+  approvedById: stringSchema,
+  approvedAt: dateSchema,
+  deliveryDate: dateSchema,
+  type: stringSchema,
+  priority: stringSchema,
+  status: stringSchema,
+});
+
+export const xAddPurchaseOrder = z.object({
+  deliveryDate: dateSchema,
+  supplierId: stringSchema,
+  purchaseCoordinationId: stringSchema,
+  prCode: stringSchema,
+  type: stringSchema,
+  priority: stringSchema,
+  receivingCateringId: stringSchema,
+  purchaseOrderDetails: z.object({
+    materialId: stringSchema,
+    amount: numberSchema,
+    price: numberSchema,
+    supplierNote: nullishStringSchema,
+    internalNote: nullishStringSchema,
+  })
+  .array(),
+});
 
 export const xPreferredSupplier = z.object({
   departmentId: stringSchema,

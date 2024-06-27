@@ -1,7 +1,4 @@
-import {
-  Inventory,
-  getInventories,
-} from "@/services/domain/inventory";
+import { Inventory, getInventories } from "@/services/domain";
 import { createStore, isSameDate } from "@/utils";
 
 type State = {

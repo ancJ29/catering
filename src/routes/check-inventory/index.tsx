@@ -5,11 +5,12 @@ import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
-import { Material, updateInventory } from "@/services/domain";
 import {
   Department,
+  Material,
   getInventoryDepartments,
-} from "@/services/domain/department";
+  updateInventory,
+} from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { Flex, Group, Radio, Stack } from "@mantine/core";

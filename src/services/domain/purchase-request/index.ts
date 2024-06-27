@@ -12,8 +12,8 @@ import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import {
   OptionProps,
-  PurchaseDetail,
   PurchaseRequestForm,
+  RequestDetail,
 } from "@/types";
 import { ONE_DAY, endOfDay, getDateTime, startOfDay } from "@/utils";
 import { z } from "zod";
@@ -71,18 +71,18 @@ export async function getPurchaseRequests(
 export async function getPurchaseRequestById(
   id: string,
 ): Promise<PurchaseRequest | undefined> {
-  const purchaseRequests = await loadAll<PurchaseRequest>({
+  const purchaseRequest = await loadAll<PurchaseRequest>({
     key: "purchaseRequests",
     action: Actions.GET_PURCHASE_REQUESTS,
     params: { id },
     noCache: true,
   });
-  return purchaseRequests.length ? purchaseRequests[0] : undefined;
+  return purchaseRequest.length ? purchaseRequest[0] : undefined;
 }
 
 export async function addPurchaseRequest(
   purchaseRequest: PurchaseRequestForm,
-  purchaseDetails: PurchaseDetail[],
+  purchaseDetails: RequestDetail[],
 ) {
   await callApi<AddRequest, { id: string }>({
     action: Actions.ADD_PURCHASE_REQUEST,
@@ -107,8 +107,8 @@ export async function addPurchaseRequest(
 
 export async function updatePurchaseRequest(
   purchaseRequest: PurchaseRequest,
-  purchaseDetails: PurchaseDetail[],
-  deletedPurchaseDetailIds: string[],
+  purchaseDetails: RequestDetail[],
+  deletedRequestDetailIds: string[],
   status: PRStatus,
   priority: string,
 ) {
@@ -133,7 +133,24 @@ export async function updatePurchaseRequest(
         supplierNote: e.supplierNote,
         internalNote: e.internalNote,
       })),
-      deletePurchaseRequestDetailIds: deletedPurchaseDetailIds,
+      deletePurchaseRequestDetailIds: deletedRequestDetailIds,
+    },
+  });
+}
+
+const { request: updateStatusRequest } =
+  actionConfigs[Actions.UPDATE_STATUS_PURCHASE_REQUEST].schema;
+type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
+
+export async function updateStatusPurchaseRequest(
+  id: string,
+  status: PRStatus,
+) {
+  await callApi<UpdateStatusRequest, { id: string }>({
+    action: Actions.UPDATE_STATUS_PURCHASE_REQUEST,
+    params: {
+      id,
+      status,
     },
   });
 }

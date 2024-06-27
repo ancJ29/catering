@@ -19,10 +19,10 @@ export type PreferredSupplier = z.infer<
 
 const schema = response.omit({ cursor: true, hasMore: true });
 
-export async function getAllPreferredSuppliers(
+export async function getPreferredSuppliersByDepartmentId(
   departmentId: string,
 ): Promise<PreferredSupplier[]> {
-  const key = `domain.preferredSupplier.getAllPreferredSuppliers.${departmentId}`;
+  const key = `domain.preferredSupplier.getPreferredSuppliersByDepartment.${departmentId}`;
   if (cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
     if (res.success) {

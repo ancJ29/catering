@@ -3,8 +3,8 @@ import useTranslation from "@/hooks/useTranslation";
 import { statusRequestColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
-const Status = ({
-  fz = 10,
+const PurchaseRequestStatus = ({
+  fz = 12,
   status,
   c,
 }: {
@@ -14,10 +14,10 @@ const Status = ({
 }) => {
   const t = useTranslation();
   return (
-    <Badge fz={fz} color={c || statusRequestColor(status, 9)}>
+    <Badge fz={fz} color={c || statusRequestColor(status)}>
       {t(`purchaseRequest.status.${status}`)}
     </Badge>
   );
 };
 
-export default Status;
+export default PurchaseRequestStatus;
