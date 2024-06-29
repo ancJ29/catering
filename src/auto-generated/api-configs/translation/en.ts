@@ -309,7 +309,8 @@ export default {
   "Coordination status": "Coordination status",
   "Purchase status": "Purchase status",
   "Purchase Coordination Detail": "Purchase Coordination Detail",
-  "Return to purchase coordination list": "Return to purchase coordination list",
+  "Return to purchase coordination list":
+    "Return to purchase coordination list",
   "Create PO": "Create PO",
   "Change": "Change",
   "Approved quantity": "Approved quantity",
@@ -318,4 +319,6 @@ export default {
   "Nothing found": "Nothing found",
   "Confirm": "Confirm",
   "Are you sure to create PO?": "Are you sure to create PO?",
+  "Add purchase order successfully": "Add purchase order successfully",
+  "Please update status": "Please update status",
 } satisfies Record<string, string>;

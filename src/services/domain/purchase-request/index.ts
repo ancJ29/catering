@@ -138,23 +138,6 @@ export async function updatePurchaseRequest(
   });
 }
 
-const { request: updateStatusRequest } =
-  actionConfigs[Actions.UPDATE_STATUS_PURCHASE_REQUEST].schema;
-type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
-
-export async function updateStatusPurchaseRequest(
-  id: string,
-  status: PRStatus,
-) {
-  await callApi<UpdateStatusRequest, { id: string }>({
-    action: Actions.UPDATE_STATUS_PURCHASE_REQUEST,
-    params: {
-      id,
-      status,
-    },
-  });
-}
-
 export function typePriorityAndStatusRequestOptions(
   t: (key: string) => string,
 ) {

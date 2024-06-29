@@ -5,6 +5,7 @@ import {
 import { unitSchema } from "@/auto-generated/prisma-schema";
 import logger from "@/services/logger";
 import request from "@/services/request";
+import useAuthStore from "@/stores/auth.store";
 import { Dictionary } from "@/types";
 import { buildMap } from "@/utils";
 import { z } from "zod";
@@ -48,13 +49,15 @@ export default create<MetaDataStore>((set) => ({
   departmentNameById: emptyMap,
   roleIdByName: emptyMap,
   loadMetaData: async () => {
+    const { removeToken } = useAuthStore.getState();
     if (await _checkVersion()) {
       set(() => _convert(JSON.parse(localStorage.__META_DATA__)));
       return;
-    } else {
-      delete localStorage.__ALL_MATERIALS__;
-      delete localStorage.__ALL_PRODUCTS__;
     }
+    removeToken();
+    const DEBUG_MODE = localStorage.getItem("__DEBUG_MODE");
+    localStorage.clear();
+    localStorage.__DEBUG_MODE = DEBUG_MODE;
     const data: Response = await request({
       action: Actions.GET_METADATA,
     });
@@ -63,6 +66,7 @@ export default create<MetaDataStore>((set) => ({
     logger.trace("meta data loaded:", data.dictionaries.version);
     _syncDictionaries(data);
     set(() => _convert(data));
+    window.location.reload();
   },
 }));
 
@@ -103,5 +107,12 @@ async function _checkVersion() {
     action: Actions.GET_VERSION,
   });
   logger.debug("version check:", data.version, currentVersion);
-  return data.version === currentVersion;
+  return (
+    extractMajorVersion(data.version) ===
+    extractMajorVersion(currentVersion)
+  );
+}
+
+function extractMajorVersion(value?: string) {
+  return value?.split(".").slice(0, 3).join(".");
 }

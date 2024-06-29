@@ -300,14 +300,15 @@ export const xAddPurchaseOrder = z.object({
   type: stringSchema,
   priority: stringSchema,
   receivingCateringId: stringSchema,
-  purchaseOrderDetails: z.object({
-    materialId: stringSchema,
-    amount: numberSchema,
-    price: numberSchema,
-    supplierNote: nullishStringSchema,
-    internalNote: nullishStringSchema,
-  })
-  .array(),
+  purchaseOrderDetails: z
+    .object({
+      materialId: stringSchema,
+      amount: numberSchema,
+      price: numberSchema,
+      supplierNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
+    })
+    .array(),
 });
 
 export const xPreferredSupplier = z.object({

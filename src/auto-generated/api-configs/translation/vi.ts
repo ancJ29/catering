@@ -308,7 +308,8 @@ export default {
   "Coordination status": "Trạng thái mua hàng",
   "Purchase status": "Trạng thái đơn hàng",
   "Purchase Coordination Detail": "Chi tiết đơn hàng điều phối",
-  "Return to purchase coordination list": "Quay lại danh sách đơn hàng điều phối",
+  "Return to purchase coordination list":
+    "Quay lại danh sách đơn hàng điều phối",
   "Create PO": "Tạo PO",
   "Change": "Đổi",
   "Approved quantity": "Số lượng duyệt",
@@ -317,4 +318,6 @@ export default {
   "Nothing found": "Không có kết quả",
   "Confirm": "Xác nhận",
   "Are you sure to create PO?": "Bạn có chắc chắn muốn tạo PO mua hàng?",
+  "Add purchase order successfully": "Thêm đơn mua hàng thành công",
+  "Please update status": "Vui lòng cập nhật tình trạng",
 } satisfies Record<string, string>;

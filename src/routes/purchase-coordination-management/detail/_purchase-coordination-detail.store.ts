@@ -10,7 +10,6 @@ import {
   getPreferredSuppliersByDepartmentId,
   getPurchaseCoordinationById,
   updatePurchaseCoordination,
-  updateStatusPurchaseRequest,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { cloneDeep, createStore } from "@/utils";
@@ -201,10 +200,6 @@ export default {
       });
     });
     await Promise.all([
-      updateStatusPurchaseRequest(
-        state.purchaseCoordination?.purchaseRequestId || "",
-        "DDP",
-      ),
       updatePurchaseCoordination(
         "CNCCPH",
         state.purchaseCoordination,
@@ -223,7 +218,10 @@ function reducer(action: Action, state: State): State {
         ...defaultState,
       };
     case ActionType.INIT_DATA:
-      if (action.purchaseCoordination && action.preferredSuppliers) {
+      if (
+        action.purchaseCoordination &&
+        action.preferredSuppliers !== undefined
+      ) {
         const preferredSuppliers = Object.fromEntries(
           action.preferredSuppliers.map((e) => [e.materialId, e]),
         );

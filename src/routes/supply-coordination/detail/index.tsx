@@ -64,16 +64,20 @@ const SupplyCoordinationDetail = () => {
     store.setIsAllPurchaseInternal(true);
   };
 
-  const showFailNotification = () => {
+  const showFailNotification = (content?: string) => {
     notifications.show({
       color: "red.5",
-      message: t("Please complete all information"),
+      message: content ?? t("Please complete all information"),
     });
   };
 
   const complete = async () => {
-    if (!values.status || !values.priority) {
+    if (!values.priority) {
       showFailNotification();
+      return;
+    }
+    if (!values.status || values.status !== "DDP") {
+      showFailNotification(t("Please update status"));
       return;
     }
     const result = await store.update(values.status, values.priority);

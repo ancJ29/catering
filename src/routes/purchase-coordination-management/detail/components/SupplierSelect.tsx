@@ -52,7 +52,6 @@ const SupplierSelect = ({
         onChangeValue(value);
         combobox.closeDropdown();
       }}
-      disabled={disabled}
     >
       <Combobox.Target>
         <InputBase
@@ -63,6 +62,7 @@ const SupplierSelect = ({
           onClick={() => combobox.toggleDropdown()}
           rightSectionPointerEvents="none"
           multiline
+          disabled={disabled}
         >
           {selectedOption ? (
             <SupplierSelectItem {...selectedOption} />
