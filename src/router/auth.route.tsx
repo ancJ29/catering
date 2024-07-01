@@ -41,6 +41,7 @@ const componentMap: Record<string, LazyExoticComponent> = {
   PurchaseRequestDetail: lazy(() => import("@/routes/purchase-request-management/detail")),
   AddPurchaseRequest: lazy(() => import("@/routes/purchase-request-management/add")),
   PurchaseOrderManagement: lazy(() => import("@/routes/purchase-order-management")),
+  PurchaseOrderDetail: lazy(() => import("@/routes/purchase-order-management/detail")),
   PurchaseCoordinationManagement: lazy(() => import("@/routes/purchase-coordination-management")),
   PurchaseCoordinationDetail: lazy(() => import("@/routes/purchase-coordination-management/detail")),
   PurchaseInternalManagement: lazy(() => import("@/routes/purchase-internal-management")),
@@ -243,7 +244,7 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/purchase-request-management/detail/:purchaseRequestId",
+    path: "/purchase-request-management/:purchaseRequestId",
     element: "PurchaseRequestDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,
@@ -273,7 +274,7 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/supply-coordination/detail/:purchaseRequestId",
+    path: "/supply-coordination/:purchaseRequestId",
     element: "SupplyCoordinationDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,
@@ -293,6 +294,16 @@ const configs: Config[] = [
     },
   },
   {
+    path: "/purchase-order-management/:purchaseOrderId",
+    element: "PurchaseOrderDetail",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Purchase Order Detail",
+      },
+    },
+  },
+  {
     path: "/purchase-internal-management",
     element: "PurchaseInternalManagement",
     wrapper: {
@@ -303,7 +314,7 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/purchase-internal-management/detail/:purchaseInternalId",
+    path: "/purchase-internal-management/:purchaseInternalId",
     element: "PurchaseInternalDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,
@@ -323,7 +334,7 @@ const configs: Config[] = [
     },
   },
   {
-    path: "/purchase-coordination-management/detail/:purchaseCoordinationId",
+    path: "/purchase-coordination-management/:purchaseCoordinationId",
     element: "PurchaseCoordinationDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,

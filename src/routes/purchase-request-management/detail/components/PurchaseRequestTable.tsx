@@ -38,7 +38,7 @@ const PurchaseRequestTable = ({
               <Item
                 key={materialId}
                 material={materials.get(materialId)}
-                purchaseDetail={currents[materialId]}
+                requestDetail={currents[materialId]}
                 isSelected={store.isSelected(materialId)}
                 price={store.getPrice(materialId)}
                 onChangeAmount={(value) =>

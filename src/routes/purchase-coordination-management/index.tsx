@@ -81,7 +81,7 @@ const PurchaseCoordinationManagement = () => {
   };
 
   const onRowClick = (item: PurchaseCoordination) => {
-    navigate(`/purchase-coordination-management/detail/${item.id}`);
+    navigate(`/purchase-coordination-management/${item.id}`);
   };
 
   return (

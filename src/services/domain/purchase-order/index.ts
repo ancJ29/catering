@@ -1,5 +1,6 @@
 import {
   Actions,
+  ClientRoles,
   POStatus,
   configs as actionConfigs,
   poStatusSchema,
@@ -20,6 +21,8 @@ const purchaseOrderSchema = response.shape.purchaseOrders.transform(
 export type PurchaseOrder = z.infer<typeof purchaseOrderSchema> & {
   name: string;
 };
+
+export type PurchaseOrderDetail = PurchaseOrder["purchaseOrderDetails"][0];
 
 const { request: addRequest } =
   actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
@@ -114,4 +117,18 @@ export function statusOrderColor(status: POStatus, level = 6) {
     return "";
   }
   return `${colors[status]}.${level}`;
+}
+
+export function changeablePurchaseOrderStatus(
+  current: POStatus,
+  next: POStatus,
+  role?: ClientRoles,
+) {
+  if (current === "DTC") {
+    return false;
+  }
+  if (!role) {
+    return false;
+  }
+  return false;
 }

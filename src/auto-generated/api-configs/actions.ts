@@ -810,17 +810,6 @@ export const configs = {
       request: xUpdatePurchaseRequest,
     },
   },
-  [Actions.UPDATE_STATUS_PURCHASE_REQUEST]: {
-    name: Actions.UPDATE_STATUS_PURCHASE_REQUEST,
-    group: ActionGroups.PURCHASE_REQUEST_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: z.object({
-        id: stringSchema,
-        status: prStatusSchema,
-      }),
-    },
-  },
   [Actions.GET_PURCHASE_INTERNALS]: {
     name: Actions.GET_PURCHASE_INTERNALS,
     group: ActionGroups.PURCHASE_INTERNAL_MANAGEMENT,
@@ -841,6 +830,17 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: xAddPurchaseInternal.array(),
+    },
+  },
+  [Actions.UPDATE_PURCHASE_INTERNAL_STATUS]: {
+    name: Actions.UPDATE_PURCHASE_INTERNAL_STATUS,
+    group: ActionGroups.PURCHASE_INTERNAL_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        id: stringSchema,
+        status: stringSchema,
+      }),
     },
   },
   [Actions.GET_PURCHASE_COORDINATIONS]: {
@@ -893,6 +893,17 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: xAddPurchaseOrder.array(),
+    },
+  },
+  [Actions.UPDATE_PURCHASE_ORDER_STATUS]: {
+    name: Actions.UPDATE_PURCHASE_ORDER_STATUS,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        id: stringSchema,
+        status: stringSchema,
+      }),
     },
   },
   [Actions.GET_PREFERRED_SUPPLIERS]: {

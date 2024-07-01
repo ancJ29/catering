@@ -79,7 +79,7 @@ const PurchaseInternalManagement = () => {
   };
 
   const onRowClick = (item: PurchaseInternal) => {
-    navigate(`/purchase-internal-management/detail/${item.id}`);
+    navigate(`/purchase-internal-management/${item.id}`);
   };
 
   return (

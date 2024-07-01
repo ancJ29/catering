@@ -80,7 +80,7 @@ const SupplyCoordination = () => {
   };
 
   const onRowClick = (item: PurchaseRequest) => {
-    navigate(`/supply-coordination/detail/${item.id}`);
+    navigate(`/supply-coordination/${item.id}`);
   };
 
   return (

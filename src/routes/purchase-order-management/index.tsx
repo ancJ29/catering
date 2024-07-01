@@ -16,11 +16,13 @@ import useSupplierStore from "@/stores/supplier.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { configs } from "./_config";
 import PurchaseOrderFilter from "./components/PurchaseOrderFilter";
 
 const PurchaseOrderManagement = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const [purchaseOrders, setPurchaseOrders] = useState<
   PurchaseOrder[]
   >([]);
@@ -78,6 +80,10 @@ const PurchaseOrderManagement = () => {
     }
   };
 
+  const onRowClick = (item: PurchaseOrder) => {
+    navigate(`/purchase-order-management/${item.id}`);
+  };
+
   return (
     <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
@@ -112,7 +118,7 @@ const PurchaseOrderManagement = () => {
         />
       </Flex>
       <DataGrid
-        // onRowClick={onRowClick}
+        onRowClick={onRowClick}
         page={page}
         limit={10}
         isPaginated

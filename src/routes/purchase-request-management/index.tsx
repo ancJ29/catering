@@ -81,7 +81,7 @@ const PurchaseRequestManagement = () => {
   };
 
   const onRowClick = (item: PurchaseRequest) => {
-    navigate(`/purchase-request-management/detail/${item.id}`);
+    navigate(`/purchase-request-management/${item.id}`);
   };
 
   return (

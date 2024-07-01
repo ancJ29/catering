@@ -70,14 +70,15 @@ export enum Actions {
   GET_PURCHASE_REQUESTS = "get-purchase-requests",
   ADD_PURCHASE_REQUEST = "add-purchase-request",
   UPDATE_PURCHASE_REQUEST = "update-purchase-request",
-  UPDATE_STATUS_PURCHASE_REQUEST = "update-status-purchase-request",
   GET_PURCHASE_INTERNALS = "get-purchase-internals",
   ADD_PURCHASE_INTERNAL = "add-purchase-internal",
+  UPDATE_PURCHASE_INTERNAL_STATUS = "update-purchase-internal-status",
   GET_PURCHASE_COORDINATIONS = "get-purchase-coordinations",
   ADD_PURCHASE_COORDINATION = "add-purchase-coordination",
   UPDATE_PURCHASE_COORDINATION = "update-purchase-coordination",
   GET_PURCHASE_ORDERS = "get-purchase-orders",
   ADD_PURCHASE_ORDER = "add-purchase-order",
+  UPDATE_PURCHASE_ORDER_STATUS = "update-purchase-order-status",
   GET_PREFERRED_SUPPLIERS = "get-preferred-suppliers",
 }
 
