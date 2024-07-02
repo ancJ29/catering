@@ -14,9 +14,9 @@ import {
   PurchaseInternalForm,
   initialPurchaseInternalForm,
 } from "./_config";
-import PurchaseInternalInformationForm from "./components/PurchaseInternalInformationForm";
-import PurchaseInternalSteppers from "./components/PurchaseInternalSteppers";
-import PurchaseInternalTable from "./components/PurchaseInternalTable";
+import Form from "./components/Form";
+import Steppers from "./components/Steppers";
+import Table from "./components/Table";
 
 const PurchaseInternalDetail = () => {
   const t = useTranslation();
@@ -62,11 +62,9 @@ const PurchaseInternalDetail = () => {
           complete={() => null}
           disabledCompleteButton={true}
         />
-        <PurchaseInternalInformationForm values={values} />
-        <PurchaseInternalSteppers status={values.status} />
-        <PurchaseInternalTable
-          purchaseInternalDetails={purchaseInternalDetails}
-        />
+        <Form values={values} />
+        <Steppers status={values.status} />
+        <Table purchaseInternalDetails={purchaseInternalDetails} />
       </Flex>
     </Stack>
   );

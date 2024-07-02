@@ -1,16 +1,13 @@
-import { PRStatus } from "@/auto-generated/api-configs";
-import useTranslation from "@/hooks/useTranslation";
+import {
+  PRStatus,
+  prStatusSchema,
+} from "@/auto-generated/api-configs";
+import Stepper from "@/components/common/Stepper";
 import {
   changeablePurchaseRequestStatus,
   statusRequestColor,
 } from "@/services/domain";
-import useAuthStore from "@/stores/auth.store";
-import { Stepper } from "@mantine/core";
-import {
-  IconCircleCheck,
-  IconCircleCheckFilled,
-} from "@tabler/icons-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import PurchaseRequestStatus from "./PurchaseRequestStatus";
 
 const statuses: PRStatus[] = [
@@ -27,8 +24,6 @@ const statuses: PRStatus[] = [
 
 const map = new Map<number, PRStatus>(statuses.map((s, i) => [i, s]));
 
-const size = 12;
-
 type PurchaseRequestSteppersProps = {
   status?: PRStatus;
   disabled?: boolean;
@@ -36,72 +31,33 @@ type PurchaseRequestSteppersProps = {
 };
 
 const PurchaseRequestSteppers = ({
-  status = "DG",
+  status = prStatusSchema.Values.DG,
   disabled = false,
   onChange,
 }: PurchaseRequestSteppersProps) => {
-  const t = useTranslation();
-  const { role } = useAuthStore();
-  const [active, setActive] = useState<number>(
-    statuses.indexOf(status),
-  );
-
+  const [isChanged, setIsChanged] = useState(false);
   useEffect(() => {
-    if (status === "KD") {
-      statuses[1] = "KD";
-      map.set(1, "KD");
+    if (status === prStatusSchema.Values.KD) {
+      statuses[1] = prStatusSchema.Values.KD;
+      map.set(1, prStatusSchema.Values.KD);
+      setIsChanged(true);
     }
-    setActive(statuses.indexOf(status));
   }, [status]);
-
-  const [color, c] = useMemo(
-    () => [
-      statusRequestColor(map.get(active || 0) || "DG", 9),
-      statusRequestColor(statuses[active], 9),
-    ],
-    [active],
-  );
-
-  const click = useCallback(
-    (idx: number) => {
-      setActive(idx);
-      onChange(statuses[idx]);
-    },
-    [onChange],
-  );
 
   return (
     <Stepper
-      w="100%"
-      size="xs"
-      onStepClick={click}
-      color={color}
-      my={10}
-      active={active}
-      completedIcon={<IconCircleCheckFilled size={size} />}
-    >
-      {statuses.map((s, idx) => {
-        const _disabled =
-          disabled ||
-          !changeablePurchaseRequestStatus(status, s, role);
-        const cursor = _disabled ? "not-allowed" : "pointer";
-        const label =
-          idx <= active ? (
-            <PurchaseRequestStatus status={s} fz={size} c={c} />
-          ) : (
-            t(`purchaseRequest.status.${s}`)
-          );
-        return (
-          <Stepper.Step
-            style={{ cursor }}
-            disabled={_disabled}
-            icon={<IconCircleCheck size={size} />}
-            key={s}
-            label={label}
-          />
-        );
-      })}
-    </Stepper>
+      status={status}
+      fz={12}
+      statuses={statuses}
+      onChangeValue={onChange}
+      map={map}
+      statusColor={statusRequestColor}
+      changeableStatus={changeablePurchaseRequestStatus}
+      StatusComponent={PurchaseRequestStatus}
+      keyPrefix="purchaseRequest"
+      disabled={disabled}
+      isChanged={isChanged}
+    />
   );
 };
 

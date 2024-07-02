@@ -6,7 +6,7 @@ import { Department } from "../catering-management/_configs";
 import Priority from "../purchase-request-management/components/Priority";
 import { User } from "../user-management/_configs";
 import MemoPopover from "./components/MemoPopover";
-import PurchaseCoordinationStatus from "./components/PurchaseCoordinationStatus";
+import PurchaseCoordinationStatus from "./components/Status";
 
 export const configs = (
   t: (key: string) => string,

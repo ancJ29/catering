@@ -321,4 +321,9 @@ export default {
   "Are you sure to create PO?": "Are you sure to create PO?",
   "Add purchase order successfully": "Add purchase order successfully",
   "Please update status": "Please update status",
+  "Purchase Order Detail": "Purchase Order Detail",
+  "Return to purchase order list": "Return to purchase order list",
+  "Approve for supplier": "Approve for supplier",
+  "Save and email to supplier": "Save and email to supplier",
+  "Send": "Send",
 } satisfies Record<string, string>;

@@ -16,7 +16,7 @@ import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import store from "./_purchase-request-detail.store";
-import PurchaseRequestTable from "./components/PurchaseRequestTable";
+import Table from "./components/Table";
 
 const PurchaseRequestDetail = () => {
   const t = useTranslation();
@@ -92,7 +92,7 @@ const PurchaseRequestDetail = () => {
           status={values.status}
           onChange={(value) => setFieldValue("status", value)}
         />
-        <PurchaseRequestTable disabled={disabled} />
+        <Table disabled={disabled} />
       </Flex>
     </Stack>
   );

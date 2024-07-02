@@ -17,7 +17,7 @@ import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { configs } from "./_config";
-import PurchaseInternalFilter from "./components/PurchaseInternalFilter";
+import Filter from "./components/Filter";
 
 const PurchaseInternalManagement = () => {
   const t = useTranslation();
@@ -85,7 +85,7 @@ const PurchaseInternalManagement = () => {
   return (
     <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
-        <PurchaseInternalFilter
+        <Filter
           keyword={keyword}
           from={condition?.from}
           to={condition?.to}

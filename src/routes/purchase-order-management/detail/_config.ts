@@ -6,6 +6,7 @@ export const initialPurchaseOrderForm: PurchaseOrderForm = {
   deliveryTime: "06:00",
   supplierId: "",
   status: "DG",
+  email: "",
 };
 
 export type PurchaseOrderForm = {
@@ -14,4 +15,5 @@ export type PurchaseOrderForm = {
   deliveryTime: string;
   supplierId: string;
   status: POStatus;
+  email: string;
 };

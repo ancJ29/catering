@@ -3,7 +3,7 @@ import { PurchaseInternal } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { formatTime } from "@/utils";
 import { Department } from "../catering-management/_configs";
-import PurchaseInternalStatus from "./components/PurchaseInternalStatus";
+import Status from "./components/Status";
 
 export const configs = (
   t: (key: string) => string,
@@ -72,7 +72,7 @@ export const configs = (
         if (!row.others.status) {
           return "N/A";
         }
-        return <PurchaseInternalStatus status={row.others.status} />;
+        return <Status status={row.others.status} />;
       },
     },
     {

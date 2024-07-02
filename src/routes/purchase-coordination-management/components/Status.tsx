@@ -3,16 +3,14 @@ import useTranslation from "@/hooks/useTranslation";
 import { statusCoordinationColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
-const PurchaseCoordinationStatus = ({
-  status,
-  fz = 12,
-  c,
-}: {
+type StatusProps = {
   status: PCStatus;
   w?: string;
   c?: MantineColor;
   fz?: number;
-}) => {
+};
+
+const Status = ({ status, fz = 12, c }: StatusProps) => {
   const t = useTranslation();
   return (
     <Badge
@@ -31,4 +29,4 @@ const PurchaseCoordinationStatus = ({
   );
 };
 
-export default PurchaseCoordinationStatus;
+export default Status;

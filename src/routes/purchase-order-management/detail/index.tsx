@@ -1,50 +1,70 @@
+import { poStatusSchema } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import useTranslation from "@/hooks/useTranslation";
-import { PurchaseOrderDetail as _PurchaseOrderDetail, getPurchaseOrderById } from "@/services/domain";
-import logger from "@/services/logger";
+import {
+  PurchaseOrderDetail as _PurchaseOrderDetail,
+  getPurchaseOrderById,
+  updatePurchaseOrderStatus,
+} from "@/services/domain";
+import useSupplierStore from "@/stores/supplier.store";
 import { formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { PurchaseOrderForm, initialPurchaseOrderForm } from "./_config";
-import PurchaseOrderInformationForm from "./components/PurchaseOrderInformationForm";
-import PurchaseOrderSteppers from "./components/PurchaseOrderSteppers";
+import {
+  PurchaseOrderForm,
+  initialPurchaseOrderForm,
+} from "./_config";
+import Form from "./components/Form";
+import SendMail from "./components/SendMail";
+import Steppers from "./components/Steppers";
+import Table from "./components/Table";
 
 const PurchaseOrderDetail = () => {
   const t = useTranslation();
   const { purchaseOrderId } = useParams();
+  const { suppliers } = useSupplierStore();
   const [disabled, setDisabled] = useState(true);
-  const [purchaseOrderDetails, setPurchaseOrderDetails] = useState<_PurchaseOrderDetail[]>([]);
+  const [purchaseOrderDetails, setPurchaseOrderDetails] = useState<
+  _PurchaseOrderDetail[]
+  >([]);
   const form = useForm<PurchaseOrderForm>({
     initialValues: initialPurchaseOrderForm,
   });
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     if (!purchaseOrderId) {
       return;
     }
     const purchaseOrder = await getPurchaseOrderById(purchaseOrderId);
-    setPurchaseOrderDetails(purchaseOrder?.purchaseOrderDetails || []);
+    setPurchaseOrderDetails(
+      purchaseOrder?.purchaseOrderDetails || [],
+    );
     form.setValues({
       departmentId: purchaseOrder?.others.receivingCateringId,
       deliveryDate: purchaseOrder?.deliveryDate.getTime(),
-      deliveryTime: formatTime(
-        purchaseOrder?.deliveryDate,
-        "HH:mm",
-      ),
+      deliveryTime: formatTime(purchaseOrder?.deliveryDate, "HH:mm"),
       supplierId: purchaseOrder?.supplierId,
       status: purchaseOrder?.others.status,
+      email:
+        suppliers.get(purchaseOrder?.supplierId || "")?.others
+          .email || "",
     });
-    setDisabled(purchaseOrder?.others.status !== "DG");
-  };
+    setDisabled(
+      purchaseOrder?.others.status !== poStatusSchema.Values.DG,
+    );
+  }, [form, purchaseOrderId, suppliers]);
 
   useEffect(() => {
     getData();
   }, []);
 
-  const complete = () => {
-    logger.info("complete");
+  const complete = async () => {
+    await updatePurchaseOrderStatus({
+      id: purchaseOrderId || "",
+      status: poStatusSchema.Values.DD,
+    });
   };
 
   return (
@@ -57,13 +77,16 @@ const PurchaseOrderDetail = () => {
           complete={complete}
           disabledCompleteButton={disabled}
         />
-        <PurchaseOrderInformationForm values={form.values} />
-        <PurchaseOrderSteppers
-          status={form.values.status}
-          disabled={true}
+        <Form values={form.values} />
+        <Steppers status={form.values.status} disabled={true} />
+        <SendMail
+          email={form.values.email}
+          onChangeEmail={(email) =>
+            form.setFieldValue("email", email)
+          }
+          disabled={disabled}
         />
-        {/*
-        <PurchaseRequestTable disabled={disabled} /> */}
+        <Table purchaseOrderDetails={purchaseOrderDetails} />
       </Flex>
     </Stack>
   );

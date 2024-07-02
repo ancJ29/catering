@@ -16,8 +16,8 @@ import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import store from "./_purchase-coordination-detail.store";
-import PurchasingOrderCoordinationTable from "./components/PurchasingOrderCoordinationTable";
 import Supply from "./components/Supply";
+import Table from "./components/Table";
 
 const SupplyCoordinationDetail = () => {
   const t = useTranslation();
@@ -124,7 +124,7 @@ const SupplyCoordinationDetail = () => {
           onPurchaseInternal={handlePurchaseInternal}
           disabled={disabled}
         />
-        <PurchasingOrderCoordinationTable
+        <Table
           currentCateringId={values.departmentId}
           disabled={disabled}
         />

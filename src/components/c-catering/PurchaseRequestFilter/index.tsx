@@ -5,10 +5,10 @@ import { Department } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { ONE_DAY } from "@/utils";
+import { Flex, Stack } from "@mantine/core";
 import { useMemo } from "react";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
 import CustomButton from "../CustomButton";
-import classes from "./PurchaseRequestFilter.module.scss";
 
 type PurchaseOrderFilterProps = {
   keyword?: string;
@@ -65,8 +65,8 @@ const PurchaseRequestFilter = ({
   }, [caterings]);
 
   return (
-    <div className={classes.container}>
-      <div className={classes.rangeDateContainer}>
+    <Stack gap={10} align="end">
+      <Flex align="end" gap={10}>
         <DateRangeInput
           label={t("Purchase request date")}
           from={from}
@@ -77,8 +77,8 @@ const PurchaseRequestFilter = ({
         <CustomButton disabled={!clearable} onClick={onClear}>
           {t("Clear")}
         </CustomButton>
-      </div>
-      <div className={classes.filterContainer}>
+      </Flex>
+      <Flex gap={10}>
         <AutocompleteForFilterData
           label={t("Purchase request id")}
           w={"20vw"}
@@ -117,8 +117,8 @@ const PurchaseRequestFilter = ({
           options={_caterings}
           onChange={onChangeDepartmentIds}
         />
-      </div>
-    </div>
+      </Flex>
+    </Stack>
   );
 };
 

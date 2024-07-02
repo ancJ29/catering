@@ -4,13 +4,11 @@ import { Grid } from "@mantine/core";
 import Header from "./Header";
 import Item from "./Item";
 
-type PurchaseInternalTableProps = {
+type TableProps = {
   purchaseInternalDetails: PurchaseInternalDetail[];
 };
 
-const PurchaseInternalTable = ({
-  purchaseInternalDetails,
-}: PurchaseInternalTableProps) => {
+const Table = ({ purchaseInternalDetails }: TableProps) => {
   return (
     <Grid mt={10}>
       <Grid.Col span={12} pb={0}>
@@ -29,4 +27,4 @@ const PurchaseInternalTable = ({
   );
 };
 
-export default PurchaseInternalTable;
+export default Table;

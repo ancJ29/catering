@@ -9,7 +9,7 @@ import { endOfWeek, startOfWeek } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useMemo } from "react";
 
-type PurchaseCoordinationFilterProps = {
+type FilterProps = {
   from?: number;
   to?: number;
   types?: string[];
@@ -29,7 +29,7 @@ type PurchaseCoordinationFilterProps = {
   showStatusSelect?: boolean;
 };
 
-const PurchaseCoordinationFilter = ({
+const Filter = ({
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
   types,
@@ -47,7 +47,7 @@ const PurchaseCoordinationFilter = ({
   onChangeReceivingCateringIds,
   onChangeDateRange,
   showStatusSelect = true,
-}: PurchaseCoordinationFilterProps) => {
+}: FilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
   const _caterings: OptionProps[] = useMemo(() => {
@@ -106,4 +106,4 @@ const PurchaseCoordinationFilter = ({
   );
 };
 
-export default PurchaseCoordinationFilter;
+export default Filter;

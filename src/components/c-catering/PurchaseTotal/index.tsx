@@ -3,12 +3,15 @@ import { numberWithDelimiter } from "@/utils";
 import { Flex, Text, TextProps, Title } from "@mantine/core";
 import { ReactNode } from "react";
 
-type TotalProps = {
+type PurchaseTotalProps = {
   totalMaterial: number;
   totalPrice: number;
 };
 
-const Total = ({ totalMaterial, totalPrice }: TotalProps) => {
+const PurchaseTotal = ({
+  totalMaterial,
+  totalPrice,
+}: PurchaseTotalProps) => {
   const t = useTranslation();
   return (
     <Flex
@@ -34,7 +37,7 @@ const Total = ({ totalMaterial, totalPrice }: TotalProps) => {
   );
 };
 
-export default Total;
+export default PurchaseTotal;
 
 interface CustomTextProps extends TextProps {
   children: ReactNode;

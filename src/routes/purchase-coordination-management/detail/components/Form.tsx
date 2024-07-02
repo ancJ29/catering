@@ -1,50 +1,45 @@
 import DateTimeInput from "@/components/common/DateTimeInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { Department, Supplier } from "@/services/domain";
+import {
+  Department,
+  typePriorityAndStatusRequestOptions,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
-import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { useMemo } from "react";
-import { PurchaseOrderForm } from "../_config";
+import { PurchaseCoordinationForm } from "../_config";
 
-type PurchaseOrderInformationFormProps = {
-  values: PurchaseOrderForm;
+type FormProps = {
+  values: PurchaseCoordinationForm;
 };
 
-const PurchaseOrderInformationForm = ({
-  values,
-}: PurchaseOrderInformationFormProps) => {
+const Form = ({ values }: FormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
-  const { suppliers } = useSupplierStore();
+
+  const [typeOptions, priorityOptions] = useMemo(() => {
+    return typePriorityAndStatusRequestOptions(t);
+  }, [t]);
 
   const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
-      (d: Department) => ({
-        label: d.name,
-        value: d.id,
+      (p: Department) => ({
+        label: p.name,
+        value: p.id,
       }),
     );
   }, [activeCaterings]);
 
-  const _suppliers: OptionProps[] = useMemo(() => {
-    return Array.from(suppliers.values()).map(
-      (s: Supplier) => ({
-        label: s.name,
-        value: s.id,
-      }),
-    );
-  }, [suppliers]);
-
   return (
     <Flex justify="end" align="end" gap={10}>
       <Select
-        value={values.departmentId}
-        label={t("Purchase order catering")}
-        w={"25vw"}
+        value={values.receivingCateringId}
+        label={t("Purchase coordination catering")}
+        w="25vw"
         options={_caterings}
+        onChange={() => null}
         disabled={true}
       />
       <DateTimeInput
@@ -53,18 +48,25 @@ const PurchaseOrderInformationForm = ({
         onChangeDate={() => null}
         time={values.deliveryTime}
         onChangeTime={() => null}
-        w={"25vw"}
+        w="25vw"
         disabled={true}
       />
       <Select
-        value={values.supplierId}
-        label={t("Purchase order supplier")}
-        w={"25vw"}
-        options={_suppliers}
+        value={values.type}
+        label={t("Purchase request type")}
+        w="25vw"
+        options={typeOptions}
+        disabled={true}
+      />
+      <Select
+        value={values.priority}
+        label={t("Purchase request priority")}
+        w="25vw"
+        options={priorityOptions}
         disabled={true}
       />
     </Flex>
   );
 };
 
-export default PurchaseOrderInformationForm;
+export default Form;

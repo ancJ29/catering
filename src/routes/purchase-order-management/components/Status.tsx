@@ -3,7 +3,7 @@ import useTranslation from "@/hooks/useTranslation";
 import { statusOrderColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
-const PurchaseOrderStatus = ({
+const Status = ({
   fz = 12,
   status,
   c,
@@ -20,4 +20,4 @@ const PurchaseOrderStatus = ({
   );
 };
 
-export default PurchaseOrderStatus;
+export default Status;

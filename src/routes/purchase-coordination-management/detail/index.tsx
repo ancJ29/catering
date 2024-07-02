@@ -17,9 +17,9 @@ import {
   initialPurchaseCoordinationForm,
 } from "./_config";
 import store from "./_purchase-coordination-detail.store";
-import PurchaseCoordinationInformationForm from "./components/PurchaseCoordinationInformationForm";
-import PurchaseCoordinationSteppers from "./components/PurchaseCoordinationSteppers";
-import PurchaseCoordinationTable from "./components/PurchaseCoordinationTable";
+import Form from "./components/Form";
+import Steppers from "./components/Steppers";
+import Table from "./components/Table";
 
 const PurchaseCoordinationDetail = () => {
   const t = useTranslation();
@@ -100,20 +100,14 @@ const PurchaseCoordinationDetail = () => {
           complete={complete}
           disabledCompleteButton={disabled}
         />
-        <PurchaseCoordinationInformationForm values={values} />
-        <PurchaseCoordinationSteppers
-          status={values.status}
-          disabled={disabled}
-        />
+        <Form values={values} />
+        <Steppers status={values.status} disabled={disabled} />
         <MaterialListButton
           opened={opened}
           onClick={toggle}
           style={{ marginLeft: "auto" }}
         />
-        <PurchaseCoordinationTable
-          opened={opened}
-          disabled={disabled}
-        />
+        <Table opened={opened} disabled={disabled} />
       </Flex>
     </Stack>
   );

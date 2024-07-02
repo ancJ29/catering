@@ -22,11 +22,8 @@ export type PurchaseOrder = z.infer<typeof purchaseOrderSchema> & {
   name: string;
 };
 
-export type PurchaseOrderDetail = PurchaseOrder["purchaseOrderDetails"][0];
-
-const { request: addRequest } =
-  actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
-export type AddPurchaseOrderRequest = z.infer<typeof addRequest>;
+export type PurchaseOrderDetail =
+  PurchaseOrder["purchaseOrderDetails"][0];
 
 async function _getPurchaseOrders(
   from = startOfWeek(Date.now()),
@@ -77,12 +74,35 @@ export async function getPurchaseOrderById(
   return purchaseOrder.length ? purchaseOrder[0] : undefined;
 }
 
+const { request: addRequest } =
+  actionConfigs[Actions.ADD_PURCHASE_ORDER].schema;
+export type AddPurchaseOrderRequest = z.infer<typeof addRequest>;
+
 export async function addPurchaseOrders(
   params: AddPurchaseOrderRequest,
 ) {
   await callApi<AddPurchaseOrderRequest, { id: string }>({
     action: Actions.ADD_PURCHASE_ORDER,
     params,
+  });
+}
+
+const { request: updateStatusRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_ORDER_STATUS].schema;
+type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
+
+export async function updatePurchaseOrderStatus(
+  params: UpdateStatusRequest,
+) {
+  await callApi<UpdateStatusRequest, { id: string }>({
+    action: Actions.UPDATE_PURCHASE_ORDER_STATUS,
+    params,
+    options: {
+      toastMessage: "Purchase order status updated",
+      reloadOnSuccess: {
+        delay: 700,
+      },
+    },
   });
 }
 

@@ -8,13 +8,11 @@ import { Flex } from "@mantine/core";
 import { useMemo } from "react";
 import { PurchaseInternalForm } from "../_config";
 
-type PurchaseInternalInformationFormProps = {
+type FormProps = {
   values: PurchaseInternalForm;
 };
 
-const PurchaseInternalInformationForm = ({
-  values,
-}: PurchaseInternalInformationFormProps) => {
+const Form = ({ values }: FormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
 
@@ -58,4 +56,4 @@ const PurchaseInternalInformationForm = ({
   );
 };
 
-export default PurchaseInternalInformationForm;
+export default Form;

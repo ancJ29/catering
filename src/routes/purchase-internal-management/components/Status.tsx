@@ -3,7 +3,7 @@ import useTranslation from "@/hooks/useTranslation";
 import { statusInternalColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
-const PurchaseInternalStatus = ({
+const Status = ({
   fz = 10,
   status,
   c,
@@ -20,4 +20,4 @@ const PurchaseInternalStatus = ({
   );
 };
 
-export default PurchaseInternalStatus;
+export default Status;

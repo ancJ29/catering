@@ -320,4 +320,9 @@ export default {
   "Are you sure to create PO?": "Bạn có chắc chắn muốn tạo PO mua hàng?",
   "Add purchase order successfully": "Thêm đơn mua hàng thành công",
   "Please update status": "Vui lòng cập nhật tình trạng",
+  "Purchase Order Detail": "Chi tiết đơn hàng",
+  "Return to purchase order list": "Quay lại danh sách đơn hàng",
+  "Approve for supplier": "Duyệt thay NCC",
+  "Save and email to supplier": "Lưu và gửi mail tới nhà cung cấp",
+  "Send": "Gửi",
 } satisfies Record<string, string>;

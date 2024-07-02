@@ -16,7 +16,7 @@ import store from "./_add-purchase-request.store";
 import ImportMaterials, {
   ImportMaterialAction,
 } from "./components/ImportMaterials";
-import PurchaseRequestTable from "./components/PurchaseRequestTable";
+import Table from "./components/Table";
 
 const AddPurchaseRequest = () => {
   const t = useTranslation();
@@ -209,7 +209,7 @@ const AddPurchaseRequest = () => {
           onChange={handleFileUpload}
           style={{ display: "none" }}
         />
-        <PurchaseRequestTable opened={opened} />
+        <Table opened={opened} />
       </Flex>
     </Stack>
   );

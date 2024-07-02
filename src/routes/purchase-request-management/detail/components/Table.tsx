@@ -1,19 +1,17 @@
+import PurchaseTotal from "@/components/c-catering/PurchaseTotal";
 import ScrollTable from "@/components/c-catering/ScrollTable";
 import Header from "@/routes/purchase-request-management/components/Header";
 import Item from "@/routes/purchase-request-management/components/Item";
-import Total from "@/routes/purchase-request-management/components/Total";
 import useMaterialStore from "@/stores/material.store";
 import { Grid } from "@mantine/core";
 import { useSyncExternalStore } from "react";
 import store from "../_purchase-request-detail.store";
 
-type PurchaseRequestTableProps = {
+type TableProps = {
   disabled: boolean;
 };
 
-const PurchaseRequestTable = ({
-  disabled,
-}: PurchaseRequestTableProps) => {
+const Table = ({ disabled }: TableProps) => {
   const { materials } = useMaterialStore();
   const { materialIds, currents, isSelectAll } = useSyncExternalStore(
     store.subscribe,
@@ -60,7 +58,7 @@ const PurchaseRequestTable = ({
               />
             ))}
           </ScrollTable>
-          <Total
+          <PurchaseTotal
             totalMaterial={store.getTotalMaterial()}
             totalPrice={store.getTotalPrice()}
           />
@@ -70,4 +68,4 @@ const PurchaseRequestTable = ({
   );
 };
 
-export default PurchaseRequestTable;
+export default Table;

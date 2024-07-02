@@ -6,15 +6,12 @@ import store from "../_purchase-coordination-detail.store";
 import Header from "./Header";
 import Item from "./Item";
 
-type PurchasingOrderCoordinationTableProps = {
+type TableProps = {
   currentCateringId: string | null;
   disabled: boolean;
 };
 
-const PurchasingOrderCoordinationTable = ({
-  currentCateringId,
-  disabled,
-}: PurchasingOrderCoordinationTableProps) => {
+const Table = ({ currentCateringId, disabled }: TableProps) => {
   const { materials } = useMaterialStore();
   const { materialIds, currents } = useSyncExternalStore(
     store.subscribe,
@@ -63,4 +60,4 @@ const PurchasingOrderCoordinationTable = ({
   );
 };
 
-export default PurchasingOrderCoordinationTable;
+export default Table;
