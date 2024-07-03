@@ -23,6 +23,8 @@ const componentMap: Record<string, LazyExoticComponent> = {
   Profile: lazy(() => import("@/routes/profile")),
   UserManagement: lazy(() => import("@/routes/user-management")),
   CustomerManagement: lazy(() => import("@/routes/customer-management")),
+  CustomerProductManagement: lazy(() => import("@/routes/customer-management/product")),
+  CustomerTargetAudienceManagement: lazy(() => import("@/routes/customer-management/target-audience")),
   CateringManagement: lazy(() => import("@/routes/catering-management")),
   CateringSupplierManagement: lazy(() => import("@/routes/catering-management/supplier")),
   ProductManagement: lazy(() => import("@/routes/product-management")),
@@ -112,6 +114,26 @@ const configs: Config[] = [
   {
     path: "/customer-management",
     element: "CustomerManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Customer Management",
+      },
+    },
+  },
+  {
+    path: "/customer-management/product/:customerId",
+    element: "CustomerProductManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Customer Management",
+      },
+    },
+  },
+  {
+    path: "/customer-management/target-audience/:customerId",
+    element: "CustomerTargetAudienceManagement",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
@@ -259,7 +281,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Add purchase request",
+        title: "Add Purchase Request",
       },
     },
   },

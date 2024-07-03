@@ -1,8 +1,15 @@
 import { Customer } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { ActionIcon, Flex } from "@mantine/core";
+import {
+  IconToolsKitchen,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 
 export const configs = (
   t: (key: string) => string,
+  onProductClick: (id: string) => void,
+  onTargetAudienceClick: (id: string) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -13,8 +20,8 @@ export const configs = (
     },
     {
       key: "code",
-      header: t("Code"),
-      width: "10%",
+      header: t("Customer code"),
+      width: "15%",
       textAlign: "left",
     },
     {
@@ -33,6 +40,30 @@ export const configs = (
       textAlign: "left",
       renderCell: (_, row: Customer) => {
         return row.others?.type ? t(row.others?.type) : "-";
+      },
+    },
+    {
+      key: "action",
+      header: t("Action"),
+      width: "10%",
+      textAlign: "center",
+      renderCell: (_, row: Customer) => {
+        return (
+          <Flex gap={10} justify="center">
+            <ActionIcon
+              variant="outline"
+              onClick={() => onTargetAudienceClick(row.id)}
+            >
+              <IconUsersGroup strokeWidth="1.5" />
+            </ActionIcon>
+            <ActionIcon
+              variant="outline"
+              onClick={() => onProductClick(row.id)}
+            >
+              <IconToolsKitchen strokeWidth="1.5" />
+            </ActionIcon>
+          </Flex>
+        );
       },
     },
   ];

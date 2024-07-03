@@ -1,5 +1,6 @@
 import {
   ActionType,
+  customerProductSchema,
   departmentSchema,
   menuSchema,
   messageSchema,
@@ -384,6 +385,34 @@ export const configs = {
       response: listResponse.extend({
         customers: xCustomerSchema.array(),
       }),
+    },
+  },
+  [Actions.GET_CUSTOMER_PRODUCTS]: {
+    name: Actions.GET_CUSTOMER_PRODUCTS,
+    group: ActionGroups.CUSTOMER_PRODUCT_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        customerId: stringSchema,
+      }),
+      response: listResponse.extend({
+        customerProducts: customerProductSchema.array(),
+      }),
+    },
+  },
+  [Actions.UPDATE_CUSTOMER_PRODUCT]: {
+    name: Actions.UPDATE_CUSTOMER_PRODUCT,
+    group: ActionGroups.CUSTOMER_PRODUCT_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z
+        .object({
+          id: stringSchema,
+          productId: stringSchema,
+          customerId: stringSchema,
+          enabled: booleanSchema,
+        })
+        .array(),
     },
   },
   [Actions.GET_PRODUCTS]: {

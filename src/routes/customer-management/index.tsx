@@ -4,12 +4,32 @@ import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Customer, getAllCustomers } from "@/services/domain";
 import { Flex, Stack } from "@mantine/core";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { configs } from "./_configs";
 
 const CustomerManagement = () => {
   const t = useTranslation();
-  const dataGridConfigs = useMemo(() => configs(t), [t]);
+  const navigate = useNavigate();
+
+  const handleProductClick = useCallback(
+    (id: string) => {
+      navigate(`/customer-management/product/${id}`);
+    },
+    [navigate],
+  );
+
+  const handleTargetAudienceClick = useCallback(
+    (id: string) => {
+      navigate(`/customer-management/target-audience/${id}`);
+    },
+    [navigate],
+  );
+
+  const dataGridConfigs = useMemo(
+    () => configs(t, handleProductClick, handleTargetAudienceClick),
+    [t, handleProductClick, handleTargetAudienceClick],
+  );
 
   const { data, names, reload } = useFilterData<Customer>({
     dataLoader: getAllCustomers,

@@ -1,9 +1,4 @@
 import DataGrid from "@/components/common/DataGrid";
-import {
-  FilterType,
-  defaultCondition,
-  filter,
-} from "@/configs/filters/purchase-internal";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
@@ -16,14 +11,19 @@ import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { configs } from "./_config";
+import {
+  FilterType,
+  configs,
+  defaultCondition,
+  filter,
+} from "./_config";
 import Filter from "./components/Filter";
 
 const PurchaseInternalManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseInternals, setPurchaseInternals] = useState<
-  PurchaseInternal[]
+    PurchaseInternal[]
   >([]);
   const { caterings } = useCateringStore();
 

@@ -7,6 +7,7 @@ import {
   PCStatus,
   PIStatus,
   POStatus,
+  ProductCategory,
   ProductType,
   PRPriority,
   PRStatus,
@@ -18,7 +19,9 @@ import vi from "./vi";
 const version = "1.0.1709219376271";
 
 type DepartmentKey = `user.role.${ClientRoles}`;
-type ProductKey = `products.type.${ProductType}`;
+type ProductKey =
+  | `products.type.${ProductType}`
+  | `products.category.${ProductCategory}`;
 type DailyMenuKey = `dailyMenu.status.${DailyMenuStatus}`;
 type MaterialKey =
   | `materials.type.${MaterialType}`
@@ -103,6 +106,9 @@ const productDictionaries: {
     "products.type.CT1": "Additional food for party",
     "products.type.NM1": "Soup for party",
     "products.type.MC1": "Main dish for party",
+    "products.category.O": "Other categories",
+    "products.category.D": "Daily meals",
+    "products.category.P": "Party",
   },
   vi: {
     /* cspell:disable */
@@ -122,7 +128,9 @@ const productDictionaries: {
     "products.type.CT1": "Tiệc - Món cải thiện",
     "products.type.NM1": "Tiệc - Món nước (phần ăn mặn)",
     "products.type.MC1": "Tiệc - Phần ăn mặn",
-    /* cspell:enable */
+    "products.category.O": "Loại hình khác",
+    "products.category.D": "Suất ăn hàng ngày",
+    "products.category.P": "Tiệc",
   },
 };
 const materialDictionaries: {

@@ -385,7 +385,6 @@ export const purchaseCoordinationDetailOthersSchema = z.object({
 export const poStatusSchema = z.enum([
   // cspell:disable
   "DG", // Đã gửi: đã tạo & gửi PO đến NCC
-  "DTC", // Đã từ chối: NCC từ chối PO
   "DD", // Đã duyệt: NCC duyệt PO
   "SSGH", // Sẵn sàng giao hàng
   "NK1P", // Nhập kho 1 phần
@@ -396,6 +395,7 @@ export const poStatusSchema = z.enum([
   "DLLTT", // Đã lập lịch thanh toán
   "TT1P", // Thanh toán 1 phần
   "DTT", // Đã thanh toán
+  "DTC", // Đã từ chối: NCC từ chối PO
   // cspell:enable
 ]);
 

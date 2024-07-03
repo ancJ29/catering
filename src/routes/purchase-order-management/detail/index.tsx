@@ -1,5 +1,6 @@
 import { poStatusSchema } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
+import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import {
   PurchaseOrderDetail as _PurchaseOrderDetail,
@@ -10,7 +11,7 @@ import useSupplierStore from "@/stores/supplier.store";
 import { formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   PurchaseOrderForm,
@@ -27,13 +28,13 @@ const PurchaseOrderDetail = () => {
   const { suppliers } = useSupplierStore();
   const [disabled, setDisabled] = useState(true);
   const [purchaseOrderDetails, setPurchaseOrderDetails] = useState<
-  _PurchaseOrderDetail[]
+    _PurchaseOrderDetail[]
   >([]);
   const form = useForm<PurchaseOrderForm>({
     initialValues: initialPurchaseOrderForm,
   });
 
-  const getData = useCallback(async () => {
+  const load = useCallback(async () => {
     if (!purchaseOrderId) {
       return;
     }
@@ -55,10 +56,7 @@ const PurchaseOrderDetail = () => {
       purchaseOrder?.others.status !== poStatusSchema.Values.DG,
     );
   }, [form, purchaseOrderId, suppliers]);
-
-  useEffect(() => {
-    getData();
-  }, []);
+  useOnMounted(load);
 
   const complete = async () => {
     await updatePurchaseOrderStatus({
