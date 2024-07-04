@@ -10,6 +10,7 @@ import { OptionProps } from "@/types";
 import { unique } from "@/utils";
 import { Flex, Stack, Switch } from "@mantine/core";
 import { useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FilterType,
   configs,
@@ -19,7 +20,11 @@ import {
 
 const ProductManagement = () => {
   const t = useTranslation();
-  const dataGridConfigs = useMemo(() => configs(t), [t]);
+  const navigate = useNavigate();
+  const dataGridConfigs = useMemo(
+    () => configs(t, navigate),
+    [t, navigate],
+  );
   const { products } = userProductStore();
 
   const typeOptions: OptionProps[] = useMemo(() => {

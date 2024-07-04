@@ -1,8 +1,17 @@
+import {
+  FilterType as ProductFilterType,
+  Tab,
+} from "@/routes/bom-management/_config";
 import { Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { buildHash } from "@/utils";
+import { ActionIcon } from "@mantine/core";
+import { IconSoup } from "@tabler/icons-react";
+import { NavigateFunction } from "react-router-dom";
 
 export const configs = (
   t: (key: string) => string,
+  navigate: NavigateFunction,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -41,6 +50,27 @@ export const configs = (
       },
       renderCell: (value: boolean) => {
         return value ? t("YES") : t("NO");
+      },
+    },
+    {
+      key: "amount",
+      width: "15%",
+      header: t("Amount"),
+      textAlign: "center",
+      renderCell: (_, product: Product) => {
+        const condition: ProductFilterType = {
+          productId: product.id,
+          tab: Tab.STANDARD,
+        };
+        const hash = buildHash(condition);
+        return (
+          <ActionIcon
+            variant="outline"
+            onClick={() => navigate(`/bom-management#${hash}`)}
+          >
+            <IconSoup strokeWidth="1.5" />
+          </ActionIcon>
+        );
       },
     },
   ];
