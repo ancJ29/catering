@@ -6,6 +6,7 @@ import {
   messageSchema,
   messageTemplateSchema,
   productSchema,
+  serviceSchema,
   unitSchema,
 } from "@/auto-generated/prisma-schema";
 
@@ -411,6 +412,36 @@ export const configs = {
           productId: stringSchema,
           customerId: stringSchema,
           enabled: booleanSchema,
+        })
+        .array(),
+    },
+  },
+  [Actions.GET_SERVICES]: {
+    name: Actions.GET_SERVICES,
+    group: ActionGroups.SERVICE_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        customerId: stringSchema,
+      }),
+      response: listResponse.extend({
+        services: serviceSchema.array(),
+      }),
+    },
+  },
+  [Actions.UPDATE_SERVICE]: {
+    name: Actions.UPDATE_SERVICE,
+    group: ActionGroups.SERVICE_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z
+        .object({
+          id: stringSchema,
+          name: stringSchema,
+          customerId: stringSchema,
+          enabled: booleanSchema,
+          price: numberSchema,
+          shift: stringSchema,
         })
         .array(),
     },

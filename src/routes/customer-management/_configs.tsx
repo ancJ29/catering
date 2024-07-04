@@ -1,6 +1,6 @@
 import { Customer } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { ActionIcon, Flex } from "@mantine/core";
+import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import {
   IconToolsKitchen,
   IconUsersGroup,
@@ -50,18 +50,22 @@ export const configs = (
       renderCell: (_, row: Customer) => {
         return (
           <Flex gap={10} justify="center">
-            <ActionIcon
-              variant="outline"
-              onClick={() => onTargetAudienceClick(row.id)}
-            >
-              <IconUsersGroup strokeWidth="1.5" />
-            </ActionIcon>
-            <ActionIcon
-              variant="outline"
-              onClick={() => onProductClick(row.id)}
-            >
-              <IconToolsKitchen strokeWidth="1.5" />
-            </ActionIcon>
+            <Tooltip label={t("Service target audience")}>
+              <ActionIcon
+                variant="outline"
+                onClick={() => onTargetAudienceClick(row.id)}
+              >
+                <IconUsersGroup strokeWidth="1.5" />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label={t("Dish")}>
+              <ActionIcon
+                variant="outline"
+                onClick={() => onProductClick(row.id)}
+              >
+                <IconToolsKitchen strokeWidth="1.5" />
+              </ActionIcon>
+            </Tooltip>
           </Flex>
         );
       },

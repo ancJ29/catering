@@ -332,4 +332,8 @@ export default {
   "Product": "Sản phẩm",
   "Served": "Phục vụ",
   "Not served": "Ngừng phục vụ",
+  "Service target audience": "Đối tượng phục vụ",
+  "Dish": "Món ăn",
+  "Service shift": "Ca",
+  "Allowed spending": "Chi cho phép",
 } satisfies Record<string, string>;

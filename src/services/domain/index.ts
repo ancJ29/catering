@@ -10,4 +10,5 @@ export * from "./purchase-coordination";
 export * from "./purchase-internal";
 export * from "./purchase-order";
 export * from "./purchase-request";
+export * from "./service";
 export * from "./supplier";

@@ -333,4 +333,8 @@ export default {
   "Product": "Product",
   "Served": "Served",
   "Not served": "Not served",
+  "Service target audience": "Target audience",
+  "Dish": "Dish",
+  "Service shift": "Shift",
+  "Allowed spending": "Allowed spending",
 } satisfies Record<string, string>;

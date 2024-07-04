@@ -2,34 +2,32 @@ import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { Customer } from "@/services/domain";
 import {
-  CustomerProduct,
-  getCustomerProductsByCustomerId,
-  updateCustomerProduct,
-} from "@/services/domain/customer-product";
+  Customer,
+  getServiceByCustomerId,
+  Service,
+  updateService,
+} from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
-import useProductStore from "@/stores/product.store";
 import { Button, Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  FilterType,
   configs,
   defaultCondition,
   filter,
+  FilterType,
 } from "./_config";
 import Filter from "./components/Filter";
 
-const CustomerProductManagement = () => {
+const CustomerServiceManagement = () => {
   const t = useTranslation();
   const { customerId } = useParams();
-  const { products: productById } = useProductStore();
   const { customers: customerById } = useCustomerStore();
   const [changed, setChanged] = useState(false);
   const [customer, setCustomer] = useState<Customer>();
-  const [products, setProducts] = useState<CustomerProduct[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const [actives] = useState<Map<string, boolean>>(new Map());
 
   const load = useCallback(async () => {
@@ -38,29 +36,27 @@ const CustomerProductManagement = () => {
     }
     setChanged(false);
     setCustomer(customerById.get(customerId));
-    const customerProducts = await getCustomerProductsByCustomerId(
-      customerId,
-    );
-    setProducts(customerProducts);
+    const services = await getServiceByCustomerId(customerId);
+    setServices(services);
   }, [customerById, customerId]);
   useOnMounted(load);
 
   const setActive = useCallback(
-    async (customerProductId: string, active: boolean) => {
-      actives.set(customerProductId, active);
+    async (serviceId: string, active: boolean) => {
+      actives.set(serviceId, active);
       setChanged(true);
     },
     [actives],
   );
 
   const dataGridConfigs = useMemo(
-    () => configs(t, productById, actives, setActive),
-    [t, productById, actives, setActive],
+    () => configs(t, actives, setActive),
+    [t, actives, setActive],
   );
 
   const dataLoader = useCallback(() => {
-    return Array.from(products.values());
-  }, [products]);
+    return Array.from(services.values());
+  }, [services]);
 
   const {
     condition,
@@ -70,7 +66,7 @@ const CustomerProductManagement = () => {
     reload,
     setPage,
     updateCondition,
-  } = useFilterData<CustomerProduct, FilterType>({
+  } = useFilterData<Service, FilterType>({
     dataLoader,
     filter,
     defaultCondition,
@@ -84,20 +80,20 @@ const CustomerProductManagement = () => {
       ),
       labels: { confirm: "OK", cancel: t("Cancel") },
       onConfirm: async () => {
-        if (!products) {
+        if (!services) {
           return;
         }
-        await updateCustomerProduct(
-          products.map((p) => ({
-            ...p,
+        await updateService(
+          services.map((s) => ({
+            ...s,
             customerId: customerId || "",
-            enabled: actives.get(p.id) ?? p.enabled,
+            enabled: actives.get(s.id) ?? s.enabled,
           })),
         );
         load();
       },
     });
-  }, [actives, customerId, load, products, t]);
+  }, [actives, customerId, load, services, t]);
 
   return (
     <Stack gap={10}>
@@ -129,4 +125,4 @@ const CustomerProductManagement = () => {
   );
 };
 
-export default CustomerProductManagement;
+export default CustomerServiceManagement;

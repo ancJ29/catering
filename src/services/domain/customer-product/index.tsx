@@ -19,7 +19,7 @@ export type CustomerProduct = z.infer<
   name: string;
 };
 
-export async function getAllCustomerProducts(
+export async function getCustomerProductsByCustomerId(
   customerId: string,
 ): Promise<CustomerProduct[]> {
   const { products } = useProductStore.getState();

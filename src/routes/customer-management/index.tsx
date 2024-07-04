@@ -21,7 +21,7 @@ const CustomerManagement = () => {
 
   const handleTargetAudienceClick = useCallback(
     (id: string) => {
-      navigate(`/customer-management/target-audience/${id}`);
+      navigate(`/customer-management/service/${id}`);
     },
     [navigate],
   );
