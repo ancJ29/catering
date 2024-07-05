@@ -99,7 +99,12 @@ export default {
   },
   async save() {
     const state = store.getSnapshot();
-    await updateMealDetail(Object.values(state.currents));
+    await updateMealDetail(
+      Object.values(state.updates).map((el) => ({
+        ...el,
+        date: new Date(el.date),
+      })),
+    );
   },
 };
 
