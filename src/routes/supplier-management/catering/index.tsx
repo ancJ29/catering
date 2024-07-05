@@ -1,5 +1,6 @@
 import { Actions } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
+import CustomButton from "@/components/c-catering/CustomButton";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
@@ -10,15 +11,7 @@ import { Supplier, getSupplierById } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { GenericObject } from "@/types";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Catering, configs } from "./_config";
@@ -103,43 +96,34 @@ const SupplierCateringManagement = () => {
     }
   }, [fee, removeCatering, t]);
 
-  const save = useCallback(() => {
-    modals.openConfirmModal({
-      title: t("Update changes"),
-      children: (
-        <Text size="sm">{t("Are you sure to save changes?")}</Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        if (!supplier) {
-          return;
-        }
-        const _supplier: GenericObject = supplier;
-        delete _supplier.id;
-        await callApi<unknown, { success: boolean }>({
-          action: Actions.UPDATE_SUPPLIER,
-          params: {
-            ..._supplier,
-            id: supplierId,
-            others: {
-              ...supplier.others,
-              caterings: caterings.map((c) => {
-                return {
-                  cateringId: c.id,
-                  additionalFee: fee.get(c.id) ?? c.price ?? 0,
-                };
-              }),
-            },
-          },
-          options: {
-            toastMessage: "Your changes have been saved",
-          },
-        });
-        setChanged(false);
-        load();
+  const save = useCallback(async () => {
+    if (!supplier) {
+      return;
+    }
+    const _supplier: GenericObject = supplier;
+    delete _supplier.id;
+    await callApi<unknown, { success: boolean }>({
+      action: Actions.UPDATE_SUPPLIER,
+      params: {
+        ..._supplier,
+        id: supplierId,
+        others: {
+          ...supplier.others,
+          caterings: caterings.map((c) => {
+            return {
+              cateringId: c.id,
+              additionalFee: fee.get(c.id) ?? c.price ?? 0,
+            };
+          }),
+        },
+      },
+      options: {
+        toastMessage: "Your changes have been saved",
       },
     });
-  }, [caterings, fee, load, supplier, supplierId, t]);
+    setChanged(false);
+    load();
+  }, [caterings, fee, load, supplier, supplierId]);
 
   if (!caterings || !data.length) {
     return <></>;
@@ -153,9 +137,9 @@ const SupplierCateringManagement = () => {
             {" - "}
             {t("Supplier supplied catering")}
           </Text>
-          <Button disabled={!changed} onClick={save}>
+          <CustomButton disabled={!changed} onClick={save} confirm>
             {t("Save")}
-          </Button>
+          </CustomButton>
         </Flex>
         <Grid mt={10}>
           <Grid.Col span={9}>

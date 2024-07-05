@@ -10,7 +10,7 @@ type State = {
   updatedAt: number;
 };
 
-export enum ActionType {
+enum ActionType {
   RESET = "RESET",
   SET = "SET",
   INIT = "INIT",

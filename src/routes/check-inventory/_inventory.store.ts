@@ -8,7 +8,7 @@ type State = {
   currents: Record<string, Inventory>;
 };
 
-export enum ActionType {
+enum ActionType {
   RESET = "RESET",
   SET_INVENTORY = "SET_INVENTORY",
   SET_AMOUNT = "SET_AMOUNT",

@@ -1,3 +1,4 @@
+import CustomButton from "@/components/c-catering/CustomButton";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -10,8 +11,7 @@ import {
 } from "@/services/domain/customer-product";
 import useCustomerStore from "@/stores/customer.store";
 import useProductStore from "@/stores/product.store";
-import { Button, Flex, Stack, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Flex, Stack, Text } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -76,28 +76,18 @@ const CustomerProductManagement = () => {
     defaultCondition,
   });
 
-  const save = useCallback(() => {
-    modals.openConfirmModal({
-      title: t("Update changes"),
-      children: (
-        <Text size="sm">{t("Are you sure to save changes?")}</Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        if (!products) {
-          return;
-        }
-        await updateCustomerProduct(
-          products.map((p) => ({
-            ...p,
-            customerId: customerId || "",
-            enabled: actives.get(p.id) ?? p.enabled,
-          })),
-        );
-        load();
-      },
-    });
-  }, [actives, customerId, load, products, t]);
+  const save = useCallback(async () => {
+    if (!products) {
+      return;
+    }
+    await updateCustomerProduct(
+      products.map((p) => ({
+        ...p,
+        customerId: customerId || "",
+        enabled: actives.get(p.id) ?? p.enabled,
+      })),
+    );
+  }, [actives, customerId, products]);
 
   return (
     <Stack gap={10}>
@@ -105,9 +95,9 @@ const CustomerProductManagement = () => {
         <Text className="c-catering-font-bold" size="2rem">
           {customer?.name || "-"} - {t("Product")}
         </Text>
-        <Button disabled={!changed} onClick={save}>
+        <CustomButton disabled={!changed} onClick={save} confirm>
           {t("Save")}
-        </Button>
+        </CustomButton>
       </Flex>
       <Filter
         names={names}

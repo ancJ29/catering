@@ -5,6 +5,8 @@ import {
   departmentSchema,
   inventorySchema,
   materialSchema,
+  mealDetailSchema,
+  mealSchema,
   productSchema,
   purchaseCoordinationDetailSchema,
   purchaseCoordinationSchema,
@@ -60,6 +62,10 @@ export const xCustomerSchema = customerSchema
   .extend({
     others: customerOthersSchema,
   });
+
+export const xMealSchema = mealSchema.extend({
+  mealDetails: mealDetailSchema.array(),
+});
 
 export const xDepartmentSchema = departmentSchema
   .omit({

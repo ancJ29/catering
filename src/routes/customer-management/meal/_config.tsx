@@ -1,5 +1,5 @@
 import Switch from "@/components/common/Switch";
-import { Service } from "@/services/domain";
+import { Meal } from "@/services/domain";
 import { CustomerProduct } from "@/services/domain/customer-product";
 import { DataGridColumnProps } from "@/types";
 import { numberWithDelimiter } from "@/utils";
@@ -14,18 +14,18 @@ export const configs = (
     {
       key: "name",
       sortable: true,
-      header: t("Service target audience"),
+      header: t("Meal target audience"),
       width: "30%",
     },
     {
       key: "shift",
-      header: t("Service shift"),
+      header: t("Meal shift"),
       width: "5%",
       textAlign: "center",
     },
     {
       key: "allowedSpending",
-      header: t("Allowed spending"),
+      header: t("Meal allowed spending"),
       width: "15%",
       textAlign: "right",
       renderCell: () => {
@@ -46,7 +46,7 @@ export const configs = (
       header: t("Price"),
       width: "15%",
       textAlign: "right",
-      renderCell: (_, row: Service) => {
+      renderCell: (_, row: Meal) => {
         return numberWithDelimiter(row.price);
       },
     },
@@ -84,13 +84,13 @@ export const defaultCondition: FilterType = {
   served: "",
 };
 
-export function filter(s: Service, condition?: FilterType) {
-  if (condition?.served && s.enabled && condition.served !== SERVED) {
+export function filter(m: Meal, condition?: FilterType) {
+  if (condition?.served && m.enabled && condition.served !== SERVED) {
     return false;
   }
   if (
     condition?.served &&
-    !s.enabled &&
+    !m.enabled &&
     condition.served !== NOT_SERVED
   ) {
     return false;

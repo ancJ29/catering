@@ -11,7 +11,7 @@ import {
 import useMaterialStore from "@/stores/material.store";
 import { RequestDetail } from "@/types";
 import { createStore } from "@/utils";
-import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
+import { convertAmount, roundToDecimals } from "@/utils/unit";
 
 type State = {
   purchaseRequest?: PurchaseRequest;
@@ -24,7 +24,7 @@ type State = {
   deletedRequestDetailIds: string[];
 };
 
-export enum ActionType {
+enum ActionType {
   RESET = "RESET",
   INIT_DATA = "INIT_DATA",
   REMOVE_MATERIAL = "REMOVE_MATERIAL",
@@ -231,8 +231,8 @@ function reducer(action: Action, state: State): State {
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
-            (id) => id !== action.materialId,
-          );
+              (id) => id !== action.materialId,
+            );
         const isSelectAll =
           selectedMaterialIds.length === state.materialIds.length;
         return {
@@ -309,18 +309,18 @@ function initRequestDetail(
   inventories: Map<string, Inventory>,
 ) {
   const material = materials.get(purchaseRequestDetail.materialId);
-  const amount = getConvertedAmount({
+  const amount = convertAmount({
     material,
     amount: purchaseRequestDetail.amount,
     reverse: true,
   });
-  const inventory = getConvertedAmount({
+  const inventory = convertAmount({
     material,
     amount:
       inventories.get(purchaseRequestDetail.materialId)?.amount || 0,
     reverse: true,
   });
-  const minimumAmount = getConvertedAmount({
+  const minimumAmount = convertAmount({
     material,
     amount:
       inventories.get(purchaseRequestDetail.materialId)

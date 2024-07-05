@@ -50,7 +50,7 @@ export const configs = (
       renderCell: (_, row: Customer) => {
         return (
           <Flex gap={10} justify="center">
-            <Tooltip label={t("Service target audience")}>
+            <Tooltip label={t("Meal target audience")}>
               <ActionIcon
                 variant="outline"
                 onClick={() => onTargetAudienceClick(row.id)}

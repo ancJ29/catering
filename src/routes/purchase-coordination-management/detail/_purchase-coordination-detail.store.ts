@@ -12,7 +12,7 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { cloneDeep, createStore } from "@/utils";
-import { getConvertedAmount } from "@/utils/unit";
+import { convertAmount } from "@/utils/unit";
 import {
   CoordinationDetail,
   SupplierSelectItemData,
@@ -27,7 +27,7 @@ type State = {
   preferredSuppliers: Record<string, PreferredSupplier>;
 };
 
-export enum ActionType {
+enum ActionType {
   RESET = "RESET",
   INIT_DATA = "INIT_DATA",
   SET_QUANTITY = "SET_QUANTITY",
@@ -350,7 +350,7 @@ function initCoordinationDetail(
   const material = materials.get(
     purchaseCoordinationDetail.materialId,
   );
-  const amount = getConvertedAmount({
+  const amount = convertAmount({
     material,
     amount: purchaseCoordinationDetail.amount,
     reverse: true,
@@ -372,8 +372,8 @@ function initCoordinationDetail(
 }
 
 type SupplierMaterialsByMaterial = Record<
-string,
-Record<string, SupplierMaterial>
+  string,
+  Record<string, SupplierMaterial>
 >;
 
 function initSupplierMaterial(

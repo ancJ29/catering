@@ -71,6 +71,14 @@ export default [
         dashboard: [ClientRoles.OWNER],
       },
       {
+        roles: [ClientRoles.OWNER],
+        key: "meal",
+        label: "Meal Management",
+        icon: "fish",
+        url: "/meal-management",
+        dashboard: [ClientRoles.OWNER],
+      },
+      {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
         key: "user",
         label: "User Management",

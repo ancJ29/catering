@@ -7,7 +7,7 @@ type ConvertedAmountProps = {
   reverse?: boolean;
 };
 
-export function getConvertedAmount({
+export function convertAmount({
   material,
   amount,
   reverse = false,

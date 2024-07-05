@@ -16,7 +16,7 @@ import {
   RequestDetail,
 } from "@/types";
 import { cloneDeep, createStore } from "@/utils";
-import { getConvertedAmount, roundToDecimals } from "@/utils/unit";
+import { convertAmount, roundToDecimals } from "@/utils/unit";
 
 type State = {
   currents: Record<string, RequestDetail>;
@@ -29,7 +29,7 @@ type State = {
   internalCodeInventories: Record<string, Inventory>;
 };
 
-export enum ActionType {
+enum ActionType {
   RESET = "RESET",
   INIT_DATA = "INIT_DATA",
   INIT_BACKGROUND_DATA = "INIT_BACKGROUND_DATA",
@@ -212,7 +212,7 @@ export default {
         const material = materials.get(materialId);
         return {
           ...state.updates[materialId],
-          amount: getConvertedAmount({
+          amount: convertAmount({
             material,
             amount: state.updates[materialId].amount,
           }),
@@ -381,8 +381,8 @@ function reducer(action: Action, state: State): State {
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
-            (id) => id !== action.materialId,
-          );
+              (id) => id !== action.materialId,
+            );
         const isSelectAll =
           selectedMaterialIds.length === state.materialIds.length;
         return {
@@ -454,12 +454,12 @@ function initPurchaseDetail(
   materials: Map<string, Material>,
 ) {
   const material = materials.get(inventory.materialId);
-  const amount = getConvertedAmount({
+  const amount = convertAmount({
     material,
     amount: inventory.amount,
     reverse: true,
   });
-  const minimumAmount = getConvertedAmount({
+  const minimumAmount = convertAmount({
     material,
     amount: inventory.minimumAmount,
     reverse: true,

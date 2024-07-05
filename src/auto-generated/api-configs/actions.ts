@@ -2,11 +2,12 @@ import {
   ActionType,
   customerProductSchema,
   departmentSchema,
+  mealDetailSchema,
+  mealSchema,
   menuSchema,
   messageSchema,
   messageTemplateSchema,
   productSchema,
-  serviceSchema,
   unitSchema,
 } from "@/auto-generated/prisma-schema";
 
@@ -21,6 +22,7 @@ import {
   xDepartmentSchema,
   xInventorySchema,
   xMaterialSchema,
+  xMealSchema,
   xPreferredSupplier,
   xProductSchema,
   xPurchaseCoordinationSchema,
@@ -416,32 +418,43 @@ export const configs = {
         .array(),
     },
   },
-  [Actions.GET_SERVICES]: {
-    name: Actions.GET_SERVICES,
-    group: ActionGroups.SERVICE_MANAGEMENT,
+  [Actions.GET_MEALS]: {
+    name: Actions.GET_MEALS,
+    group: ActionGroups.MEAL_MANAGEMENT,
     type: ActionType.READ,
     schema: {
       request: getSchema.extend({
-        customerId: stringSchema,
+        customerId: optionalStringSchema,
       }),
       response: listResponse.extend({
-        services: serviceSchema.array(),
+        meals: xMealSchema.array(),
       }),
     },
   },
-  [Actions.UPDATE_SERVICE]: {
-    name: Actions.UPDATE_SERVICE,
-    group: ActionGroups.SERVICE_MANAGEMENT,
+  [Actions.UPDATE_MEAL]: {
+    name: Actions.UPDATE_MEAL,
+    group: ActionGroups.MEAL_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
-      request: z
-        .object({
-          id: stringSchema,
-          name: stringSchema,
-          customerId: stringSchema,
-          enabled: booleanSchema,
-          price: numberSchema,
-          shift: stringSchema,
+      request: mealSchema
+        .omit({
+          createdAt: true,
+          updatedAt: true,
+          lastModifiedBy: true,
+        })
+        .array(),
+    },
+  },
+  [Actions.UPDATE_MEAL_DETAIL]: {
+    name: Actions.UPDATE_MEAL_DETAIL,
+    group: ActionGroups.MEAL_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: mealDetailSchema
+        .omit({
+          createdAt: true,
+          updatedAt: true,
+          lastModifiedBy: true,
         })
         .array(),
     },

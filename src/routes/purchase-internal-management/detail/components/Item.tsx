@@ -3,7 +3,7 @@ import NumberInput from "@/components/common/NumberInput";
 import { PurchaseInternalDetail } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
-import { getConvertedAmount } from "@/utils/unit";
+import { convertAmount } from "@/utils/unit";
 import { Table, TextInput } from "@mantine/core";
 import { useState } from "react";
 
@@ -15,7 +15,7 @@ const Item = ({ purchaseInternalDetail }: ItemProps) => {
   const { materials } = useMaterialStore();
   const material = materials.get(purchaseInternalDetail.materialId);
   const [amount] = useState(
-    getConvertedAmount({
+    convertAmount({
       material,
       amount: purchaseInternalDetail.amount,
       reverse: true,

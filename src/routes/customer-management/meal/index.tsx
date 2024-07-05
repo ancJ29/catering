@@ -1,16 +1,16 @@
+import CustomButton from "@/components/c-catering/CustomButton";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import {
   Customer,
-  getServiceByCustomerId,
-  Service,
-  updateService,
+  getMealByCustomerId,
+  Meal,
+  updateMeal,
 } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
-import { Button, Flex, Stack, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Flex, Stack, Text } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -21,13 +21,13 @@ import {
 } from "./_config";
 import Filter from "./components/Filter";
 
-const CustomerServiceManagement = () => {
+const CustomerMealManagement = () => {
   const t = useTranslation();
   const { customerId } = useParams();
   const { customers: customerById } = useCustomerStore();
   const [changed, setChanged] = useState(false);
   const [customer, setCustomer] = useState<Customer>();
-  const [services, setServices] = useState<Service[]>([]);
+  const [meals, setMeals] = useState<Meal[]>([]);
   const [actives] = useState<Map<string, boolean>>(new Map());
 
   const load = useCallback(async () => {
@@ -36,8 +36,8 @@ const CustomerServiceManagement = () => {
     }
     setChanged(false);
     setCustomer(customerById.get(customerId));
-    const services = await getServiceByCustomerId(customerId);
-    setServices(services);
+    const services = await getMealByCustomerId(customerId);
+    setMeals(services);
   }, [customerById, customerId]);
   useOnMounted(load);
 
@@ -55,8 +55,8 @@ const CustomerServiceManagement = () => {
   );
 
   const dataLoader = useCallback(() => {
-    return Array.from(services.values());
-  }, [services]);
+    return Array.from(meals.values());
+  }, [meals]);
 
   const {
     condition,
@@ -66,34 +66,25 @@ const CustomerServiceManagement = () => {
     reload,
     setPage,
     updateCondition,
-  } = useFilterData<Service, FilterType>({
+  } = useFilterData<Meal, FilterType>({
     dataLoader,
     filter,
     defaultCondition,
   });
 
-  const save = useCallback(() => {
-    modals.openConfirmModal({
-      title: t("Update changes"),
-      children: (
-        <Text size="sm">{t("Are you sure to save changes?")}</Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        if (!services) {
-          return;
-        }
-        await updateService(
-          services.map((s) => ({
-            ...s,
-            customerId: customerId || "",
-            enabled: actives.get(s.id) ?? s.enabled,
-          })),
-        );
-        load();
-      },
-    });
-  }, [actives, customerId, load, services, t]);
+  const save = useCallback(async () => {
+    if (!meals) {
+      return;
+    }
+    await updateMeal(
+      meals.map((s) => ({
+        ...s,
+        customerId: customerId || "",
+        enabled: actives.get(s.id) ?? s.enabled,
+      })),
+    );
+    load();
+  }, [actives, customerId, load, meals]);
 
   return (
     <Stack gap={10}>
@@ -101,9 +92,9 @@ const CustomerServiceManagement = () => {
         <Text className="c-catering-font-bold" size="2rem">
           {customer?.name || "-"} - {t("Product")}
         </Text>
-        <Button disabled={!changed} onClick={save}>
+        <CustomButton disabled={!changed} onClick={save} confirm>
           {t("Save")}
-        </Button>
+        </CustomButton>
       </Flex>
       <Filter
         names={names}
@@ -125,4 +116,4 @@ const CustomerServiceManagement = () => {
   );
 };
 
-export default CustomerServiceManagement;
+export default CustomerMealManagement;

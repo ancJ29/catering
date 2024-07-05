@@ -1,5 +1,6 @@
 import { Actions } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
+import CustomButton from "@/components/c-catering/CustomButton";
 import Selector from "@/components/c-catering/Selector";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
@@ -13,15 +14,7 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -137,7 +130,7 @@ const MaterialSupplierManagement = () => {
     }
   }, [material, prices, t, removeSupplier, actives, setActive]);
 
-  const save = useCallback(() => {
+  const save = useCallback(async () => {
     if (
       suppliers?.some((sm) => {
         return sm.price <= 0 && !prices.get(sm.supplier.id);
@@ -149,37 +142,28 @@ const MaterialSupplierManagement = () => {
       });
       return;
     }
-    modals.openConfirmModal({
-      title: t("Update changes"),
-      children: (
-        <Text size="sm">{t("Are you sure to save changes?")}</Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        if (!suppliers) {
-          return;
-        }
-        await callApi<unknown, { success: boolean }>({
-          action: Actions.UPDATE_MATERIAL_SUPPLIER,
-          params: {
-            materialId,
-            suppliers: suppliers.map((sm) => {
-              return {
-                supplierId: sm.supplier.id,
-                price: prices.get(sm.supplier.id) ?? sm.price,
-                active:
-                  actives.get(sm.supplier.id) ??
-                  sm.supplier.others.active,
-              };
-            }),
-          },
-          options: {
-            toastMessage: "Your changes have been saved",
-          },
-        });
-        load();
+    if (!suppliers) {
+      return;
+    }
+    await callApi<unknown, { success: boolean }>({
+      action: Actions.UPDATE_MATERIAL_SUPPLIER,
+      params: {
+        materialId,
+        suppliers: suppliers.map((sm) => {
+          return {
+            supplierId: sm.supplier.id,
+            price: prices.get(sm.supplier.id) ?? sm.price,
+            active:
+              actives.get(sm.supplier.id) ??
+              sm.supplier.others.active,
+          };
+        }),
+      },
+      options: {
+        toastMessage: "Your changes have been saved",
       },
     });
+    load();
   }, [actives, load, materialId, prices, suppliers, t]);
 
   if (!supplierById || !material) {
@@ -193,9 +177,9 @@ const MaterialSupplierManagement = () => {
           <Text className="c-catering-font-bold" size="2rem">
             {material?.name || "-"} - {t("Suppliers")}
           </Text>
-          <Button disabled={!changed} onClick={save}>
+          <CustomButton confirm disabled={!changed} onClick={save}>
             {t("Save")}
-          </Button>
+          </CustomButton>
         </Flex>
         <Grid mt={10}>
           <Grid.Col span={9}>

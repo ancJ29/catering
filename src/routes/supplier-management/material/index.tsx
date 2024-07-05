@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import CustomButton from "@/components/c-catering/CustomButton";
 import MaterialListButton from "@/components/c-catering/MaterialListButton";
 import MaterialSelector from "@/components/c-catering/MaterialSelector";
 import DataGrid from "@/components/common/DataGrid";
@@ -12,7 +13,7 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { Box, Button, Flex, Grid, Text } from "@mantine/core";
+import { Box, Flex, Grid, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -115,7 +116,7 @@ const SupplierMaterialManagement = () => {
     }
   }, [materialById, prices, removeMaterial, t]);
 
-  const save = useCallback(() => {
+  const save = useCallback(async () => {
     if (
       materials?.some((sm) => {
         return sm.price <= 0 && !prices.get(sm.material.id);
@@ -127,34 +128,25 @@ const SupplierMaterialManagement = () => {
       });
       return;
     }
-    modals.openConfirmModal({
-      title: t("Update changes"),
-      children: (
-        <Text size="sm">{t("Are you sure to save changes?")}</Text>
-      ),
-      labels: { confirm: "OK", cancel: t("Cancel") },
-      onConfirm: async () => {
-        if (!materials) {
-          return;
-        }
-        await callApi<unknown, { success: boolean }>({
-          action: Actions.UPDATE_SUPPLIER_MATERIAL,
-          params: {
-            supplierId,
-            materials: materials.map((sm) => {
-              return {
-                materialId: sm.material.id,
-                price: prices.get(sm.material.id) ?? sm.price,
-              };
-            }),
-          },
-          options: {
-            toastMessage: "Your changes have been saved",
-          },
-        });
-        load();
+    if (!materials) {
+      return;
+    }
+    await callApi<unknown, { success: boolean }>({
+      action: Actions.UPDATE_SUPPLIER_MATERIAL,
+      params: {
+        supplierId,
+        materials: materials.map((sm) => {
+          return {
+            materialId: sm.material.id,
+            price: prices.get(sm.material.id) ?? sm.price,
+          };
+        }),
+      },
+      options: {
+        toastMessage: "Your changes have been saved",
       },
     });
+    load();
   }, [load, materials, prices, supplierId, t]);
 
   const labelGenerator = useCallback(
@@ -181,9 +173,9 @@ const SupplierMaterialManagement = () => {
             {t("Supplier supplied material")}
           </Text>
           <Flex display="flex" direction="column">
-            <Button disabled={!changed} onClick={save}>
+            <CustomButton disabled={!changed} onClick={save} confirm>
               {t("Save")}
-            </Button>
+            </CustomButton>
             <MaterialListButton
               opened={opened}
               onClick={toggle}
