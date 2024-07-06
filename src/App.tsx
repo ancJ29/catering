@@ -24,6 +24,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
+import { ONE_WEEK } from "./utils";
 
 const App = () => {
   const t = useTranslation();
@@ -40,6 +41,10 @@ const App = () => {
     notificationStore.subscribe,
     notificationStore.getSnapshot,
   );
+
+  useEffect(() => {
+    _checkLocalStorage();
+  }, []);
 
   useEffect(() => {
     // Note: Don't load twice
@@ -113,4 +118,13 @@ function _reload() {
       useUserStore.getState().reload();
     }
   }, 200);
+}
+
+function _checkLocalStorage() {
+  const lastAccess = Number(localStorage.__LAST_ACCESS__ || 0);
+  if (isNaN(lastAccess) || lastAccess + ONE_WEEK < Date.now()) {
+    localStorage.clear();
+    localStorage.__LAST_ACCESS__ = Date.now();
+  }
+  localStorage.__LAST_ACCESS__ = Date.now();
 }

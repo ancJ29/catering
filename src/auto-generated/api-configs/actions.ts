@@ -2,7 +2,6 @@ import {
   ActionType,
   customerProductSchema,
   departmentSchema,
-  mealDetailSchema,
   mealSchema,
   menuSchema,
   messageSchema,
@@ -450,11 +449,15 @@ export const configs = {
     group: ActionGroups.MEAL_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
-      request: mealDetailSchema
-        .omit({
-          createdAt: true,
-          updatedAt: true,
-          lastModifiedBy: true,
+      request: z
+        .object({
+          id: stringSchema,
+          mealId: stringSchema,
+          date: dateSchema,
+          predictedQuantity: numberSchema,
+          productionOrderQuantity: numberSchema,
+          employeeQuantity: numberSchema,
+          paymentQuantity: numberSchema,
         })
         .array(),
     },
