@@ -24,6 +24,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
+import logger from "./services/logger";
 import { ONE_WEEK } from "./utils";
 
 const App = () => {
@@ -123,8 +124,8 @@ function _reload() {
 function _checkLocalStorage() {
   const lastAccess = Number(localStorage.__LAST_ACCESS__ || 0);
   if (isNaN(lastAccess) || lastAccess + ONE_WEEK < Date.now()) {
+    logger.info("Clearing localStorage", { lastAccess });
     localStorage.clear();
-    localStorage.__LAST_ACCESS__ = Date.now();
   }
   localStorage.__LAST_ACCESS__ = Date.now();
 }
