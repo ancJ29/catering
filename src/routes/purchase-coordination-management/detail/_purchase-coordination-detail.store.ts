@@ -1,3 +1,4 @@
+import { pcStatusSchema } from "@/auto-generated/api-configs";
 import {
   AddPurchaseOrderRequest,
   Material,
@@ -200,7 +201,9 @@ export default {
     });
     await Promise.all([
       updatePurchaseCoordination(
-        "CNCCPH",
+        // cspell:disable
+        pcStatusSchema.Values.CNCCPH,
+        // cspell:enable
         state.purchaseCoordination,
       ),
       addPurchaseOrders(purchaseOrder),
@@ -372,8 +375,8 @@ function initCoordinationDetail(
 }
 
 type SupplierMaterialsByMaterial = Record<
-  string,
-  Record<string, SupplierMaterial>
+string,
+Record<string, SupplierMaterial>
 >;
 
 function initSupplierMaterial(

@@ -52,7 +52,6 @@ const PurchaseRequestManagement = () => {
 
   const {
     condition,
-    counter,
     data,
     keyword,
     names,
@@ -94,41 +93,35 @@ const PurchaseRequestManagement = () => {
           {t("Add purchase request")}
         </Button>
       </Flex>
-      <Flex justify="end" align="end" gap={10} key={counter}>
-        <PurchaseRequestFilter
-          keyword={keyword}
-          from={condition?.from}
-          to={condition?.to}
-          types={condition?.types}
-          priorities={condition?.priorities}
-          statuses={condition?.statuses}
-          departmentIds={condition?.departmentIds}
-          purchaseOrderIds={names}
-          typeOptions={typeOptions}
-          priorityOptions={priorityOptions}
-          statusOptions={statusOptions}
-          clearable={filtered}
-          onClear={reset}
-          onReload={reload}
-          onChangeTypes={updateCondition.bind(null, "types", "")}
-          onChangePriorities={updateCondition.bind(
-            null,
-            "priorities",
-            "",
-          )}
-          onChangeStatuses={updateCondition.bind(
-            null,
-            "statuses",
-            "",
-          )}
-          onChangeDepartmentIds={updateCondition.bind(
-            null,
-            "departmentIds",
-            "",
-          )}
-          onChangeDateRange={onChangeDateRange}
-        />
-      </Flex>
+      <PurchaseRequestFilter
+        keyword={keyword}
+        from={condition?.from}
+        to={condition?.to}
+        types={condition?.types}
+        priorities={condition?.priorities}
+        statuses={condition?.statuses}
+        departmentIds={condition?.departmentIds}
+        purchaseOrderIds={names}
+        typeOptions={typeOptions}
+        priorityOptions={priorityOptions}
+        statusOptions={statusOptions}
+        clearable={filtered}
+        onClear={reset}
+        onReload={reload}
+        onChangeTypes={updateCondition.bind(null, "types", "")}
+        onChangePriorities={updateCondition.bind(
+          null,
+          "priorities",
+          "",
+        )}
+        onChangeStatuses={updateCondition.bind(null, "statuses", "")}
+        onChangeDepartmentIds={updateCondition.bind(
+          null,
+          "departmentIds",
+          "",
+        )}
+        onChangeDateRange={onChangeDateRange}
+      />
       <DataGrid
         onRowClick={onRowClick}
         page={page}

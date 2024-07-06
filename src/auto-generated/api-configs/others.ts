@@ -307,6 +307,19 @@ export const prStatusSchema = z.enum([
   // cspell:enable
 ]);
 
+export const prStatusOrders: Record<string, number> = {
+  // cspell:disable
+  DG: 1, // Đã gửi
+  DD: 2, // Đã duyệt
+  DDP: 3, // Đang điều phối
+  MH: 4, // Mua hàng
+  DNH: 5, // Đang nhận hàng
+  NH: 6, // Đã nhận hàng
+  KD: 7, // Không duyệt
+  DH: 8, // Đã huỷ
+  // cspell:enable
+};
+
 export const prTypeSchema = z.enum([
   // cspell:disable
   "HN", // Hằng ngày
@@ -343,6 +356,16 @@ export const piStatusSchema = z.enum([
   // cspell:enable
 ]);
 
+export const piStatusOrders: Record<string, number> = {
+  // cspell:disable
+  DG: 3, // Đã gửi
+  DD: 3, // Đã duyệt
+  SSGH: 5, // Sẵn sàng giao hàng
+  NK1P: 6, // Nhập kho một phần
+  DNK: 6, // Đã nhập kho
+  // cspell:enable
+};
+
 export const purchaseInternalOthersSchema = z.object({
   prCode: stringSchema,
   receivingCateringId: stringSchema,
@@ -363,6 +386,16 @@ export const pcStatusSchema = z.enum([
   "NCCDGH", // Nhà cung cấp đã giao hàng
   // cspell:enable
 ]);
+
+export const pcStatusOrders: Record<string, number> = {
+  // cspell:disable
+  CXL: 3, // Chờ xử lý
+  CNCCPH: 3, // Chờ nhà cung cấp phản hồi
+  NCCPH: 4, // Nhà cung cấp phản hồi
+  NCCSSGH: 5, // Nhà cung cấp sẵn sàng giao hàng
+  NCCDGH: 6, // Nhà cung cấp đã giao hàng
+  // cspell:enable
+};
 
 export const purchaseCoordinationOthersSchema = z.object({
   prCode: stringSchema,
@@ -398,6 +431,23 @@ export const poStatusSchema = z.enum([
   "DTC", // Đã từ chối: NCC từ chối PO
   // cspell:enable
 ]);
+
+export const poStatusOrders: Record<string, number> = {
+  // cspell:disable
+  DG: 3, // Đã gửi: đã tạo & gửi PO đến NCC
+  DD: 4, // Đã duyệt: NCC duyệt PO
+  SSGH: 4, // Sẵn sàng giao hàng
+  NK1P: 5, // Nhập kho 1 phần
+  DNK: 6, // Đã nhập kho
+  DKTSL: 6, // Đã kiểm tra sai lệch
+  DTDNTT: 6, // Đã tạo đề nghị thanh toán
+  DCBSHD: 6, // Đã cập nhật số hoá đơn
+  DLLTT: 6, // Đã lập lịch thanh toán
+  TT1P: 6, // Thanh toán 1 phần
+  DTT: 6, // Đã thanh toán
+  DTC: 6, // Đã từ chối: NCC từ chối PO
+  // cspell:enable
+};
 
 export const purchaseOrderOthersSchema = z.object({
   prCode: stringSchema,

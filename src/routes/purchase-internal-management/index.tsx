@@ -8,7 +8,7 @@ import {
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { endOfWeek, startOfDay } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -23,7 +23,7 @@ const PurchaseInternalManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseInternals, setPurchaseInternals] = useState<
-    PurchaseInternal[]
+  PurchaseInternal[]
   >([]);
   const { caterings } = useCateringStore();
 
@@ -50,7 +50,6 @@ const PurchaseInternalManagement = () => {
 
   const {
     condition,
-    counter,
     data,
     keyword,
     names,
@@ -84,37 +83,31 @@ const PurchaseInternalManagement = () => {
 
   return (
     <Stack gap={10} key={caterings.size}>
-      <Flex justify="end" align="end" gap={10} key={counter}>
-        <Filter
-          keyword={keyword}
-          from={condition?.from}
-          to={condition?.to}
-          statuses={condition?.statuses}
-          receivingCateringIds={condition?.receivingCateringIds}
-          deliveryCateringIds={condition?.deliveryCateringIds}
-          purchaseCoordinationIds={names}
-          statusOptions={statusOptions}
-          clearable={filtered}
-          onClear={reset}
-          onReload={reload}
-          onChangeStatuses={updateCondition.bind(
-            null,
-            "statuses",
-            "",
-          )}
-          onChangeReceivingCateringIds={updateCondition.bind(
-            null,
-            "receivingCateringIds",
-            "",
-          )}
-          onChangeDeliveryCateringIds={updateCondition.bind(
-            null,
-            "deliveryCateringIds",
-            "",
-          )}
-          onChangeDateRange={onChangeDateRange}
-        />
-      </Flex>
+      <Filter
+        keyword={keyword}
+        from={condition?.from}
+        to={condition?.to}
+        statuses={condition?.statuses}
+        receivingCateringIds={condition?.receivingCateringIds}
+        deliveryCateringIds={condition?.deliveryCateringIds}
+        purchaseCoordinationIds={names}
+        statusOptions={statusOptions}
+        clearable={filtered}
+        onClear={reset}
+        onReload={reload}
+        onChangeStatuses={updateCondition.bind(null, "statuses", "")}
+        onChangeReceivingCateringIds={updateCondition.bind(
+          null,
+          "receivingCateringIds",
+          "",
+        )}
+        onChangeDeliveryCateringIds={updateCondition.bind(
+          null,
+          "deliveryCateringIds",
+          "",
+        )}
+        onChangeDateRange={onChangeDateRange}
+      />
       <DataGrid
         onRowClick={onRowClick}
         page={page}
