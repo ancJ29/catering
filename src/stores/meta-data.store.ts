@@ -57,7 +57,6 @@ export default create<MetaDataStore>((set) => ({
     removeToken();
     const DEBUG_MODE = localStorage.getItem("__DEBUG_MODE");
     localStorage.clear();
-    localStorage.__LAST_ACCESS__ = Date.now();
     localStorage.__DEBUG_MODE = DEBUG_MODE;
     const data: Response = await request({
       action: Actions.GET_METADATA,
