@@ -345,4 +345,5 @@ export default {
   "Meal production order qty": "Production order qty",
   "Meal employee qty": "Employee qty",
   "Meal payment qty": "Payment qty",
+  "Add purchase request": "Add purchase request",
 } satisfies Record<string, string>;

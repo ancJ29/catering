@@ -47,6 +47,7 @@ const AdminHeader = ({
                 removeToken();
                 if (import.meta.env.DEV) {
                   localStorage.clear();
+                  localStorage.__LAST_ACCESS__ = Date.now();
                 }
               }}
             />

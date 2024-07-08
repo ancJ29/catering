@@ -344,4 +344,5 @@ export default {
   "Meal production order qty": "SL lệnh SX",
   "Meal employee qty": "SL nhân viên",
   "Meal payment qty": "SL thanh toán",
+  "Add purchase request": "Thêm yêu cầu mua hàng",
 } satisfies Record<string, string>;

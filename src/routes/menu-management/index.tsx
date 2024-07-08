@@ -141,7 +141,7 @@ const MenuManagement = () => {
         {_customerId(condition) ? (
           _isWeekView(condition.mode) ? (
             <WeekView
-              key={`w.${Date.now()}`}
+              // key={`w.${Date.now()}`}
               headers={headers || []}
               shifts={condition.target?.shifts || []}
               customer={condition.customer}
@@ -150,7 +150,7 @@ const MenuManagement = () => {
             />
           ) : (
             <MonthView
-              key={`m.${Date.now()}`}
+              // key={`m.${Date.now()}`}
               rows={rows}
               customer={condition.customer}
               shift={condition.shift || ""}

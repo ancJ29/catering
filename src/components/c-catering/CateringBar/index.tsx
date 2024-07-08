@@ -177,7 +177,8 @@ const CateringBar = ({
     if (customerData.length === 1) {
       _selectCustomer(customerData[0]);
     }
-  }, [customerData, _selectCustomer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Flex gap={10} justify="start" align="end">
