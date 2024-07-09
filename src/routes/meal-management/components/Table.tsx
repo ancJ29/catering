@@ -16,24 +16,21 @@ const Table = () => {
       <Grid.Col span={12} pb={0}>
         <div>
           <ScrollTable header={<Header />}>
-            {Object.values(currents).map((mealDetail) => (
+            {Object.values(currents).map((meal) => (
               <Item
-                key={mealDetail.id}
-                mealDetail={mealDetail}
-                onChangePredictedQuantity={(value) =>
-                  store.setPredictedQuantity(mealDetail.id, value)
+                key={meal.id}
+                meal={meal}
+                onChangeEstimatedQuantity={(value) =>
+                  store.setEstimatedQuantity(meal.id, value)
                 }
                 onChangeProductionOrderQuantity={(value) =>
-                  store.setProductionOrderQuantity(
-                    mealDetail.id,
-                    value,
-                  )
+                  store.setProductionOrderQuantity(meal.id, value)
                 }
                 onChangeEmployeeQuantity={(value) =>
-                  store.setEmployeeQuantity(mealDetail.id, value)
+                  store.setEmployeeQuantity(meal.id, value)
                 }
                 onChangePaymentQuantity={(value) =>
-                  store.setPaymentQuantity(mealDetail.id, value)
+                  store.setPaymentQuantity(meal.id, value)
                 }
               />
             ))}

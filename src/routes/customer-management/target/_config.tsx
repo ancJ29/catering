@@ -1,6 +1,5 @@
 import Switch from "@/components/common/Switch";
-import { Meal } from "@/services/domain";
-import { CustomerProduct } from "@/services/domain/customer-product";
+import { Target } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { numberWithDelimiter } from "@/utils";
 import { Flex } from "@mantine/core";
@@ -8,7 +7,7 @@ import { Flex } from "@mantine/core";
 export const configs = (
   t: (key: string) => string,
   actives: Map<string, boolean>,
-  setActive: (serviceId: string, active: boolean) => void,
+  setActive: (key: string, active: boolean) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -46,7 +45,7 @@ export const configs = (
       header: t("Price"),
       width: "15%",
       textAlign: "right",
-      renderCell: (_, row: Meal) => {
+      renderCell: (_, row: Target) => {
         return numberWithDelimiter(row.price);
       },
     },
@@ -55,16 +54,17 @@ export const configs = (
       header: t("Served"),
       width: "20%",
       textAlign: "center",
-      renderCell: (_, row: CustomerProduct) => {
+      renderCell: (_, row: Target) => {
+        const key = `${row.name}-${row.shift}`;
         const checked =
-          actives.get(row.id) !== undefined
-            ? actives.get(row.id)
+          actives.get(key) !== undefined
+            ? actives.get(key)
             : row.enabled;
         return (
           <Flex justify="center">
             <Switch
               defaultChecked={checked || false}
-              onChangeValue={(value) => setActive(row.id, value)}
+              onChangeValue={(value) => setActive(key, value)}
             />
           </Flex>
         );
@@ -84,13 +84,13 @@ export const defaultCondition: FilterType = {
   served: "",
 };
 
-export function filter(m: Meal, condition?: FilterType) {
-  if (condition?.served && m.enabled && condition.served !== SERVED) {
+export function filter(t: Target, condition?: FilterType) {
+  if (condition?.served && t.enabled && condition.served !== SERVED) {
     return false;
   }
   if (
     condition?.served &&
-    !m.enabled &&
+    !t.enabled &&
     condition.served !== NOT_SERVED
   ) {
     return false;

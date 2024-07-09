@@ -58,6 +58,13 @@ const MenuManagement = () => {
     _getDailyMenu(condition.customer?.id || "", condition.markDate);
   }, [condition.customer?.id, condition.markDate]);
 
+  const shiftData = useMemo(() => {
+    const data = condition.customer?.others.targets?.filter(
+      (e) => e.name === condition.target?.name,
+    );
+    return data?.flatMap((e) => e.shift) || [];
+  }, [condition.customer?.others.targets, condition.target?.name]);
+
   return (
     <Stack gap={10}>
       <ControlBar
@@ -65,7 +72,7 @@ const MenuManagement = () => {
         shift={condition.shift || ""}
         customer={condition.customer}
         cateringId={condition.cateringId}
-        shifts={condition.target?.shifts || []}
+        // shifts={condition.target?.shifts || []}
         targetName={condition.target?.name || ""}
         onResetDate={() =>
           dispatch({
@@ -106,15 +113,12 @@ const MenuManagement = () => {
             shift: diff,
           })
         }
-        onTargetChange={(target: {
-          name: string;
-          shifts: string[];
-        }) =>
+        onTargetChange={(target) =>
           dispatch({
             type: ActionType.OVERRIDE,
             overrideState: {
               target,
-              shift: target.shifts[0] || "",
+              // shift: target.shifts[0] || "",
             },
           })
         }
@@ -143,7 +147,7 @@ const MenuManagement = () => {
             <WeekView
               // key={`w.${Date.now()}`}
               headers={headers || []}
-              shifts={condition.target?.shifts || []}
+              shifts={shiftData || []}
               customer={condition.customer}
               targetName={condition.target?.name || ""}
               onClick={onOpen}

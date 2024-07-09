@@ -119,9 +119,22 @@ export const customerOthersSchema = z.object({
   targets: z
     .object({
       name: stringSchema,
-      shifts: stringSchema.array(),
+      shift: stringSchema,
+      price: numberSchema,
+      enabled: booleanSchema.default(true),
     })
     .array(),
+});
+
+export const mealOthersSchema = z.object({
+  targetName: stringSchema,
+  shift: stringSchema,
+  estimatedCost: numberSchema.default(0),
+  estimatedRevenue: numberSchema.default(0),
+  estimatedQuantity: numberSchema.default(0),
+  productionOrderQuantity: numberSchema.default(0),
+  employeeQuantity: numberSchema.default(0),
+  paymentQuantity: numberSchema.default(0),
 });
 
 export const dailyMenuStatusSchema = z.enum([

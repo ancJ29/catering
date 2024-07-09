@@ -101,7 +101,7 @@ const CostTable = ({ condition }: { condition: FilterType }) => {
               borderLeft: "1px solid var(--border-color)",
             }}
           >
-            --
+            {numberWithDelimiter(condition.target?.price || 0)}
           </Table.Td>
           <Table.Td
             ta="center"
@@ -110,7 +110,7 @@ const CostTable = ({ condition }: { condition: FilterType }) => {
               borderLeft: "1px solid var(--border-color)",
             }}
           >
-            %
+            VNĐ
           </Table.Td>
         </Table.Tr>
       </Table.Tbody>

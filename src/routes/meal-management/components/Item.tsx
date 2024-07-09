@@ -1,20 +1,20 @@
 import NumberInput from "@/components/common/NumberInput";
-import { XMealDetail } from "@/services/domain";
+import { Meal } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
 import { TextAlign } from "@/types";
 import { Table } from "@mantine/core";
 
 type ItemProps = {
-  mealDetail: XMealDetail;
-  onChangePredictedQuantity: (value: number) => void;
+  meal: Meal;
+  onChangeEstimatedQuantity: (value: number) => void;
   onChangeProductionOrderQuantity: (value: number) => void;
   onChangeEmployeeQuantity: (value: number) => void;
   onChangePaymentQuantity: (value: number) => void;
 };
 
 const Item = ({
-  mealDetail,
-  onChangePredictedQuantity,
+  meal,
+  onChangeEstimatedQuantity,
   onChangeProductionOrderQuantity,
   onChangeEmployeeQuantity,
   onChangePaymentQuantity,
@@ -22,15 +22,15 @@ const Item = ({
   const { customers } = useCustomerStore();
   const columns = [
     {
-      content: customers.get(mealDetail.customerId)?.name || "N/A",
+      content: customers.get(meal.customerId)?.name || "N/A",
       align: "left",
     },
     {
-      content: mealDetail.mealName || "N/A",
+      content: meal.others.targetName || "N/A",
       align: "left",
     },
     {
-      content: mealDetail.shift || "N/A",
+      content: meal.others.shift || "N/A",
       align: "center",
     },
     {
@@ -38,8 +38,8 @@ const Item = ({
         <NumberInput
           w="10vw"
           isPositive={true}
-          defaultValue={mealDetail.predictedQuantity}
-          onChange={onChangePredictedQuantity}
+          defaultValue={meal.others.estimatedQuantity}
+          onChange={onChangeEstimatedQuantity}
           allowDecimal={false}
         />
       ),
@@ -50,7 +50,7 @@ const Item = ({
         <NumberInput
           w="10vw"
           isPositive={true}
-          defaultValue={mealDetail.productionOrderQuantity}
+          defaultValue={meal.others.productionOrderQuantity}
           onChange={onChangeProductionOrderQuantity}
           allowDecimal={false}
         />
@@ -62,7 +62,7 @@ const Item = ({
         <NumberInput
           w="10vw"
           isPositive={true}
-          defaultValue={mealDetail.employeeQuantity}
+          defaultValue={meal.others.employeeQuantity}
           onChange={onChangeEmployeeQuantity}
           allowDecimal={false}
         />
@@ -74,7 +74,7 @@ const Item = ({
         <NumberInput
           w="10vw"
           isPositive={true}
-          defaultValue={mealDetail.paymentQuantity}
+          defaultValue={meal.others.paymentQuantity}
           onChange={onChangePaymentQuantity}
           allowDecimal={false}
         />

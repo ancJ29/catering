@@ -2,6 +2,7 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import callApi from "@/services/api";
 import cache from "@/services/cache";
 import { loadAll } from "@/services/data-loaders";
 import logger from "@/services/logger";
@@ -42,4 +43,18 @@ export async function getAllCustomers(): Promise<Customer[]> {
   });
   cache.set(key, { customers });
   return customers;
+}
+
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_CUSTOMER].schema;
+type UpdateRequest = z.infer<typeof updateRequest>;
+
+export async function updateCustomer(params: UpdateRequest) {
+  await callApi<UpdateRequest, { id: string }>({
+    action: Actions.UPDATE_CUSTOMER,
+    params,
+    options: {
+      toastMessage: "Your changes have been saved",
+    },
+  });
 }

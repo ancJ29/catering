@@ -71,7 +71,7 @@ export const reducer = (
       if (action.customer) {
         _state.customer = action.customer;
         _state.target = action.customer.others.targets[0];
-        _state.shift = action.customer.others.targets[0].shifts[0];
+        _state.shift = action.customer.others.targets[0]?.shift;
       }
       return _state;
     case ActionType.SHIFT_MARK_DATE:

@@ -1,12 +1,13 @@
 import Autocomplete from "@/components/common/Autocomplete";
+import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { Customer, Department } from "@/services/domain";
+import { Customer, Department, Target } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import { Payload } from "@/types";
-import { lastElement } from "@/utils";
-import { Button, Flex, Select } from "@mantine/core";
+import { lastElement, unique } from "@/utils";
+import { Button, Flex } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CateringSelector from "../CateringSelector";
 import RadioGroup, { RadioGroupProps } from "./RadioGroup";
@@ -22,15 +23,11 @@ export type CateringBarProps = RadioGroupProps & {
   onChangeCateringId: (cateringId?: string) => void;
   onCustomerChange: (customer?: Customer) => void;
   onClearTarget?: () => void;
-  onTargetChange: (_: {
-    name: string;
-    shifts: string[];
-  }) => void;
+  onTargetChange: (_: Target) => void;
 };
 
 const CateringBar = ({
   shift,
-  shifts,
   customer,
   targetName,
   cateringId,
@@ -102,8 +99,15 @@ const CateringBar = ({
     if (allowAllTarget && data.length > 1) {
       data.unshift(t("All"));
     }
-    return data;
+    return unique(data);
   }, [allowAllTarget, customer, t]);
+
+  const shiftData = useMemo(() => {
+    const data = customer?.others.targets?.filter(
+      (e) => e.name === targetName,
+    );
+    return data?.flatMap((e) => e.shift) || [];
+  }, [customer?.others.targets, targetName]);
 
   const _onTargetChange = useCallback(
     (targetName: string | null) => {
@@ -112,13 +116,22 @@ const CateringBar = ({
           onClearTarget && onClearTarget();
           return;
         }
-        const target = customer.others.targets.find(
+        const targets = customer.others.targets.filter(
           (el) => el.name === targetName,
         );
-        target && onTargetChange(target);
+        if (targets.length > 0) {
+          onTargetChange(targets[0]);
+          onChangeShift?.(targets[0].shift);
+        }
       }
     },
-    [customer, onClearTarget, onTargetChange, t],
+    [
+      customer?.others.targets,
+      onChangeShift,
+      onClearTarget,
+      onTargetChange,
+      t,
+    ],
   );
 
   const _selectCustomer = useCallback(
@@ -209,9 +222,9 @@ const CateringBar = ({
           onChange={_onTargetChange}
         />
       )}
-      {enableShift && Boolean(shifts?.length) && (
+      {enableShift && (
         <RadioGroup
-          shifts={shifts}
+          shifts={shiftData}
           shift={shift || ""}
           onChangeShift={onChangeShift}
         />

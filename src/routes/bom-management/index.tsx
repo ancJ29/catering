@@ -143,7 +143,6 @@ const BomManagement = () => {
                 allowAllTarget
                 enableShift
                 shift={condition.shift}
-                shifts={condition.target?.shifts || []}
                 customer={condition.customer}
                 targetName={condition.target?.name || ""}
                 cateringId={condition.cateringId}
@@ -159,10 +158,7 @@ const BomManagement = () => {
                     overrideState: { shift },
                   })
                 }
-                onTargetChange={(target: {
-                  name: string;
-                  shifts: string[];
-                }) =>
+                onTargetChange={(target) =>
                   dispatch({
                     type: ActionType.OVERRIDE,
                     overrideState: { target },

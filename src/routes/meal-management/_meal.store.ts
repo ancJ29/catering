@@ -2,15 +2,14 @@ import {
   Customer,
   getAllMeals,
   Meal,
-  updateMealDetail,
-  XMealDetail,
+  updateMeal,
 } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
 import { cloneDeep, createStore, isSameDate } from "@/utils";
 
 type State = {
-  currents: Record<string, XMealDetail>;
-  updates: Record<string, XMealDetail>;
+  currents: Record<string, Meal>;
+  updates: Record<string, Meal>;
   meals: Record<string, Meal[]>;
   selectedCateringId: string;
   date: number;
@@ -21,7 +20,7 @@ export enum ActionType {
   INIT_DATA = "INIT_DATA",
   SET_CATERING_ID = "SET_CATERING_ID",
   SET_DATE = "SET_DATE",
-  SET_PREDICTED_QUANTITY = "SET_PREDICTED_QUANTITY",
+  SET_ESTIMATED_QUANTITY = "SET_ESTIMATED_QUANTITY",
   SET_PRODUCTION_ORDER_QUANTITY = "SET_PRODUCTION_ORDER_QUANTITY",
   SET_EMPLOYEE_QUANTITY = "SET_EMPLOYEE_QUANTITY",
   SET_PAYMENT_QUANTITY = "SET_PAYMENT_QUANTITY",
@@ -69,9 +68,9 @@ export default {
   setDate(date?: number) {
     dispatch({ type: ActionType.SET_DATE, date });
   },
-  setPredictedQuantity(mealId: string, quantity: number) {
+  setEstimatedQuantity(mealId: string, quantity: number) {
     dispatch({
-      type: ActionType.SET_PREDICTED_QUANTITY,
+      type: ActionType.SET_ESTIMATED_QUANTITY,
       quantity,
       mealId,
     });
@@ -99,7 +98,7 @@ export default {
   },
   async save() {
     const state = store.getSnapshot();
-    await updateMealDetail(
+    await updateMeal(
       Object.values(state.updates).map((el) => ({
         ...el,
         date: new Date(el.date),
@@ -133,53 +132,44 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_CATERING_ID:
       if (action.cateringId) {
-        if (customersByCateringId.has(action.cateringId)) {
-          const customers = customersByCateringId.get(
-            action.cateringId,
-          );
-          const currents = initMealDetails(
-            customers || [],
-            state.meals,
-            state.date,
-          );
-          return {
-            ...state,
-            selectedCateringId: action.cateringId,
-            currents,
-            updates: cloneDeep(currents),
-          };
-        } else {
-          return {
-            ...state,
-            selectedCateringId: action.cateringId,
-          };
-        }
-      }
-      break;
-    case ActionType.SET_DATE:
-      if (action.date) {
-        const date = action.date;
         const customers = customersByCateringId.get(
-          state.selectedCateringId,
+          action.cateringId,
         );
-        const currents = initMealDetails(
-          customers || [],
-          state.meals,
-          date,
-        );
+        const currents = initMeal(state.meals, state.date, customers);
         return {
           ...state,
-          date,
+          selectedCateringId: action.cateringId,
           currents,
           updates: cloneDeep(currents),
         };
       }
       break;
-    case ActionType.SET_PREDICTED_QUANTITY:
+    case ActionType.SET_DATE:
+      if (action.date) {
+        const customers = customersByCateringId.get(
+          state.selectedCateringId,
+        );
+        const currents = initMeal(
+          state.meals,
+          action.date,
+          customers,
+        );
+        return {
+          ...state,
+          date: action.date,
+          currents,
+          updates: cloneDeep(currents),
+        };
+      }
+      break;
+    case ActionType.SET_ESTIMATED_QUANTITY:
       if (action.mealId && action.quantity) {
         state.updates[action.mealId] = {
           ...state.updates[action.mealId],
-          predictedQuantity: action.quantity,
+          others: {
+            ...state.updates[action.mealId].others,
+            estimatedQuantity: action.quantity,
+          },
         };
       }
       break;
@@ -187,7 +177,10 @@ function reducer(action: Action, state: State): State {
       if (action.mealId && action.quantity) {
         state.updates[action.mealId] = {
           ...state.updates[action.mealId],
-          productionOrderQuantity: action.quantity,
+          others: {
+            ...state.updates[action.mealId].others,
+            productionOrderQuantity: action.quantity,
+          },
         };
       }
       break;
@@ -195,7 +188,10 @@ function reducer(action: Action, state: State): State {
       if (action.mealId && action.quantity) {
         state.updates[action.mealId] = {
           ...state.updates[action.mealId],
-          employeeQuantity: action.quantity,
+          others: {
+            ...state.updates[action.mealId].others,
+            employeeQuantity: action.quantity,
+          },
         };
       }
       break;
@@ -203,7 +199,10 @@ function reducer(action: Action, state: State): State {
       if (action.mealId && action.quantity) {
         state.updates[action.mealId] = {
           ...state.updates[action.mealId],
-          paymentQuantity: action.quantity,
+          others: {
+            ...state.updates[action.mealId].others,
+            paymentQuantity: action.quantity,
+          },
         };
       }
       break;
@@ -211,27 +210,20 @@ function reducer(action: Action, state: State): State {
   return state;
 }
 
-function initMealDetails(
-  customers: Customer[],
+function initMeal(
   meals: Record<string, Meal[]>,
   date: number,
+  customers?: Customer[],
 ) {
-  const currents: Record<string, XMealDetail> = {};
+  const currents: Record<string, Meal> = {};
   const _date = new Date(date);
-  customers.forEach((customer) => {
+  customers?.forEach((customer) => {
     const _meals = meals[customer.id];
     if (_meals) {
-      _meals.flatMap((meal) => {
-        meal.mealDetails.forEach((mealDetail) => {
-          if (isSameDate(mealDetail.date, _date)) {
-            currents[mealDetail.id] = {
-              ...mealDetail,
-              customerId: customer.id,
-              shift: meal.shift,
-              mealName: meal.name,
-            };
-          }
-        });
+      _meals.forEach((meal) => {
+        if (isSameDate(meal.date, _date)) {
+          currents[meal.id] = meal;
+        }
       });
     }
   });

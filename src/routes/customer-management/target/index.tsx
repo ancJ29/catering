@@ -3,12 +3,7 @@ import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  Customer,
-  getMealByCustomerId,
-  Meal,
-  updateMeal,
-} from "@/services/domain";
+import { Customer, Target, updateCustomer } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
 import { Flex, Stack, Text } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
@@ -21,13 +16,13 @@ import {
 } from "./_config";
 import Filter from "./components/Filter";
 
-const CustomerMealManagement = () => {
+const CustomerTargetManagement = () => {
   const t = useTranslation();
   const { customerId } = useParams();
   const { customers: customerById } = useCustomerStore();
   const [changed, setChanged] = useState(false);
   const [customer, setCustomer] = useState<Customer>();
-  const [meals, setMeals] = useState<Meal[]>([]);
+  const [targets, setTargets] = useState<Target[]>([]);
   const [actives] = useState<Map<string, boolean>>(new Map());
 
   const load = useCallback(async () => {
@@ -35,15 +30,15 @@ const CustomerMealManagement = () => {
       return;
     }
     setChanged(false);
-    setCustomer(customerById.get(customerId));
-    const services = await getMealByCustomerId(customerId);
-    setMeals(services);
+    const customer = customerById.get(customerId);
+    setCustomer(customer);
+    setTargets(customer?.others.targets || []);
   }, [customerById, customerId]);
   useOnMounted(load);
 
   const setActive = useCallback(
-    async (serviceId: string, active: boolean) => {
-      actives.set(serviceId, active);
+    async (key: string, active: boolean) => {
+      actives.set(key, active);
       setChanged(true);
     },
     [actives],
@@ -55,8 +50,8 @@ const CustomerMealManagement = () => {
   );
 
   const dataLoader = useCallback(() => {
-    return Array.from(meals.values());
-  }, [meals]);
+    return Array.from(targets.values());
+  }, [targets]);
 
   const {
     condition,
@@ -66,25 +61,30 @@ const CustomerMealManagement = () => {
     reload,
     setPage,
     updateCondition,
-  } = useFilterData<Meal, FilterType>({
+  } = useFilterData<Target, FilterType>({
     dataLoader,
     filter,
     defaultCondition,
   });
 
   const save = useCallback(async () => {
-    if (!meals) {
+    if (!targets || !customer) {
       return;
     }
-    await updateMeal(
-      meals.map((s) => ({
-        ...s,
-        customerId: customerId || "",
-        enabled: actives.get(s.id) ?? s.enabled,
-      })),
-    );
+    await updateCustomer({
+      ...customer,
+      others: {
+        ...customer?.others,
+        targets: targets.map((target) => ({
+          ...target,
+          enabled:
+            actives.get(`${target.name}-${target.shift}`) ??
+            target.enabled,
+        })),
+      },
+    });
     load();
-  }, [actives, customerId, load, meals]);
+  }, [actives, customer, load, targets]);
 
   return (
     <Stack gap={10}>
@@ -116,4 +116,4 @@ const CustomerMealManagement = () => {
   );
 };
 
-export default CustomerMealManagement;
+export default CustomerTargetManagement;

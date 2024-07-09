@@ -2,7 +2,6 @@ import {
   ActionType,
   customerProductSchema,
   departmentSchema,
-  mealSchema,
   menuSchema,
   messageSchema,
   messageTemplateSchema,
@@ -389,6 +388,18 @@ export const configs = {
       }),
     },
   },
+  [Actions.UPDATE_CUSTOMER]: {
+    name: Actions.UPDATE_CUSTOMER,
+    group: ActionGroups.CUSTOMER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xCustomerSchema.omit({
+        createdAt: true,
+        updatedAt: true,
+        lastModifiedBy: true,
+      }),
+    },
+  },
   [Actions.GET_CUSTOMER_PRODUCTS]: {
     name: Actions.GET_CUSTOMER_PRODUCTS,
     group: ActionGroups.CUSTOMER_PRODUCT_MANAGEMENT,
@@ -422,9 +433,7 @@ export const configs = {
     group: ActionGroups.MEAL_MANAGEMENT,
     type: ActionType.READ,
     schema: {
-      request: getSchema.extend({
-        customerId: optionalStringSchema,
-      }),
+      request: getSchema,
       response: listResponse.extend({
         meals: xMealSchema.array(),
       }),
@@ -435,29 +444,11 @@ export const configs = {
     group: ActionGroups.MEAL_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
-      request: mealSchema
+      request: xMealSchema
         .omit({
           createdAt: true,
           updatedAt: true,
           lastModifiedBy: true,
-        })
-        .array(),
-    },
-  },
-  [Actions.UPDATE_MEAL_DETAIL]: {
-    name: Actions.UPDATE_MEAL_DETAIL,
-    group: ActionGroups.MEAL_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: z
-        .object({
-          id: stringSchema,
-          mealId: stringSchema,
-          date: dateSchema,
-          predictedQuantity: numberSchema,
-          productionOrderQuantity: numberSchema,
-          employeeQuantity: numberSchema,
-          paymentQuantity: numberSchema,
         })
         .array(),
     },

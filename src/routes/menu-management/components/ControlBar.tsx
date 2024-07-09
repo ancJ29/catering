@@ -1,6 +1,6 @@
 import CateringBar from "@/components/c-catering/CateringBar";
 import { RadioGroupProps } from "@/components/c-catering/CateringBar/RadioGroup";
-import { Customer } from "@/services/domain";
+import { Customer, Target } from "@/services/domain";
 import { Flex } from "@mantine/core";
 import DateControll, { DateControllProps } from "./DateControll";
 
@@ -13,16 +13,12 @@ type ControlBarProps = RadioGroupProps & Omit<DateControllProps, "onShift"> & {
   onChangeCateringId: (cateringId?: string) => void;
   onShiftMarkDate: (diff: 1 | -1) => void;
   onCustomerChange: (customer?: Customer) => void;
-  onTargetChange: (_: {
-    name: string;
-    shifts: string[];
-  }) => void;
+  onTargetChange: (_: Target) => void;
 };
 
 const ControllBar = ({
   mode,
   shift,
-  shifts,
   customer,
   targetName,
   cateringId,
@@ -40,7 +36,6 @@ const ControllBar = ({
       <CateringBar
         enableShift={mode === "M"}
         shift={shift}
-        shifts={shifts}
         customer={customer}
         targetName={targetName}
         cateringId={cateringId}
