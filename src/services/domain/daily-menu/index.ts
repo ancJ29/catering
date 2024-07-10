@@ -7,7 +7,6 @@ import {
 import callApi from "@/services/api";
 import { ONE_WEEK, isBeforeYesterday } from "@/utils";
 import { z } from "zod";
-import { Customer } from "../customer";
 
 const response =
   actionConfigs[Actions.GET_DAILY_MENU].schema.response;
@@ -63,34 +62,34 @@ export function dailyMenuStatusColor(
   return `${colors[status]}.${level}`;
 }
 
-export function blankDailyMenu(
-  customer: Customer,
-  targetName: string,
-  shift: string,
-  date: Date,
-): DailyMenu {
-  return {
-    id: "",
-    clientId: customer.clientId,
-    menuId: "",
-    date,
-    menu: {
-      menuProducts: [],
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    customerId: customer.id,
-    others: {
-      total: 0,
-      itemByType: {},
-      status: "NEW",
-      cateringId: customer.others.cateringId,
-      targetName,
-      shift,
-      quantity: {},
-    },
-  };
-}
+// export function blankDailyMenu(
+//   customer: Customer,
+//   targetName: string,
+//   shift: string,
+//   date: Date,
+// ): DailyMenu {
+//   return {
+//     id: "",
+//     clientId: customer.clientId,
+//     menuId: "",
+//     date,
+//     menu: {
+//       menuProducts: [],
+//     },
+//     createdAt: new Date(),
+//     updatedAt: new Date(),
+//     customerId: customer.id,
+//     others: {
+//       total: 0,
+//       itemByType: {},
+//       status: "NEW",
+//       cateringId: customer.others.cateringId,
+//       targetName,
+//       shift,
+//       quantity: {},
+//     },
+//   };
+// }
 
 export const _getDailyMenu = async function getDailyMenu({
   id,
@@ -115,7 +114,7 @@ export const _getDailyMenu = async function getDailyMenu({
 
 export async function getDailyMenu({
   id,
-  customerId,
+  customerIds,
   from = Date.now() - ONE_WEEK,
   to = Date.now() + ONE_WEEK,
   noCache = false,
@@ -123,15 +122,25 @@ export async function getDailyMenu({
   id?: string;
   from: number;
   to: number;
-  customerId: string;
+  customerIds: string[];
   noCache?: boolean;
 }): Promise<DailyMenu[]> {
   const dailyMenuList = await callApi<unknown, Response>({
     action: Actions.GET_DAILY_MENU,
-    params: { id, customerId, from, to },
+    params: { id, customerIds, from, to },
     options: { noCache },
   });
   return dailyMenuList || [];
+}
+
+const { request: updateRequest } =
+  actionConfigs[Actions.PUSH_DAILY_MENU].schema;
+type UpdateRequest = z.infer<typeof updateRequest>;
+export async function pushDailyMenu(params: UpdateRequest) {
+  await callApi<unknown, { id: string }>({
+    action: Actions.PUSH_DAILY_MENU,
+    params,
+  });
 }
 
 function _dailyMenuKey(

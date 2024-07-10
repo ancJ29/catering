@@ -126,17 +126,6 @@ export const customerOthersSchema = z.object({
     .array(),
 });
 
-export const mealOthersSchema = z.object({
-  targetName: stringSchema,
-  shift: stringSchema,
-  estimatedCost: numberSchema.default(0),
-  estimatedRevenue: numberSchema.default(0),
-  estimatedQuantity: numberSchema.default(0),
-  productionOrderQuantity: numberSchema.default(0),
-  employeeQuantity: numberSchema.default(0),
-  paymentQuantity: numberSchema.default(0),
-});
-
 export const dailyMenuStatusSchema = z.enum([
   // cspell:disable
   "NEW", // Chưa xác nhận số lượng
@@ -153,11 +142,25 @@ export const dailyMenuOthersSchema = z.object({
   cateringId: stringSchema,
   targetName: stringSchema,
   shift: stringSchema,
+  estimatedQuantity: optionalNumberSchema.default(0),
+  productionOrderQuantity: optionalNumberSchema.default(0),
+  employeeQuantity: optionalNumberSchema.default(0),
   total: optionalNumberSchema.default(0),
   quantity: z.record(stringSchema, numberSchema),
   status: dailyMenuStatusSchema.default("NEW"),
   itemByType: z.record(productTypeSchema, numberSchema).optional(),
 });
+
+// export const mealOthersSchema = z.object({
+//   // targetName: stringSchema,
+//   // shift: stringSchema,
+//   // estimatedCost: numberSchema.default(0),
+//   // estimatedRevenue: numberSchema.default(0),
+//   // estimatedQuantity: numberSchema.default(0),
+//   // productionOrderQuantity: numberSchema.default(0),
+//   // employeeQuantity: numberSchema.default(0),
+//   // paymentQuantity: numberSchema.default(0),
+// });
 
 export const supplierOthersSchema = z.object({
   active: optionalBooleanSchema.default(true),

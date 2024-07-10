@@ -1,23 +1,29 @@
 import {
-  Customer,
-  getAllMeals,
-  Meal,
-  updateMeal,
+  DailyMenu,
+  getDailyMenu,
+  pushDailyMenu,
 } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
-import { cloneDeep, createStore, isSameDate } from "@/utils";
+import {
+  cloneDeep,
+  createStore,
+  formatTime,
+  ONE_WEEK,
+} from "@/utils";
 
 type State = {
-  currents: Record<string, Meal>;
-  updates: Record<string, Meal>;
-  meals: Record<string, Meal[]>;
+  currents: Record<string, DailyMenu>;
+  updates: Record<string, DailyMenu>;
+  dailyMenu: Record<string, DailyMenu[]>;
   selectedCateringId: string;
   date: number;
+  from: number;
+  to: number;
 };
 
 export enum ActionType {
   RESET = "RESET",
-  INIT_DATA = "INIT_DATA",
+  // INIT_DATA = "INIT_DATA",
   SET_CATERING_ID = "SET_CATERING_ID",
   SET_DATE = "SET_DATE",
   SET_ESTIMATED_QUANTITY = "SET_ESTIMATED_QUANTITY",
@@ -28,7 +34,7 @@ export enum ActionType {
 
 type Action = {
   type: ActionType;
-  meals?: Meal[];
+  dailyMenus?: DailyMenu[];
   quantity?: number;
   cateringId?: string | null;
   date?: number;
@@ -38,9 +44,11 @@ type Action = {
 const defaultState = {
   currents: {},
   updates: {},
-  meals: {},
+  dailyMenu: {},
   selectedCateringId: "",
   date: new Date().getTime(),
+  from: Date.now() - ONE_WEEK,
+  to: Date.now() + ONE_WEEK,
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -49,24 +57,58 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  async initData() {
-    const meals = await getAllMeals();
-    dispatch({
-      type: ActionType.INIT_DATA,
-      meals,
-    });
+  // async initData() {
+  //   const meals = await getDailyMenu();
+  //   dispatch({
+  //     type: ActionType.INIT_DATA,
+  //     meals,
+  //   });
+  // },
+  async setSelectedCateringId(cateringId: string | null) {
+    if (cateringId === null) {
+      dispatch({ type: ActionType.RESET });
+    } else {
+      const { customersByCateringId } = useCustomerStore.getState();
+      const state = store.getSnapshot();
+      const customers = customersByCateringId.get(cateringId);
+      const dailyMenus = await getDailyMenu({
+        from: state.from,
+        to: state.to,
+        customerIds: customers?.map((customer) => customer.id) || [],
+      });
+      dispatch({
+        type: ActionType.SET_CATERING_ID,
+        cateringId,
+        dailyMenus,
+      });
+    }
   },
-  setSelectedCateringId(cateringId: string | null) {
-    dispatch({
-      type:
-        cateringId === null
-          ? ActionType.RESET
-          : ActionType.SET_CATERING_ID,
-      cateringId,
-    });
-  },
-  setDate(date?: number) {
-    dispatch({ type: ActionType.SET_DATE, date });
+  async setDate(date?: number) {
+    const state = store.getSnapshot();
+    if (date && (date > state.to || date < state.from)) {
+      if (date > state.to) {
+        state.to = date;
+      } else if (date < state.from) {
+        state.from = date;
+      }
+      const { customersByCateringId } = useCustomerStore.getState();
+      const customers = customersByCateringId.get(
+        state.selectedCateringId,
+      );
+      const dailyMenus = await getDailyMenu({
+        from: state.from,
+        to: state.to,
+        customerIds: customers?.map((customer) => customer.id) || [],
+      });
+      dispatch({
+        type: ActionType.SET_CATERING_ID,
+        cateringId: state.selectedCateringId,
+        dailyMenus,
+        date,
+      });
+    } else {
+      dispatch({ type: ActionType.SET_DATE, date });
+    }
   },
   setEstimatedQuantity(mealId: string, quantity: number) {
     dispatch({
@@ -98,67 +140,70 @@ export default {
   },
   async save() {
     const state = store.getSnapshot();
-    await updateMeal(
-      Object.values(state.updates).map((el) => ({
-        ...el,
+    Object.values(state.updates).map(async (el) => {
+      await pushDailyMenu({
+        customerId: el.customerId,
         date: new Date(el.date),
-      })),
-    );
+        targetName: el.others.targetName,
+        shift: el.others.shift,
+        price: el.others.price || 0,
+        quantity: el.others.quantity,
+        estimatedQuantity: el.others.estimatedQuantity,
+        total: el.others.total,
+        status: el.others.status,
+        itemByType: el.others.itemByType,
+      });
+    });
   },
 };
 
 function reducer(action: Action, state: State): State {
-  const { customersByCateringId } = useCustomerStore.getState();
   switch (action.type) {
     case ActionType.RESET:
       return {
         ...defaultState,
-        meals: state.meals,
         date: state.date,
       };
-    case ActionType.INIT_DATA:
-      if (action.meals !== undefined) {
-        const meals: Record<string, Meal[]> = {};
-        action.meals.flatMap((meal) => {
-          const mealList = meals[meal.customerId] || [];
-          mealList.push(meal);
-          meals[meal.customerId] = mealList;
-        });
-        return {
-          ...state,
-          meals,
-        };
-      }
-      break;
     case ActionType.SET_CATERING_ID:
-      if (action.cateringId) {
-        const customers = customersByCateringId.get(
-          action.cateringId,
+      if (action.cateringId && action.dailyMenus !== undefined) {
+        const dailyMenu: Record<string, DailyMenu[]> = {};
+        action.dailyMenus.flatMap((el) => {
+          const date = formatTime(el.date, "YYYY/MM/DD");
+          const dailyMenuList = dailyMenu[date] || [];
+          dailyMenuList.push(el);
+          dailyMenu[date] = dailyMenuList;
+        });
+        const currents = initDailyMenu(
+          dailyMenu,
+          action.date ?? state.date,
         );
-        const currents = initMeal(state.meals, state.date, customers);
         return {
           ...state,
           selectedCateringId: action.cateringId,
           currents,
           updates: cloneDeep(currents),
+          dailyMenu,
+          date: action.date ?? state.date,
         };
       }
       break;
     case ActionType.SET_DATE:
       if (action.date) {
-        const customers = customersByCateringId.get(
-          state.selectedCateringId,
-        );
-        const currents = initMeal(
-          state.meals,
-          action.date,
-          customers,
-        );
+        if (
+          state.selectedCateringId === "" ||
+          state.selectedCateringId === null
+        ) {
+          return {
+            ...state,
+            date: action.date,
+          };
+        }
+        const currents = initDailyMenu(state.dailyMenu, action.date);
         return {
           ...state,
-          date: action.date,
           currents,
           updates: cloneDeep(currents),
+          date: action.date,
         };
       }
       break;
@@ -201,7 +246,7 @@ function reducer(action: Action, state: State): State {
           ...state.updates[action.mealId],
           others: {
             ...state.updates[action.mealId].others,
-            paymentQuantity: action.quantity,
+            total: action.quantity,
           },
         };
       }
@@ -210,22 +255,15 @@ function reducer(action: Action, state: State): State {
   return state;
 }
 
-function initMeal(
-  meals: Record<string, Meal[]>,
+function initDailyMenu(
+  dailyMenu: Record<string, DailyMenu[]>,
   date: number,
-  customers?: Customer[],
 ) {
-  const currents: Record<string, Meal> = {};
-  const _date = new Date(date);
-  customers?.forEach((customer) => {
-    const _meals = meals[customer.id];
-    if (_meals) {
-      _meals.forEach((meal) => {
-        if (isSameDate(meal.date, _date)) {
-          currents[meal.id] = meal;
-        }
-      });
-    }
+  const dateString = formatTime(date, "YYYY/MM/DD");
+  const dailyMenus = dailyMenu[dateString];
+  const currents: Record<string, DailyMenu> = {};
+  dailyMenus?.forEach((dailyMenu) => {
+    currents[dailyMenu.id] = dailyMenu;
   });
   return currents;
 }

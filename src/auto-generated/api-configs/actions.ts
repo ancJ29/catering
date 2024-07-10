@@ -20,7 +20,6 @@ import {
   xDepartmentSchema,
   xInventorySchema,
   xMaterialSchema,
-  xMealSchema,
   xPreferredSupplier,
   xProductSchema,
   xPurchaseCoordinationSchema,
@@ -428,31 +427,31 @@ export const configs = {
         .array(),
     },
   },
-  [Actions.GET_MEALS]: {
-    name: Actions.GET_MEALS,
-    group: ActionGroups.MEAL_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema,
-      response: listResponse.extend({
-        meals: xMealSchema.array(),
-      }),
-    },
-  },
-  [Actions.UPDATE_MEAL]: {
-    name: Actions.UPDATE_MEAL,
-    group: ActionGroups.MEAL_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: xMealSchema
-        .omit({
-          createdAt: true,
-          updatedAt: true,
-          lastModifiedBy: true,
-        })
-        .array(),
-    },
-  },
+  // [Actions.GET_MEALS]: {
+  //   name: Actions.GET_MEALS,
+  //   group: ActionGroups.MEAL_MANAGEMENT,
+  //   type: ActionType.READ,
+  //   schema: {
+  //     request: getSchema,
+  //     response: listResponse.extend({
+  //       meals: xMealSchema.array(),
+  //     }),
+  //   },
+  // },
+  // [Actions.UPDATE_MEAL]: {
+  //   name: Actions.UPDATE_MEAL,
+  //   group: ActionGroups.MEAL_MANAGEMENT,
+  //   type: ActionType.WRITE,
+  //   schema: {
+  //     request: xMealSchema
+  //       .omit({
+  //         createdAt: true,
+  //         updatedAt: true,
+  //         lastModifiedBy: true,
+  //       })
+  //       .array(),
+  //   },
+  // },
   [Actions.GET_PRODUCTS]: {
     name: Actions.GET_PRODUCTS,
     group: ActionGroups.PRODUCT_MANAGEMENT,
@@ -512,7 +511,7 @@ export const configs = {
         id: stringSchema.optional(),
         from: dateSchema,
         to: dateSchema,
-        customerId: stringSchema,
+        customerIds: stringSchema.array(),
       }),
       response: xDailyMenuSchema.array(),
     },
@@ -540,6 +539,7 @@ export const configs = {
         shift: stringSchema,
         price: numberSchema,
         quantity: z.record(stringSchema, numberSchema),
+        estimatedQuantity: numberSchema,
         total: numberSchema,
         status: dailyMenuOthersSchema.shape.status,
         itemByType: z.record(stringSchema, numberSchema).optional(),

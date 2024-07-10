@@ -2,7 +2,7 @@ import ScrollTable from "@/components/c-catering/ScrollTable";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
-import { startOfDay } from "@/utils";
+import { sortShifts, startOfDay } from "@/utils";
 import { Stack, Table } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
@@ -62,7 +62,8 @@ const MenuManagement = () => {
     const data = condition.customer?.others.targets?.filter(
       (e) => e.name === condition.target?.name,
     );
-    return data?.flatMap((e) => e.shift) || [];
+    const shifts = data?.flatMap((e) => e.shift) || [];
+    return sortShifts(shifts);
   }, [condition.customer?.others.targets, condition.target?.name]);
 
   return (
@@ -72,7 +73,6 @@ const MenuManagement = () => {
         shift={condition.shift || ""}
         customer={condition.customer}
         cateringId={condition.cateringId}
-        // shifts={condition.target?.shifts || []}
         targetName={condition.target?.name || ""}
         onResetDate={() =>
           dispatch({

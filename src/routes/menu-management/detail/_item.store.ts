@@ -11,6 +11,7 @@ export type XDailyMenu = {
     status: DailyMenuStatus;
     quantity: Record<string, number>;
     total?: number;
+    estimatedQuantity?: number;
   };
 };
 

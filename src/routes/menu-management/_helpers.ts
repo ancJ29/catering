@@ -25,7 +25,7 @@ export function _reload() {
 export function _getDailyMenu(customerId: string, markDate: number) {
   customerId &&
     getDailyMenu({
-      customerId,
+      customerIds: [customerId],
       from: markDate - 4 * ONE_WEEK,
       to: markDate + 4 * ONE_WEEK,
     }).then((data) => useDailyMenuStore.getState().push(data));

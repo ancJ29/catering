@@ -129,7 +129,7 @@ const EditModal = () => {
     }
     const mark = startOfDay(parsedParams.timestamp);
     getDailyMenu({
-      customerId: parsedParams.customerId,
+      customerIds: [parsedParams.customerId],
       from: mark - ONE_MINUTE,
       to: mark + ONE_MINUTE,
     }).then((res) => {
@@ -228,6 +228,7 @@ const EditModal = () => {
             parsedParams,
             updatedDailyMenu.others.status,
             updatedDailyMenu.others.itemByType || {},
+            updatedDailyMenu.others.estimatedQuantity || 0,
             updatedDailyMenu.others.total || 0,
             updatedDailyMenu.others.price || 0,
             updatedDailyMenu.others.quantity,
@@ -369,6 +370,7 @@ async function _save(
   params: Params,
   status: DailyMenuStatus,
   itemByType: Record<string, number>,
+  estimatedQuantity: number,
   total: number,
   price: number,
   quantity: Record<string, number>,
@@ -383,6 +385,7 @@ async function _save(
         quantity,
         itemByType,
         price: price || 0,
+        estimatedQuantity: estimatedQuantity || 0,
         total: total || 0,
         shift: params.shift,
         customerId: params.customerId,
@@ -393,7 +396,7 @@ async function _save(
   const res = await getDailyMenu({
     id,
     noCache: true,
-    customerId: params.customerId,
+    customerIds: [params.customerId],
     from: params.timestamp - ONE_DAY,
     to: params.timestamp + ONE_DAY,
   });

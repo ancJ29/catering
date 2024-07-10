@@ -81,3 +81,11 @@ export function unique<T>(arr: T[]) {
 export function lastElement<T>(arr: T[]) {
   return arr[arr.length - 1];
 }
+
+export function sortShifts(shifts: string[]): string[] {
+  return shifts.sort((a, b) => {
+    const numA = parseInt(a.replace(/\D/g, ""), 10);
+    const numB = parseInt(b.replace(/\D/g, ""), 10);
+    return numA - numB;
+  });
+}

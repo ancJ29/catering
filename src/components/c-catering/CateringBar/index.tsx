@@ -6,7 +6,7 @@ import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useCustomerStore from "@/stores/customer.store";
 import { Payload } from "@/types";
-import { lastElement, unique } from "@/utils";
+import { lastElement, sortShifts, unique } from "@/utils";
 import { Button, Flex } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CateringSelector from "../CateringSelector";
@@ -106,7 +106,8 @@ const CateringBar = ({
     const data = customer?.others.targets?.filter(
       (e) => e.name === targetName,
     );
-    return data?.flatMap((e) => e.shift) || [];
+    const shifts = data?.flatMap((e) => e.shift) || [];
+    return sortShifts(shifts);
   }, [customer?.others.targets, targetName]);
 
   const _onTargetChange = useCallback(

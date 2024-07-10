@@ -2,10 +2,10 @@ import CateringBar from "@/components/c-catering/CateringBar";
 import { RadioGroupProps } from "@/components/c-catering/CateringBar/RadioGroup";
 import { Customer, Target } from "@/services/domain";
 import { Flex } from "@mantine/core";
-import DateControll, { DateControllProps } from "./DateControll";
+import DateControl, { DateControlProps } from "./DateControll";
 
 // prettier-ignore
-type ControlBarProps = RadioGroupProps & Omit<DateControllProps, "onShift"> & {
+type ControlBarProps = RadioGroupProps & Omit<DateControlProps, "onShift"> & {
   customer?: Customer;
   targetName: string;
   cateringId?: string;
@@ -16,7 +16,7 @@ type ControlBarProps = RadioGroupProps & Omit<DateControllProps, "onShift"> & {
   onTargetChange: (_: Target) => void;
 };
 
-const ControllBar = ({
+const ControlBar = ({
   mode,
   shift,
   customer,
@@ -45,7 +45,7 @@ const ControllBar = ({
         onTargetChange={onTargetChange}
         onCustomerChange={onCustomerChange}
       />
-      <DateControll
+      <DateControl
         mode={mode}
         onResetDate={onResetDate}
         onShift={onShiftMarkDate}
@@ -55,4 +55,4 @@ const ControllBar = ({
   );
 };
 
-export default ControllBar;
+export default ControlBar;
