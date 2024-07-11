@@ -188,6 +188,7 @@ const Summarize = ({
         {/* cspell:enablr */}
       </Table>
       <Flex
+        key={new Date().getTime().toString()}
         gap={10}
         justify="start"
         align="start"

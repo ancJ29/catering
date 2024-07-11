@@ -124,7 +124,7 @@ const EditModal = () => {
     const record = records.get(parsedParams.key);
     if (record) {
       setDailyMenu(record);
-      store.set(record);
+      store.set(parsedParams.customer.others.cateringId, record);
       return;
     }
     const mark = startOfDay(parsedParams.timestamp);
@@ -144,7 +144,7 @@ const EditModal = () => {
       });
       if (record) {
         setDailyMenu(record);
-        store.set(record);
+        store.set(parsedParams.customer.others.cateringId, record);
       }
     });
   }, [dailyMenu, records, parsedParams, pushDailyMenu]);
@@ -235,7 +235,10 @@ const EditModal = () => {
           ).then((res) => {
             if (res?.length) {
               pushDailyMenu(res);
-              store.set(res[0]);
+              store.set(
+                parsedParams.customer.others.cateringId,
+                res[0],
+              );
               setDailyMenu(res[0]);
             }
           }),

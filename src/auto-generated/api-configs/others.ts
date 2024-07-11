@@ -238,7 +238,12 @@ export const materialOthersSchema = z.object({
   group: materialGroupSchema,
   type: materialTypeSchema,
   price: optionalNumberSchema,
-  prices: z.record(stringSchema, numberSchema).optional(),
+  prices: z
+    .record(
+      stringSchema,
+      z.object({ supplierId: stringSchema, price: numberSchema }),
+    )
+    .optional(),
   orderCycle: materialOrderCycleSchema,
   allowFloat: booleanSchema,
   /*

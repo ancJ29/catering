@@ -1,5 +1,6 @@
 import { ProductType } from "@/auto-generated/api-configs";
-import { DailyMenuStatus } from "@/services/domain";
+import { DailyMenuStatus, getBom } from "@/services/domain";
+import useMaterialStore from "@/stores/material.store";
 import { createStore } from "@/utils";
 
 export type XDailyMenu = {
@@ -20,6 +21,7 @@ type State = {
   item: XDailyMenu;
   productIds: string[];
   updated?: boolean;
+  prices: Record<string, number>; // key: product id, value: price
 };
 
 enum ActionType {
@@ -43,6 +45,7 @@ type Action = {
   status?: DailyMenuStatus;
   total?: number;
   price?: number;
+  prices?: Record<string, number>;
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -58,13 +61,58 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
       quantity: {},
     },
   },
+  prices: {},
 });
 
 export default {
   dispatch,
   ...store,
-  set(item?: XDailyMenu) {
-    dispatch({ type: ActionType.SET, payload: item });
+  async set(cateringId: string, item?: XDailyMenu) {
+    if (!item) {
+      return;
+    }
+    const { materials } = useMaterialStore.getState();
+    const productIds = Object.keys(item.others.quantity);
+    const prices: Record<string, number> = {};
+
+    for (const productId of productIds) {
+      const bom = await getBom(productId);
+      const _bom = bom?.bom;
+      if (!_bom) {
+        continue;
+      }
+      let price = 0;
+      for (const materialId of Object.keys(_bom)) {
+        const amount = _bom[materialId];
+        const material = materials.get(materialId);
+        price +=
+          (material?.others?.prices?.[cateringId]?.price ?? 0) *
+          amount;
+      }
+      prices[productId] = price;
+    }
+    dispatch({ type: ActionType.SET, payload: item, prices });
+  },
+  getProductPriceCost(productId: string) {
+    const state = store.getSnapshot();
+    return state.prices[productId] || 0;
+  },
+  getAverageCost(productId: string) {
+    const state = store.getSnapshot();
+    const cost = state.prices[productId] || 0;
+    const quantity = state.item?.others.quantity[productId] ?? 1;
+    const total = state.item?.others.total || 1;
+    return (cost * quantity) / total;
+    // return (((cost * quantity) / total) * 100).toFixed(2);
+  },
+  getRatio(productId: string) {
+    const state = store.getSnapshot();
+    const cost = state.prices[productId] || 0;
+    const quantity = state.item?.others.quantity[productId] ?? 1;
+    const total = state.item?.others.total || 1;
+    const averageCost = (cost * quantity) / total;
+    const price = state.item?.others.price || 1;
+    return ((averageCost / price) * 100).toFixed(2);
   },
   setPrice(price: number) {
     dispatch({
@@ -111,6 +159,7 @@ function reducer(action: Action, state: State): State {
         quantity: {},
       },
     },
+    prices: {},
   };
   switch (action.type) {
     case ActionType.RESET:
@@ -138,7 +187,7 @@ function reducer(action: Action, state: State): State {
       }
       break;
     case ActionType.SET:
-      if (action.payload) {
+      if (action.payload && action.prices) {
         return {
           originItem: action.payload,
           item: {
@@ -156,9 +205,17 @@ function reducer(action: Action, state: State): State {
           },
           productIds: Object.keys(action.payload.others.quantity),
           updated: false,
+          prices: action.prices,
         };
       }
       return defaultState;
+    // case ActionType.SET_BOM:
+    //   if (action.bom) {
+    //     const bom = state.bom;
+    //     bom[action.bom.productId] = action.bom;
+    //     return { ...state, bom };
+    //   }
+    //   break;
     case ActionType.SET_STATUS:
       if (state.item && action.status) {
         state.item.others.status = action.status;
@@ -175,6 +232,7 @@ function reducer(action: Action, state: State): State {
           item: state.item,
           productIds: Object.keys(state.item.others.quantity),
           updated: true,
+          prices: state.prices,
         };
       }
       break;
@@ -185,6 +243,7 @@ function reducer(action: Action, state: State): State {
           item: state.item,
           productIds: Object.keys(state.item.others.quantity),
           updated: true,
+          prices: state.prices,
         };
       }
       break;
@@ -200,6 +259,7 @@ function reducer(action: Action, state: State): State {
         item: { ...state.item },
         productIds: state.productIds,
         updated: true,
+        prices: state.prices,
       };
     default:
       break;

@@ -119,7 +119,13 @@ const CheckInventory = () => {
           setCatering={setCatering}
         />
         {cateringId && (
-          <Flex justify="end" align="end" gap={10} key={counter}>
+          <Flex
+            justify="end"
+            align="end"
+            gap={10}
+            key={counter}
+            w="75%"
+          >
             <MaterialFilter
               type={condition?.type}
               group={condition?.group}
@@ -142,7 +148,12 @@ const CheckInventory = () => {
             />
           </Flex>
         )}
-        <CustomButton confirm disabled={!updated} onClick={save}>
+        <CustomButton
+          w="4.5vw"
+          confirm
+          disabled={!updated}
+          onClick={save}
+        >
           {t("Save")}
         </CustomButton>
       </Flex>

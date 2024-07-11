@@ -85,11 +85,10 @@ export const _configs = (
       hidden: isCatering,
       textAlign: "right",
       renderCell: (_: unknown, product: Product) => {
-        const cost =
-          product.others.costPriceByCatering?.[cateringId] || 0;
+        const cost = store.getProductPriceCost(product.id);
         return (
           <Text w="100%" ta="right">
-            {cost ? `${numberWithDelimiter(cost)} đ` : "N/A"}
+            {`${numberWithDelimiter(cost)} đ`}
           </Text>
         );
       },
@@ -100,11 +99,11 @@ export const _configs = (
       width: "120px",
       hidden: isCatering,
       textAlign: "right",
-      renderCell: () => {
-        const cost = 0;
+      renderCell: (_: unknown, product: Product) => {
+        const cost = store.getAverageCost(product.id);
         return (
           <Text w="100%" ta="right">
-            {cost ? `${numberWithDelimiter(cost)} đ` : "N/A"}
+            {`${numberWithDelimiter(cost)} đ`}
           </Text>
         );
       },
@@ -115,8 +114,8 @@ export const _configs = (
       width: "100px",
       textAlign: "right",
       hidden: isCatering,
-      renderCell() {
-        const ratio = Math.floor(Math.random() * 10000) / 100 + "%";
+      renderCell: (_: unknown, product: Product) => {
+        const ratio = store.getRatio(product.id);
         return (
           <Text w="100%" ta="right">
             {ratio}

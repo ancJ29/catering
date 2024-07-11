@@ -67,7 +67,8 @@ const BomTable = ({
         let price = material?.others.price || 0;
         const cateringId = condition.cateringId;
         if (cateringId) {
-          price = material?.others.prices?.[cateringId] || price;
+          price =
+            material?.others.prices?.[cateringId].price || price;
         }
         return (
           <Table.Tr key={materialId}>
