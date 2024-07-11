@@ -381,8 +381,8 @@ function reducer(action: Action, state: State): State {
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
-              (id) => id !== action.materialId,
-            );
+            (id) => id !== action.materialId,
+          );
         const isSelectAll =
           selectedMaterialIds.length === state.materialIds.length;
         return {

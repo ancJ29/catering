@@ -35,7 +35,11 @@ const BomTable = ({
       header={
         <>
           <Table.Th w="40%">{t("Material name")}</Table.Th>
-          {isStandard ? "" : <Table.Th>{t("Price")}</Table.Th>}
+          {isStandard ? (
+            ""
+          ) : (
+            <Table.Th ta="right">{t("Price")}</Table.Th>
+          )}
           <Table.Th w={150} ta="right">
             {t("Amount")}
           </Table.Th>
