@@ -4,13 +4,12 @@ import {
   AddPurchaseInternalRequest,
   Inventory,
   Material,
-  PreferredSupplier,
   PurchaseRequest,
   PurchaseRequestDetail,
+  Supplier,
   addPurchaseCoordination,
   addPurchaseInternal,
   getMaterialInventories,
-  getPreferredSuppliersByDepartmentId,
   getPurchaseRequestById,
   updatePurchaseRequest,
 } from "@/services/domain";
@@ -56,7 +55,6 @@ type Action = {
   isAllPurchaseInternal?: boolean;
   cateringId?: string | null;
   inventories?: Inventory[];
-  preferredSuppliers?: PreferredSupplier[];
 };
 
 const defaultState = {
@@ -83,21 +81,13 @@ export default {
     if (!purchaseRequest?.purchaseRequestDetails) {
       return;
     }
-    const [inventories, preferredSuppliers] = await Promise.all([
-      getMaterialInventories(
-        purchaseRequest.purchaseRequestDetails.map(
-          (e) => e.materialId,
-        ),
-      ),
-      getPreferredSuppliersByDepartmentId(
-        purchaseRequest.departmentId,
-      ),
-    ]);
+    const inventories = await getMaterialInventories(
+      purchaseRequest.purchaseRequestDetails.map((e) => e.materialId),
+    );
     dispatch({
       type: ActionType.INIT_DATA,
       purchaseRequest,
       inventories,
-      preferredSuppliers,
     });
   },
   getPurchaseRequest() {
@@ -237,7 +227,7 @@ export default {
               (cd) => ({
                 amount: cd.dispatchQuantity,
                 materialId: cd.materialId,
-                supplierNote: cd.supplierNote,
+                supplierNote: "",
                 internalNote: cd.internalNote,
               }),
             ),
@@ -272,19 +262,12 @@ function reducer(action: Action, state: State): State {
     case ActionType.INIT_DATA:
       if (
         action.purchaseRequest &&
-        action.inventories !== undefined &&
-        action.preferredSuppliers !== undefined
+        action.inventories !== undefined
       ) {
-        const preferredSuppliers = new Map(
-          action.preferredSuppliers.map((e) => [
-            e.materialId,
-            suppliers.get(e.supplierId)?.name || "",
-          ]),
-        );
         const currents = initPurchaseDetails(
           action.purchaseRequest,
           materials,
-          preferredSuppliers,
+          suppliers,
         );
         const materialIds = sortMaterialIds(currents);
         const inventories = Object.fromEntries(
@@ -330,8 +313,8 @@ function reducer(action: Action, state: State): State {
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
-              (id) => id !== action.materialId,
-            );
+            (id) => id !== action.materialId,
+          );
         if (action.isSelected) {
           state.currents[action.materialId].deliveryCatering = NCC;
           state.updates[action.materialId].deliveryCatering = NCC;
@@ -432,12 +415,17 @@ function reducer(action: Action, state: State): State {
 function initPurchaseDetails(
   purchaseRequest: PurchaseRequest,
   materials: Map<string, Material>,
-  preferredSuppliers: Map<string, string>,
+  suppliers: Map<string, Supplier>,
 ) {
   return Object.fromEntries(
     purchaseRequest?.purchaseRequestDetails.map((e) => [
       e.materialId,
-      initPurchaseDetail(e, materials, preferredSuppliers),
+      initPurchaseDetail(
+        e,
+        materials,
+        purchaseRequest.departmentId,
+        suppliers,
+      ),
     ]),
   );
 }
@@ -445,9 +433,12 @@ function initPurchaseDetails(
 function initPurchaseDetail(
   purchaseRequestDetail: PurchaseRequestDetail,
   materials: Map<string, Material>,
-  preferredSuppliers: Map<string, string>,
+  cateringId: string,
+  suppliers: Map<string, Supplier>,
 ) {
   const material = materials.get(purchaseRequestDetail.materialId);
+  const supplierId =
+    material?.others.prices?.[cateringId]?.supplierId || "";
   const amount = convertAmount({
     material,
     amount: purchaseRequestDetail.amount,
@@ -460,8 +451,7 @@ function initPurchaseDetail(
     deliveryCatering: NCC,
     orderQuantity: amount,
     dispatchQuantity: amount,
-    supplierNote:
-      preferredSuppliers.get(purchaseRequestDetail.materialId) || "",
+    supplierNote: suppliers.get(supplierId)?.name || "",
     internalNote: purchaseRequestDetail.others.internalNote || "",
     price: purchaseRequestDetail.others.price,
   };

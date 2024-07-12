@@ -20,7 +20,6 @@ import {
   xDepartmentSchema,
   xInventorySchema,
   xMaterialSchema,
-  xPreferredSupplier,
   xProductSchema,
   xPurchaseCoordinationSchema,
   xPurchaseInternalSchema,
@@ -427,31 +426,6 @@ export const configs = {
         .array(),
     },
   },
-  // [Actions.GET_MEALS]: {
-  //   name: Actions.GET_MEALS,
-  //   group: ActionGroups.MEAL_MANAGEMENT,
-  //   type: ActionType.READ,
-  //   schema: {
-  //     request: getSchema,
-  //     response: listResponse.extend({
-  //       meals: xMealSchema.array(),
-  //     }),
-  //   },
-  // },
-  // [Actions.UPDATE_MEAL]: {
-  //   name: Actions.UPDATE_MEAL,
-  //   group: ActionGroups.MEAL_MANAGEMENT,
-  //   type: ActionType.WRITE,
-  //   schema: {
-  //     request: xMealSchema
-  //       .omit({
-  //         createdAt: true,
-  //         updatedAt: true,
-  //         lastModifiedBy: true,
-  //       })
-  //       .array(),
-  //   },
-  // },
   [Actions.GET_PRODUCTS]: {
     name: Actions.GET_PRODUCTS,
     group: ActionGroups.PRODUCT_MANAGEMENT,
@@ -970,19 +944,6 @@ export const configs = {
       request: z.object({
         id: stringSchema,
         status: stringSchema,
-      }),
-    },
-  },
-  [Actions.GET_PREFERRED_SUPPLIERS]: {
-    name: Actions.GET_PREFERRED_SUPPLIERS,
-    group: ActionGroups.PREFERRED_SUPPLIER_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        departmentId: stringSchema,
-      }),
-      response: listResponse.extend({
-        preferredSuppliers: xPreferredSupplier.array(),
       }),
     },
   },

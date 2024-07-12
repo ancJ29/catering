@@ -103,7 +103,6 @@ export default {
     const quantity = state.item?.others.quantity[productId] ?? 1;
     const total = state.item?.others.total || 1;
     return (cost * quantity) / total;
-    // return (((cost * quantity) / total) * 100).toFixed(2);
   },
   getRatio(productId: string) {
     const state = store.getSnapshot();
@@ -113,6 +112,16 @@ export default {
     const averageCost = (cost * quantity) / total;
     const price = state.item?.others.price || 1;
     return ((averageCost / price) * 100).toFixed(2);
+  },
+  getTotalCost() {
+    const state = store.getSnapshot();
+    let price = 0;
+    for (const productId of Object.keys(state.prices)) {
+      price +=
+        state.prices[productId] *
+        state.item?.others.quantity[productId];
+    }
+    return price;
   },
   setPrice(price: number) {
     dispatch({

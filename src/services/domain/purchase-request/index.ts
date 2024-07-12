@@ -135,6 +135,9 @@ export async function updatePurchaseRequest(
       })),
       deletePurchaseRequestDetailIds: deletedRequestDetailIds,
     },
+    options: {
+      toastMessage: "Your changes have been saved",
+    },
   });
 }
 

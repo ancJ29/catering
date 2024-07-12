@@ -99,11 +99,8 @@ const SupplyCoordinationDetail = () => {
     <Stack gap={0}>
       <Flex direction="column" gap={10}>
         <PurchaseActions
-          returnButtonTitle={t(
-            "Return to purchase order coordination",
-          )}
           returnUrl="/supply-coordination"
-          completeButtonTitle={t("Complete")}
+          completeButtonTitle="Complete"
           complete={complete}
         />
         <PurchaseRequestInformationForm

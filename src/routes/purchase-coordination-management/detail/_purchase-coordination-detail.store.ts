@@ -2,12 +2,10 @@ import { pcStatusSchema } from "@/auto-generated/api-configs";
 import {
   AddPurchaseOrderRequest,
   Material,
-  PreferredSupplier,
   PurchaseCoordination,
   PurchaseCoordinationDetail,
   SupplierMaterial,
   addPurchaseOrders,
-  getPreferredSuppliersByDepartmentId,
   getPurchaseCoordinationById,
   updatePurchaseCoordination,
 } from "@/services/domain";
@@ -25,7 +23,6 @@ type State = {
   updates: Record<string, CoordinationDetail>;
   materialIds: string[];
   supplierMaterials: SupplierMaterialsByMaterial;
-  preferredSuppliers: Record<string, PreferredSupplier>;
 };
 
 enum ActionType {
@@ -46,7 +43,6 @@ type Action = {
   note?: string;
   materialId?: string;
   supplierId?: string;
-  preferredSuppliers?: PreferredSupplier[];
 };
 
 const defaultState = {
@@ -54,7 +50,6 @@ const defaultState = {
   updates: {},
   materialIds: [],
   supplierMaterials: {},
-  preferredSuppliers: {},
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -70,14 +65,9 @@ export default {
     if (!purchaseCoordination) {
       return;
     }
-    const preferredSuppliers =
-      await getPreferredSuppliersByDepartmentId(
-        purchaseCoordination.others.receivingCateringId,
-      );
     dispatch({
       type: ActionType.INIT_DATA,
       purchaseCoordination,
-      preferredSuppliers,
     });
   },
   getPurchaseCoordination() {
@@ -143,13 +133,11 @@ export default {
     const supplierMaterials = Object.values(
       state.supplierMaterials[materialId],
     );
-    const preferredSupplierId =
-      state.preferredSuppliers[materialId]?.supplierId;
     return initSupplierData(
       materialId,
       supplierMaterials,
       materials,
-      preferredSupplierId,
+      state.purchaseCoordination?.others.receivingCateringId || "",
     );
   },
   setSupplierId(materialId: string, supplierId: string) {
@@ -220,17 +208,10 @@ function reducer(action: Action, state: State): State {
         ...defaultState,
       };
     case ActionType.INIT_DATA:
-      if (
-        action.purchaseCoordination &&
-        action.preferredSuppliers !== undefined
-      ) {
-        const preferredSuppliers = Object.fromEntries(
-          action.preferredSuppliers.map((e) => [e.materialId, e]),
-        );
+      if (action.purchaseCoordination) {
         const currents = initCoordinationDetails(
           action.purchaseCoordination,
           materials,
-          preferredSuppliers,
         );
         const supplierMaterials = initSupplierMaterial(materials);
         return {
@@ -240,7 +221,6 @@ function reducer(action: Action, state: State): State {
           updates: cloneDeep(currents),
           materialIds: Object.keys(currents),
           supplierMaterials,
-          preferredSuppliers,
         };
       }
       break;
@@ -294,7 +274,8 @@ function reducer(action: Action, state: State): State {
         state.currents[action.materialId] = initCoordinationDetail(
           purchaseCoordinationDetail,
           materials,
-          state.preferredSuppliers,
+          state.purchaseCoordination?.others.receivingCateringId ||
+            "",
         );
         state.updates[action.materialId] =
           state.currents[action.materialId];
@@ -335,12 +316,16 @@ function reducer(action: Action, state: State): State {
 function initCoordinationDetails(
   purchaseCoordination: PurchaseCoordination,
   materials: Map<string, Material>,
-  preferredSuppliers: Record<string, PreferredSupplier>,
 ) {
+  purchaseCoordination.others.receivingCateringId;
   return Object.fromEntries(
     purchaseCoordination?.purchaseCoordinationDetails.map((e) => [
       e.materialId,
-      initCoordinationDetail(e, materials, preferredSuppliers),
+      initCoordinationDetail(
+        e,
+        materials,
+        purchaseCoordination.others.receivingCateringId,
+      ),
     ]),
   );
 }
@@ -348,7 +333,7 @@ function initCoordinationDetails(
 function initCoordinationDetail(
   purchaseCoordinationDetail: PurchaseCoordinationDetail,
   materials: Map<string, Material>,
-  preferredSuppliers: Record<string, PreferredSupplier>,
+  cateringId: string,
 ): CoordinationDetail {
   const material = materials.get(
     purchaseCoordinationDetail.materialId,
@@ -358,15 +343,14 @@ function initCoordinationDetail(
     amount: purchaseCoordinationDetail.amount,
     reverse: true,
   });
-  const preferredSupplier =
-    preferredSuppliers[purchaseCoordinationDetail.materialId];
   return {
     id: purchaseCoordinationDetail.id,
     materialId: purchaseCoordinationDetail.materialId,
     approvedQuantity: amount,
     orderQuantity: amount,
-    supplierId: preferredSupplier?.supplierId || "",
-    price: preferredSupplier?.price || 0,
+    supplierId:
+      material?.others.prices?.[cateringId]?.supplierId || "",
+    price: material?.others.prices?.[cateringId]?.price || 0,
     supplierNote:
       purchaseCoordinationDetail.others.supplierNote || "",
     internalNote:
@@ -401,12 +385,15 @@ function initSupplierData(
   materialId: string,
   supplierMaterials: SupplierMaterial[],
   materials: Map<string, Material>,
-  preferredSupplierId: string,
+  cateringId: string,
 ) {
+  const material = materials.get(materialId);
+  const preferredSupplierId =
+    material?.others.prices?.[cateringId || ""]?.supplierId || "";
   const items = supplierMaterials.map((sm) => ({
     supplierId: sm.supplier.id,
     supplierName: sm.supplier.name,
-    unitName: materials.get(materialId)?.others.unit?.name || "",
+    unitName: material?.others.unit?.name || "",
     price: sm.price || 0,
   }));
   const matchedItem = items.find(

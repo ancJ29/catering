@@ -92,11 +92,8 @@ const PurchaseCoordinationDetail = () => {
     <Stack>
       <Flex direction="column" gap={10}>
         <PurchaseActions
-          returnButtonTitle={t(
-            "Return to purchase coordination list",
-          )}
           returnUrl="/purchase-coordination-management"
-          completeButtonTitle={t("Create PO")}
+          completeButtonTitle="Create PO"
           complete={complete}
           disabledCompleteButton={disabled}
         />

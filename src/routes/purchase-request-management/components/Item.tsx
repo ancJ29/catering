@@ -11,7 +11,7 @@ type ItemProps = {
   requestDetail?: RequestDetail;
   disabled?: boolean;
   isSelected: boolean;
-  price: number;
+  // price: number;
   onChangeAmount: (value: number) => void;
   onChangeIsSelected: (value: boolean) => void;
   onChangSupplierNote: (value: string) => void;
@@ -24,7 +24,7 @@ const Item = ({
   requestDetail,
   disabled = false,
   isSelected,
-  price,
+  // price,
   onChangeAmount,
   onChangeIsSelected,
   onChangSupplierNote,
@@ -125,7 +125,7 @@ const Item = ({
   ];
 
   return (
-    <Table.Tr bg={price === 0 ? "primary.0" : "white"}>
+    <Table.Tr bg={requestDetail?.price === 0 ? "primary.0" : "white"}>
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign} pr={col.pr}>
           {col.content}

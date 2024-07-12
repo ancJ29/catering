@@ -67,15 +67,6 @@ export const xDepartmentSchema = departmentSchema
   })
   .extend({
     others: departmentOthersSchema,
-    supplierMaterials: z
-      .object({
-        price: numberSchema.nonnegative(),
-        supplier: z.object({
-          id: stringSchema,
-          name: stringSchema,
-        }),
-      })
-      .array(),
   });
 
 export const xInventorySchema = inventorySchema

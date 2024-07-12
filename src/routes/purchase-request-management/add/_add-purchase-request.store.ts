@@ -1,13 +1,11 @@
 import {
   Inventory,
   Material,
-  PreferredSupplier,
   addPurchaseRequest,
   getAllDailyMenuInventories,
   getAllInventories,
   getAllLowInventories,
   getAllPeriodicInventories,
-  getPreferredSuppliersByDepartmentId,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import {
@@ -25,8 +23,8 @@ type State = {
   materialIds: string[];
   selectedMaterialIds: string[];
   inventories: Record<string, Inventory>;
-  preferredSuppliers: Record<string, PreferredSupplier>;
   internalCodeInventories: Record<string, Inventory>;
+  cateringId: string;
 };
 
 enum ActionType {
@@ -47,7 +45,6 @@ type Action = {
   type: ActionType;
   cateringId?: string;
   inventories?: Inventory[];
-  preferredSuppliers?: PreferredSupplier[];
   materialId?: string;
   amount?: number;
   note?: string;
@@ -63,8 +60,8 @@ const defaultState = {
   materialIds: [],
   selectedMaterialIds: [],
   inventories: {},
-  preferredSuppliers: {},
   internalCodeInventories: {},
+  cateringId: "",
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -76,12 +73,10 @@ export default {
   async reset(cateringId?: string) {
     if (cateringId) {
       const inventories = await getAllInventories(cateringId);
-      const preferredSuppliers =
-        await getPreferredSuppliersByDepartmentId(cateringId);
       dispatch({
         type: ActionType.RESET,
         inventories,
-        preferredSuppliers,
+        cateringId,
       });
     } else {
       dispatch({
@@ -91,12 +86,10 @@ export default {
   },
   async initBackgroundData(cateringId: string) {
     const inventories = await getAllInventories(cateringId);
-    const preferredSuppliers =
-      await getPreferredSuppliersByDepartmentId(cateringId);
     dispatch({
       type: ActionType.INIT_BACKGROUND_DATA,
       inventories,
-      preferredSuppliers,
+      cateringId,
     });
   },
   async loadLowInventories(cateringId: string) {
@@ -148,19 +141,14 @@ export default {
     const state = store.getSnapshot();
     const total = state.selectedMaterialIds.reduce(
       (sum, materialId) => {
-        const price =
-          state.preferredSuppliers[materialId]?.price || 0;
+        const price = state.currents[materialId]?.price || 0;
         const amount = state.updates[materialId].amount;
         return sum + price * amount;
       },
       0,
     );
     return total;
-  },
-  getPrice(materialId: string) {
-    return (
-      store.getSnapshot().preferredSuppliers[materialId]?.price || 0
-    );
+    return 0;
   },
   setAmount(materialId: string, amount: number) {
     dispatch({
@@ -216,7 +204,8 @@ export default {
             material,
             amount: state.updates[materialId].amount,
           }),
-          price: state.preferredSuppliers[materialId]?.price || 0,
+          price:
+            material?.others.prices?.[state.cateringId]?.price || 0,
         };
       }),
     );
@@ -228,7 +217,7 @@ function reducer(action: Action, state: State): State {
   const { materials } = useMaterialStore.getState();
   switch (action.type) {
     case ActionType.RESET: {
-      if (action.inventories && action.preferredSuppliers) {
+      if (action.inventories && action.cateringId) {
         const inventories = Object.fromEntries(
           action.inventories.map((inventory) => [
             inventory.materialId,
@@ -241,19 +230,13 @@ function reducer(action: Action, state: State): State {
             inventory,
           ]),
         );
-        const preferredSuppliers = Object.fromEntries(
-          action.preferredSuppliers.map((preferredSupplier) => [
-            preferredSupplier.materialId,
-            preferredSupplier,
-          ]),
-        );
         return {
           ...defaultState,
           inventories,
           internalCodeInventories,
-          preferredSuppliers,
           updates: {},
           currents: {},
+          cateringId: action.cateringId,
         };
       } else {
         return {
@@ -264,7 +247,7 @@ function reducer(action: Action, state: State): State {
       }
     }
     case ActionType.INIT_BACKGROUND_DATA: {
-      if (action.inventories && action.preferredSuppliers) {
+      if (action.inventories && action.cateringId) {
         const inventories = Object.fromEntries(
           action.inventories.map((inventory) => [
             inventory.materialId,
@@ -277,17 +260,11 @@ function reducer(action: Action, state: State): State {
             inventory,
           ]),
         );
-        const preferredSuppliers = Object.fromEntries(
-          action.preferredSuppliers.map((preferredSupplier) => [
-            preferredSupplier.materialId,
-            preferredSupplier,
-          ]),
-        );
         return {
           ...state,
           inventories,
           internalCodeInventories,
-          preferredSuppliers,
+          cateringId: action.cateringId,
         };
       }
       break;
@@ -297,10 +274,12 @@ function reducer(action: Action, state: State): State {
         const currents = initPurchaseDetails(
           action.inventories,
           materials,
+          action.cateringId,
         );
         const materialIds = sortMaterialIds(
           currents,
-          state.preferredSuppliers,
+          materials,
+          action.cateringId,
         );
         return {
           ...state,
@@ -308,6 +287,7 @@ function reducer(action: Action, state: State): State {
           updates: cloneDeep(currents),
           materialIds,
           selectedMaterialIds: materialIds,
+          cateringId: action.cateringId,
         };
       }
       break;
@@ -320,12 +300,14 @@ function reducer(action: Action, state: State): State {
             state.currents[inventory.materialId] = initPurchaseDetail(
               inventory,
               materials,
+              state.cateringId,
             );
           }
         });
         const materialIds = sortMaterialIds(
           state.currents,
-          state.preferredSuppliers,
+          materials,
+          state.cateringId,
         );
         return {
           ...state,
@@ -346,6 +328,7 @@ function reducer(action: Action, state: State): State {
           state.currents[action.materialId] = initPurchaseDetail(
             inventory,
             materials,
+            state.cateringId,
           );
           state.updates[action.materialId] =
             state.currents[action.materialId];
@@ -440,11 +423,12 @@ function reducer(action: Action, state: State): State {
 function initPurchaseDetails(
   inventories: Inventory[],
   materials: Map<string, Material>,
+  cateringId: string,
 ) {
   return Object.fromEntries(
     inventories.map((inventory) => [
       inventory.materialId,
-      initPurchaseDetail(inventory, materials),
+      initPurchaseDetail(inventory, materials, cateringId),
     ]),
   );
 }
@@ -452,6 +436,7 @@ function initPurchaseDetails(
 function initPurchaseDetail(
   inventory: Inventory,
   materials: Map<string, Material>,
+  cateringId: string,
 ) {
   const material = materials.get(inventory.materialId);
   const amount = convertAmount({
@@ -471,21 +456,27 @@ function initPurchaseDetail(
     amount: roundToDecimals(minimumAmount - amount, 3),
     supplierNote: "",
     internalNote: "",
+    price:
+      materials.get(inventory.materialId)?.others.prices?.[cateringId]
+        ?.price || 0,
   };
 }
 
 function sortMaterialIds(
   currents: Record<string, RequestDetail>,
-  preferredSuppliers: Record<string, PreferredSupplier>,
+  materials: Map<string, Material>,
+  cateringId: string,
 ) {
   const materialIds = Object.keys(currents);
   const nonZeroPriceIds = materialIds.filter(
     (materialId) =>
-      preferredSuppliers[materialId]?.price !== undefined,
+      materials.get(materialId)?.others.prices?.[cateringId]
+        ?.price !== undefined,
   );
   const zeroPriceIds = materialIds.filter(
     (materialId) =>
-      preferredSuppliers[materialId]?.price === undefined,
+      materials.get(materialId)?.others.prices?.[cateringId]
+        ?.price === undefined,
   );
   return nonZeroPriceIds.concat(zeroPriceIds);
 }

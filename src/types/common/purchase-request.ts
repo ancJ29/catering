@@ -27,7 +27,7 @@ export type RequestDetail = {
   amount: number;
   supplierNote: string;
   internalNote: string;
-  price?: number;
+  price: number;
 };
 
 export type MaterialExcel = {

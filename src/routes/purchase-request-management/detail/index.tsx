@@ -1,4 +1,7 @@
-import { ClientRoles } from "@/auto-generated/api-configs";
+import {
+  ClientRoles,
+  prStatusSchema,
+} from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import PurchaseRequestInformationForm from "@/components/c-catering/PurchaseRequestInformationForm";
 import PurchaseRequestSteppers from "@/components/c-catering/PurchaseRequestSteppers";
@@ -63,22 +66,28 @@ const PurchaseRequestDetail = () => {
       return;
     }
     await store.update(values.status, values.priority);
-    notifications.show({
-      color: "blue.5",
-      message: t("Update purchase request successfully"),
-    });
     load();
+  };
+
+  const rejectPurchaseRequest = async () => {
+    await store.reject(
+      prStatusSchema.Values.KD,
+      values.priority || "",
+    );
+    window.location.reload();
   };
 
   return (
     <Stack>
       <Flex direction="column" gap={10}>
         <PurchaseActions
-          returnButtonTitle={t("Return to purchase request list")}
           returnUrl="/purchase-request-management"
-          completeButtonTitle={t("Complete")}
+          completeButtonTitle="Complete"
           complete={complete}
           disabledCompleteButton={disabled}
+          rejectButtonTitle="Not approved"
+          onReject={rejectPurchaseRequest}
+          disabledRejectButton={disabled}
         />
         <PurchaseRequestInformationForm
           values={values}

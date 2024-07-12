@@ -1,6 +1,5 @@
 import { poStatusSchema } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
-import useTranslation from "@/hooks/useTranslation";
 import {
   PurchaseOrderDetail as _PurchaseOrderDetail,
   getPurchaseOrderById,
@@ -22,7 +21,6 @@ import Steppers from "./components/Steppers";
 import Table from "./components/Table";
 
 const PurchaseOrderDetail = () => {
-  const t = useTranslation();
   const { purchaseOrderId } = useParams();
   const { suppliers } = useSupplierStore();
   const [disabled, setDisabled] = useState(true);
@@ -71,9 +69,8 @@ const PurchaseOrderDetail = () => {
     <Stack>
       <Flex direction="column" gap={10}>
         <PurchaseActions
-          returnButtonTitle={t("Return to purchase order list")}
           returnUrl="/purchase-order-management"
-          completeButtonTitle={t("Approve for supplier")}
+          completeButtonTitle="Approve for supplier"
           complete={complete}
           disabledCompleteButton={disabled}
         />

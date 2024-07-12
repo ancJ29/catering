@@ -1,6 +1,5 @@
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import useOnMounted from "@/hooks/useOnMounted";
-import useTranslation from "@/hooks/useTranslation";
 import {
   PurchaseInternalDetail as InternalDetail,
   getPurchaseInternalById,
@@ -19,7 +18,6 @@ import Steppers from "./components/Steppers";
 import Table from "./components/Table";
 
 const PurchaseInternalDetail = () => {
-  const t = useTranslation();
   const { purchaseInternalId } = useParams();
   const { values, setValues } = useForm<PurchaseInternalForm>({
     initialValues: initialPurchaseInternalForm,
@@ -56,9 +54,8 @@ const PurchaseInternalDetail = () => {
     <Stack>
       <Flex direction="column" gap={10}>
         <PurchaseActions
-          returnButtonTitle={t("Return to purchase internal list")}
           returnUrl="/purchase-internal-management"
-          completeButtonTitle={t("Complete")}
+          completeButtonTitle="Complete"
           complete={() => null}
           disabledCompleteButton={true}
         />

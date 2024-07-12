@@ -174,6 +174,19 @@ export default {
       type: ActionType.RESET,
     });
   },
+  async reject(status: PRStatus, priority: string) {
+    const state = store.getSnapshot();
+    if (!state.purchaseRequest) {
+      return;
+    }
+    await updatePurchaseRequest(
+      state.purchaseRequest,
+      [],
+      [],
+      status,
+      priority,
+    );
+  },
 };
 
 function reducer(action: Action, state: State): State {

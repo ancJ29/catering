@@ -47,17 +47,7 @@ const Summarize = ({
         avgCost: 0,
       };
     }
-    const totalCost = selectedProduct
-      .map((p) => {
-        const quantity = updatedDailyMenu.others.quantity[p.id];
-        const cateringId = updatedDailyMenu.others.cateringId;
-        let price = p.others.costPrice || 0;
-        if (p.others.costPriceByCatering) {
-          price = p.others.costPriceByCatering[cateringId] || price;
-        }
-        return quantity * price;
-      })
-      .reduce((a, b) => a + b, 0);
+    const totalCost = store.getTotalCost();
     const price = updatedDailyMenu.others.price || 0;
     const avgCost = Math.ceil(totalCost / total) || 0;
     const ratio = price ? avgCost / price : 0;
@@ -66,13 +56,7 @@ const Summarize = ({
       avgCost,
       price,
     };
-  }, [
-    selectedProduct,
-    updatedDailyMenu.others.cateringId,
-    updatedDailyMenu.others.price,
-    updatedDailyMenu.others.quantity,
-    updatedDailyMenu.others.total,
-  ]);
+  }, [updatedDailyMenu.others.price, updatedDailyMenu.others.total]);
 
   // {/* cspell:disable */}
   return (

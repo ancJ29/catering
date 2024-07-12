@@ -182,9 +182,8 @@ const AddPurchaseRequest = () => {
     <Stack gap={0}>
       <Flex direction="column" gap={10}>
         <PurchaseActions
-          returnButtonTitle={t("Return to purchase request list")}
           returnUrl="/purchase-request-management"
-          completeButtonTitle={t("Complete")}
+          completeButtonTitle="Complete"
           complete={complete}
         />
         <PurchaseRequestInformationForm

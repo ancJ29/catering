@@ -63,7 +63,7 @@ const Table = ({ opened }: TableProps) => {
                 material={materials.get(materialId)}
                 requestDetail={currents[materialId]}
                 isSelected={store.isSelected(materialId)}
-                price={store.getPrice(materialId)}
+                // price={store.getPrice(materialId)}
                 onChangeAmount={(value) =>
                   store.setAmount(materialId, value)
                 }

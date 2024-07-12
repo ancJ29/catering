@@ -3,6 +3,7 @@ import {
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
 import IconBadge from "@/components/c-catering/IconBadge";
+import useMaterialStore from "@/stores/material.store";
 import { DataGridColumnProps } from "@/types";
 import { unique } from "@/utils";
 import { z } from "zod";
@@ -65,11 +66,7 @@ export const configs = (
       width: "10%",
       textAlign: "right",
       renderCell: (_, row: Department) => {
-        const suppliers = unique(
-          row.supplierMaterials.map(
-            (supplierMaterial) => supplierMaterial.supplier.id,
-          ),
-        );
+        const suppliers = findSuppliersByCateringId(row.id);
         return (
           <IconBadge
             total={suppliers.length}
@@ -80,3 +77,17 @@ export const configs = (
     },
   ];
 };
+
+function findSuppliersByCateringId(cateringId: string) {
+  const { materials } = useMaterialStore.getState();
+  const suppliers: string[] = [];
+  for (const material of materials.values()) {
+    if (
+      material.others.prices &&
+      material.others.prices[cateringId]
+    ) {
+      suppliers.push(material.others.prices[cateringId].supplierId);
+    }
+  }
+  return unique(suppliers);
+}

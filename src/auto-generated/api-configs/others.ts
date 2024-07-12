@@ -86,11 +86,6 @@ export const productTypeOrders: Record<string, number> = {
 export const productOthersSchema = z.object({
   oldId: numberSchema,
   internalCode: stringSchema,
-  costPrice: optionalNumberSchema.default(0),
-  costPriceByCatering: z
-    .record(stringSchema, numberSchema)
-    .optional()
-    .default({}),
   type: productTypeSchema,
   category: productCategorySchema,
   party: booleanSchema.default(true),
@@ -238,6 +233,12 @@ export const materialOthersSchema = z.object({
   group: materialGroupSchema,
   type: materialTypeSchema,
   price: optionalNumberSchema,
+  /*
+    cateringId: {
+      supplierId
+      price
+    }
+  */
   prices: z
     .record(
       stringSchema,
