@@ -7,6 +7,7 @@ export const initialPurchaseOrderForm: PurchaseOrderForm = {
   supplierId: "",
   status: "DG",
   email: "",
+  code: "",
 };
 
 export type PurchaseOrderForm = {
@@ -16,4 +17,5 @@ export type PurchaseOrderForm = {
   supplierId: string;
   status: POStatus;
   email: string;
+  code?: string;
 };

@@ -36,7 +36,8 @@ const Alert = () => {
   if (role === ClientRoles.CATERING) {
     return (
       <Box bg="error.5" c="white" ta="center" fw={700} my={5}>
-        {t("Daily menu is not confirmed")}: {cateringNames}
+        {t("Currently")} {alertItems.length}{" "}
+        {t("weekly menu(s) pending confirmation")}
       </Box>
     );
   }

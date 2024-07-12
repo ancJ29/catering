@@ -75,7 +75,9 @@ const SupplierSelect = ({
       <Combobox.Dropdown>
         <Combobox.Options mah={200} style={{ overflowY: "auto" }}>
           {options.length === 0 ? (
-            <Combobox.Empty>{t("Nothing found")}</Combobox.Empty>
+            <Combobox.Empty fz={12}>
+              {t("No suppliers available")}
+            </Combobox.Empty>
           ) : (
             options
           )}

@@ -1,3 +1,4 @@
+import { ClientRoles } from "@/auto-generated/api-configs";
 import CateringSelector from "@/components/c-catering/CateringSelector";
 import CustomButton from "@/components/c-catering/CustomButton";
 import MaterialFilter from "@/components/c-catering/MaterialFilter";
@@ -11,6 +12,7 @@ import {
   getInventoryDepartments,
   updateInventory,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { Flex, Group, Radio, Stack } from "@mantine/core";
@@ -26,6 +28,7 @@ import store from "./_inventory.store";
 
 const CheckInventory = () => {
   const t = useTranslation();
+  const { user, role } = useAuthStore();
   const { materials } = useMaterialStore();
   const { departmentNameById } = useMetaDataStore();
   const [key, setKey] = useState(Date.now());
@@ -36,6 +39,13 @@ const CheckInventory = () => {
     store.subscribe,
     store.getSnapshot,
   );
+
+  useEffect(() => {
+    if (role === ClientRoles.CATERING) {
+      setCatering(user?.departmentIds?.[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 

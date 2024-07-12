@@ -150,5 +150,8 @@ export function changeablePurchaseOrderStatus(
   if (!role) {
     return false;
   }
+  if (role === ClientRoles.OWNER) {
+    return true;
+  }
   return false;
 }

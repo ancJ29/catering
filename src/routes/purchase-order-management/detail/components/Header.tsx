@@ -8,7 +8,7 @@ const Header = () => {
   const columns = [
     { width: "25%", content: t("Material name") },
     { width: "10%", content: t("Unit"), textAlign: "center" },
-    { width: "10%", content: t("Amount"), textAlign: "center" },
+    { width: "10%", content: t("Quantity"), textAlign: "center" },
     { width: "10%", content: t("Price"), textAlign: "right" },
     { width: "10%", content: t("Total"), textAlign: "right" },
     { width: "15%", content: t("Supplier note") },

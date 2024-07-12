@@ -1,11 +1,10 @@
-import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import { PurchaseOrderDetail } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
 import { numberWithDelimiter } from "@/utils";
 import { convertAmount } from "@/utils/unit";
-import { Button, Table, TextInput } from "@mantine/core";
+import { Button, NumberInput, Table, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 type ItemProps = {

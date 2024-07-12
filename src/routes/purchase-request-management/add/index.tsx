@@ -1,7 +1,9 @@
+import { ClientRoles } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import PurchaseRequestInformationForm from "@/components/c-catering/PurchaseRequestInformationForm";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
+import useAuthStore from "@/stores/auth.store";
 import {
   PurchaseRequestForm,
   initialPurchaseRequestForm,
@@ -20,6 +22,7 @@ import Table from "./components/Table";
 
 const AddPurchaseRequest = () => {
   const t = useTranslation();
+  const { user, role } = useAuthStore();
   const [opened, setOpened] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedSource, setSelectedSource] = useState<string | null>(
@@ -46,6 +49,10 @@ const AddPurchaseRequest = () => {
 
   useEffect(() => {
     store.reset();
+    if (role === ClientRoles.CATERING) {
+      handleChangeValues("departmentId", user?.departmentIds?.[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChangeSelectedSource = useCallback(

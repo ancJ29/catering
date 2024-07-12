@@ -319,12 +319,12 @@ const configs: Config[] = [
   {
     path: "/purchase-order-management/:purchaseOrderId",
     element: "PurchaseOrderDetail",
-    wrapper: {
-      element: ServiceWrapper as Wrapper,
-      props: {
-        title: "Purchase Order Detail",
-      },
-    },
+    // wrapper: {
+    //   element: ServiceWrapper as Wrapper,
+    //   props: {
+    //     title: "Purchase Order Detail",
+    //   },
+    // },
   },
   {
     path: "/purchase-internal-management",

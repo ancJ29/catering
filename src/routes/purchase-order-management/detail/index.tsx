@@ -1,5 +1,7 @@
 import { poStatusSchema } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
+import useTranslation from "@/hooks/useTranslation";
+import ServiceWrapper from "@/layouts/Admin/ServiceWrapper";
 import {
   PurchaseOrderDetail as _PurchaseOrderDetail,
   getPurchaseOrderById,
@@ -21,6 +23,7 @@ import Steppers from "./components/Steppers";
 import Table from "./components/Table";
 
 const PurchaseOrderDetail = () => {
+  const t = useTranslation();
   const { purchaseOrderId } = useParams();
   const { suppliers } = useSupplierStore();
   const [disabled, setDisabled] = useState(true);
@@ -45,6 +48,7 @@ const PurchaseOrderDetail = () => {
       deliveryTime: formatTime(purchaseOrder?.deliveryDate, "HH:mm"),
       supplierId: purchaseOrder?.supplierId,
       status: purchaseOrder?.others.status,
+      code: purchaseOrder?.code || "",
       email:
         suppliers.get(purchaseOrder?.supplierId || "")?.others
           .email || "",
@@ -66,26 +70,28 @@ const PurchaseOrderDetail = () => {
   };
 
   return (
-    <Stack>
-      <Flex direction="column" gap={10}>
-        <PurchaseActions
-          returnUrl="/purchase-order-management"
-          completeButtonTitle="Approve for supplier"
-          complete={complete}
-          disabledCompleteButton={disabled}
-        />
-        <Form values={form.values} />
-        <Steppers status={form.values.status} disabled={true} />
-        <SendMail
-          email={form.values.email}
-          onChangeEmail={(email) =>
-            form.setFieldValue("email", email)
-          }
-          disabled={disabled}
-        />
-        <Table purchaseOrderDetails={purchaseOrderDetails} />
-      </Flex>
-    </Stack>
+    <ServiceWrapper title={`${t("Details")} ${form.values.code}`}>
+      <Stack>
+        <Flex direction="column" gap={10}>
+          <PurchaseActions
+            returnUrl="/purchase-order-management"
+            completeButtonTitle="Approve for supplier"
+            complete={complete}
+            disabledCompleteButton={disabled}
+          />
+          <Form values={form.values} />
+          <Steppers status={form.values.status} disabled={true} />
+          <SendMail
+            email={form.values.email}
+            onChangeEmail={(email) =>
+              form.setFieldValue("email", email)
+            }
+            disabled={disabled}
+          />
+          <Table purchaseOrderDetails={purchaseOrderDetails} />
+        </Flex>
+      </Stack>
+    </ServiceWrapper>
   );
 };
 

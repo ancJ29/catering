@@ -318,7 +318,6 @@ export default {
   "Approved quantity": "Approved quantity",
   "Name": "Name",
   "Sup specifications": "Sup specifications",
-  "Nothing found": "Nothing found",
   "Confirm": "Confirm",
   "Are you sure to create PO?": "Are you sure to create PO?",
   "Add purchase order successfully": "Add purchase order successfully",
@@ -346,4 +345,9 @@ export default {
   "Meal employee qty": "Employee qty",
   "Meal payment qty": "Payment qty",
   "Add purchase request": "Add purchase request",
+  "Return": "Return",
+  "Not approved": "Not approved",
+  "No suppliers available": "No suppliers available",
+  "Currently": "Currently",
+  "weekly menu(s) pending confirmation": "weekly menu(s) pending confirmation",
 } satisfies Record<string, string>;

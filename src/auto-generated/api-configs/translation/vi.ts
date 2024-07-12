@@ -317,7 +317,6 @@ export default {
   "Approved quantity": "Số lượng duyệt",
   "Name": "Tên",
   "Sup specifications": "Quy cách NCC",
-  "Nothing found": "Không có kết quả",
   "Confirm": "Xác nhận",
   "Are you sure to create PO?": "Bạn có chắc chắn muốn tạo PO mua hàng?",
   "Add purchase order successfully": "Thêm đơn mua hàng thành công",
@@ -345,4 +344,10 @@ export default {
   "Meal employee qty": "SL nhân viên",
   "Meal payment qty": "SL thanh toán",
   "Add purchase request": "Thêm yêu cầu mua hàng",
+  "Return": "Quay lại",
+  "Not approved": "Không duyệt",
+  "No suppliers available": "Không có nhà cung cấp",
+  "Currently": "Có",
+  "weekly menu(s) pending confirmation":
+    "thực đơn trong tuần đang chờ xác nhận",
 } satisfies Record<string, string>;
