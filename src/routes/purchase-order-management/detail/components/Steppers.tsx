@@ -4,7 +4,7 @@ import {
   changeablePurchaseOrderStatus,
   statusOrderColor,
 } from "@/services/domain";
-import { scroll } from "@/utils/scroll";
+import { scroll } from "@/utils";
 import { ScrollArea } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Status from "../../components/Status";

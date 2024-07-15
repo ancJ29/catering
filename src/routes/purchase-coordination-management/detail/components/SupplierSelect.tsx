@@ -37,9 +37,11 @@ const SupplierSelect = ({
       key={item.supplierId}
       active={item.supplierId === value}
     >
-      <Group gap="xs">
-        {item.supplierId === value && <CheckIcon size={12} />}
+      <Group gap="xs" justify="space-between">
         <SupplierSelectItem {...item} />
+        {item.supplierId === value && (
+          <CheckIcon size={12} color="gray" />
+        )}
       </Group>
     </Combobox.Option>
   ));

@@ -1,4 +1,4 @@
-import { createStore } from "@/utils/store";
+import { createStore } from "@/utils";
 
 export type State = {
   notifications: {

@@ -8,7 +8,7 @@ const Header = () => {
     { width: "3%", content: t("Purchase outside") },
     { width: "15%", content: t("Material name") },
     { width: "3%", content: t("Sup") },
-    { width: "10%", content: t("Delivery catering") },
+    { width: undefined, content: t("Delivery catering") },
     { width: "6%", content: t("Order quantity"), textAlign: "right" },
     {
       width: "6%",

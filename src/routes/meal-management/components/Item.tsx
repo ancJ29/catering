@@ -2,6 +2,7 @@ import NumberInput from "@/components/common/NumberInput";
 import { DailyMenu } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
 import { TextAlign } from "@/types";
+import { numberWithDelimiter } from "@/utils";
 import { Table } from "@mantine/core";
 
 type ItemProps = {
@@ -32,6 +33,10 @@ const Item = ({
     {
       content: dailyMenu.others.shift || "N/A",
       align: "center",
+    },
+    {
+      content: numberWithDelimiter(dailyMenu.others.price || 0),
+      align: "right",
     },
     {
       content: (

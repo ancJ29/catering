@@ -2,7 +2,7 @@ import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
 import { RequestDetail, TextAlign } from "@/types";
-import { roundToDecimals } from "@/utils/unit";
+import { roundToDecimals } from "@/utils";
 import { Button, Checkbox, Table, TextInput } from "@mantine/core";
 import { useState } from "react";
 

@@ -5,15 +5,15 @@ import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
 import useAuthStore from "@/stores/auth.store";
 import {
+  MaterialExcel,
   PurchaseRequestForm,
   initialPurchaseRequestForm,
 } from "@/types";
-import { formatTime, isSameDate } from "@/utils";
+import { formatTime, isSameDate, processExcelFile } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as XLSX from "xlsx";
 import store from "./_add-purchase-request.store";
 import ImportMaterials, {
   ImportMaterialAction,
@@ -131,34 +131,24 @@ const AddPurchaseRequest = () => {
   );
   useUrlHash(values, callback);
 
+  const mapRowToData = (row: string[]): MaterialExcel => ({
+    materialInternalCode: row[0],
+    amount: Number(row[1]),
+  });
+
   const handleFileUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) {
         return;
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const binaryStr = event.target?.result as string;
-        const workbook = XLSX.read(binaryStr, { type: "binary" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-
-        const jsonData = XLSX.utils.sheet_to_json<string[]>(
-          worksheet,
-          { header: 1 },
-        );
-        const processedData = (jsonData as string[][])
-          .map((row) => ({
-            materialInternalCode: row[0],
-            amount: Number(row[1]),
-          }))
-          .filter(
-            (row) => row.materialInternalCode && !isNaN(row.amount),
-          );
-        store.loadDataFromExcel(processedData);
-      };
-      reader.readAsArrayBuffer(file);
+      processExcelFile<MaterialExcel>(
+        file,
+        mapRowToData,
+        (processedData) => {
+          store.loadDataFromExcel(processedData);
+        },
+      );
     },
     [],
   );

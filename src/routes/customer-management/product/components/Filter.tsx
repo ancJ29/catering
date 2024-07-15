@@ -38,7 +38,7 @@ const Filter = ({
     <Flex justify="end" align="end" gap={10}>
       <AutocompleteForFilterData
         data={names}
-        label={t("Catering name")}
+        label={t("Product")}
         onReload={reload}
         w="20vw"
       />

@@ -15,8 +15,7 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { cloneDeep, createStore } from "@/utils";
-import { convertAmount } from "@/utils/unit";
+import { cloneDeep, convertAmount, createStore } from "@/utils";
 
 const NCC = "NCC";
 
@@ -313,8 +312,8 @@ function reducer(action: Action, state: State): State {
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
-            (id) => id !== action.materialId,
-          );
+              (id) => id !== action.materialId,
+            );
         if (action.isSelected) {
           state.currents[action.materialId].deliveryCatering = NCC;
           state.updates[action.materialId].deliveryCatering = NCC;

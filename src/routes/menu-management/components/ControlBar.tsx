@@ -30,6 +30,8 @@ const ControlBar = ({
   onChangeCateringId,
   onTargetChange,
   onCustomerChange,
+  onExportMenu,
+  onExportProductionOrders,
 }: ControlBarProps) => {
   return (
     <Flex gap={10} w="100%" justify="space-between" align="end">
@@ -50,6 +52,8 @@ const ControlBar = ({
         onResetDate={onResetDate}
         onShift={onShiftMarkDate}
         onChangeMode={onChangeMode}
+        onExportMenu={onExportMenu}
+        onExportProductionOrders={onExportProductionOrders}
       />
     </Flex>
   );

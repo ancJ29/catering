@@ -5,9 +5,10 @@ import { Table } from "@mantine/core";
 const Header = () => {
   const t = useTranslation();
   const columns = [
-    { width: "25%", content: t("Customer") },
-    { width: "25%", content: t("Meal target audience") },
+    { width: "20%", content: t("Customer") },
+    { width: "20%", content: t("Meal target audience") },
     { width: "10%", content: t("Meal shift"), textAlign: "center" },
+    { width: "10%", content: t("Price"), textAlign: "right" },
     {
       width: "10%",
       content: t("Meal predicted qty"),

@@ -2,7 +2,8 @@ import ScrollTable from "@/components/c-catering/ScrollTable";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
-import { sortShifts, startOfDay } from "@/utils";
+import logger from "@/services/logger";
+import { exportToMenuExcel, sortShifts, startOfDay } from "@/utils";
 import { Stack, Table } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +67,22 @@ const MenuManagement = () => {
     return sortShifts(shifts);
   }, [condition.customer?.others.targets, condition.target?.name]);
 
+  const handleExportMenu = () => {
+    logger.info("handleExportMenu");
+    exportToMenuExcel({
+      data: [],
+      fileName: "exportedData.xlsx",
+      targetName: "1",
+      customerName: "AAA",
+      headers,
+    });
+  };
+
+  const handleExportProductionOrders = () => {
+    //
+    logger.info("handleExportProductionOrders");
+  };
+
   return (
     <Stack gap={10}>
       <ControlBar
@@ -122,6 +139,8 @@ const MenuManagement = () => {
             },
           })
         }
+        onExportMenu={handleExportMenu}
+        onExportProductionOrders={handleExportProductionOrders}
       />
       <Alert />
       <ScrollTable

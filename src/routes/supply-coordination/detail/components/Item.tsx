@@ -91,10 +91,15 @@ const Item = ({
       ) : (
         <Select
           value={coordinationDetail?.deliveryCatering}
-          w={"8vw"}
+          w="max-content"
           options={_caterings}
           onChange={onChangeDeliveryCatering}
           required
+          styles={{
+            input: {
+              marginRight: "30px",
+            },
+          }}
         />
       ),
     },

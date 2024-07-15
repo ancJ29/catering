@@ -70,3 +70,18 @@ export function getDateTime(date: number, time: string) {
   _date.setSeconds(0);
   return _date;
 }
+
+export function startOfYear(timestamp: number): number {
+  const date = new Date(timestamp);
+  return date.getFullYear();
+}
+
+export function getWeekNumber(timestamp: number): number {
+  const year = startOfYear(timestamp);
+  const startOfYearDate = new Date(year, 0, 1);
+  const pastDaysOfYear =
+    (timestamp - startOfYearDate.getTime()) / ONE_DAY;
+  return Math.ceil(
+    (pastDaysOfYear + startOfYearDate.getDay() + 1) / 7,
+  );
+}

@@ -3,7 +3,7 @@ import NumberInput from "@/components/common/NumberInput";
 import { PurchaseInternalDetail } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
-import { convertAmount } from "@/utils/unit";
+import { convertAmount } from "@/utils";
 import { Table, TextInput } from "@mantine/core";
 import { useState } from "react";
 

@@ -10,8 +10,9 @@ import {
   IconChevronRight,
 } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
+import ExportExcel, { ExportExcelProps } from "./ExportExcel";
 
-export type DateControlProps = {
+export type DateControlProps = ExportExcelProps & {
   mode: "W" | "M";
   onChangeMode: (value: "W" | "M") => void;
   onShift: (diff: 1 | -1) => void;
@@ -23,6 +24,8 @@ const DateControl = ({
   onShift,
   onChangeMode,
   onResetDate,
+  onExportMenu,
+  onExportProductionOrders,
 }: DateControlProps) => {
   const t = useTranslation();
   const [[W, M]] = useState([t("Weekly"), t("Monthly")]);
@@ -52,7 +55,14 @@ const DateControl = ({
       <UnstyledButton onClick={onShift.bind(null, 1)}>
         <IconChevronRight className="c-catering-btn-icon" />
       </UnstyledButton>
-      <Button onClick={onResetDate}>{t("This week")}</Button>
+      <Button mr={10} onClick={onResetDate}>
+        {t("This week")}
+      </Button>
+
+      <ExportExcel
+        onExportMenu={onExportMenu}
+        onExportProductionOrders={onExportProductionOrders}
+      />
     </Flex>
   );
 };
