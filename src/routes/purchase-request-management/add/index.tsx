@@ -205,7 +205,12 @@ const AddPurchaseRequest = () => {
           onChange={handleFileUpload}
           style={{ display: "none" }}
         />
-        <Table opened={opened} />
+        <Table
+          opened={opened}
+          showNeedToOrder={
+            selectedSource !== ImportMaterialAction.ADD_MANUALLY
+          }
+        />
       </Flex>
     </Stack>
   );

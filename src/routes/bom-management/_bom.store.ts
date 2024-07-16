@@ -108,7 +108,7 @@ function _cost(
       let cost = material.others.price || 0;
       if (customizedKey) {
         unit = customized[customizedKey]?.[id] || unit;
-        cost = material.others.prices?.[customizedKey].price || cost;
+        cost = material.others.prices?.[customizedKey]?.price || cost;
       }
       return unit * cost;
     })

@@ -103,7 +103,7 @@ export const _configs = (
         const cost = store.getAverageCost(product.id);
         return (
           <Text w="100%" ta="right">
-            {`${numberWithDelimiter(cost)} đ`}
+            {cost}
           </Text>
         );
       },

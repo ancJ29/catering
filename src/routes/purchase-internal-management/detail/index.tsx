@@ -1,10 +1,21 @@
+import {
+  ClientRoles,
+  piStatusSchema,
+} from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import useOnMounted from "@/hooks/useOnMounted";
 import {
   PurchaseInternalDetail as InternalDetail,
   getPurchaseInternalById,
+  updatePurchaseInternal,
 } from "@/services/domain";
-import { formatTime } from "@/utils";
+import useAuthStore from "@/stores/auth.store";
+import useMaterialStore from "@/stores/material.store";
+import {
+  convertAmountForward,
+  formatTime,
+  getDateTime,
+} from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useCallback, useState } from "react";
@@ -19,11 +30,16 @@ import Table from "./components/Table";
 
 const PurchaseInternalDetail = () => {
   const { purchaseInternalId } = useParams();
+  const { role } = useAuthStore();
+  const [disabled, setDisabled] = useState(true);
   const { values, setValues } = useForm<PurchaseInternalForm>({
     initialValues: initialPurchaseInternalForm,
   });
-  const [purchaseInternalDetails, setPurchaseInternalDetails] =
-    useState<InternalDetail[]>([]);
+  const [currents, setCurrents] = useState<InternalDetail[]>([]);
+  const [updates, setUpdates] = useState<
+  Record<string, InternalDetail>
+  >({});
+  const { materials } = useMaterialStore();
 
   const load = useCallback(async () => {
     if (!purchaseInternalId) {
@@ -43,12 +59,97 @@ const PurchaseInternalDetail = () => {
         "HH:mm",
       ),
       status: purchaseInternal?.others.status,
+      prCode: purchaseInternal?.others.prCode,
     });
-    setPurchaseInternalDetails(
-      purchaseInternal?.purchaseInternalDetails || [],
+    setCurrents(purchaseInternal?.purchaseInternalDetails || []);
+    setUpdates(
+      Object.fromEntries(
+        purchaseInternal?.purchaseInternalDetails.map((e) => [
+          e.materialId,
+          e,
+        ]) || [],
+      ),
     );
-  }, [purchaseInternalId, setValues]);
+    setDisabled(
+      !(
+        purchaseInternal?.others.status ===
+          piStatusSchema.Values.DG &&
+        (role === ClientRoles.OWNER ||
+          role === ClientRoles.CATERING ||
+          role === ClientRoles.SUPPLIER)
+      ),
+    );
+  }, [purchaseInternalId, role, setValues]);
   useOnMounted(load);
+
+  const handleChangeAmount = (materialId: string, amount: number) => {
+    setUpdates({
+      ...updates,
+      [materialId]: {
+        ...updates[materialId],
+        amount,
+      },
+    });
+  };
+
+  const handleChangeInternalNote = (
+    materialId: string,
+    internalNote: string,
+  ) => {
+    setUpdates({
+      ...updates,
+      [materialId]: {
+        ...updates[materialId],
+        others: {
+          ...updates[materialId].others,
+          internalNote,
+        },
+      },
+    });
+  };
+
+  const handleChangeKitchenDeliveryNote = (
+    materialId: string,
+    kitchenDeliveryNote: string,
+  ) => {
+    setUpdates({
+      ...updates,
+      [materialId]: {
+        ...updates[materialId],
+        others: {
+          ...updates[materialId].others,
+          kitchenDeliveryNote,
+        },
+      },
+    });
+  };
+
+  const complete = async () => {
+    await updatePurchaseInternal({
+      id: values.id,
+      deliveryDate: getDateTime(
+        values.deliveryDate,
+        values.deliveryTime,
+      ),
+      deliveryCateringId: values.deliveryCateringId,
+      prCode: values.prCode,
+      receivingCateringId: values.receivingCateringId,
+      status: values.status,
+      purchaseInternalDetails: Object.values(updates).map((e) => {
+        const amount = convertAmountForward({
+          material: materials.get(e.materialId),
+          amount: e.amount,
+        });
+        return {
+          ...e,
+          amount: amount,
+          actualAmount: amount,
+          kitchenDeliveryNote: e.others.kitchenDeliveryNote,
+          internalNote: e.others.internalNote,
+        };
+      }),
+    });
+  };
 
   return (
     <Stack>
@@ -56,12 +157,20 @@ const PurchaseInternalDetail = () => {
         <PurchaseActions
           returnUrl="/purchase-internal-management"
           completeButtonTitle="Complete"
-          complete={() => null}
-          disabledCompleteButton={true}
+          complete={complete}
+          disabledCompleteButton={disabled}
         />
         <Form values={values} />
         <Steppers status={values.status} />
-        <Table purchaseInternalDetails={purchaseInternalDetails} />
+        <Table
+          purchaseInternalDetails={currents}
+          onChangeAmount={handleChangeAmount}
+          onChangeInternalNote={handleChangeInternalNote}
+          onChangeKitchenDeliveryNote={
+            handleChangeKitchenDeliveryNote
+          }
+          disabled={disabled}
+        />
       </Flex>
     </Stack>
   );

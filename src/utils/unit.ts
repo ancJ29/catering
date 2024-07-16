@@ -4,26 +4,37 @@ import { Material } from "@/services/domain";
 type ConvertedAmountProps = {
   material?: Material;
   amount: number;
-  reverse?: boolean;
 };
 
-export function convertAmount({
-  material,
-  amount,
-  reverse = false,
-}: ConvertedAmountProps) {
+function getConversionFactor(material?: Material): number {
   const { unit: unitData } = materialOthersSchema.parse(
     material?.others,
   );
   if (!unitData) {
-    return amount;
+    return 1;
   }
-  let k = 1;
+  let factor = 1;
   const converters = unitData.converters;
   for (let i = 0; i < converters.length; i++) {
-    k = k * converters[i];
+    factor *= converters[i];
   }
-  return reverse ? amount / k : amount * k;
+  return factor;
+}
+
+export function convertAmountForward({
+  material,
+  amount,
+}: ConvertedAmountProps) {
+  const conversionFactor = getConversionFactor(material);
+  return amount * conversionFactor;
+}
+
+export function convertAmountBackward({
+  material,
+  amount,
+}: ConvertedAmountProps) {
+  const conversionFactor = getConversionFactor(material);
+  return amount / conversionFactor;
 }
 
 export function roundToDecimals(

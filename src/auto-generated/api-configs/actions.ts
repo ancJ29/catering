@@ -27,6 +27,7 @@ import {
   xPurchaseRequestSchema,
   xSupplierSchema,
   xUpdatePurchaseCoordination,
+  xUpdatePurchaseInternal,
   xUpdatePurchaseRequest,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
@@ -882,6 +883,14 @@ export const configs = {
         id: stringSchema,
         status: stringSchema,
       }),
+    },
+  },
+  [Actions.UPDATE_PURCHASE_INTERNAL]: {
+    name: Actions.UPDATE_PURCHASE_INTERNAL,
+    group: ActionGroups.PURCHASE_INTERNAL_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xUpdatePurchaseInternal,
     },
   },
   [Actions.GET_PURCHASE_COORDINATIONS]: {

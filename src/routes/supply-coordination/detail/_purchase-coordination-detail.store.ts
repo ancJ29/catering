@@ -15,7 +15,12 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { cloneDeep, convertAmount, createStore } from "@/utils";
+import {
+  cloneDeep,
+  convertAmountBackward,
+  convertAmountForward,
+  createStore,
+} from "@/utils";
 
 const NCC = "NCC";
 
@@ -160,13 +165,13 @@ export default {
       state.currents[materialId].deliveryCatering;
     const inventory =
       state.inventories[`${deliveryCatering}-${materialId}`];
-    return convertAmount({
+    return convertAmountBackward({
       material: materials.get(materialId),
       amount: inventory?.amount || 0,
-      reverse: true,
     });
   },
   async update(status: PRStatus, priority: string) {
+    const { materials } = useMaterialStore.getState();
     const state = store.getSnapshot();
     if (!status || !state.purchaseRequest) {
       return false;
@@ -206,7 +211,10 @@ export default {
             purchaseCoordinationDetails: coordinationDetails.map(
               (cd) => ({
                 price: cd.price,
-                amount: cd.dispatchQuantity,
+                amount: convertAmountForward({
+                  material: materials.get(cd.materialId),
+                  amount: cd.dispatchQuantity,
+                }),
                 materialId: cd.materialId,
                 supplierNote: "",
                 internalNote: cd.internalNote,
@@ -224,7 +232,10 @@ export default {
             prCode: state.purchaseRequest?.code || "",
             purchaseInternalDetails: coordinationDetails.map(
               (cd) => ({
-                amount: cd.dispatchQuantity,
+                amount: convertAmountForward({
+                  material: materials.get(cd.materialId),
+                  amount: cd.dispatchQuantity,
+                }),
                 materialId: cd.materialId,
                 supplierNote: "",
                 internalNote: cd.internalNote,
@@ -312,8 +323,8 @@ function reducer(action: Action, state: State): State {
         const selectedMaterialIds = action.isSelected
           ? [...state.selectedMaterialIds, action.materialId]
           : state.selectedMaterialIds.filter(
-              (id) => id !== action.materialId,
-            );
+            (id) => id !== action.materialId,
+          );
         if (action.isSelected) {
           state.currents[action.materialId].deliveryCatering = NCC;
           state.updates[action.materialId].deliveryCatering = NCC;
@@ -438,10 +449,9 @@ function initPurchaseDetail(
   const material = materials.get(purchaseRequestDetail.materialId);
   const supplierId =
     material?.others.prices?.[cateringId]?.supplierId || "";
-  const amount = convertAmount({
+  const amount = convertAmountBackward({
     material,
     amount: purchaseRequestDetail.amount,
-    reverse: true,
   });
   return {
     id: purchaseRequestDetail.id,

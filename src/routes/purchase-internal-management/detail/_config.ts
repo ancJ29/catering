@@ -7,6 +7,7 @@ export const initialPurchaseInternalForm: PurchaseInternalForm = {
   deliveryDate: Date.now(),
   deliveryTime: "06:00",
   status: "DG",
+  prCode: "",
 };
 
 export type PurchaseInternalForm = {
@@ -16,4 +17,5 @@ export type PurchaseInternalForm = {
   deliveryDate: number;
   deliveryTime: string;
   status: PIStatus;
+  prCode: string;
 };

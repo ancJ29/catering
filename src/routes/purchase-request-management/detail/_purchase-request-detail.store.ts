@@ -10,7 +10,11 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { RequestDetail } from "@/types";
-import { convertAmount, createStore, roundToDecimals } from "@/utils";
+import {
+  convertAmountBackward,
+  createStore,
+  roundToDecimals,
+} from "@/utils";
 
 type State = {
   purchaseRequest?: PurchaseRequest;
@@ -146,6 +150,7 @@ export default {
     return store.getSnapshot().currents[materialId]?.price || 0;
   },
   async update(status: PRStatus, priority: string) {
+    const { materials } = useMaterialStore.getState();
     const state = store.getSnapshot();
     if (!state.purchaseRequest) {
       return;
@@ -160,7 +165,13 @@ export default {
       state.selectedMaterialIds
         .map((materialId) => {
           const purchaseDetail = state.updates[materialId];
-          return purchaseDetail;
+          return {
+            ...purchaseDetail,
+            amount: convertAmountBackward({
+              material: materials.get(materialId),
+              amount: purchaseDetail.amount,
+            }),
+          };
         })
         .filter(
           (update): update is RequestDetail => update !== undefined,
@@ -321,23 +332,20 @@ function initRequestDetail(
   inventories: Map<string, Inventory>,
 ) {
   const material = materials.get(purchaseRequestDetail.materialId);
-  const amount = convertAmount({
+  const amount = convertAmountBackward({
     material,
     amount: purchaseRequestDetail.amount,
-    reverse: true,
   });
-  const inventory = convertAmount({
+  const inventory = convertAmountBackward({
     material,
     amount:
       inventories.get(purchaseRequestDetail.materialId)?.amount || 0,
-    reverse: true,
   });
-  const minimumAmount = convertAmount({
+  const minimumAmount = convertAmountBackward({
     material,
     amount:
       inventories.get(purchaseRequestDetail.materialId)
         ?.minimumAmount || 0,
-    reverse: true,
   });
   return {
     id: purchaseRequestDetail.id,

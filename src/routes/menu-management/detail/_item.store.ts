@@ -102,7 +102,7 @@ export default {
     const cost = state.prices[productId] || 0;
     const quantity = state.item?.others.quantity[productId] ?? 1;
     const total = state.item?.others.total || 1;
-    return (cost * quantity) / total;
+    return ((cost * quantity) / total).toFixed(2);
   },
   getRatio(productId: string) {
     const state = store.getSnapshot();
@@ -218,13 +218,6 @@ function reducer(action: Action, state: State): State {
         };
       }
       return defaultState;
-    // case ActionType.SET_BOM:
-    //   if (action.bom) {
-    //     const bom = state.bom;
-    //     bom[action.bom.productId] = action.bom;
-    //     return { ...state, bom };
-    //   }
-    //   break;
     case ActionType.SET_STATUS:
       if (state.item && action.status) {
         state.item.others.status = action.status;

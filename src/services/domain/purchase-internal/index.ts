@@ -76,6 +76,20 @@ export async function addPurchaseInternal(
   });
 }
 
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_INTERNAL].schema;
+type UpdateRequest = z.infer<typeof updateRequest>;
+
+export async function updatePurchaseInternal(params: UpdateRequest) {
+  await callApi<UpdateRequest, { id: string }>({
+    action: Actions.UPDATE_PURCHASE_INTERNAL,
+    params,
+    options: {
+      toastMessage: "Your changes have been saved",
+    },
+  });
+}
+
 export function statusInternalOptions(t: (key: string) => string) {
   const statusOptions: OptionProps[] = piStatusSchema.options.map(
     (status) => ({

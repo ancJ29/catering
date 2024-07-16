@@ -6,12 +6,14 @@ type HeaderProps = {
   isSelectAll: boolean;
   onChangeIsSelectAll: (value: boolean) => void;
   disabled?: boolean;
+  showNeedToOrder?: boolean;
 };
 
 const Header = ({
   isSelectAll,
   onChangeIsSelectAll,
   disabled = false,
+  showNeedToOrder = true,
 }: HeaderProps) => {
   const t = useTranslation();
 
@@ -30,7 +32,6 @@ const Header = ({
     },
     { width: "20%", content: t("Material name") },
     { width: "8%", content: t("Inventory"), textAlign: "right" },
-    { width: "8%", content: t("Need to order"), textAlign: "right" },
     {
       width: "10%",
       content: t("Total order quantity"),
@@ -42,6 +43,14 @@ const Header = ({
     { width: "15%", content: t("Internal note") },
     { width: "5%", content: "" },
   ];
+
+  if (showNeedToOrder) {
+    columns.splice(3, 0, {
+      width: "8%",
+      content: t("Need to order"),
+      textAlign: "right",
+    });
+  }
 
   return (
     <>

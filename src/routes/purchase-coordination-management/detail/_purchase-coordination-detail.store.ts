@@ -10,7 +10,12 @@ import {
   updatePurchaseCoordination,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
-import { cloneDeep, convertAmount, createStore } from "@/utils";
+import {
+  cloneDeep,
+  convertAmountBackward,
+  convertAmountForward,
+  createStore,
+} from "@/utils";
 import {
   CoordinationDetail,
   SupplierSelectItemData,
@@ -147,6 +152,7 @@ export default {
     });
   },
   async complete() {
+    const { materials } = useMaterialStore.getState();
     const state = store.getSnapshot();
     const grouped: { [key: string]: CoordinationDetail[] } = {};
     const purchaseOrder: AddPurchaseOrderRequest = [];
@@ -179,7 +185,10 @@ export default {
         supplierId: key,
         purchaseOrderDetails: coordinationDetails.map((cd) => ({
           price: cd.price,
-          amount: cd.orderQuantity,
+          amount: convertAmountForward({
+            material: materials.get(cd.materialId),
+            amount: cd.orderQuantity,
+          }),
           materialId: cd.materialId,
           supplierNote: cd.supplierNote,
           internalNote: cd.internalNote,
@@ -337,10 +346,9 @@ function initCoordinationDetail(
   const material = materials.get(
     purchaseCoordinationDetail.materialId,
   );
-  const amount = convertAmount({
+  const amount = convertAmountBackward({
     material,
     amount: purchaseCoordinationDetail.amount,
-    reverse: true,
   });
   return {
     id: purchaseCoordinationDetail.id,

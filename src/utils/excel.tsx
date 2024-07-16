@@ -1,5 +1,6 @@
+// cspell:disable
 import * as XLSX from "xlsx";
-import { getWeekNumber } from "./time";
+import { formatTime, getWeekNumber } from "./time";
 
 export function processExcelFile<T>(
   file: File,
@@ -27,7 +28,6 @@ export function processExcelFile<T>(
 
 type ExportToMenuExcelProps = {
   data: string[];
-  fileName: string;
   sheetName?: string;
   targetName: string;
   customerName: string;
@@ -36,29 +36,39 @@ type ExportToMenuExcelProps = {
 
 export function exportToMenuExcel({
   data,
-  fileName,
   sheetName = "Sheet 1",
   targetName,
   customerName,
   headers,
 }: ExportToMenuExcelProps) {
-  // const worksheet = XLSX.utils.json_to_sheet(data);
-  // const worksheetData = [...headers, ...data];
-  console.log(headers);
-  const weekNumber = getWeekNumber(headers[0].timestamp || 0);
+  const firstDayOfWeek = headers[0].timestamp || 0;
+  const lastDayOfWeek = headers[headers.length - 1].timestamp || 0;
+  const weekNumber = getWeekNumber(firstDayOfWeek);
 
   const worksheet = XLSX.utils.aoa_to_sheet([
     [
       `THỰC ĐƠN DÀNH CHO ${targetName} CỦA KHÁCH HÀNG ${customerName}`,
     ],
-    // Áp dụng cho tuần 28 năm 2024 (08/07/2024~14/07/2024)
-    [`Áp dụng cho tuần ${weekNumber} năm 2024 `],
-    // ...worksheetData,
+    [
+      `Áp dụng cho tuần ${weekNumber} năm ${formatTime(
+        firstDayOfWeek,
+        "YYYY",
+      )} (${formatTime(firstDayOfWeek, "DD/MM/YYYY")}~${formatTime(
+        lastDayOfWeek,
+        "DD/MM/YYYY",
+      )}})`,
+    ],
   ]);
 
   const workbook = XLSX.utils.book_new();
 
   XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 
-  XLSX.writeFile(workbook, fileName);
+  XLSX.writeFile(
+    workbook,
+    `ThucDonTuan_${weekNumber}_${formatTime(
+      firstDayOfWeek,
+      "YYYY",
+    )}.xlsx`,
+  );
 }

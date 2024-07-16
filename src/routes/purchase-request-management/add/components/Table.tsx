@@ -12,9 +12,10 @@ import store from "../_add-purchase-request.store";
 
 type TableProps = {
   opened: boolean;
+  showNeedToOrder?: boolean;
 };
 
-const Table = ({ opened }: TableProps) => {
+const Table = ({ opened, showNeedToOrder = true }: TableProps) => {
   const t = useTranslation();
   const { materials } = useMaterialStore();
   const { materialIds, currents, isSelectAll } = useSyncExternalStore(
@@ -23,7 +24,7 @@ const Table = ({ opened }: TableProps) => {
   );
 
   const addMaterial = (materialId: string) => {
-    store.addMaterial(materialId);
+    store.addMaterial(materialId, t);
   };
 
   const removeMaterial = (materialId: string) => {
@@ -53,6 +54,7 @@ const Table = ({ opened }: TableProps) => {
               <Header
                 isSelectAll={isSelectAll}
                 onChangeIsSelectAll={store.setIsSelectAll}
+                showNeedToOrder={showNeedToOrder}
               />
             }
             h="calc(-8.5rem - 200px + 100vh)"
@@ -79,6 +81,7 @@ const Table = ({ opened }: TableProps) => {
                 removeMaterial={() =>
                   store.removeMaterial(materialId)
                 }
+                showNeedToOrder={showNeedToOrder}
               />
             ))}
           </ScrollTable>

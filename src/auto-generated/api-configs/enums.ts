@@ -76,6 +76,7 @@ export enum Actions {
   UPDATE_PURCHASE_REQUEST = "update-purchase-request",
   GET_PURCHASE_INTERNALS = "get-purchase-internals",
   ADD_PURCHASE_INTERNAL = "add-purchase-internal",
+  UPDATE_PURCHASE_INTERNAL = "update-purchase-internal",
   UPDATE_PURCHASE_INTERNAL_STATUS = "update-purchase-internal-status",
   GET_PURCHASE_COORDINATIONS = "get-purchase-coordinations",
   ADD_PURCHASE_COORDINATION = "add-purchase-coordination",

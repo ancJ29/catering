@@ -1,24 +1,32 @@
-import { notNullSchema } from "@/auto-generated/api-configs";
 import NumberInput from "@/components/common/NumberInput";
 import { PurchaseInternalDetail } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
-import { convertAmount } from "@/utils";
+import { convertAmountBackward } from "@/utils";
 import { Table, TextInput } from "@mantine/core";
 import { useState } from "react";
 
 type ItemProps = {
   purchaseInternalDetail: PurchaseInternalDetail;
+  onChangeAmount: (amount: number) => void;
+  onChangeInternalNote: (internalNote: string) => void;
+  onChangeKitchenDeliveryNote: (kitchenDeliveryNote: string) => void;
+  disabled: boolean;
 };
 
-const Item = ({ purchaseInternalDetail }: ItemProps) => {
+const Item = ({
+  purchaseInternalDetail,
+  onChangeAmount,
+  onChangeInternalNote,
+  onChangeKitchenDeliveryNote,
+  disabled,
+}: ItemProps) => {
   const { materials } = useMaterialStore();
   const material = materials.get(purchaseInternalDetail.materialId);
   const [amount] = useState(
-    convertAmount({
+    convertAmountBackward({
       material,
       amount: purchaseInternalDetail.amount,
-      reverse: true,
     }),
   );
 
@@ -34,14 +42,14 @@ const Item = ({ purchaseInternalDetail }: ItemProps) => {
     {
       content: (
         <NumberInput
-          w="10vw"
+          w="15vw"
           thousandSeparator=""
           isPositive={true}
-          value={amount}
-          onChange={() => notNullSchema}
+          defaultValue={amount}
+          onChange={onChangeAmount}
           allowDecimal={material?.others.allowFloat}
           isInteger={!material?.others.allowFloat}
-          disabled={true}
+          disabled={disabled}
         />
       ),
       align: "left",
@@ -50,10 +58,13 @@ const Item = ({ purchaseInternalDetail }: ItemProps) => {
     {
       content: (
         <TextInput
-          value={
+          defaultValue={
             purchaseInternalDetail?.others.kitchenDeliveryNote || ""
           }
-          disabled={true}
+          onChange={(e) =>
+            onChangeKitchenDeliveryNote(e.target.value)
+          }
+          disabled={disabled}
         />
       ),
       align: "left",
@@ -61,8 +72,11 @@ const Item = ({ purchaseInternalDetail }: ItemProps) => {
     {
       content: (
         <TextInput
-          value={purchaseInternalDetail?.others.internalNote || ""}
-          disabled={true}
+          defaultValue={
+            purchaseInternalDetail?.others.internalNote || ""
+          }
+          onChange={(e) => onChangeInternalNote(e.target.value)}
+          disabled={disabled}
         />
       ),
       align: "left",

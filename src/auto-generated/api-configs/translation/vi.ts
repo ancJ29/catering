@@ -350,4 +350,8 @@ export default {
   "Currently": "Có",
   "weekly menu(s) pending confirmation":
     "thực đơn trong tuần đang chờ xác nhận",
+  "Details": "Chi tiết",
+  "Functions": "Chức năng",
+  "Export menu (excel file)": "Xuất thực đơn (file excel)",
+  "Export production orders (excel file)": "Xuất lệnh sản xuất (file excel)",
 } satisfies Record<string, string>;

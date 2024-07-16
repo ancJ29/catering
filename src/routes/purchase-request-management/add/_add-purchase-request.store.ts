@@ -15,10 +15,12 @@ import {
 } from "@/types";
 import {
   cloneDeep,
-  convertAmount,
+  convertAmountBackward,
+  convertAmountForward,
   createStore,
   roundToDecimals,
 } from "@/utils";
+import { notifications } from "@mantine/notifications";
 
 type State = {
   currents: Record<string, RequestDetail>;
@@ -126,7 +128,14 @@ export default {
       materials,
     });
   },
-  addMaterial(materialId: string) {
+  addMaterial(materialId: string, t: (key?: string) => string) {
+    if (!store.getSnapshot().cateringId) {
+      notifications.show({
+        color: "red.5",
+        message: t("Please select catering"),
+      });
+      return;
+    }
     dispatch({
       type: ActionType.ADD_MATERIAL,
       materialId,
@@ -204,7 +213,7 @@ export default {
         const material = materials.get(materialId);
         return {
           ...state.updates[materialId],
-          amount: convertAmount({
+          amount: convertAmountForward({
             material,
             amount: state.updates[materialId].amount,
           }),
@@ -443,15 +452,13 @@ function initPurchaseDetail(
   cateringId: string,
 ) {
   const material = materials.get(inventory.materialId);
-  const amount = convertAmount({
+  const amount = convertAmountBackward({
     material,
     amount: inventory.amount,
-    reverse: true,
   });
-  const minimumAmount = convertAmount({
+  const minimumAmount = convertAmountBackward({
     material,
     amount: inventory.minimumAmount,
-    reverse: true,
   });
   return {
     materialId: inventory.materialId,

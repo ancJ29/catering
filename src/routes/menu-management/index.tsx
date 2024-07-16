@@ -71,7 +71,6 @@ const MenuManagement = () => {
     logger.info("handleExportMenu");
     exportToMenuExcel({
       data: [],
-      fileName: "exportedData.xlsx",
       targetName: "1",
       customerName: "AAA",
       headers,
@@ -79,7 +78,6 @@ const MenuManagement = () => {
   };
 
   const handleExportProductionOrders = () => {
-    //
     logger.info("handleExportProductionOrders");
   };
 

@@ -11,12 +11,12 @@ type ItemProps = {
   requestDetail?: RequestDetail;
   disabled?: boolean;
   isSelected: boolean;
-  // price: number;
   onChangeAmount: (value: number) => void;
   onChangeIsSelected: (value: boolean) => void;
   onChangSupplierNote: (value: string) => void;
   onChangeInternalNote: (value: string) => void;
   removeMaterial: () => void;
+  showNeedToOrder?: boolean;
 };
 
 const Item = ({
@@ -24,12 +24,12 @@ const Item = ({
   requestDetail,
   disabled = false,
   isSelected,
-  // price,
   onChangeAmount,
   onChangeIsSelected,
   onChangSupplierNote,
   onChangeInternalNote,
   removeMaterial,
+  showNeedToOrder = true,
 }: ItemProps) => {
   const t = useTranslation();
   const [amount, setAmount] = useState(requestDetail?.amount || 0);
@@ -59,7 +59,7 @@ const Item = ({
       align: "left",
     },
     { content: requestDetail?.inventory, align: "right" },
-    { content: requestDetail?.needToOrder, align: "right" },
+    // { content: requestDetail?.needToOrder, align: "right" },
     {
       content: (
         <NumberInput
@@ -123,6 +123,13 @@ const Item = ({
       align: "center",
     },
   ];
+
+  if (showNeedToOrder) {
+    columns.splice(3, 0, {
+      content: requestDetail?.needToOrder,
+      align: "right",
+    });
+  }
 
   return (
     <Table.Tr bg={requestDetail?.price === 0 ? "primary.0" : "white"}>

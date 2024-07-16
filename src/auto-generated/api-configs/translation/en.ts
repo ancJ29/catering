@@ -350,4 +350,9 @@ export default {
   "No suppliers available": "No suppliers available",
   "Currently": "Currently",
   "weekly menu(s) pending confirmation": "weekly menu(s) pending confirmation",
+  "Details": "Details",
+  "Functions": "Functions",
+  "Export menu (excel file)": "Export menu (excel file)",
+  "Export production orders (excel file)":
+    "Export production orders (excel file)",
 } satisfies Record<string, string>;

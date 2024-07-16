@@ -231,6 +231,25 @@ export const xUpdatePurchaseRequest = z.object({
   deletePurchaseRequestDetailIds: stringSchema.array(),
 });
 
+export const xUpdatePurchaseInternal = z.object({
+  id: stringSchema,
+  deliveryDate: dateSchema,
+  deliveryCateringId: stringSchema,
+  prCode: stringSchema,
+  receivingCateringId: stringSchema,
+  status: stringSchema,
+  purchaseInternalDetails: z
+    .object({
+      id: stringSchema,
+      materialId: stringSchema,
+      amount: numberSchema,
+      actualAmount: numberSchema,
+      kitchenDeliveryNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
+    })
+    .array(),
+});
+
 export const xAddPurchaseInternal = z.object({
   deliveryDate: dateSchema,
   receivingCateringId: stringSchema,
