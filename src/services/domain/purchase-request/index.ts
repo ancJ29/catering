@@ -208,9 +208,9 @@ export function changeablePurchaseRequestStatus(
       next === "DDP" ||
       next === "DH")
   ) {
-    if (role === ClientRoles.OWNER) {
-      return true;
-    }
+    // if (role === ClientRoles.OWNER) {
+    //   return true;
+    // }
   }
   // if (role === ClientRoles.OWNER) {
   //   return true;

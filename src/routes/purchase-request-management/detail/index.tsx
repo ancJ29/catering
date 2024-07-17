@@ -58,14 +58,14 @@ const PurchaseRequestDetail = () => {
   useOnMounted(load);
 
   const complete = async () => {
-    if (!values.status || !values.priority) {
+    if (!values.priority) {
       notifications.show({
         color: "red.5",
         message: t("Please complete all information"),
       });
       return;
     }
-    await store.update(values.status, values.priority);
+    await store.update(prStatusSchema.Values.DD, values.priority);
     load();
   };
 
@@ -82,7 +82,7 @@ const PurchaseRequestDetail = () => {
       <Flex direction="column" gap={10}>
         <PurchaseActions
           returnUrl="/purchase-request-management"
-          completeButtonTitle="Complete"
+          completeButtonTitle="Approved"
           complete={complete}
           disabledCompleteButton={disabled}
           rejectButtonTitle="Not approved"

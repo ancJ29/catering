@@ -1,21 +1,28 @@
-import { poStatusSchema } from "@/auto-generated/api-configs";
+import {
+  ClientRoles,
+  poStatusSchema,
+} from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import useTranslation from "@/hooks/useTranslation";
 import ServiceWrapper from "@/layouts/Admin/ServiceWrapper";
 import {
   PurchaseOrderDetail as _PurchaseOrderDetail,
   getPurchaseOrderById,
+  PurchaseOrder,
+  updatePurchaseOrder,
   updatePurchaseOrderStatus,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
+import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { formatTime } from "@/utils";
+import { convertAmountForward, formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  PurchaseOrderForm,
   initialPurchaseOrderForm,
+  PurchaseOrderForm,
 } from "./_config";
 import Form from "./components/Form";
 import SendMail from "./components/SendMail";
@@ -25,23 +32,36 @@ import Table from "./components/Table";
 const PurchaseOrderDetail = () => {
   const t = useTranslation();
   const { purchaseOrderId } = useParams();
+  const { role } = useAuthStore();
+  const { materials } = useMaterialStore();
   const { suppliers } = useSupplierStore();
   const [disabled, setDisabled] = useState(true);
-  const [purchaseOrderDetails, setPurchaseOrderDetails] = useState<
-  _PurchaseOrderDetail[]
-  >([]);
+  const [currents, setCurrents] = useState<_PurchaseOrderDetail[]>(
+    [],
+  );
+  const [updates, setUpdates] = useState<
+  Record<string, _PurchaseOrderDetail>
+  >({});
   const form = useForm<PurchaseOrderForm>({
     initialValues: initialPurchaseOrderForm,
   });
+  const [po, setPO] = useState<PurchaseOrder>();
 
   const load = useCallback(async () => {
     if (!purchaseOrderId) {
       return;
     }
     const purchaseOrder = await getPurchaseOrderById(purchaseOrderId);
-    setPurchaseOrderDetails(
-      purchaseOrder?.purchaseOrderDetails || [],
+    setCurrents(purchaseOrder?.purchaseOrderDetails || []);
+    setUpdates(
+      Object.fromEntries(
+        purchaseOrder?.purchaseOrderDetails.map((e) => [
+          e.materialId,
+          e,
+        ]) || [],
+      ),
     );
+    setPO(purchaseOrder);
     form.setValues({
       departmentId: purchaseOrder?.others.receivingCateringId,
       deliveryDate: purchaseOrder?.deliveryDate.getTime(),
@@ -54,15 +74,87 @@ const PurchaseOrderDetail = () => {
           .email || "",
     });
     setDisabled(
-      purchaseOrder?.others.status !== poStatusSchema.Values.DG,
+      !(
+        purchaseOrder?.others.status === poStatusSchema.Values.DG &&
+        (role === ClientRoles.OWNER || role === ClientRoles.SUPPLIER)
+      ),
     );
-  }, [form, purchaseOrderId, suppliers]);
+  }, [form, purchaseOrderId, role, suppliers]);
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleChangeAmount = (materialId: string, amount: number) => {
+    setUpdates({
+      ...updates,
+      [materialId]: {
+        ...updates[materialId],
+        amount,
+      },
+    });
+  };
+
+  const handleChangeInternalNote = (
+    materialId: string,
+    internalNote: string,
+  ) => {
+    setUpdates({
+      ...updates,
+      [materialId]: {
+        ...updates[materialId],
+        others: {
+          ...updates[materialId].others,
+          internalNote,
+        },
+      },
+    });
+  };
+
+  const handleChangeSupplierNote = (
+    materialId: string,
+    supplierNote: string,
+  ) => {
+    setUpdates({
+      ...updates,
+      [materialId]: {
+        ...updates[materialId],
+        others: {
+          ...updates[materialId].others,
+          supplierNote,
+        },
+      },
+    });
+  };
+
   const complete = async () => {
+    if (!po) {
+      return;
+    }
+    await updatePurchaseOrder({
+      ...po,
+      prCode: po.others.prCode,
+      type: po.others.type,
+      priority: po.others.priority,
+      receivingCateringId: po.others.receivingCateringId,
+      status: po.others.status,
+      purchaseOrderDetails: Object.values(updates).map((e) => {
+        const material = materials.get(e.materialId);
+        const amount = convertAmountForward({
+          material,
+          amount: e.amount,
+        });
+        return {
+          ...e,
+          amount,
+          actualAmount: e.amount,
+          paymentAmount: e.amount,
+          price: e.others.price,
+          supplierNote: e.others.supplierNote,
+          internalNote: e.others.internalNote,
+        };
+      }),
+    });
     await updatePurchaseOrderStatus({
       id: purchaseOrderId || "",
       status: poStatusSchema.Values.DD,
@@ -80,7 +172,7 @@ const PurchaseOrderDetail = () => {
             disabledCompleteButton={disabled}
           />
           <Form values={form.values} />
-          <Steppers status={form.values.status} disabled={true} />
+          <Steppers status={form.values.status} disabled={disabled} />
           <SendMail
             email={form.values.email}
             onChangeEmail={(email) =>
@@ -88,7 +180,13 @@ const PurchaseOrderDetail = () => {
             }
             disabled={disabled}
           />
-          <Table purchaseOrderDetails={purchaseOrderDetails} />
+          <Table
+            purchaseOrderDetails={currents}
+            disabled={disabled}
+            onChangeAmount={handleChangeAmount}
+            onChangeInternalNote={handleChangeInternalNote}
+            onChangeSupplierNote={handleChangeSupplierNote}
+          />
         </Flex>
       </Stack>
     </ServiceWrapper>

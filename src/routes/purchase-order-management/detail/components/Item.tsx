@@ -8,9 +8,19 @@ import { useEffect, useState } from "react";
 
 type ItemProps = {
   purchaseOrderDetail: PurchaseOrderDetail;
+  disabled: boolean;
+  onChangeAmount: (amount: number) => void;
+  onChangeSupplierNote: (note: string) => void;
+  onChangeInternalNote: (note: string) => void;
 };
 
-const Item = ({ purchaseOrderDetail }: ItemProps) => {
+const Item = ({
+  purchaseOrderDetail,
+  disabled,
+  onChangeAmount,
+  onChangeInternalNote,
+  onChangeSupplierNote,
+}: ItemProps) => {
   const t = useTranslation();
   const { materials } = useMaterialStore();
   const material = materials.get(purchaseOrderDetail.materialId);
@@ -36,7 +46,17 @@ const Item = ({ purchaseOrderDetail }: ItemProps) => {
     },
 
     {
-      content: <NumberInput value={amount} disabled />,
+      content: (
+        <NumberInput
+          thousandSeparator=""
+          allowNegative={false}
+          defaultValue={amount}
+          value={amount}
+          onChange={(val) => onChangeAmount(parseInt(val.toString()))}
+          allowDecimal={material?.others.allowFloat}
+          disabled={disabled}
+        />
+      ),
       align: "center",
     },
 
@@ -55,8 +75,9 @@ const Item = ({ purchaseOrderDetail }: ItemProps) => {
     {
       content: (
         <TextInput
-          value={purchaseOrderDetail.others.supplierNote || ""}
-          disabled
+          defaultValue={purchaseOrderDetail.others.supplierNote || ""}
+          disabled={disabled}
+          onChange={(e) => onChangeSupplierNote(e.target.value)}
         />
       ),
       align: "left",
@@ -64,8 +85,9 @@ const Item = ({ purchaseOrderDetail }: ItemProps) => {
     {
       content: (
         <TextInput
-          value={purchaseOrderDetail.others.internalNote || ""}
-          disabled
+          defaultValue={purchaseOrderDetail.others.internalNote || ""}
+          disabled={disabled}
+          onChange={(e) => onChangeInternalNote(e.target.value)}
         />
       ),
       align: "left",

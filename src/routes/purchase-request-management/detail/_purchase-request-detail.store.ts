@@ -11,6 +11,7 @@ import {
 import useMaterialStore from "@/stores/material.store";
 import { RequestDetail } from "@/types";
 import {
+  cloneDeep,
   convertAmountBackward,
   createStore,
   roundToDecimals,
@@ -169,7 +170,7 @@ export default {
             ...purchaseDetail,
             amount: convertAmountBackward({
               material: materials.get(materialId),
-              amount: purchaseDetail.amount,
+              amount: purchaseDetail?.amount,
             }),
           };
         })
@@ -222,6 +223,7 @@ function reducer(action: Action, state: State): State {
           ...state,
           purchaseRequest: action.purchaseRequest,
           currents,
+          updates: cloneDeep(currents),
           materialIds,
           selectedMaterialIds: materialIds,
           isSelectAll: true,

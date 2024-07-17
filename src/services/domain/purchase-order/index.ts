@@ -161,8 +161,8 @@ export function changeablePurchaseOrderStatus(
   if (!role) {
     return false;
   }
-  if (role === ClientRoles.OWNER) {
-    return true;
-  }
+  // if (role === ClientRoles.OWNER || role === ClientRoles.SUPPLIER) {
+  //   return true;
+  // }
   return false;
 }

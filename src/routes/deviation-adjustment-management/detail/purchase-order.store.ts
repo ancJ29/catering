@@ -1,12 +1,19 @@
 import { poStatusSchema } from "@/auto-generated/api-configs";
 import {
   getPurchaseOrderById,
+  Material,
   PurchaseOrder,
   PurchaseOrderDetail,
   updatePurchaseOrder,
   updatePurchaseOrderStatus,
 } from "@/services/domain";
-import { cloneDeep, createStore } from "@/utils";
+import useMaterialStore from "@/stores/material.store";
+import {
+  cloneDeep,
+  convertAmountBackward,
+  convertAmountForward,
+  createStore,
+} from "@/utils";
 import { OrderDetail } from "./_config";
 
 type State = {
@@ -85,6 +92,7 @@ export default {
     if (!state.purchaseOrder) {
       return;
     }
+    const { materials } = useMaterialStore.getState();
     await updatePurchaseOrder({
       ...state.purchaseOrder,
       prCode: state.purchaseOrder.others.prCode,
@@ -93,7 +101,27 @@ export default {
       receivingCateringId:
         state.purchaseOrder.others.receivingCateringId,
       status: state.purchaseOrder.others.status,
-      purchaseOrderDetails: Object.values(state.updates),
+      purchaseOrderDetails: Object.values(state.updates).map((e) => {
+        const material = materials.get(e.materialId);
+        const amount = convertAmountForward({
+          material,
+          amount: e.amount,
+        });
+        const actualAmount = convertAmountForward({
+          material,
+          amount: e.actualAmount,
+        });
+        const paymentAmount = convertAmountForward({
+          material,
+          amount: e.paymentAmount,
+        });
+        return {
+          ...e,
+          amount,
+          actualAmount,
+          paymentAmount,
+        };
+      }),
     });
     await updatePurchaseOrderStatus({
       id: state.purchaseOrder.id,
@@ -103,11 +131,13 @@ export default {
 };
 
 function reducer(action: Action, state: State): State {
+  const { materials } = useMaterialStore.getState();
   switch (action.type) {
     case ActionType.INIT_DATA:
       if (action.purchaseOrder) {
         const currents = initOrderDetails(
           action.purchaseOrder.purchaseOrderDetails,
+          materials,
         );
         return {
           ...state,
@@ -140,12 +170,29 @@ function reducer(action: Action, state: State): State {
 
 function initOrderDetails(
   purchaseOrderDetails: PurchaseOrderDetail[],
+  materials: Map<string, Material>,
 ) {
   const currents: Record<string, OrderDetail> = {};
   purchaseOrderDetails?.forEach((purchaseOrderDetail) => {
+    const material = materials.get(purchaseOrderDetail.materialId);
+    const amount = convertAmountBackward({
+      material,
+      amount: purchaseOrderDetail.amount,
+    });
+    const actualAmount = convertAmountBackward({
+      material,
+      amount: purchaseOrderDetail.actualAmount,
+    });
+    const paymentAmount = convertAmountBackward({
+      material,
+      amount: purchaseOrderDetail.paymentAmount,
+    });
+
     currents[purchaseOrderDetail.materialId] = {
       ...purchaseOrderDetail,
-      paymentAmount: purchaseOrderDetail.paymentAmount,
+      amount: amount,
+      actualAmount: actualAmount,
+      paymentAmount: paymentAmount,
       price: purchaseOrderDetail.others.price,
       vat: purchaseOrderDetail.others.vat,
       supplierNote: purchaseOrderDetail.others.supplierNote || "",

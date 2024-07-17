@@ -8,9 +8,19 @@ import Item from "./Item";
 
 type TableProps = {
   purchaseOrderDetails: PurchaseOrderDetail[];
+  disabled: boolean;
+  onChangeAmount: (materialId: string, amount: number) => void;
+  onChangeSupplierNote: (materialId: string, note: string) => void;
+  onChangeInternalNote: (materialId: string, note: string) => void;
 };
 
-const Table = ({ purchaseOrderDetails }: TableProps) => {
+const Table = ({
+  purchaseOrderDetails,
+  disabled,
+  onChangeAmount,
+  onChangeInternalNote,
+  onChangeSupplierNote,
+}: TableProps) => {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -37,6 +47,25 @@ const Table = ({ purchaseOrderDetails }: TableProps) => {
               <Item
                 key={purchaseOrderDetail.id}
                 purchaseOrderDetail={purchaseOrderDetail}
+                disabled={disabled}
+                onChangeAmount={(value) =>
+                  onChangeAmount(
+                    purchaseOrderDetail.materialId,
+                    value,
+                  )
+                }
+                onChangeInternalNote={(value) =>
+                  onChangeInternalNote(
+                    purchaseOrderDetail.materialId,
+                    value,
+                  )
+                }
+                onChangeSupplierNote={(value) =>
+                  onChangeSupplierNote(
+                    purchaseOrderDetail.materialId,
+                    value,
+                  )
+                }
               />
             ))}
           </ScrollTable>
