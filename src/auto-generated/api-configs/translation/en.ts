@@ -140,7 +140,7 @@ export default {
   "Password is incorrect": "Password is incorrect",
   "Password updated": "Password updated",
   "Password": "Password",
-  "Payment Adjustment": "Payment Adjustment",
+  "Deviation Adjustment": "Deviation Adjustment",
   "Payment Management": "Payment Management",
   "Payment Schedule": "Payment Schedule",
   "Phone": "Phone",
@@ -355,4 +355,14 @@ export default {
   "Export menu (excel file)": "Export menu (excel file)",
   "Export production orders (excel file)":
     "Export production orders (excel file)",
+  "Deviation Adjustment Management": "Deviation Adjustment Management",
+  "Save information": "Save information",
+  "Attached file": "Attached file",
+  "Order amount": "Order amount",
+  "Received amount": "Received amount",
+  "Payment amount": "Payment amount",
+  "VAT": "VAT",
+  "Total amount": "Total amount",
+  "Tax amount": "Tax amount",
+  "Total payment": "Total payment",
 } satisfies Record<string, string>;

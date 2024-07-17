@@ -6,7 +6,7 @@ import Header from "./Header";
 import Item from "./Item";
 
 const Table = () => {
-  const { currents } = useSyncExternalStore(
+  const { currents, canEditPrice } = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
   );
@@ -34,6 +34,10 @@ const Table = () => {
                 }
                 onChangePaymentQuantity={(value) =>
                   store.setPaymentQuantity(dailyMenu.id, value)
+                }
+                canEditPrice={canEditPrice}
+                onChangePrice={(value) =>
+                  store.setPrice(dailyMenu.id, value)
                 }
               />
             ))}

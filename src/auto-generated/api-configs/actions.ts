@@ -28,6 +28,7 @@ import {
   xSupplierSchema,
   xUpdatePurchaseCoordination,
   xUpdatePurchaseInternal,
+  xUpdatePurchaseOrder,
   xUpdatePurchaseRequest,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
@@ -35,6 +36,7 @@ import {
   bomOthersSchema,
   dailyMenuOthersSchema,
   inventoryOthersSchema,
+  poStatusSchema,
   prStatusSchema,
   supplierOthersSchema,
   userOthersSchema,
@@ -931,6 +933,7 @@ export const configs = {
       request: getSchema.extend({
         from: dateSchema.optional(),
         to: dateSchema.optional(),
+        status: poStatusSchema.optional(),
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),
@@ -954,6 +957,14 @@ export const configs = {
         id: stringSchema,
         status: stringSchema,
       }),
+    },
+  },
+  [Actions.UPDATE_PURCHASE_ORDER]: {
+    name: Actions.UPDATE_PURCHASE_ORDER,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xUpdatePurchaseOrder,
     },
   },
 } satisfies Record<Actions, ActionConfig>;

@@ -472,6 +472,7 @@ export const purchaseOrderDetailOthersSchema = z.object({
   supplierNote: nullishStringSchema,
   internalNote: nullishStringSchema,
   price: numberSchema,
+  vat: optionalNumberSchema.default(0),
 });
 
 export type ProductType = z.infer<typeof productTypeSchema>;

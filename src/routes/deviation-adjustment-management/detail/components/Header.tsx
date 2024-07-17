@@ -4,31 +4,24 @@ import { Table } from "@mantine/core";
 
 const Header = () => {
   const t = useTranslation();
+
   const columns = [
-    { width: "20%", content: t("Customer") },
-    { width: "20%", content: t("Meal target audience") },
-    { width: "10%", content: t("Meal shift"), textAlign: "center" },
-    { width: "8%", content: t("Price"), textAlign: "right" },
+    { width: "25%", content: t("Material name") },
+    { width: "10%", content: t("Order amount"), textAlign: "right" },
     {
-      width: "8%",
-      content: t("Meal predicted qty"),
+      width: "10%",
+      content: t("Received amount"),
       textAlign: "right",
     },
     {
-      width: "8%",
-      content: t("Meal production order qty"),
+      width: "10%",
+      content: t("Payment amount"),
       textAlign: "right",
     },
-    {
-      width: "8%",
-      content: t("Meal employee qty"),
-      textAlign: "right",
-    },
-    {
-      width: "8%",
-      content: t("Meal payment qty"),
-      textAlign: "right",
-    },
+    { width: "10%", content: t("Price"), textAlign: "right" },
+    { width: "5%", content: `${t("VAT")}(%)`, textAlign: "right" },
+    { width: "15%", content: t("Supplier note") },
+    { width: "15%", content: t("Internal note") },
   ];
   return (
     <>

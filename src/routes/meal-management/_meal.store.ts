@@ -1,8 +1,10 @@
+import { ClientRoles } from "@/auto-generated/api-configs";
 import {
   DailyMenu,
   getDailyMenu,
   pushDailyMenu,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useCustomerStore from "@/stores/customer.store";
 import {
   cloneDeep,
@@ -19,17 +21,18 @@ type State = {
   date: number;
   from: number;
   to: number;
+  canEditPrice: boolean;
 };
 
 export enum ActionType {
   RESET = "RESET",
-  // INIT_DATA = "INIT_DATA",
   SET_CATERING_ID = "SET_CATERING_ID",
   SET_DATE = "SET_DATE",
   SET_ESTIMATED_QUANTITY = "SET_ESTIMATED_QUANTITY",
   SET_PRODUCTION_ORDER_QUANTITY = "SET_PRODUCTION_ORDER_QUANTITY",
   SET_EMPLOYEE_QUANTITY = "SET_EMPLOYEE_QUANTITY",
   SET_PAYMENT_QUANTITY = "SET_PAYMENT_QUANTITY",
+  SET_PRICE = "SET_PRICE",
 }
 
 type Action = {
@@ -49,6 +52,7 @@ const defaultState = {
   date: new Date().getTime(),
   from: Date.now() - ONE_WEEK,
   to: Date.now() + ONE_WEEK,
+  canEditPrice: false,
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -57,13 +61,6 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  // async initData() {
-  //   const meals = await getDailyMenu();
-  //   dispatch({
-  //     type: ActionType.INIT_DATA,
-  //     meals,
-  //   });
-  // },
   async setSelectedCateringId(cateringId: string | null) {
     if (cateringId === null) {
       dispatch({ type: ActionType.RESET });
@@ -138,6 +135,13 @@ export default {
       mealId,
     });
   },
+  setPrice(mealId: string, quantity: number) {
+    dispatch({
+      type: ActionType.SET_PRICE,
+      quantity,
+      mealId,
+    });
+  },
   async save() {
     const state = store.getSnapshot();
     Object.values(state.updates).map(async (el) => {
@@ -158,6 +162,7 @@ export default {
 };
 
 function reducer(action: Action, state: State): State {
+  const { role } = useAuthStore.getState();
   switch (action.type) {
     case ActionType.RESET:
       return {
@@ -184,6 +189,9 @@ function reducer(action: Action, state: State): State {
           updates: cloneDeep(currents),
           dailyMenu,
           date: action.date ?? state.date,
+          canEditPrice:
+            role === ClientRoles.OWNER ||
+            role === ClientRoles.MANAGER,
         };
       }
       break;
@@ -247,6 +255,17 @@ function reducer(action: Action, state: State): State {
           others: {
             ...state.updates[action.mealId].others,
             total: action.quantity,
+          },
+        };
+      }
+      break;
+    case ActionType.SET_PRICE:
+      if (action.mealId && action.quantity) {
+        state.updates[action.mealId] = {
+          ...state.updates[action.mealId],
+          others: {
+            ...state.updates[action.mealId].others,
+            price: action.quantity,
           },
         };
       }

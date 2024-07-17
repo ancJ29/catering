@@ -124,5 +124,8 @@ export function changeablePurchaseInternalStatus(
   if (!role) {
     return false;
   }
+  if (role === ClientRoles.OWNER) {
+    return true;
+  }
   return false;
 }

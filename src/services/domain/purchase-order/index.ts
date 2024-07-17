@@ -106,6 +106,17 @@ export async function updatePurchaseOrderStatus(
   });
 }
 
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_ORDER].schema;
+type UpdateRequest = z.infer<typeof updateRequest>;
+
+export async function updatePurchaseOrder(params: UpdateRequest) {
+  await callApi<UpdateRequest, { id: string }>({
+    action: Actions.UPDATE_PURCHASE_ORDER,
+    params,
+  });
+}
+
 export function statusOrderOptions(t: (key: string) => string) {
   const statusOptions: OptionProps[] = poStatusSchema.options.map(
     (status) => ({

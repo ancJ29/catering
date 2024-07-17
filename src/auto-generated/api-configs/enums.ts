@@ -83,6 +83,7 @@ export enum Actions {
   UPDATE_PURCHASE_COORDINATION = "update-purchase-coordination",
   GET_PURCHASE_ORDERS = "get-purchase-orders",
   ADD_PURCHASE_ORDER = "add-purchase-order",
+  UPDATE_PURCHASE_ORDER = "update-purchase-order",
   UPDATE_PURCHASE_ORDER_STATUS = "update-purchase-order-status",
 }
 

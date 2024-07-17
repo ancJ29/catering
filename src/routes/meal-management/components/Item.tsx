@@ -11,6 +11,8 @@ type ItemProps = {
   onChangeProductionOrderQuantity: (value: number) => void;
   onChangeEmployeeQuantity: (value: number) => void;
   onChangePaymentQuantity: (value: number) => void;
+  onChangePrice: (value: number) => void;
+  canEditPrice: boolean;
 };
 
 const Item = ({
@@ -19,6 +21,8 @@ const Item = ({
   onChangeProductionOrderQuantity,
   onChangeEmployeeQuantity,
   onChangePaymentQuantity,
+  onChangePrice,
+  canEditPrice,
 }: ItemProps) => {
   const { customers } = useCustomerStore();
   const columns = [
@@ -35,13 +39,23 @@ const Item = ({
       align: "center",
     },
     {
-      content: numberWithDelimiter(dailyMenu.others.price || 0),
+      content: canEditPrice ? (
+        <NumberInput
+          w="8vw"
+          isPositive={true}
+          defaultValue={dailyMenu.others.price || 0}
+          onChange={onChangePrice}
+          allowDecimal={false}
+        />
+      ) : (
+        numberWithDelimiter(dailyMenu.others.price || 0)
+      ),
       align: "right",
     },
     {
       content: (
         <NumberInput
-          w="10vw"
+          w="8vw"
           isPositive={true}
           defaultValue={dailyMenu.others.estimatedQuantity}
           onChange={onChangeEstimatedQuantity}
@@ -53,7 +67,7 @@ const Item = ({
     {
       content: (
         <NumberInput
-          w="10vw"
+          w="8vw"
           isPositive={true}
           defaultValue={dailyMenu.others.productionOrderQuantity}
           onChange={onChangeProductionOrderQuantity}
@@ -65,7 +79,7 @@ const Item = ({
     {
       content: (
         <NumberInput
-          w="10vw"
+          w="8vw"
           isPositive={true}
           defaultValue={dailyMenu.others.employeeQuantity}
           onChange={onChangeEmployeeQuantity}
@@ -77,7 +91,7 @@ const Item = ({
     {
       content: (
         <NumberInput
-          w="10vw"
+          w="8vw"
           isPositive={true}
           defaultValue={dailyMenu.others.total}
           onChange={onChangePaymentQuantity}

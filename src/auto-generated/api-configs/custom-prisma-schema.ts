@@ -321,6 +321,30 @@ export const xAddPurchaseOrder = z.object({
     .array(),
 });
 
+export const xUpdatePurchaseOrder = z.object({
+  id: stringSchema,
+  deliveryDate: dateSchema,
+  supplierId: stringSchema,
+  purchaseCoordinationId: stringSchema,
+  prCode: stringSchema,
+  type: stringSchema,
+  priority: stringSchema,
+  receivingCateringId: stringSchema,
+  status: stringSchema,
+  purchaseOrderDetails: z
+    .object({
+      id: stringSchema,
+      materialId: stringSchema,
+      amount: numberSchema,
+      actualAmount: numberSchema,
+      paymentAmount: numberSchema,
+      price: numberSchema,
+      supplierNote: nullishStringSchema,
+      internalNote: nullishStringSchema,
+    })
+    .array(),
+});
+
 export const xPreferredSupplier = z.object({
   departmentId: stringSchema,
   materialId: stringSchema,

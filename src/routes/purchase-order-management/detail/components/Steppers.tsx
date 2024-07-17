@@ -1,4 +1,7 @@
-import { POStatus } from "@/auto-generated/api-configs";
+import {
+  POStatus,
+  poStatusSchema,
+} from "@/auto-generated/api-configs";
 import Stepper from "@/components/common/Stepper";
 import {
   changeablePurchaseOrderStatus,
@@ -28,11 +31,14 @@ const statuses: POStatus[] = [
 const map = new Map<number, POStatus>(statuses.map((s, i) => [i, s]));
 
 type SteppersProps = {
-  status: POStatus;
+  status?: POStatus;
   disabled?: boolean;
 };
 
-const Steppers = ({ status, disabled = false }: SteppersProps) => {
+const Steppers = ({
+  status = poStatusSchema.Values.DG,
+  disabled = false,
+}: SteppersProps) => {
   const [isChanged, setIsChanged] = useState(false);
   useEffect(() => {
     if (status === "DTC") {

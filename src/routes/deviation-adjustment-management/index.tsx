@@ -1,46 +1,51 @@
-import { prStatusSchema } from "@/auto-generated/api-configs";
-import PurchaseRequestFilter from "@/components/c-catering/PurchaseRequestFilter";
+import { poStatusSchema } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
-import {
-  FilterType,
-  defaultCondition,
-  filter,
-} from "@/configs/filters/purchase-request";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  PurchaseRequest,
-  getPurchaseRequests,
-  typePriorityAndStatusRequestOptions,
+  getPurchaseOrders,
+  PurchaseOrder,
+  statusOrderOptions,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
-import { endOfDay, startOfDay } from "@/utils";
+import useSupplierStore from "@/stores/supplier.store";
+import { endOfWeek, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { configs } from "../purchase-request-management/_config";
+import {
+  configs,
+  defaultCondition,
+  filter,
+  FilterType,
+} from "./_config";
+import Filter from "./components/Filter";
 
-const SupplyCoordination = () => {
+const DeviationAdjustmentManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const [purchaseRequests, setPurchaseRequests] = useState<
-  PurchaseRequest[]
-  >([]);
   const { caterings } = useCateringStore();
+  const { suppliers } = useSupplierStore();
+  const [purchaseOrders, setPurchaseOrders] = useState<
+  PurchaseOrder[]
+  >([]);
+
+  const [statusOptions] = useMemo(() => {
+    return statusOrderOptions(t);
+  }, [t]);
 
   const dataGridConfigs = useMemo(
-    () => configs(t, caterings),
-    [t, caterings],
+    () => configs(t, caterings, suppliers),
+    [t, caterings, suppliers],
   );
 
-  const [typeOptions, priorityOptions, statusOptions] =
-    useMemo(() => {
-      return typePriorityAndStatusRequestOptions(t);
-    }, [t]);
-
   const getData = async (from?: number, to?: number) => {
-    setPurchaseRequests(
-      await getPurchaseRequests(from, to, prStatusSchema.Values.DD),
+    setPurchaseOrders(
+      await getPurchaseOrders({
+        from,
+        to,
+        status: poStatusSchema.Values.DNK,
+      }),
     );
   };
 
@@ -49,8 +54,8 @@ const SupplyCoordination = () => {
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseRequests;
-  }, [purchaseRequests]);
+    return purchaseOrders;
+  }, [purchaseOrders]);
 
   const {
     condition,
@@ -64,7 +69,7 @@ const SupplyCoordination = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseRequest, FilterType>({
+  } = useFilterData<PurchaseOrder, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -73,7 +78,7 @@ const SupplyCoordination = () => {
   const onChangeDateRange = (from?: number, to?: number) => {
     if (condition?.from && condition?.to && from && to) {
       const _from = startOfDay(from);
-      const _to = endOfDay(to);
+      const _to = endOfWeek(to);
       if (from < condition.from || to > condition.to) {
         getData(_from, _to);
       }
@@ -82,46 +87,41 @@ const SupplyCoordination = () => {
     }
   };
 
-  const onRowClick = (item: PurchaseRequest) => {
-    navigate(`/supply-coordination/${item.id}`);
+  const onRowClick = (item: PurchaseOrder) => {
+    navigate(`/deviation-adjustment-management/${item.id}`);
   };
 
   return (
     <Stack gap={10} key={caterings.size}>
       <Flex justify="end" align="end" gap={10} key={counter}>
-        <PurchaseRequestFilter
+        <Filter
           keyword={keyword}
           from={condition?.from}
           to={condition?.to}
-          types={condition?.types}
-          priorities={condition?.priorities}
           statuses={condition?.statuses}
-          departmentIds={condition?.departmentIds}
+          receivingCateringIds={condition?.receivingCateringIds}
+          supplierIds={condition?.supplierIds}
           purchaseOrderIds={names}
-          typeOptions={typeOptions}
-          priorityOptions={priorityOptions}
           statusOptions={statusOptions}
           clearable={filtered}
           onClear={reset}
           onReload={reload}
-          onChangeTypes={updateCondition.bind(null, "types", "")}
-          onChangePriorities={updateCondition.bind(
-            null,
-            "priorities",
-            "",
-          )}
           onChangeStatuses={updateCondition.bind(
             null,
             "statuses",
             "",
           )}
-          onChangeDepartmentIds={updateCondition.bind(
+          onChangeReceivingCateringIds={updateCondition.bind(
             null,
-            "departmentIds",
+            "receivingCateringIds",
+            "",
+          )}
+          onChangeSupplierIds={updateCondition.bind(
+            null,
+            "supplierIds",
             "",
           )}
           onChangeDateRange={onChangeDateRange}
-          showStatusSelect={false}
         />
       </Flex>
       <DataGrid
@@ -138,4 +138,4 @@ const SupplyCoordination = () => {
   );
 };
 
-export default SupplyCoordination;
+export default DeviationAdjustmentManagement;

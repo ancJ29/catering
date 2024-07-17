@@ -10,6 +10,7 @@ export const purchaseOrderDetailSchema = z.object({
   id: z.string(),
   amount: z.number().int(),
   actualAmount: z.number().int(),
+  paymentAmount: z.number().int(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

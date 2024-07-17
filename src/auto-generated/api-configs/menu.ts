@@ -210,9 +210,10 @@ export default [
           ClientRoles.PURCHASING,
           ClientRoles.ACCOUNTING,
         ],
-        key: "payment-adjustment",
-        label: "Payment Adjustment",
+        key: "deviation-adjustment",
+        label: "Deviation Adjustment",
         icon: "edit-circle",
+        url: "/deviation-adjustment-management",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.ACCOUNTING],
