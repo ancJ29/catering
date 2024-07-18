@@ -83,9 +83,10 @@ export function lastElement<T>(arr: T[]) {
 }
 
 export function sortShifts(shifts: string[]): string[] {
-  return shifts.sort((a, b) => {
+  const _shifts = shifts.sort((a, b) => {
     const numA = parseInt(a.replace(/\D/g, ""), 10);
     const numB = parseInt(b.replace(/\D/g, ""), 10);
     return numA - numB;
   });
+  return unique(_shifts);
 }

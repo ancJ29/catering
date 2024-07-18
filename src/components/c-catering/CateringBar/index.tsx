@@ -92,11 +92,6 @@ const CateringBar = ({
     cateringIds,
   ]);
 
-  const targetData: string[] = useMemo(() => {
-    const data = customer?.others.targets.map((el) => el.name) || [];
-    return unique(data);
-  }, [customer]);
-
   const shiftData = useMemo(() => {
     const data = customer?.others.targets?.filter(
       (e) => e.name === targetName,
@@ -115,9 +110,11 @@ const CateringBar = ({
         const targets = customer.others.targets.filter(
           (el) => el.name === targetName,
         );
+        const shifts = targets?.flatMap((e) => e.shift) || [];
+        const sortedShifts = sortShifts(shifts);
         if (targets.length > 0) {
           onTargetChange(targets[0]);
-          onChangeShift?.(targets[0].shift);
+          onChangeShift?.(sortedShifts[0]);
         }
       }
     },
@@ -129,6 +126,14 @@ const CateringBar = ({
       t,
     ],
   );
+
+  const targetData: string[] = useMemo(() => {
+    const data = customer?.others.targets.map((el) => el.name) || [];
+    _onTargetChange(data[0]);
+    // onTargetChange(data[0]);
+    return unique(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customer]);
 
   const _selectCustomer = useCallback(
     (name: string | null, updateOnEmpty = false) => {
