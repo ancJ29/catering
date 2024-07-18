@@ -17,7 +17,6 @@ export type CateringBarProps = RadioGroupProps & {
   customer?: Customer;
   targetName: string;
   cateringId?: string;
-  allowAllTarget?: boolean;
   enableShift?: boolean;
   onClear: () => void;
   onChangeCateringId: (cateringId?: string) => void;
@@ -32,7 +31,6 @@ const CateringBar = ({
   targetName,
   cateringId,
   enableShift,
-  allowAllTarget,
   onChangeShift,
   onClear,
   onChangeCateringId,
@@ -96,11 +94,8 @@ const CateringBar = ({
 
   const targetData: string[] = useMemo(() => {
     const data = customer?.others.targets.map((el) => el.name) || [];
-    if (allowAllTarget && data.length > 1) {
-      data.unshift(t("All"));
-    }
     return unique(data);
-  }, [allowAllTarget, customer, t]);
+  }, [customer]);
 
   const shiftData = useMemo(() => {
     const data = customer?.others.targets?.filter(
@@ -217,7 +212,7 @@ const CateringBar = ({
       )}
       {Boolean(customer) && (
         <Select
-          value={targetName || t("All")}
+          value={targetName || targetData[0]}
           label={t("Customer target")}
           data={targetData}
           onChange={_onTargetChange}

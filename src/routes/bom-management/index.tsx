@@ -140,7 +140,6 @@ const BomManagement = () => {
           {!isStandard && (
             <Flex gap={10} justify="start" align="end" mb={10}>
               <CateringBar
-                allowAllTarget
                 enableShift
                 shift={condition.shift}
                 customer={condition.customer}

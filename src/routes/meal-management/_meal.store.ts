@@ -1,5 +1,6 @@
 import { ClientRoles } from "@/auto-generated/api-configs";
 import {
+  Customer,
   DailyMenu,
   getDailyMenu,
   pushDailyMenu,
@@ -163,6 +164,7 @@ export default {
 
 function reducer(action: Action, state: State): State {
   const { role } = useAuthStore.getState();
+  const { customers } = useCustomerStore.getState();
   switch (action.type) {
     case ActionType.RESET:
       return {
@@ -181,6 +183,7 @@ function reducer(action: Action, state: State): State {
         const currents = initDailyMenu(
           dailyMenu,
           action.date ?? state.date,
+          customers,
         );
         return {
           ...state,
@@ -206,7 +209,11 @@ function reducer(action: Action, state: State): State {
             date: action.date,
           };
         }
-        const currents = initDailyMenu(state.dailyMenu, action.date);
+        const currents = initDailyMenu(
+          state.dailyMenu,
+          action.date,
+          customers,
+        );
         return {
           ...state,
           currents,
@@ -277,12 +284,84 @@ function reducer(action: Action, state: State): State {
 function initDailyMenu(
   dailyMenu: Record<string, DailyMenu[]>,
   date: number,
+  customers: Map<string, Customer>,
 ) {
   const dateString = formatTime(date, "YYYY/MM/DD");
-  const dailyMenus = dailyMenu[dateString];
+  const dailyMenus = sortDailyMenus(dailyMenu[dateString], customers);
   const currents: Record<string, DailyMenu> = {};
   dailyMenus?.forEach((dailyMenu) => {
     currents[dailyMenu.id] = dailyMenu;
   });
   return currents;
+}
+
+function sortDailyMenus(
+  dailyMenus: DailyMenu[],
+  customers: Map<string, Customer>,
+) {
+  const compareTargetName = (a: DailyMenu, b: DailyMenu) => {
+    // cspell:disable
+    const priority = ["Chuyên gia", "Công nhân"];
+    // cspell:enable
+
+    const getPriority = (name: string) => {
+      for (let i = 0; i < priority.length; i++) {
+        if (name.startsWith(priority[i])) {
+          const number = parseInt(
+            name.replace(priority[i], "").trim(),
+          );
+          return {
+            priority: i,
+            number: isNaN(number) ? Infinity : number,
+          };
+        }
+      }
+      return { priority: priority.length, number: Infinity };
+    };
+
+    const targetNameA = a.others.targetName || "";
+    const targetNameB = b.others.targetName || "";
+
+    const priorityA = getPriority(targetNameA);
+    const priorityB = getPriority(targetNameB);
+
+    if (priorityA.priority < priorityB.priority) {
+      return -1;
+    }
+    if (priorityA.priority > priorityB.priority) {
+      return 1;
+    }
+    if (priorityA.number < priorityB.number) {
+      return -1;
+    }
+    if (priorityA.number > priorityB.number) {
+      return 1;
+    }
+
+    const shiftA = a.others.shift || 0;
+    const shiftB = b.others.shift || 0;
+
+    if (shiftA < shiftB) {
+      return -1;
+    }
+    if (shiftA > shiftB) {
+      return 1;
+    }
+
+    return 0;
+  };
+
+  return dailyMenus.sort((a, b) => {
+    const nameA = customers.get(a.customerId)?.name || "";
+    const nameB = customers.get(b.customerId)?.name || "";
+
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    return compareTargetName(a, b);
+  });
 }
