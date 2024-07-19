@@ -1,3 +1,4 @@
+import { poStatusSchema } from "@/auto-generated/api-configs";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
 import DateRangeInput from "@/components/common/DateRangeInput";
@@ -63,6 +64,12 @@ const PurchaseOrderFilter = ({
     }));
   }, [suppliers]);
 
+  const _statusOptions = statusOptions.filter(
+    (s) =>
+      s.value === poStatusSchema.Values.DNK ||
+      s.value === poStatusSchema.Values.DKTSL,
+  );
+
   return (
     <Stack gap={10} align="end">
       <Flex align="end" gap={10}>
@@ -97,7 +104,7 @@ const PurchaseOrderFilter = ({
           value={statuses}
           label={t("Status")}
           w={"20vw"}
-          options={statusOptions}
+          options={_statusOptions}
           onChange={onChangeStatuses}
         />
         <MultiSelect

@@ -130,7 +130,6 @@ const CateringBar = ({
   const targetData: string[] = useMemo(() => {
     const data = customer?.others.targets.map((el) => el.name) || [];
     _onTargetChange(data[0]);
-    // onTargetChange(data[0]);
     return unique(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer]);

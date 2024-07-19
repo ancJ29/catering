@@ -28,7 +28,7 @@ export type PurchaseOrderDetail =
 async function _getPurchaseOrders(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
-  status?: POStatus,
+  statuses?: POStatus[],
 ): Promise<PurchaseOrder[]> {
   return await loadAll<PurchaseOrder>({
     key: "purchaseOrders",
@@ -36,7 +36,7 @@ async function _getPurchaseOrders(
     params: {
       from,
       to,
-      status,
+      statuses,
     },
   });
 }
@@ -44,15 +44,15 @@ async function _getPurchaseOrders(
 type PurchaseOrderProps = {
   from?: number;
   to?: number;
-  status?: POStatus;
+  statuses?: POStatus[];
 };
 
 export async function getPurchaseOrders({
   from,
   to,
-  status,
+  statuses = [],
 }: PurchaseOrderProps) {
-  return _getPurchaseOrders(from, to, status).then(
+  return _getPurchaseOrders(from, to, statuses).then(
     (purchaseOrders) => {
       return purchaseOrders.map((el) => ({
         ...el,

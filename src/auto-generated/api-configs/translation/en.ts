@@ -365,4 +365,5 @@ export default {
   "Total amount": "Total amount",
   "Tax amount": "Tax amount",
   "Total payment": "Total payment",
+  "Approved": "Approved",
 } satisfies Record<string, string>;

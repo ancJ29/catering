@@ -364,4 +364,5 @@ export default {
   "Total amount": "Thành tiền",
   "Tax amount": "Tiền thuế",
   "Total payment": "Tổng thành tiền",
+  "Approved": "Đã duyệt",
 } satisfies Record<string, string>;

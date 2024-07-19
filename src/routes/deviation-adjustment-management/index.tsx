@@ -44,7 +44,10 @@ const DeviationAdjustmentManagement = () => {
       await getPurchaseOrders({
         from,
         to,
-        status: poStatusSchema.Values.DNK,
+        statuses: [
+          poStatusSchema.Values.DNK,
+          poStatusSchema.Values.DKTSL,
+        ],
       }),
     );
   };
