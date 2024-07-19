@@ -77,7 +77,7 @@ const PurchaseOrderFilter = ({
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10}>
+      <Flex gap={10} w="-webkit-fill-available">
         <AutocompleteForFilterData
           label={t("Purchase order po code")}
           w={"20vw"}

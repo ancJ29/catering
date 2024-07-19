@@ -9,7 +9,7 @@ import {
 import useCateringStore from "@/stores/catering.store";
 import useUserStore from "@/stores/user.store";
 import { endOfWeek, startOfDay } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -24,7 +24,7 @@ const PurchaseCoordinationManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseCoordinations, setPurchaseCoordinations] = useState<
-    PurchaseCoordination[]
+  PurchaseCoordination[]
   >([]);
   const { caterings } = useCateringStore();
   const { users } = useUserStore();
@@ -86,38 +86,33 @@ const PurchaseCoordinationManagement = () => {
 
   return (
     <Stack gap={10} key={caterings.size}>
-      <Flex justify="end" align="end" gap={10} key={counter}>
-        <Filter
-          from={condition?.from}
-          to={condition?.to}
-          types={condition?.types}
-          priorities={condition?.priorities}
-          statuses={condition?.statuses}
-          receivingCateringIds={condition?.receivingCateringIds}
-          typeOptions={typeOptions}
-          priorityOptions={priorityOptions}
-          statusOptions={statusOptions}
-          clearable={filtered}
-          onClear={reset}
-          onChangeTypes={updateCondition.bind(null, "types", "")}
-          onChangePriorities={updateCondition.bind(
-            null,
-            "priorities",
-            "",
-          )}
-          onChangeStatuses={updateCondition.bind(
-            null,
-            "statuses",
-            "",
-          )}
-          onChangeReceivingCateringIds={updateCondition.bind(
-            null,
-            "receivingCateringIds",
-            "",
-          )}
-          onChangeDateRange={onChangeDateRange}
-        />
-      </Flex>
+      <Filter
+        key={counter}
+        from={condition?.from}
+        to={condition?.to}
+        types={condition?.types}
+        priorities={condition?.priorities}
+        statuses={condition?.statuses}
+        receivingCateringIds={condition?.receivingCateringIds}
+        typeOptions={typeOptions}
+        priorityOptions={priorityOptions}
+        statusOptions={statusOptions}
+        clearable={filtered}
+        onClear={reset}
+        onChangeTypes={updateCondition.bind(null, "types", "")}
+        onChangePriorities={updateCondition.bind(
+          null,
+          "priorities",
+          "",
+        )}
+        onChangeStatuses={updateCondition.bind(null, "statuses", "")}
+        onChangeReceivingCateringIds={updateCondition.bind(
+          null,
+          "receivingCateringIds",
+          "",
+        )}
+        onChangeDateRange={onChangeDateRange}
+      />
       <DataGrid
         onRowClick={onRowClick}
         page={page}

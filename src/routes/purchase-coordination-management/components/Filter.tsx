@@ -70,7 +70,7 @@ const Filter = ({
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10}>
+      <Flex gap={10} w="-webkit-fill-available">
         <MultiSelect
           value={types}
           label={t("Purchase coordination type")}

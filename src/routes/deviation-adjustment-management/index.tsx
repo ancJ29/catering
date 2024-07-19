@@ -10,7 +10,7 @@ import {
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { endOfWeek, startOfDay } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -96,37 +96,32 @@ const DeviationAdjustmentManagement = () => {
 
   return (
     <Stack gap={10} key={caterings.size}>
-      <Flex justify="end" align="end" gap={10} key={counter}>
-        <Filter
-          keyword={keyword}
-          from={condition?.from}
-          to={condition?.to}
-          statuses={condition?.statuses}
-          receivingCateringIds={condition?.receivingCateringIds}
-          supplierIds={condition?.supplierIds}
-          purchaseOrderIds={names}
-          statusOptions={statusOptions}
-          clearable={filtered}
-          onClear={reset}
-          onReload={reload}
-          onChangeStatuses={updateCondition.bind(
-            null,
-            "statuses",
-            "",
-          )}
-          onChangeReceivingCateringIds={updateCondition.bind(
-            null,
-            "receivingCateringIds",
-            "",
-          )}
-          onChangeSupplierIds={updateCondition.bind(
-            null,
-            "supplierIds",
-            "",
-          )}
-          onChangeDateRange={onChangeDateRange}
-        />
-      </Flex>
+      <Filter
+        key={counter}
+        keyword={keyword}
+        from={condition?.from}
+        to={condition?.to}
+        statuses={condition?.statuses}
+        receivingCateringIds={condition?.receivingCateringIds}
+        supplierIds={condition?.supplierIds}
+        purchaseOrderIds={names}
+        statusOptions={statusOptions}
+        clearable={filtered}
+        onClear={reset}
+        onReload={reload}
+        onChangeStatuses={updateCondition.bind(null, "statuses", "")}
+        onChangeReceivingCateringIds={updateCondition.bind(
+          null,
+          "receivingCateringIds",
+          "",
+        )}
+        onChangeSupplierIds={updateCondition.bind(
+          null,
+          "supplierIds",
+          "",
+        )}
+        onChangeDateRange={onChangeDateRange}
+      />
       <DataGrid
         onRowClick={onRowClick}
         page={page}

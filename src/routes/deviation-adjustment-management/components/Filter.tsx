@@ -9,7 +9,7 @@ import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
 import { endOfWeek, startOfWeek } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { useMemo } from "react";
 
 type PurchaseOrderFilterProps = {
@@ -71,7 +71,7 @@ const PurchaseOrderFilter = ({
   );
 
   return (
-    <Stack gap={10} align="end">
+    <Flex gap={10} align="end" direction="column">
       <Flex align="end" gap={10}>
         <DateRangeInput
           label={t("Purchase order date")}
@@ -84,7 +84,7 @@ const PurchaseOrderFilter = ({
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10}>
+      <Flex gap={10} w="-webkit-fill-available">
         <AutocompleteForFilterData
           label={t("Purchase order po code")}
           w={"20vw"}
@@ -115,7 +115,7 @@ const PurchaseOrderFilter = ({
           onChange={onChangeReceivingCateringIds}
         />
       </Flex>
-    </Stack>
+    </Flex>
   );
 };
 
