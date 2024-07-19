@@ -1,5 +1,6 @@
 import {
   ClientRoles,
+  POStatus,
   poStatusSchema,
 } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
@@ -36,6 +37,7 @@ const PurchaseOrderDetail = () => {
   const { materials } = useMaterialStore();
   const { suppliers } = useSupplierStore();
   const [disabled, setDisabled] = useState(true);
+  const [disabledButton, setDisabledButton] = useState(true);
   const [currents, setCurrents] = useState<_PurchaseOrderDetail[]>(
     [],
   );
@@ -79,7 +81,9 @@ const PurchaseOrderDetail = () => {
         (role === ClientRoles.OWNER || role === ClientRoles.SUPPLIER)
       ),
     );
+    setDisabledButton(role !== ClientRoles.OWNER);
   }, [form, purchaseOrderId, role, suppliers]);
+
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,6 +131,10 @@ const PurchaseOrderDetail = () => {
     });
   };
 
+  const handleChangeStatus = (status: POStatus) => {
+    form.setFieldValue("status", status);
+  };
+
   const complete = async () => {
     if (!po) {
       return;
@@ -157,7 +165,10 @@ const PurchaseOrderDetail = () => {
     });
     await updatePurchaseOrderStatus({
       id: purchaseOrderId || "",
-      status: poStatusSchema.Values.DD,
+      status:
+        form.values.status === poStatusSchema.Values.DG
+          ? poStatusSchema.Values.DD
+          : form.values.status,
     });
   };
 
@@ -169,10 +180,13 @@ const PurchaseOrderDetail = () => {
             returnUrl="/purchase-order-management"
             completeButtonTitle="Approve for supplier"
             complete={complete}
-            disabledCompleteButton={disabled}
+            disabledCompleteButton={disabledButton}
           />
           <Form values={form.values} />
-          <Steppers status={form.values.status} disabled={disabled} />
+          <Steppers
+            status={form.values.status}
+            onChangeValue={handleChangeStatus}
+          />
           <SendMail
             email={form.values.email}
             onChangeEmail={(email) =>

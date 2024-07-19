@@ -933,7 +933,7 @@ export const configs = {
       request: getSchema.extend({
         from: dateSchema.optional(),
         to: dateSchema.optional(),
-        statuses: poStatusSchema.array(),
+        statuses: poStatusSchema.array().optional(),
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),

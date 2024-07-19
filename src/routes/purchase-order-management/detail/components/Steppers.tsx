@@ -32,11 +32,13 @@ const map = new Map<number, POStatus>(statuses.map((s, i) => [i, s]));
 
 type SteppersProps = {
   status?: POStatus;
+  onChangeValue: (value: POStatus) => void;
   disabled?: boolean;
 };
 
 const Steppers = ({
   status = poStatusSchema.Values.DG,
+  onChangeValue,
   disabled = false,
 }: SteppersProps) => {
   const [isChanged, setIsChanged] = useState(false);
@@ -66,6 +68,7 @@ const Steppers = ({
         keyPrefix="purchaseOrder"
         disabled={disabled}
         isChanged={isChanged}
+        onChangeValue={onChangeValue}
       />
     </ScrollArea>
   );
