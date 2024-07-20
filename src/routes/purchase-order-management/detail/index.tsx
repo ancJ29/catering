@@ -178,7 +178,11 @@ const PurchaseOrderDetail = () => {
         <Flex direction="column" gap={10}>
           <PurchaseActions
             returnUrl="/purchase-order-management"
-            completeButtonTitle="Approve for supplier"
+            completeButtonTitle={
+              !disabled && !disabledButton
+                ? "Approve for supplier"
+                : "Complete"
+            }
             complete={complete}
             disabledCompleteButton={disabledButton}
           />

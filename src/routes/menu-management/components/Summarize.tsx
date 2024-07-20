@@ -185,7 +185,9 @@ const Summarize = ({
           label={t("Total sets")}
           w="160px"
           step={1}
-          defaultValue={updatedDailyMenu?.others.total || 0}
+          defaultValue={
+            updatedDailyMenu?.others.productionOrderQuantity || 0
+          }
           onChange={(total) => store.setTotal(total)}
         />
         <NumberInput

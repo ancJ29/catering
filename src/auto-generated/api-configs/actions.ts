@@ -517,6 +517,7 @@ export const configs = {
         price: numberSchema,
         quantity: z.record(stringSchema, numberSchema),
         estimatedQuantity: numberSchema,
+        productionOrderQuantity: numberSchema,
         total: numberSchema,
         status: dailyMenuOthersSchema.shape.status,
         itemByType: z.record(stringSchema, numberSchema).optional(),

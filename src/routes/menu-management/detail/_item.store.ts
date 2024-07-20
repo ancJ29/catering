@@ -13,6 +13,7 @@ export type XDailyMenu = {
     quantity: Record<string, number>;
     total?: number;
     estimatedQuantity?: number;
+    productionOrderQuantity?: number;
   };
 };
 
@@ -191,7 +192,7 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_TOTAL:
       if (state.item) {
-        state.item.others.total = action.total || 0;
+        state.item.others.productionOrderQuantity = action.total || 0;
         return { ...state, updated: true };
       }
       break;
@@ -205,6 +206,10 @@ function reducer(action: Action, state: State): State {
               price: action.payload.others.price || 0,
               itemByType: action.payload.others.itemByType || {},
               total: action.payload.others.total || 0,
+              productionOrderQuantity:
+                action.payload.others.productionOrderQuantity || 0,
+              estimatedQuantity:
+                action.payload.others.estimatedQuantity || 0,
               cateringId: action.payload.others.cateringId,
               status: action.payload.others.status,
               quantity: {
