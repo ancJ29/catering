@@ -65,7 +65,7 @@ const EditUserForm = ({
   const submit = useCallback(
     (values: Form) => {
       modals.openConfirmModal({
-        title: t("Add user"),
+        title: t("Update user"),
         children: (
           <Text size="sm">
             {t("Are you sure you want to update user?")}
@@ -103,12 +103,14 @@ const EditUserForm = ({
     >
       <TextInput
         w={w}
+        withAsterisk
         label={t("Full name")}
         placeholder={t("John Doe")}
         {...form.getInputProps("fullName")}
       />
       <TextInput
         w={w}
+        withAsterisk
         label={t("Username")}
         placeholder={t("Username")}
         {...form.getInputProps("userName")}

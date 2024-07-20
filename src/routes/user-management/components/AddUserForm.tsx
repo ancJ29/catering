@@ -202,7 +202,7 @@ function _validate(t: (s: string) => string) {
   return {
     userName: isNotEmpty(t("field is required")),
     fullName: isNotEmpty(t("field is required")),
-    roleId: isNotEmpty(t("field is required")),
+    role: isNotEmpty(t("field is required")),
     phone: (value: unknown) => {
       if (value) {
         if (typeof value !== "string") {
