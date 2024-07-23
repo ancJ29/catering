@@ -239,7 +239,7 @@ function reducer(action: Action, state: State): State {
         );
         const internalCodeInventories = Object.fromEntries(
           action.inventories.map((inventory) => [
-            inventory.others.materialInternalCode,
+            materials.get(inventory.materialId)?.others?.internalCode,
             inventory,
           ]),
         );
@@ -269,7 +269,7 @@ function reducer(action: Action, state: State): State {
         );
         const internalCodeInventories = Object.fromEntries(
           action.inventories.map((inventory) => [
-            inventory.others.materialInternalCode,
+            materials.get(inventory.materialId)?.others?.internalCode,
             inventory,
           ]),
         );

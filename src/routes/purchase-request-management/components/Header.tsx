@@ -16,7 +16,6 @@ const Header = ({
   showNeedToOrder = true,
 }: HeaderProps) => {
   const t = useTranslation();
-
   const columns = [
     {
       width: "3%",

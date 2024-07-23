@@ -8,14 +8,13 @@ import useTranslation from "@/hooks/useTranslation";
 import useUrlHash from "@/hooks/useUrlHash";
 import {
   Department,
-  Material,
   getInventoryDepartments,
-  updateInventory,
+  Material,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
-import { Flex, Group, Radio, Stack } from "@mantine/core";
+import { Flex, Stack } from "@mantine/core";
 import {
   useCallback,
   useEffect,
@@ -23,34 +22,42 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { CheckType, FilterType, configs, filter } from "./_configs";
+import {
+  CheckType,
+  configs,
+  defaultCondition,
+  filter,
+  FilterType,
+} from "./_configs";
 import store from "./_inventory.store";
+import PendingOrderActions from "./components/PendingOrderActions";
+import RadioChecked from "./components/RadioChecked";
 
 const CheckInventory = () => {
   const t = useTranslation();
   const { user, role } = useAuthStore();
   const { materials } = useMaterialStore();
   const { departmentNameById } = useMetaDataStore();
-  const [key, setKey] = useState(Date.now());
   const [cateringId, setCateringId] = useState("");
   const [caterings, setCaterings] = useState<Department[]>([]);
-
-  const { updated } = useSyncExternalStore(
+  const { updated, key, isAuditedAllItems } = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
   );
 
-  useEffect(() => {
-    if (role === ClientRoles.CATERING) {
-      setCatering(user?.departmentIds?.[0]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const dataGridConfigs = useMemo(() => configs(t), [t]);
+  const dataGridConfigs = useMemo(
+    () =>
+      configs(
+        t,
+        materials,
+        isAuditedAllItems,
+        store.setAuditedAllItems,
+      ),
+    [isAuditedAllItems, materials, t],
+  );
 
   const cateringName = useMemo(() => {
-    return departmentNameById.get(cateringId) || "";
+    return departmentNameById.get(cateringId || "") || "";
   }, [cateringId, departmentNameById]);
 
   const dataLoader = useCallback(() => {
@@ -73,12 +80,15 @@ const CheckInventory = () => {
   } = useFilterData<Material, FilterType>({
     dataLoader,
     filter,
-    defaultCondition: {
-      type: "",
-      group: "",
-      checkType: CheckType.ALL,
-    },
+    defaultCondition,
   });
+
+  useEffect(() => {
+    if (role === ClientRoles.CATERING) {
+      setCatering(user?.departmentIds?.[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setCatering = useCallback(
     (cateringId?: string) => {
@@ -87,32 +97,28 @@ const CheckInventory = () => {
         store.reset();
       } else if (departmentNameById.has(cateringId)) {
         setCateringId(cateringId);
-        store.load(cateringId).then(() => {
-          setKey(Date.now());
-        });
+        store.setCateringId(cateringId);
+        // .then(() => setKey(Date.now()));
       }
     },
     [departmentNameById],
   );
 
   const save = useCallback(() => {
-    updateInventory(store.getUpdates()).then(() => {
-      cateringId &&
-        store.load(cateringId).then(() => setKey(Date.now()));
-    });
-  }, [cateringId]);
+    store.save();
+  }, []);
 
   const callback = useCallback(
-    ({ cateringId }: { cateringId: string }) => {
+    ({ cateringId }: { cateringId?: string }) => {
       if (!cateringId) {
         return;
       }
       setCateringId(cateringId);
-      store.load(cateringId).then(() => setKey(Date.now()));
+      store.setCateringId(cateringId);
+      // .then(() => setKey(Date.now()));
     },
     [],
   );
-
   useUrlHash({ cateringId }, callback);
 
   useEffect(() => {
@@ -121,6 +127,7 @@ const CheckInventory = () => {
 
   return (
     <Stack gap={10}>
+      <PendingOrderActions />
       <Flex justify="space-between" align="end" gap={10} w="100%">
         <CateringSelector
           style={{ width: "20vw" }}
@@ -158,23 +165,14 @@ const CheckInventory = () => {
             />
           </Flex>
         )}
-        <CustomButton
-          w="4.5vw"
-          confirm
-          disabled={!updated}
-          onClick={save}
-        >
+        <CustomButton confirm disabled={!updated} onClick={save}>
           {t("Save")}
         </CustomButton>
       </Flex>
       {cateringId && (
-        <RadioGroup
-          checkType={condition?.checkType || CheckType.ALL}
-          onChange={updateCondition.bind(
-            null,
-            "checkType",
-            CheckType.ALL,
-          )}
+        <RadioChecked
+          condition={condition}
+          updateCondition={updateCondition}
         />
       )}
       <DataGrid
@@ -196,34 +194,3 @@ const CheckInventory = () => {
 };
 
 export default CheckInventory;
-
-function RadioGroup({
-  checkType,
-  onChange,
-}: {
-  checkType: CheckType;
-  onChange: (value: CheckType) => void;
-}) {
-  const t = useTranslation();
-
-  return (
-    <Radio.Group
-      value={checkType}
-      onChange={(value) => onChange(value as CheckType)}
-    >
-      <Group>
-        {Object.values(CheckType).map((el: CheckType, idx) => {
-          return (
-            <Radio
-              h="2.2rem"
-              pt=".8rem"
-              key={idx}
-              value={el}
-              label={t(el)}
-            />
-          );
-        })}
-      </Group>
-    </Radio.Group>
-  );
-}

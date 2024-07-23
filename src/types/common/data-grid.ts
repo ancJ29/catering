@@ -1,7 +1,6 @@
 import { MantineStyleProp } from "@mantine/core";
 import { ReactNode } from "react";
-
-type TextAlign = "left" | "center" | "right";
+import { TextAlign } from "..";
 
 export type DataGridProps<T> = {
   limit?: number;
@@ -23,7 +22,7 @@ export type DataGridProps<T> = {
 
 export type DataGridColumnProps = {
   key: string;
-  header?: string;
+  header?: string | React.ReactNode;
   sortable?: boolean;
   sorting?: false | "asc" | "desc";
   width?: number | string;

@@ -109,10 +109,10 @@ export async function getAllDailyMenuInventories(
   return inventories;
 }
 
-export async function updateInventory(materials: Inventory[]) {
+export async function updateInventory(inventories: Inventory[]) {
   await callApi<Request, unknown>({
     action: Actions.UPDATE_INVENTORY,
-    params: materials,
+    params: inventories,
   });
 }
 

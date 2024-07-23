@@ -104,7 +104,10 @@ export const departmentOthersSchema = z.object({
 
 export const inventoryOthersSchema = z.object({
   memo: optionalStringSchema,
-  materialInternalCode: stringSchema,
+  amountAfterAudit: numberSchema.default(0),
+  amountShippedAfterAudit: numberSchema.default(0),
+  amountReceivedAfterAudit: numberSchema.default(0),
+  isAudited: booleanSchema.optional().default(false),
 });
 
 export const customerOthersSchema = z.object({
@@ -473,6 +476,29 @@ export const purchaseOrderDetailOthersSchema = z.object({
   internalNote: nullishStringSchema,
   price: numberSchema,
   vat: optionalNumberSchema.default(0),
+});
+
+export const wrTypeSchema = z.enum([
+  // cspell:disable
+  "NDCK", // Nhập điều chỉnh kho
+  "NKK", // Nhập kiểm kê
+  "NTKLD", // Nhập tồn kho lần đầu
+  "NTNCC", // Nhập từ NCC
+  "XCK", // Xuất chuyển kho
+  "XDCK", // Xuất điều chỉnh kho
+  "XKK", // Xuất kiểm kê
+  "XSD", // Xuất sử dụng
+  "XTH", // Xuất trả hàng
+  // cspell:enable
+]);
+
+export const warehouseReceiptOthersSchema = z.object({
+  type: wrTypeSchema,
+  memo: optionalStringSchema,
+});
+
+export const WarehouseReceiptDetailOthersSchema = z.object({
+  memo: optionalStringSchema,
 });
 
 export type ProductType = z.infer<typeof productTypeSchema>;

@@ -1,9 +1,156 @@
-import LastUpdated from "@/components/common/LastUpdated";
 import NumberInput from "@/components/common/NumberInput";
 import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { Center, Checkbox } from "@mantine/core";
+import {
+  Center,
+  Checkbox,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import store from "./_inventory.store";
+
+export const configs = (
+  t: (key: string) => string,
+  materials: Map<string, Material>,
+  isAuditedAllItems: boolean,
+  onAuditedAllItems: (checked: boolean) => void,
+): DataGridColumnProps[] => {
+  return [
+    {
+      key: "name",
+      sortable: true,
+      header: t("Material name"),
+      width: "20%",
+    },
+    {
+      key: "unit",
+      width: "5%",
+      textAlign: "left",
+      header: t("Unit"),
+      renderCell: (_, row: Material) => {
+        return row.others?.unit?.name || "N/A";
+      },
+    },
+    {
+      key: "amountAfterAudit",
+      header: t("Amount after audit"),
+      textAlign: "right",
+      width: "6%",
+      renderCell: (_, row) => {
+        return store.getAmountAfterAudit(row.id).toLocaleString();
+      },
+    },
+    {
+      key: "amountShippedAfterAudit",
+      header: t("Amount shipped after audit"),
+      textAlign: "right",
+      width: "6%",
+      renderCell: (_, row) => {
+        return store
+          .getAmountShippedAfterAudit(row.id)
+          .toLocaleString();
+      },
+    },
+    {
+      key: "amountReceivedAfterAudit",
+      header: t("Amount received after audit"),
+      textAlign: "right",
+      width: "6%",
+      renderCell: (_, row) => {
+        return store
+          .getAmountReceivedAfterAudit(row.id)
+          .toLocaleString();
+      },
+    },
+    {
+      key: "systemAmount",
+      header: t("System amount"),
+      width: "6%",
+      textAlign: "right",
+      renderCell: (_, row) => {
+        return store.getSystemAmount(row.id).toLocaleString();
+      },
+    },
+    {
+      key: "physicalAmount",
+      header: t("Physical amount"),
+      textAlign: "right",
+      width: "15%",
+      renderCell: (_, row) => {
+        return (
+          <NumberInput
+            key={row.id}
+            thousandSeparator=""
+            isPositive={true}
+            defaultValue={store.getAmount(row.id)}
+            onChange={(value) => store.setAmount(row.id, value)}
+            allowDecimal={materials.get(row.id)?.others.allowFloat}
+            isInteger={!materials.get(row.id)?.others.allowFloat}
+            style={{ paddingLeft: "2rem" }}
+          />
+        );
+      },
+    },
+    {
+      key: "difference",
+      header: t("Difference"),
+      textAlign: "right",
+      width: "4%",
+      renderCell: (_, row) => {
+        return store.getDifference(row.id).toLocaleString();
+      },
+    },
+    {
+      key: "memo",
+      header: t("Memo"),
+      headerStyle: {
+        paddingLeft: "0.8rem",
+      },
+      width: "15%",
+      renderCell: (_, row) => {
+        return (
+          <TextInput
+            defaultValue={store.getMemo(row.id)}
+            onChange={(e) => store.setMemo(row.id, e.target.value)}
+            style={{ paddingLeft: "1rem" }}
+          />
+        );
+      },
+    },
+    {
+      key: "checked",
+      header: (
+        <Stack gap={5} align="center">
+          <Text fw="bold">{t("Checked")}</Text>
+          <Checkbox
+            defaultChecked={isAuditedAllItems}
+            color="white"
+            iconColor="primary"
+            onChange={(value) =>
+              onAuditedAllItems(value.target.checked)
+            }
+          />
+        </Stack>
+      ),
+      width: "10%",
+      textAlign: "center",
+      renderCell: (_, row) => {
+        return (
+          <Center w="full">
+            <Checkbox
+              key={row.id}
+              defaultChecked={store.getIsAudited(row.id)}
+              onChange={(value) =>
+                store.setIsAudited(row.id, value.target.checked)
+              }
+            />
+          </Center>
+        );
+      },
+    },
+  ];
+};
 
 export enum CheckType {
   ALL = "All",
@@ -17,6 +164,12 @@ export type FilterType = {
   checkType: CheckType;
 };
 
+export const defaultCondition: FilterType = {
+  type: "",
+  group: "",
+  checkType: CheckType.ALL,
+};
+
 export function filter(m: Material, condition?: FilterType) {
   if (condition?.group && m.others.group !== condition.group) {
     return false;
@@ -25,90 +178,10 @@ export function filter(m: Material, condition?: FilterType) {
     return false;
   }
   if (condition?.checkType === CheckType.CHECKED) {
-    return store.checked(m.id);
+    return store.getIsAudited(m.id);
   }
   if (condition?.checkType === CheckType.NOT_CHECKED) {
-    return !store.checked(m.id);
+    return !store.getIsAudited(m.id);
   }
   return true;
 }
-
-export const configs = (
-  t: (key: string) => string,
-): DataGridColumnProps[] => {
-  return [
-    {
-      key: "name",
-      sortable: true,
-      header: t("Material name"),
-      width: "25vw",
-    },
-    {
-      key: "unit",
-      width: "60px",
-      textAlign: "left",
-      header: t("Unit"),
-      renderCell: (_, row) => {
-        return row.others?.unit?.name || "N/A";
-      },
-    },
-    {
-      key: "remain",
-      header: t("Remain amount"),
-      width: "150px",
-      textAlign: "right",
-      renderCell: (_, row) => {
-        return store.getAmount(row.id).toLocaleString();
-      },
-    },
-    {
-      key: "actual",
-      header: t("Actual amount"),
-      textAlign: "right",
-      width: "150px",
-      renderCell: (_, row) => {
-        return (
-          <NumberInput
-            key={row.id}
-            style={{ paddingLeft: "2rem" }}
-            defaultValue={store.getAmount(row.id)}
-            onChange={(value) => store.setAmount(row.id, value)}
-          />
-        );
-      },
-    },
-    {
-      key: "checked",
-      header: t("Checked"),
-      width: 150,
-      textAlign: "center",
-      renderCell: (_, row) => {
-        return (
-          <Center w="full">
-            <Checkbox
-              key={row.id}
-              defaultChecked={store.checked(row.id)}
-              onChange={() => store.markChecked(row.id)}
-            />
-          </Center>
-        );
-      },
-    },
-    {
-      key: "lastUpdated",
-      className: "c-catering-last-column flex-end",
-      renderCell: (_, row) => {
-        const inventory = store.getInventory(row.id);
-        return inventory?.updatedAt ? (
-          <LastUpdated
-            key={row.id}
-            lastModifiedBy={inventory.lastModifiedBy || "-"}
-            updatedAt={inventory.updatedAt}
-          />
-        ) : (
-          <></>
-        );
-      },
-    },
-  ];
-};
