@@ -4,7 +4,11 @@ import {
   updateInventory,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
-import { convertAmountBackward, createStore } from "@/utils";
+import {
+  convertAmountBackward,
+  convertAmountForward,
+  createStore,
+} from "@/utils";
 
 type State = {
   updated: boolean;
@@ -128,7 +132,34 @@ export default {
     });
   },
   async save() {
-    await updateInventory(Object.values(store.getSnapshot().updates));
+    const { materials } = useMaterialStore.getState();
+    await updateInventory(
+      Object.values(store.getSnapshot().updates).map((e) => {
+        const material = materials.get(e.materialId);
+        return {
+          ...e,
+          amount: convertAmountForward({
+            material,
+            amount: e.amount,
+          }),
+          others: {
+            ...e.others,
+            amountAfterAudit: convertAmountForward({
+              material,
+              amount: e.others.amountAfterAudit,
+            }),
+            amountShippedAfterAudit: convertAmountForward({
+              material,
+              amount: e.others.amountShippedAfterAudit,
+            }),
+            amountReceivedAfterAudit: convertAmountForward({
+              material,
+              amount: e.others.amountReceivedAfterAudit,
+            }),
+          },
+        };
+      }),
+    );
   },
 };
 
