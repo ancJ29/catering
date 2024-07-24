@@ -30,7 +30,6 @@ import {
   FilterType,
 } from "./_configs";
 import store from "./_inventory.store";
-import PendingOrderActions from "./components/PendingOrderActions";
 import RadioChecked from "./components/RadioChecked";
 
 const CheckInventory = () => {
@@ -127,7 +126,7 @@ const CheckInventory = () => {
 
   return (
     <Stack gap={10}>
-      <PendingOrderActions />
+      {/* <PendingOrderActions /> */}
       <Flex justify="space-between" align="end" gap={10} w="100%">
         <CateringSelector
           style={{ width: "20vw" }}
