@@ -5,6 +5,7 @@ import {
   menuSchema,
   messageSchema,
   messageTemplateSchema,
+  monthlyInventorySchema,
   productSchema,
   unitSchema,
 } from "@/auto-generated/prisma-schema";
@@ -739,6 +740,20 @@ export const configs = {
       }),
       response: listResponse.extend({
         inventories: xInventorySchema.array(),
+      }),
+    },
+  },
+  [Actions.GET_MONTHLY_INVENTORIES]: {
+    name: Actions.GET_MONTHLY_INVENTORIES,
+    group: ActionGroups.MONTHLY_INVENTORY_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        date: dateSchema,
+        departmentId: stringSchema,
+      }),
+      response: listResponse.extend({
+        monthlyInventories: monthlyInventorySchema.array(),
       }),
     },
   },

@@ -17,8 +17,9 @@ export default async function request(
   const nonce = await _nonce(timestamp, encoded, requestId);
   logger.trace(`[request] [${timestamp}] [${nonce}]`);
   // TODO: fix debug mode later
-  const DEBUG_MODE =
-    localStorage.getItem("__DEBUG_MODE") === "UXNNvrAA";
+  // const DEBUG_MODE =
+  //   localStorage.getItem("__DEBUG_MODE") === "UXNNvrAA";
+  const DEBUG_MODE = true;
   return axios
     .request({
       method: "POST",
@@ -26,9 +27,9 @@ export default async function request(
       data: DEBUG_MODE
         ? data
         : {
-          ...(debugCode ? data : {}),
-          data: encoded,
-        },
+            ...(debugCode ? data : {}),
+            data: encoded,
+          },
       headers: {
         "Authorization": token ? `Bearer ${token}` : undefined,
         "x-client-id": import.meta.env.CLIENT_ID || "0",

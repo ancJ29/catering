@@ -374,4 +374,5 @@ export default {
   "Dispatch to project": "Xuất đi CT",
   "Receive from project": "Nhập từ CT",
   "Receive from supplier": "Nhập từ NCC",
+  "Incomplete Ticket": "Phiếu chưa hoàn tất",
 } satisfies Record<string, string>;

@@ -375,4 +375,5 @@ export default {
   "Dispatch to project": "Dispatch to project",
   "Receive from project": "Receive from project",
   "Receive from supplier": "Receive from supplier",
+  "Incomplete Ticket": "Incomplete Ticket",
 } satisfies Record<string, string>;
