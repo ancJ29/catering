@@ -495,9 +495,11 @@ export const wrTypeSchema = z.enum([
 export const warehouseReceiptOthersSchema = z.object({
   type: wrTypeSchema,
   memo: optionalStringSchema,
+  cateringId: optionalStringSchema,
+  supplierId: optionalStringSchema,
 });
 
-export const WarehouseReceiptDetailOthersSchema = z.object({
+export const warehouseReceiptDetailOthersSchema = z.object({
   memo: optionalStringSchema,
 });
 
@@ -513,3 +515,4 @@ export type PRStatus = z.infer<typeof prStatusSchema>;
 export type PIStatus = z.infer<typeof piStatusSchema>;
 export type PCStatus = z.infer<typeof pcStatusSchema>;
 export type POStatus = z.infer<typeof poStatusSchema>;
+export type WRType = z.infer<typeof wrTypeSchema>;

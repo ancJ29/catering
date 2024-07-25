@@ -16,6 +16,8 @@ import {
   purchaseRequestSchema,
   supplierSchema,
   userSchema,
+  warehouseReceiptDetailSchema,
+  warehouseReceiptSchema,
 } from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 import {
@@ -37,6 +39,8 @@ import {
   purchaseRequestOthersSchema,
   supplierOthersSchema,
   userOthersSchema,
+  warehouseReceiptDetailOthersSchema,
+  warehouseReceiptOthersSchema,
 } from "./others";
 import {
   dateSchema,
@@ -351,3 +355,19 @@ export const xPreferredSupplier = z.object({
   supplierId: stringSchema,
   price: numberSchema,
 });
+
+export const xWarehouseReceiptSchema = warehouseReceiptSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: warehouseReceiptOthersSchema,
+    warehouseReceiptDetails: warehouseReceiptDetailSchema
+      .omit({
+        others: true,
+      })
+      .extend({
+        others: warehouseReceiptDetailOthersSchema,
+      })
+      .array(),
+  });

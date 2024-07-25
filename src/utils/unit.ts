@@ -21,20 +21,20 @@ function getConversionFactor(material?: Material): number {
   return factor;
 }
 
-export function convertAmountForward({
-  material,
-  amount,
-}: ConvertedAmountProps) {
-  const conversionFactor = getConversionFactor(material);
-  return amount * conversionFactor;
-}
-
 export function convertAmountBackward({
   material,
   amount,
 }: ConvertedAmountProps) {
   const conversionFactor = getConversionFactor(material);
   return amount / conversionFactor;
+}
+
+export function convertAmountForward({
+  material,
+  amount,
+}: ConvertedAmountProps) {
+  const conversionFactor = getConversionFactor(material);
+  return amount * conversionFactor;
 }
 
 export function roundToDecimals(

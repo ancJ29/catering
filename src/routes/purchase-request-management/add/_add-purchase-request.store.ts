@@ -161,7 +161,6 @@ export default {
       0,
     );
     return total;
-    return 0;
   },
   setAmount(materialId: string, amount: number) {
     dispatch({

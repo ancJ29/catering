@@ -85,3 +85,18 @@ export function getWeekNumber(timestamp: number): number {
     (pastDaysOfYear + startOfYearDate.getDay() + 1) / 7,
   );
 }
+
+export function startOfMonth(timestamp: number): number {
+  const date = new Date(timestamp);
+  date.setUTCDate(1);
+  date.setUTCHours(0, 0, 0, 0);
+  return date.getTime();
+}
+
+export function endOfMonth(timestamp: number): number {
+  const date = new Date(timestamp);
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  date.setUTCDate(0);
+  date.setUTCHours(23, 59, 59, 999);
+  return date.getTime();
+}

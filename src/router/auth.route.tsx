@@ -53,6 +53,7 @@ const componentMap: Record<string, LazyExoticComponent> = {
   MealManagement: lazy(() => import("@/routes/meal-management")),
   DeviationAdjustmentManagement: lazy(() => import("@/routes/deviation-adjustment-management")),
   DeviationAdjustmentDetail: lazy(() => import("@/routes/deviation-adjustment-management/detail")),
+  InventoryTransactionDetails: lazy(() => import("@/routes/inventory-transaction-details")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -244,7 +245,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        title: "Inventory Management",
+        title: "Inventory List",
       },
     },
   },
@@ -385,6 +386,16 @@ const configs: Config[] = [
   {
     path: "/deviation-adjustment-management/:purchaseOrderId",
     element: "DeviationAdjustmentDetail",
+  },
+  {
+    path: "/inventory-transaction-details",
+    element: "InventoryTransactionDetails",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Inventory Transaction Details",
+      },
+    },
   },
 ];
 

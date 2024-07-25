@@ -12,6 +12,7 @@ import {
   PRPriority,
   PRStatus,
   PRType,
+  WRType,
 } from "../others";
 import en from "./en";
 import vi from "./vi";
@@ -34,6 +35,7 @@ type PurchaseRequestKey =
 type PurchaseInternalKey = `purchaseInternal.status.${PIStatus}`;
 type PurchaseCoordinationKey = `purchaseCoordination.status.${PCStatus}`;
 type PurchaseOrderKey = `purchaseOrder.status.${POStatus}`;
+type WarehouseReceiptKey = `warehouseReceipt.type.${WRType}`;
 
 const departmentDictionaries: {
   en: Record<DepartmentKey, string>;
@@ -348,6 +350,38 @@ const purchaseOrderDictionaries: {
   },
 };
 
+const warehouseReceiptDictionaries: {
+  en: Record<WarehouseReceiptKey, string>;
+  vi: Record<WarehouseReceiptKey, string>;
+} = {
+  en: {
+    /* cspell:disable */
+    "warehouseReceipt.type.NDCK": "Adjustment Warehouse Entry",
+    "warehouseReceipt.type.NKK": "Inventory Entry",
+    "warehouseReceipt.type.NTKLD": "First Time Inventory Entry",
+    "warehouseReceipt.type.NTNCC": "Supplier Entry",
+    "warehouseReceipt.type.XCK": "Warehouse Transfer Exit",
+    "warehouseReceipt.type.XDCK": "Adjustment Warehouse Exit",
+    "warehouseReceipt.type.XKK": "Inventory Exit",
+    "warehouseReceipt.type.XSD": "Usage Exit",
+    "warehouseReceipt.type.XTH": "Return Goods Exit",
+    /* cspell:enable */
+  },
+  vi: {
+    /* cspell:disable */
+    "warehouseReceipt.type.NDCK": "Nhập điều chỉnh kho",
+    "warehouseReceipt.type.NKK": "Nhập kiểm kê",
+    "warehouseReceipt.type.NTKLD": "Nhập tồn kho lần đầu",
+    "warehouseReceipt.type.NTNCC": "Nhập từ NCC",
+    "warehouseReceipt.type.XCK": "Xuất chuyển kho",
+    "warehouseReceipt.type.XDCK": "Xuất điều chỉnh kho",
+    "warehouseReceipt.type.XKK": "Xuất kiểm kê",
+    "warehouseReceipt.type.XSD": "Xuất sử dụng",
+    "warehouseReceipt.type.XTH": "Xuất trả hàng",
+    /* cspell:enable */
+  },
+};
+
 export const dictionaries: {
   version: string;
   en: Record<string, string>;
@@ -363,6 +397,7 @@ export const dictionaries: {
     ...purchaseInternalDictionaries.en,
     ...purchaseCoordinationDictionaries.en,
     ...purchaseOrderDictionaries.en,
+    ...warehouseReceiptDictionaries.en,
     ...en,
   },
   vi: {
@@ -374,6 +409,7 @@ export const dictionaries: {
     ...purchaseInternalDictionaries.vi,
     ...purchaseCoordinationDictionaries.vi,
     ...purchaseOrderDictionaries.vi,
+    ...warehouseReceiptDictionaries.vi,
     ...vi,
   },
 };

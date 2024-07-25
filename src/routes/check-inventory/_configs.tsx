@@ -21,12 +21,12 @@ export const configs = (
       key: "name",
       sortable: true,
       header: t("Material name"),
-      width: "20%",
+      width: "15%",
     },
     {
       key: "unit",
       width: "5%",
-      textAlign: "left",
+      textAlign: "center",
       header: t("Unit"),
       renderCell: (_, row: Material) => {
         return row.others?.unit?.name || "N/A";
@@ -36,7 +36,7 @@ export const configs = (
       key: "amountAfterAudit",
       header: t("Amount after audit"),
       textAlign: "right",
-      width: "6%",
+      width: "8%",
       renderCell: (_, row) => {
         return store.getAmountAfterAudit(row.id).toLocaleString();
       },
@@ -45,7 +45,7 @@ export const configs = (
       key: "amountShippedAfterAudit",
       header: t("Amount shipped after audit"),
       textAlign: "right",
-      width: "6%",
+      width: "8%",
       renderCell: (_, row) => {
         return store
           .getAmountShippedAfterAudit(row.id)
@@ -56,7 +56,7 @@ export const configs = (
       key: "amountReceivedAfterAudit",
       header: t("Amount received after audit"),
       textAlign: "right",
-      width: "6%",
+      width: "8%",
       renderCell: (_, row) => {
         return store
           .getAmountReceivedAfterAudit(row.id)
@@ -66,7 +66,7 @@ export const configs = (
     {
       key: "systemAmount",
       header: t("System amount"),
-      width: "6%",
+      width: "8%",
       textAlign: "right",
       renderCell: (_, row) => {
         return store.getSystemAmount(row.id).toLocaleString();
@@ -76,7 +76,7 @@ export const configs = (
       key: "physicalAmount",
       header: t("Physical amount"),
       textAlign: "right",
-      width: "15%",
+      width: "10%",
       renderCell: (_, row) => {
         return (
           <NumberInput
@@ -96,7 +96,7 @@ export const configs = (
       key: "difference",
       header: t("Difference"),
       textAlign: "right",
-      width: "4%",
+      width: "8%",
       renderCell: (_, row) => {
         return store.getDifference(row.id).toLocaleString();
       },
@@ -133,7 +133,7 @@ export const configs = (
           />
         </Stack>
       ),
-      width: "10%",
+      width: "6%",
       textAlign: "center",
       renderCell: (_, row) => {
         return (

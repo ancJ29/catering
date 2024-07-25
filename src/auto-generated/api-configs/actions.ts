@@ -31,6 +31,7 @@ import {
   xUpdatePurchaseInternal,
   xUpdatePurchaseOrder,
   xUpdatePurchaseRequest,
+  xWarehouseReceiptSchema,
 } from "./custom-prisma-schema";
 import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
 import {
@@ -750,7 +751,6 @@ export const configs = {
     schema: {
       request: getSchema.extend({
         date: dateSchema,
-        departmentId: stringSchema,
       }),
       response: listResponse.extend({
         monthlyInventories: monthlyInventorySchema.array(),
@@ -981,6 +981,34 @@ export const configs = {
     type: ActionType.WRITE,
     schema: {
       request: xUpdatePurchaseOrder,
+    },
+  },
+  [Actions.GET_WAREHOUSE_EXPORTS]: {
+    name: Actions.GET_WAREHOUSE_EXPORTS,
+    group: ActionGroups.WAREHOUSE_RECEIPT_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
+      }),
+      response: listResponse.extend({
+        warehouseReceipts: xWarehouseReceiptSchema.array(),
+      }),
+    },
+  },
+  [Actions.GET_WAREHOUSE_IMPORTS]: {
+    name: Actions.GET_WAREHOUSE_IMPORTS,
+    group: ActionGroups.WAREHOUSE_RECEIPT_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
+      }),
+      response: listResponse.extend({
+        warehouseReceipts: xWarehouseReceiptSchema.array(),
+      }),
     },
   },
 } satisfies Record<Actions, ActionConfig>;

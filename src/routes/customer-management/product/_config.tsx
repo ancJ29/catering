@@ -1,6 +1,5 @@
 import Switch from "@/components/common/Switch";
-import { Product } from "@/services/domain";
-import { CustomerProduct } from "@/services/domain/customer-product";
+import { CustomerProduct, Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { Flex } from "@mantine/core";
 

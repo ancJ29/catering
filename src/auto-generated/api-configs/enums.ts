@@ -19,6 +19,7 @@ export enum ActionGroups {
   PURCHASE_INTERNAL_MANAGEMENT = "Purchase internal management",
   PURCHASE_COORDINATION_MANAGEMENT = "Purchase coordination management",
   PURCHASE_REQUEST_MANAGEMENT = "Purchase request management",
+  WAREHOUSE_RECEIPT_MANAGEMENT = "Warehouse receipt management",
 }
 
 export enum Actions {
@@ -87,6 +88,8 @@ export enum Actions {
   ADD_PURCHASE_ORDER = "add-purchase-order",
   UPDATE_PURCHASE_ORDER = "update-purchase-order",
   UPDATE_PURCHASE_ORDER_STATUS = "update-purchase-order-status",
+  GET_WAREHOUSE_EXPORTS = "get-warehouse-exports",
+  GET_WAREHOUSE_IMPORTS = "get-warehouse-imports",
 }
 
 export enum Permissions {
@@ -114,6 +117,7 @@ export enum Permissions {
   PURCHASE_INTERNAL_FULL_ACCESS = "purchase-internal-full-access",
   PURCHASE_COORDINATION_FULL_ACCESS = "purchase-coordination-full-access",
   PURCHASE_REQUEST_FULL_ACCESS = "purchase-request-full-access",
+  WAREHOUSE_RECEIPT_FULL_ACCESS = "warehouse-receipt-full-access",
 }
 
 export enum Policy {}

@@ -3,12 +3,12 @@ import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import { Customer } from "@/services/domain";
 import {
+  Customer,
   CustomerProduct,
   getCustomerProductsByCustomerId,
   updateCustomerProduct,
-} from "@/services/domain/customer-product";
+} from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
 import useProductStore from "@/stores/product.store";
 import { Flex, Stack, Text } from "@mantine/core";

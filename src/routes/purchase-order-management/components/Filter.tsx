@@ -11,7 +11,7 @@ import { endOfWeek, startOfWeek } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useMemo } from "react";
 
-type PurchaseOrderFilterProps = {
+type FilterProps = {
   keyword?: string;
   from?: number;
   to?: number;
@@ -29,7 +29,7 @@ type PurchaseOrderFilterProps = {
   onChangeDateRange: (from?: number, to?: number) => void;
 };
 
-const PurchaseOrderFilter = ({
+const Filter = ({
   keyword,
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
@@ -45,7 +45,7 @@ const PurchaseOrderFilter = ({
   onChangeReceivingCateringIds,
   onChangeSupplierIds,
   onChangeDateRange,
-}: PurchaseOrderFilterProps) => {
+}: FilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
   const _caterings: OptionProps[] = useMemo(() => {
@@ -77,7 +77,7 @@ const PurchaseOrderFilter = ({
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10} w="-webkit-fill-available">
+      <Flex gap={10} w="-webkit-fill-available" justify="end">
         <AutocompleteForFilterData
           label={t("Purchase order po code")}
           w={"20vw"}
@@ -112,4 +112,4 @@ const PurchaseOrderFilter = ({
   );
 };
 
-export default PurchaseOrderFilter;
+export default Filter;

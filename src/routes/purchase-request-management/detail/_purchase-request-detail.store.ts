@@ -13,6 +13,7 @@ import { RequestDetail } from "@/types";
 import {
   cloneDeep,
   convertAmountBackward,
+  convertAmountForward,
   createStore,
   roundToDecimals,
 } from "@/utils";
@@ -168,7 +169,7 @@ export default {
           const purchaseDetail = state.updates[materialId];
           return {
             ...purchaseDetail,
-            amount: convertAmountBackward({
+            amount: convertAmountForward({
               material: materials.get(materialId),
               amount: purchaseDetail?.amount,
             }),

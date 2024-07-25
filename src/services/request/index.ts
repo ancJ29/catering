@@ -27,9 +27,9 @@ export default async function request(
       data: DEBUG_MODE
         ? data
         : {
-            ...(debugCode ? data : {}),
-            data: encoded,
-          },
+          ...(debugCode ? data : {}),
+          data: encoded,
+        },
       headers: {
         "Authorization": token ? `Bearer ${token}` : undefined,
         "x-client-id": import.meta.env.CLIENT_ID || "0",

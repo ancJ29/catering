@@ -286,6 +286,13 @@ export default [
         label: "Import-Export",
         icon: "package-export",
       },
+      {
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
+        key: "inventory-transaction-details",
+        label: "Inventory Transaction Details",
+        icon: "transfer-in",
+        url: "/inventory-transaction-details",
+      },
     ],
   },
   {
