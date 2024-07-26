@@ -1,7 +1,7 @@
 import {
   FilterType as ProductFilterType,
   Tab,
-} from "@/routes/bom-management/_config";
+} from "@/routes/bom-management/_configs";
 import { Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { buildHash } from "@/utils";
