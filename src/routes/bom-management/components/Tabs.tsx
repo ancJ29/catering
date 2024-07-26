@@ -5,7 +5,7 @@ import {
   IconComponents,
 } from "@tabler/icons-react";
 import { ReactNode } from "react";
-import { Tab } from "../_configs";
+import { Tab } from "../_config";
 
 const tabs: [string, string, ReactNode][] = [
   [

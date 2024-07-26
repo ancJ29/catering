@@ -53,7 +53,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   FilterType as BomFilterType,
   Tab,
-} from "../../bom-management/_configs";
+} from "../../bom-management/_config";
 import Steppers from "../components/Steppers";
 import Summarize from "../components/Summarize";
 import TabControll from "../components/TabControll";

@@ -3,7 +3,7 @@ import { numberWithDelimiter } from "@/utils";
 import { Table } from "@mantine/core";
 import { useMemo } from "react";
 import store from "../_bom.store";
-import { FilterType, _customizeKey } from "../_configs";
+import { FilterType, _customizeKey } from "../_config";
 
 const CostTable = ({ condition }: { condition: FilterType }) => {
   const t = useTranslation();

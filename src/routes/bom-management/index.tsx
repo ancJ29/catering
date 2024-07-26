@@ -24,7 +24,7 @@ import {
   _customizeKey,
   defaultCondition,
   reducer,
-} from "./_configs";
+} from "./_config";
 import BomTable from "./components/BomTable";
 import CostTable from "./components/CostTable";
 import ProductFilter from "./components/ProductFilter";
