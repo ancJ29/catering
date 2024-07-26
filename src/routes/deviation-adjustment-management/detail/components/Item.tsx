@@ -2,7 +2,7 @@ import NumberInput from "@/components/common/NumberInput";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
 import { Table, TextInput } from "@mantine/core";
-import { OrderDetail } from "../_config";
+import { OrderDetail } from "../_configs";
 
 type ItemProps = {
   orderDetail: OrderDetail;

@@ -24,7 +24,7 @@ import { useParams } from "react-router-dom";
 import {
   initialPurchaseOrderForm,
   PurchaseOrderForm,
-} from "./_config";
+} from "./_configs";
 import Form from "./components/Form";
 import SendMail from "./components/SendMail";
 import Steppers from "./components/Steppers";
@@ -42,7 +42,7 @@ const PurchaseOrderDetail = () => {
     [],
   );
   const [updates, setUpdates] = useState<
-  Record<string, _PurchaseOrderDetail>
+    Record<string, _PurchaseOrderDetail>
   >({});
   const form = useForm<PurchaseOrderForm>({
     initialValues: initialPurchaseOrderForm,

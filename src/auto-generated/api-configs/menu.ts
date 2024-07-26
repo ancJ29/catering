@@ -269,7 +269,7 @@ export default [
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "inventory-management",
-        label: "Inventory Management",
+        label: "Inventory List",
         icon: "package-import",
         url: "/inventory-management",
       },
@@ -292,6 +292,13 @@ export default [
         label: "Inventory Transaction Details",
         icon: "transfer-in",
         url: "/inventory-transaction-details",
+      },
+      {
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
+        key: "warehouse-management",
+        label: "Warehouse Management",
+        icon: "list-details",
+        url: "/warehouse-management",
       },
     ],
   },

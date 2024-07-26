@@ -7,7 +7,7 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { SupplierSelectItemData } from "../_config";
+import { SupplierSelectItemData } from "../_configs";
 import SupplierSelectItem from "./SupplierSelectItem";
 
 type SupplierSelectProps = {

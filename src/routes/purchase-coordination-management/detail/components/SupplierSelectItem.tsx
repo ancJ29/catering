@@ -1,7 +1,7 @@
 import useTranslation from "@/hooks/useTranslation";
 import { numberWithDelimiter } from "@/utils";
 import { Stack, Text } from "@mantine/core";
-import { SupplierSelectItemData } from "../_config";
+import { SupplierSelectItemData } from "../_configs";
 
 const SupplierSelectItem = ({
   supplierName,

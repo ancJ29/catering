@@ -8,7 +8,7 @@ import { useState } from "react";
 import {
   CoordinationDetail,
   SupplierSelectItemData,
-} from "../_config";
+} from "../_configs";
 import SupplierSelect from "./SupplierSelect";
 
 type ItemProps = {

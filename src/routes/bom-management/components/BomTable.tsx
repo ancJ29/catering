@@ -7,7 +7,7 @@ import { lastElement, numberWithDelimiter } from "@/utils";
 import { Box, Button, Table, TextInput } from "@mantine/core";
 import { useMemo, useSyncExternalStore } from "react";
 import store from "../_bom.store";
-import { FilterType, Tab, _customizeKey } from "../_config";
+import { FilterType, Tab, _customizeKey } from "../_configs";
 
 const BomTable = ({
   condition,

@@ -14,7 +14,7 @@ import {
   convertAmountForward,
   createStore,
 } from "@/utils";
-import { OrderDetail } from "./_config";
+import { OrderDetail } from "./_configs";
 
 type State = {
   currents: Record<string, OrderDetail>;

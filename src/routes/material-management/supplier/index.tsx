@@ -18,7 +18,7 @@ import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SupplierMaterial, configs } from "./_config";
+import { SupplierMaterial, configs } from "./_configs";
 
 const MaterialSupplierManagement = () => {
   const { materialId } = useParams();

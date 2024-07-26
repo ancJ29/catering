@@ -18,13 +18,13 @@ import { endOfDay, startOfDay } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { configs } from "../purchase-request-management/_config";
+import { configs } from "../purchase-request-management/_configs";
 
 const SupplyCoordination = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseRequests, setPurchaseRequests] = useState<
-  PurchaseRequest[]
+    PurchaseRequest[]
   >([]);
   const { caterings } = useCateringStore();
 

@@ -14,7 +14,7 @@ import { GenericObject } from "@/types";
 import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Catering, configs } from "./_config";
+import { Catering, configs } from "./_configs";
 
 // TODO: refactor this component (ref: src/routes/menu-management/)
 const SupplierCateringManagement = () => {

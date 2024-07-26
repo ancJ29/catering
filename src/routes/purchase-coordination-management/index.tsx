@@ -17,14 +17,14 @@ import {
   configs,
   defaultCondition,
   filter,
-} from "./_config";
+} from "./_configs";
 import Filter from "./components/Filter";
 
 const PurchaseCoordinationManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseCoordinations, setPurchaseCoordinations] = useState<
-  PurchaseCoordination[]
+    PurchaseCoordination[]
   >([]);
   const { caterings } = useCateringStore();
   const { users } = useUserStore();

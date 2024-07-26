@@ -1,15 +1,13 @@
-import { poStatusSchema } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  getPurchaseOrders,
-  PurchaseOrder,
-  statusOrderOptions,
+  getAllWarehouseReceipts,
+  typeWarehouseOptions,
+  WarehouseReceipt,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
-import useSupplierStore from "@/stores/supplier.store";
-import { endOfWeek, startOfDay } from "@/utils";
+import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,35 +19,23 @@ import {
 } from "./_configs";
 import Filter from "./components/Filter";
 
-const DeviationAdjustmentManagement = () => {
+const WarehouseManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
+  const [currents, setCurrents] = useState<WarehouseReceipt[]>([]);
   const { caterings } = useCateringStore();
-  const { suppliers } = useSupplierStore();
-  const [purchaseOrders, setPurchaseOrders] = useState<
-    PurchaseOrder[]
-  >([]);
 
-  const [statusOptions] = useMemo(() => {
-    return statusOrderOptions(t);
+  const [typeOptions] = useMemo(() => {
+    return typeWarehouseOptions(t);
   }, [t]);
 
   const dataGridConfigs = useMemo(
-    () => configs(t, caterings, suppliers),
-    [t, caterings, suppliers],
+    () => configs(t, caterings),
+    [t, caterings],
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseOrders(
-      await getPurchaseOrders({
-        from,
-        to,
-        statuses: [
-          poStatusSchema.Values.DNK,
-          poStatusSchema.Values.DKTSL,
-        ],
-      }),
-    );
+    setCurrents(await getAllWarehouseReceipts({ from, to }));
   };
 
   useEffect(() => {
@@ -57,8 +43,8 @@ const DeviationAdjustmentManagement = () => {
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseOrders;
-  }, [purchaseOrders]);
+    return currents;
+  }, [currents]);
 
   const {
     condition,
@@ -72,7 +58,7 @@ const DeviationAdjustmentManagement = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseOrder, FilterType>({
+  } = useFilterData<WarehouseReceipt, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -81,7 +67,7 @@ const DeviationAdjustmentManagement = () => {
   const onChangeDateRange = (from?: number, to?: number) => {
     if (condition?.from && condition?.to && from && to) {
       const _from = startOfDay(from);
-      const _to = endOfWeek(to);
+      const _to = endOfDay(to);
       if (from < condition.from || to > condition.to) {
         getData(_from, _to);
       }
@@ -90,8 +76,8 @@ const DeviationAdjustmentManagement = () => {
     }
   };
 
-  const onRowClick = (item: PurchaseOrder) => {
-    navigate(`/deviation-adjustment-management/${item.id}`);
+  const onRowClick = (item: WarehouseReceipt) => {
+    navigate(`/warehouse-management/${item.id}`);
   };
 
   return (
@@ -101,23 +87,17 @@ const DeviationAdjustmentManagement = () => {
         keyword={keyword}
         from={condition?.from}
         to={condition?.to}
-        statuses={condition?.statuses}
-        receivingCateringIds={condition?.receivingCateringIds}
-        supplierIds={condition?.supplierIds}
-        purchaseOrderIds={names}
-        statusOptions={statusOptions}
+        types={condition?.types}
+        cateringIds={condition?.cateringIds}
+        warehouseReceiptCodes={names}
+        typeOptions={typeOptions}
         clearable={filtered}
         onClear={reset}
         onReload={reload}
-        onChangeStatuses={updateCondition.bind(null, "statuses", "")}
-        onChangeReceivingCateringIds={updateCondition.bind(
+        onChangeTypes={updateCondition.bind(null, "types", "")}
+        onChangeCateringIds={updateCondition.bind(
           null,
-          "receivingCateringIds",
-          "",
-        )}
-        onChangeSupplierIds={updateCondition.bind(
-          null,
-          "supplierIds",
+          "cateringIds",
           "",
         )}
         onChangeDateRange={onChangeDateRange}
@@ -131,9 +111,10 @@ const DeviationAdjustmentManagement = () => {
         columns={dataGridConfigs}
         data={data}
         onChangePage={setPage}
+        hasUpdateColumn={false}
       />
     </Stack>
   );
 };
 
-export default DeviationAdjustmentManagement;
+export default WarehouseManagement;

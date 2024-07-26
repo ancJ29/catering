@@ -53,11 +53,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   FilterType as BomFilterType,
   Tab,
-} from "../../bom-management/_config";
+} from "../../bom-management/_configs";
 import Steppers from "../components/Steppers";
 import Summarize from "../components/Summarize";
 import TabControll from "../components/TabControll";
-import { _configs } from "./_config";
+import { _configs } from "./_configs";
 import { FilterType, defaultCondition, filter } from "./_filter";
 import store from "./_item.store";
 

@@ -23,7 +23,7 @@ import { useParams } from "react-router-dom";
 import {
   PurchaseInternalForm,
   initialPurchaseInternalForm,
-} from "./_config";
+} from "./_configs";
 import Form from "./components/Form";
 import Steppers from "./components/Steppers";
 import Table from "./components/Table";

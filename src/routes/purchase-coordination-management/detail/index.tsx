@@ -15,7 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   PurchaseCoordinationForm,
   initialPurchaseCoordinationForm,
-} from "./_config";
+} from "./_configs";
 import store from "./_purchase-coordination-detail.store";
 import Form from "./components/Form";
 import Steppers from "./components/Steppers";

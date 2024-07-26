@@ -1,18 +1,21 @@
-import DateTimeInput from "@/components/common/DateTimeInput";
+import DateInput from "@/components/common/DateInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { Department } from "@/services/domain";
+import {
+  Department,
+  typeWarehouseOptions,
+  WarehouseReceipt,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { useMemo } from "react";
-import { PurchaseInternalForm } from "../_configs";
 
 type FormProps = {
-  values: PurchaseInternalForm;
+  warehouse?: WarehouseReceipt;
 };
 
-const Form = ({ values }: FormProps) => {
+const Form = ({ warehouse }: FormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
 
@@ -25,32 +28,34 @@ const Form = ({ values }: FormProps) => {
     );
   }, [activeCaterings]);
 
+  const [typeOptions] = useMemo(() => {
+    return typeWarehouseOptions(t);
+  }, [t]);
+
   return (
     <Flex justify="end" align="end" gap={10}>
       <Select
-        value={values.receivingCateringId}
-        label={t("Purchase internal receiving catering")}
+        value={warehouse?.departmentId}
+        label={t("Warehouse receipt created by catering")}
         w="20vw"
         options={_caterings}
         onChange={() => null}
-        disabled={true}
+        disabled
       />
-      <DateTimeInput
-        label={t("Purchase internal date")}
-        date={values.deliveryDate}
+      <DateInput
+        label={t("Warehouse receipt export - import date")}
+        value={warehouse?.date}
         onChangeDate={() => null}
-        time={values.deliveryTime}
-        onChangeTime={() => null}
-        w="25vw"
-        disabled={true}
+        w="20vw"
+        disabled
       />
       <Select
-        value={values.deliveryCateringId}
-        label={t("Purchase internal delivery catering")}
+        value={warehouse?.others.type}
+        label={t("Warehouse receipt type")}
         w="20vw"
-        options={_caterings}
+        options={typeOptions}
         onChange={() => null}
-        disabled={true}
+        disabled
       />
     </Flex>
   );

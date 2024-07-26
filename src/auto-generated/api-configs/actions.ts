@@ -983,6 +983,20 @@ export const configs = {
       request: xUpdatePurchaseOrder,
     },
   },
+  [Actions.GET_WAREHOUSE_RECEIPTS]: {
+    name: Actions.GET_WAREHOUSE_RECEIPTS,
+    group: ActionGroups.WAREHOUSE_RECEIPT_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
+      }),
+      response: listResponse.extend({
+        warehouseReceipts: xWarehouseReceiptSchema.array(),
+      }),
+    },
+  },
   [Actions.GET_WAREHOUSE_EXPORTS]: {
     name: Actions.GET_WAREHOUSE_EXPORTS,
     group: ActionGroups.WAREHOUSE_RECEIPT_MANAGEMENT,

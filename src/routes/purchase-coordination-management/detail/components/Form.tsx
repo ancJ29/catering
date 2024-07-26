@@ -9,7 +9,7 @@ import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { useMemo } from "react";
-import { PurchaseCoordinationForm } from "../_config";
+import { PurchaseCoordinationForm } from "../_configs";
 
 type FormProps = {
   values: PurchaseCoordinationForm;

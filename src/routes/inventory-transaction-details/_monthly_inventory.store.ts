@@ -4,7 +4,6 @@ import {
   getAllWarehouseImports,
   MonthlyInventory,
   WarehouseReceipt,
-  WarehouseReceiptDetail,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useMaterialStore from "@/stores/material.store";
@@ -15,13 +14,13 @@ import {
   endOfMonth,
   startOfMonth,
 } from "@/utils";
-import { Detail } from "./_configs";
+import { Detail, WarehouseDetail } from "./_configs";
 
 type State = {
   date: number;
   currents: Record<string, MonthlyInventory>;
-  warehouseExports: Record<string, WarehouseReceiptDetail[]>;
-  warehouseImports: Record<string, WarehouseReceiptDetail[]>;
+  warehouseExports: Record<string, WarehouseDetail[]>;
+  warehouseImports: Record<string, WarehouseDetail[]>;
   key: number;
 };
 
@@ -225,8 +224,8 @@ function reducer(action: Action, state: State): State {
 
 function initWarehouseReceipts(
   receipts: WarehouseReceipt[],
-): Record<string, WarehouseReceiptDetail[]> {
-  const warehouse: Record<string, WarehouseReceiptDetail[]> = {};
+): Record<string, WarehouseDetail[]> {
+  const warehouse: Record<string, WarehouseDetail[]> = {};
 
   receipts.forEach((receipt) => {
     receipt.warehouseReceiptDetails.forEach((detail) => {

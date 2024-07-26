@@ -4,7 +4,7 @@ import useTranslation from "@/hooks/useTranslation";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { useMemo } from "react";
-import { NOT_SERVED, SERVED } from "../_config";
+import { NOT_SERVED, SERVED } from "../_configs";
 
 type FilterProps = {
   names: string[];

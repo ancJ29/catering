@@ -54,6 +54,8 @@ const componentMap: Record<string, LazyExoticComponent> = {
   DeviationAdjustmentManagement: lazy(() => import("@/routes/deviation-adjustment-management")),
   DeviationAdjustmentDetail: lazy(() => import("@/routes/deviation-adjustment-management/detail")),
   InventoryTransactionDetails: lazy(() => import("@/routes/inventory-transaction-details")),
+  WarehouseManagement: lazy(() => import("@/routes/warehouse-management")),
+  WarehouseDetailManagement: lazy(() => import("@/routes/warehouse-management/detail")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -394,6 +396,26 @@ const configs: Config[] = [
       element: ServiceWrapper as Wrapper,
       props: {
         title: "Inventory Transaction Details",
+      },
+    },
+  },
+  {
+    path: "/warehouse-management",
+    element: "WarehouseManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Warehouse Management",
+      },
+    },
+  },
+  {
+    path: "/warehouse-management/:warehouseId",
+    element: "WarehouseDetailManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Warehouse Receipt Detail",
       },
     },
   },

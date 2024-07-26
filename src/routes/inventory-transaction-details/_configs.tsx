@@ -3,6 +3,7 @@ import {
   Department,
   Material,
   MonthlyInventory,
+  WarehouseReceiptDetail,
 } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { convertAmountBackward, roundToDecimals } from "@/utils";
@@ -149,19 +150,6 @@ export const configs = (
   ];
 };
 
-export type Detail = {
-  id: string;
-  date: Date;
-  type: WRType;
-  deliveryCatering: string;
-  receiveCatering: string;
-  materialId: string;
-  beginAmount: number;
-  amount: number;
-  endAmount: number;
-  price: number;
-};
-
 export type FilterType = {
   type: string;
   group: string;
@@ -189,3 +177,24 @@ export function filter(m: MonthlyInventory, condition?: FilterType) {
   }
   return true;
 }
+
+export type Detail = {
+  id: string;
+  date: Date;
+  type: WRType;
+  deliveryCatering: string;
+  receiveCatering: string;
+  materialId: string;
+  beginAmount: number;
+  amount: number;
+  endAmount: number;
+  price: number;
+};
+
+export type WarehouseDetail = WarehouseReceiptDetail & {
+  date: Date;
+  type: WRType;
+  departmentId: string;
+  supplierId?: string;
+  cateringId?: string;
+};

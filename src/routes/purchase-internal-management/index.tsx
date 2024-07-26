@@ -16,14 +16,14 @@ import {
   configs,
   defaultCondition,
   filter,
-} from "./_config";
+} from "./_configs";
 import Filter from "./components/Filter";
 
 const PurchaseInternalManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseInternals, setPurchaseInternals] = useState<
-  PurchaseInternal[]
+    PurchaseInternal[]
   >([]);
   const { caterings } = useCateringStore();
 

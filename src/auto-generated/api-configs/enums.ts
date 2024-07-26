@@ -88,6 +88,7 @@ export enum Actions {
   ADD_PURCHASE_ORDER = "add-purchase-order",
   UPDATE_PURCHASE_ORDER = "update-purchase-order",
   UPDATE_PURCHASE_ORDER_STATUS = "update-purchase-order-status",
+  GET_WAREHOUSE_RECEIPTS = "get-warehouse-receipts",
   GET_WAREHOUSE_EXPORTS = "get-warehouse-exports",
   GET_WAREHOUSE_IMPORTS = "get-warehouse-imports",
 }

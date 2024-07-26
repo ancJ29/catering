@@ -59,7 +59,6 @@ const Item = ({
       align: "left",
     },
     { content: requestDetail?.inventory, align: "right" },
-    // { content: requestDetail?.needToOrder, align: "right" },
     {
       content: (
         <NumberInput

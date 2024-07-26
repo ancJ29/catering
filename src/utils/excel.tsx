@@ -1,4 +1,5 @@
 // cspell:disable
+import logger from "@/services/logger";
 import * as XLSX from "xlsx";
 import { formatTime, getWeekNumber } from "./time";
 
@@ -71,4 +72,6 @@ export function exportToMenuExcel({
       "YYYY",
     )}.xlsx`,
   );
+
+  logger.info(data);
 }

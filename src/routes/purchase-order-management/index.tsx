@@ -8,7 +8,7 @@ import {
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
-import { endOfWeek, startOfDay } from "@/utils";
+import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ import {
   configs,
   defaultCondition,
   filter,
-} from "./_config";
+} from "./_configs";
 import Filter from "./components/Filter";
 
 const PurchaseOrderManagement = () => {
@@ -71,7 +71,7 @@ const PurchaseOrderManagement = () => {
   const onChangeDateRange = (from?: number, to?: number) => {
     if (condition?.from && condition?.to && from && to) {
       const _from = startOfDay(from);
-      const _to = endOfWeek(to);
+      const _to = endOfDay(to);
       if (from < condition.from || to > condition.to) {
         getData(_from, _to);
       }

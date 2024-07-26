@@ -18,13 +18,13 @@ import { Button, Flex, Stack } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { configs } from "./_config";
+import { configs } from "./_configs";
 
 const PurchaseRequestManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseRequests, setPurchaseRequests] = useState<
-  PurchaseRequest[]
+    PurchaseRequest[]
   >([]);
   const { caterings } = useCateringStore();
 

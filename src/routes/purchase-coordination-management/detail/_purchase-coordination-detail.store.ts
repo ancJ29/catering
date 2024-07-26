@@ -19,7 +19,7 @@ import {
 import {
   CoordinationDetail,
   SupplierSelectItemData,
-} from "./_config";
+} from "./_configs";
 
 type State = {
   purchaseCoordination?: PurchaseCoordination;
@@ -366,8 +366,8 @@ function initCoordinationDetail(
 }
 
 type SupplierMaterialsByMaterial = Record<
-string,
-Record<string, SupplierMaterial>
+  string,
+  Record<string, SupplierMaterial>
 >;
 
 function initSupplierMaterial(

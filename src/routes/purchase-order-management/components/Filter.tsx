@@ -84,7 +84,6 @@ const Filter = ({
           data={purchaseOrderIds}
           defaultValue={keyword}
           onReload={onReload}
-          disabled={false}
         />
         <MultiSelect
           value={supplierIds}

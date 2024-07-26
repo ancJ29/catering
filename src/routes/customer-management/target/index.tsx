@@ -13,7 +13,7 @@ import {
   defaultCondition,
   filter,
   FilterType,
-} from "./_config";
+} from "./_configs";
 import Filter from "./components/Filter";
 
 const CustomerTargetManagement = () => {

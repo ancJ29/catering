@@ -19,7 +19,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SupplierMaterial, configs } from "./_config";
+import { SupplierMaterial, configs } from "./_configs";
 
 const SupplierMaterialManagement = () => {
   const { supplierId } = useParams();

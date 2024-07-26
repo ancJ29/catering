@@ -7,7 +7,7 @@ import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
 import { useMemo } from "react";
-import { PurchaseOrderForm } from "../_config";
+import { PurchaseOrderForm } from "../_configs";
 
 type FormProps = {
   values: PurchaseOrderForm;
