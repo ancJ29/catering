@@ -231,6 +231,7 @@ const EditModal = () => {
             updatedDailyMenu.others.estimatedQuantity || 0,
             updatedDailyMenu.others.total || 0,
             updatedDailyMenu.others.price || 0,
+            updatedDailyMenu.others.productionOrderQuantity || 0,
             updatedDailyMenu.others.quantity,
           ).then((res) => {
             if (res?.length) {
@@ -376,6 +377,7 @@ async function _save(
   estimatedQuantity: number,
   total: number,
   price: number,
+  productionOrderQuantity: number,
   quantity: Record<string, number>,
 ) {
   loadingStore.startLoading();
@@ -389,6 +391,7 @@ async function _save(
         itemByType,
         price: price || 0,
         estimatedQuantity: estimatedQuantity || 0,
+        productionOrderQuantity: productionOrderQuantity || 0,
         total: total || 0,
         shift: params.shift,
         customerId: params.customerId,

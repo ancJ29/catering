@@ -78,6 +78,9 @@ const Navbar = ({
         })
         .map((item, idx) => {
           const isActive = _isActive(item, active);
+          if (!item.url && !item.subs?.find((el) => el.url)) {
+            return null;
+          }
           return (
             <NavLink
               opened={item.subs && activeKey === item.key}
