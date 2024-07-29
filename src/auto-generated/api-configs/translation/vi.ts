@@ -32,7 +32,6 @@ export default {
   "Position Management": "Quản lý chức vụ",
   "Inventory List": "Danh sách kho",
   "Check Inventory": "Kiểm kê kho",
-  "Import-Export": "Xuất - nhập kho",
   "Sales Report": "Báo cáo doanh thu",
   "Debt Report": "Báo cáo công nợ",
   "Import - Export Report": "Báo cáo xuất - nhập kho",

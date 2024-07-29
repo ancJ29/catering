@@ -282,12 +282,6 @@ export default [
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
-        key: "import-export",
-        label: "Import-Export",
-        icon: "package-export",
-      },
-      {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
         key: "inventory-transaction-details",
         label: "Inventory Transaction Details",
         icon: "transfer-in",

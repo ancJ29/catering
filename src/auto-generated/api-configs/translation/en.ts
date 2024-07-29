@@ -33,7 +33,6 @@ export default {
   "Position Management": "Position Management",
   "Inventory List": "Inventory List",
   "Check Inventory": "Check Inventory",
-  "Import-Export": "Import-Export",
   "Sales Report": "Sales Report",
   "Debt Report": "Debt Report",
   "Import - Export Report": "Import - Export Report",
