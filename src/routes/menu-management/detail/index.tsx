@@ -88,6 +88,7 @@ const EditModal = () => {
     item: updatedDailyMenu,
     productIds,
     updated,
+    key,
   } = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const { allTypes, products: allProducts } = useProductStore();
 
@@ -179,12 +180,11 @@ const EditModal = () => {
             } satisfies BomFilterType)}`,
           );
         },
-        dailyMenu,
       );
       return [`${Date.now()}.${randomString()}`, configs];
     }
     return ["config", []];
-  }, [user, dailyMenu, tab, parsedParams, disabled, t, navigate]);
+  }, [user, tab, parsedParams, disabled, t, navigate]);
 
   const dataLoader = useCallback(() => {
     return Array.from(allProducts.values()).filter((p) => !p.enabled);
@@ -287,6 +287,7 @@ const EditModal = () => {
             disabled={isCatering || disabled || tab === "modified"}
           />
           <DataGrid
+            key={key}
             hasUpdateColumn={false}
             hasOrderColumn
             columns={configs}

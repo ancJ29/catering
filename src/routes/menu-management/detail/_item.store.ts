@@ -23,6 +23,7 @@ type State = {
   productIds: string[];
   updated?: boolean;
   prices: Record<string, number>; // key: product id, value: price
+  key: number;
 };
 
 enum ActionType {
@@ -63,6 +64,7 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
     },
   },
   prices: {},
+  key: Date.now(),
 });
 
 export default {
@@ -87,8 +89,9 @@ export default {
         const amount = _bom[materialId];
         const material = materials.get(materialId);
         price +=
-          (material?.others?.prices?.[cateringId]?.price ?? 0) *
-          amount;
+          (material?.others?.prices?.[cateringId]?.price ||
+            material?.others.price ||
+            0) * amount;
       }
       prices[productId] = price;
     }
@@ -137,6 +140,17 @@ export default {
       quantity,
     });
   },
+  getQuantity(productId: string) {
+    const state = store.getSnapshot();
+    return state.item.others.quantity[productId] || 1;
+  },
+  isAmountChanged(productId: string) {
+    const state = store.getSnapshot();
+    return (
+      state.item.others.quantity[productId] ===
+      state.originItem?.others.quantity[productId]
+    );
+  },
   setTotal(total: number) {
     dispatch({ type: ActionType.SET_TOTAL, total });
   },
@@ -170,6 +184,7 @@ function reducer(action: Action, state: State): State {
       },
     },
     prices: {},
+    key: Date.now(),
   };
   switch (action.type) {
     case ActionType.RESET:
@@ -220,6 +235,7 @@ function reducer(action: Action, state: State): State {
           productIds: Object.keys(action.payload.others.quantity),
           updated: false,
           prices: action.prices,
+          key: state.key,
         };
       }
       return defaultState;
@@ -236,10 +252,12 @@ function reducer(action: Action, state: State): State {
         state.item.others.quantity[action.productId] =
           currentQuantity + 1;
         return {
+          originItem: state.originItem,
           item: state.item,
           productIds: Object.keys(state.item.others.quantity),
           updated: true,
           prices: state.prices,
+          key: state.key,
         };
       }
       break;
@@ -247,10 +265,12 @@ function reducer(action: Action, state: State): State {
       if (action.productId) {
         delete state.item.others.quantity[action.productId];
         return {
+          originItem: state.originItem,
           item: state.item,
           productIds: Object.keys(state.item.others.quantity),
           updated: true,
           prices: state.prices,
+          key: state.key,
         };
       }
       break;
@@ -263,10 +283,12 @@ function reducer(action: Action, state: State): State {
           action.quantity;
       }
       return {
+        originItem: state.originItem,
         item: { ...state.item },
         productIds: state.productIds,
         updated: true,
         prices: state.prices,
+        key: Date.now(),
       };
     default:
       break;

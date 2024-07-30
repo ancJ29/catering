@@ -3,7 +3,7 @@ import { ClientRoles } from "./others";
 
 export default [
   {
-    roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
+    roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
     key: "dashboard",
     label: "Dashboard",
     icon: "dashboard",
@@ -15,6 +15,7 @@ export default [
       ClientRoles.MANAGER,
       ClientRoles.PRODUCTION,
       ClientRoles.PURCHASING,
+      ClientRoles.CATERING,
     ],
     key: "metadata",
     label: "Metadata Management",
@@ -71,12 +72,11 @@ export default [
         dashboard: [ClientRoles.OWNER],
       },
       {
-        roles: [ClientRoles.OWNER],
+        roles: [ClientRoles.OWNER, ClientRoles.CATERING],
         key: "meal",
         label: "Meal Management",
         icon: "fish",
         url: "/meal-management",
-        dashboard: [ClientRoles.OWNER],
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
@@ -267,7 +267,7 @@ export default [
     icon: "building-warehouse",
     subs: [
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
         key: "inventory-management",
         label: "Inventory List",
         icon: "package-import",
@@ -302,19 +302,25 @@ export default [
       ClientRoles.MANAGER,
       ClientRoles.ACCOUNTING,
       ClientRoles.PURCHASING,
+      ClientRoles.CATERING,
     ],
     key: "report-management",
     label: "Report Management",
     icon: "report",
     subs: [
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "quick-report",
         label: "Quick Report",
         icon: "report-search",
       },
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.ACCOUNTING],
+        roles: [
+          ClientRoles.OWNER,
+          ClientRoles.MANAGER,
+          ClientRoles.ACCOUNTING,
+          ClientRoles.CATERING,
+        ],
         key: "sales-report",
         label: "Sales Report",
         icon: "report-money",
@@ -325,6 +331,7 @@ export default [
           ClientRoles.MANAGER,
           ClientRoles.ACCOUNTING,
           ClientRoles.PURCHASING,
+          ClientRoles.CATERING,
         ],
         key: "debt-report",
         label: "Debt Report",
@@ -335,14 +342,14 @@ export default [
           ClientRoles.OWNER,
           ClientRoles.MANAGER,
           ClientRoles.PURCHASING,
-          ClientRoles.PURCHASING,
+          ClientRoles.CATERING,
         ],
         key: "import-export-report",
         label: "Import - Export Report",
         icon: "report-analytics",
       },
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "report-template",
         label: "Report Templates",
         icon: "template",

@@ -4,7 +4,6 @@ import {
 } from "@/auto-generated/api-configs";
 import NumberInput from "@/components/common/NumberInput";
 import {
-  DailyMenu,
   Product,
   type DailyMenuDetailMode as Mode,
 } from "@/services/domain";
@@ -20,7 +19,6 @@ export const _configs = (
   cateringId: string,
   _disabled: boolean,
   onNavigate: (productId: string) => void,
-  dailyMenu?: DailyMenu,
 ): DataGridColumnProps[] => {
   const role = user.others.roles[0];
   let disabled = _disabled;
@@ -63,14 +61,16 @@ export const _configs = (
               input: {
                 color: mode === "detail" ? "black" : "",
                 backgroundColor:
-                  mode === "modified"
+                  mode === "modified" &&
+                  !store.isAmountChanged(product.id)
                     ? "var(--mantine-color-red-1)"
                     : undefined,
               },
             }}
             disabled={disabled}
             min={0}
-            defaultValue={dailyMenu?.others.quantity[product.id] ?? 1}
+            // defaultValue={dailyMenu?.others.quantity[product.id] ?? 1}
+            value={store.getQuantity(product.id)}
             onChange={(quantity) =>
               store.setQuantity(product.id, quantity)
             }
@@ -103,7 +103,7 @@ export const _configs = (
         const cost = store.getAverageCost(product.id);
         return (
           <Text w="100%" ta="right">
-            {cost}
+            {numberWithDelimiter(parseFloat(cost))}
           </Text>
         );
       },
@@ -118,7 +118,7 @@ export const _configs = (
         const ratio = store.getRatio(product.id);
         return (
           <Text w="100%" ta="right">
-            {ratio}
+            {ratio}%
           </Text>
         );
       },

@@ -31,17 +31,19 @@ export function _customizeKey(condition: FilterType) {
     return "";
   }
 
-  if (!condition.customer?.id) {
+  if (!condition.cateringId) {
     return "";
   }
 
-  return [
-    condition.customer?.id || "",
-    condition.target?.name || "",
-    condition.shift || "",
-  ]
-    .filter(Boolean)
-    .join(".");
+  return condition.cateringId;
+
+  // return [
+  //   condition.customer?.id || "",
+  //   condition.target?.name || "",
+  //   condition.shift || "",
+  // ]
+  //   .filter(Boolean)
+  //   .join(".");
 }
 
 export const reducer = (
