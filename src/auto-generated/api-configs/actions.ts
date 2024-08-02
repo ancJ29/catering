@@ -16,6 +16,7 @@ import {
   xAddPurchaseInternal,
   xAddPurchaseOrder,
   xAddPurchaseRequest,
+  xAddWarehouseReceiptSchema,
   xCustomerSchema,
   xDailyMenuSchema,
   xDepartmentSchema,
@@ -27,6 +28,7 @@ import {
   xPurchaseOrderSchema,
   xPurchaseRequestSchema,
   xSupplierSchema,
+  xUpdateInventorySchema,
   xUpdatePurchaseCoordination,
   xUpdatePurchaseInternal,
   xUpdatePurchaseOrder,
@@ -692,6 +694,22 @@ export const configs = {
         .array(),
     },
   },
+  [Actions.ADD_TO_INVENTORY]: {
+    name: Actions.ADD_TO_INVENTORY,
+    group: ActionGroups.INVENTORY_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xUpdateInventorySchema.array(),
+    },
+  },
+  [Actions.REMOVE_FROM_INVENTORY]: {
+    name: Actions.REMOVE_FROM_INVENTORY,
+    group: ActionGroups.INVENTORY_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xUpdateInventorySchema.array(),
+    },
+  },
   [Actions.GET_LOW_INVENTORIES]: {
     name: Actions.GET_LOW_INVENTORIES,
     group: ActionGroups.INVENTORY_MANAGEMENT,
@@ -950,6 +968,8 @@ export const configs = {
         from: dateSchema.optional(),
         to: dateSchema.optional(),
         statuses: poStatusSchema.array().optional(),
+        excludeStatuses: poStatusSchema.array().optional(),
+        receivingCateringId: optionalStringSchema,
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),
@@ -1023,6 +1043,14 @@ export const configs = {
       response: listResponse.extend({
         warehouseReceipts: xWarehouseReceiptSchema.array(),
       }),
+    },
+  },
+  [Actions.ADD_WAREHOUSE_RECEIPT]: {
+    name: Actions.ADD_WAREHOUSE_RECEIPT,
+    group: ActionGroups.WAREHOUSE_RECEIPT_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xAddWarehouseReceiptSchema,
     },
   },
 } satisfies Record<Actions, ActionConfig>;

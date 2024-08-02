@@ -65,6 +65,8 @@ export enum Actions {
   UPDATE_MATERIAL_SUPPLIER = "update-material-supplier",
   GET_INVENTORY = "get-inventory",
   UPDATE_INVENTORY = "update-inventory",
+  ADD_TO_INVENTORY = "add-to-inventory",
+  REMOVE_FROM_INVENTORY = "remove-from-inventory",
   GET_LOW_INVENTORIES = "get-low-inventories",
   GET_PERIODIC_INVENTORIES = "get-periodic-inventories",
   GET_INVENTORIES_FOR_DAILY_MENU = "get-inventories-for-daily-menu",
@@ -91,6 +93,7 @@ export enum Actions {
   GET_WAREHOUSE_RECEIPTS = "get-warehouse-receipts",
   GET_WAREHOUSE_EXPORTS = "get-warehouse-exports",
   GET_WAREHOUSE_IMPORTS = "get-warehouse-imports",
+  ADD_WAREHOUSE_RECEIPT = "add-warehouse-receipt",
 }
 
 export enum Permissions {

@@ -1,12 +1,16 @@
-import { pcStatusSchema } from "@/auto-generated/api-configs";
+import {
+  pcStatusSchema,
+  PRPriority,
+  PRType,
+} from "@/auto-generated/api-configs";
 import {
   AddPurchaseOrderRequest,
+  addPurchaseOrders,
+  getPurchaseCoordinationById,
   Material,
   PurchaseCoordination,
   PurchaseCoordinationDetail,
   SupplierMaterial,
-  addPurchaseOrders,
-  getPurchaseCoordinationById,
   updatePurchaseCoordination,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
@@ -154,6 +158,9 @@ export default {
   async complete() {
     const { materials } = useMaterialStore.getState();
     const state = store.getSnapshot();
+    if (!state.purchaseCoordination) {
+      return;
+    }
     const grouped: { [key: string]: CoordinationDetail[] } = {};
     const purchaseOrder: AddPurchaseOrderRequest = [];
     for (const key of Object.keys(state.updates)) {
@@ -176,32 +183,56 @@ export default {
         deliveryDate:
           state.purchaseCoordination?.deliveryDate || new Date(),
         purchaseCoordinationId: state.purchaseCoordination?.id || "",
-        receivingCateringId:
-          state.purchaseCoordination?.others.receivingCateringId ||
-          "",
-        prCode: state.purchaseCoordination?.others.prCode || "",
-        type: state.purchaseCoordination?.others.type || "",
-        priority: state.purchaseCoordination?.others.priority || "",
         supplierId: key,
+        others: {
+          receivingCateringId:
+            state.purchaseCoordination?.others.receivingCateringId ||
+            "",
+          prCode: state.purchaseCoordination?.others.prCode || "",
+          type: state.purchaseCoordination?.others.type as PRType,
+          priority: state.purchaseCoordination?.others
+            .priority as PRPriority,
+        },
         purchaseOrderDetails: coordinationDetails.map((cd) => ({
-          price: cd.price,
           amount: convertAmountForward({
             material: materials.get(cd.materialId),
             amount: cd.orderQuantity,
           }),
           materialId: cd.materialId,
-          supplierNote: cd.supplierNote,
-          internalNote: cd.internalNote,
+          others: {
+            price: cd.price,
+            supplierNote: cd.supplierNote,
+            internalNote: cd.internalNote,
+            vat: 0,
+          },
         })),
       });
     });
     await Promise.all([
-      updatePurchaseCoordination(
-        // cspell:disable
-        pcStatusSchema.Values.CNCCPH,
-        // cspell:enable
-        state.purchaseCoordination,
-      ),
+      updatePurchaseCoordination({
+        ...state.purchaseCoordination,
+        others: {
+          ...state.purchaseCoordination?.others,
+          // cspell:disable
+          status: pcStatusSchema.Values.CNCCPH,
+          // cspell:enable
+        },
+        purchaseCoordinationDetails: Object.values(state.updates).map(
+          (e) => ({
+            id: e.id,
+            materialId: e.materialId,
+            amount: convertAmountForward({
+              material: materials.get(e.materialId),
+              amount: e.orderQuantity,
+            }),
+            others: {
+              price: e.price,
+              supplierNote: e.supplierNote,
+              internalNote: e.internalNote,
+            },
+          }),
+        ),
+      }),
       addPurchaseOrders(purchaseOrder),
     ]);
     return true;
@@ -325,7 +356,6 @@ function initCoordinationDetails(
   purchaseCoordination: PurchaseCoordination,
   materials: Map<string, Material>,
 ) {
-  purchaseCoordination.others.receivingCateringId;
   return Object.fromEntries(
     purchaseCoordination?.purchaseCoordinationDetails.map((e) => [
       e.materialId,
@@ -366,8 +396,8 @@ function initCoordinationDetail(
 }
 
 type SupplierMaterialsByMaterial = Record<
-  string,
-  Record<string, SupplierMaterial>
+string,
+Record<string, SupplierMaterial>
 >;
 
 function initSupplierMaterial(

@@ -1,0 +1,81 @@
+import { poCateringStatusSchema } from "@/auto-generated/api-configs";
+import PurchaseActions from "@/components/c-catering/PurchaseActions";
+import useOnMounted from "@/hooks/useOnMounted";
+import useTranslation from "@/hooks/useTranslation";
+import { Flex, Stack, Text } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
+import { useCallback, useSyncExternalStore } from "react";
+import { useParams } from "react-router-dom";
+import store from "./_item.store";
+import Form from "./components/Form";
+import ImageButton from "./components/ImageButtons";
+import Table from "./components/Table";
+
+const WarehouseImportDetail = () => {
+  const t = useTranslation();
+  const { purchaseOrderId } = useParams();
+  const { disabled, purchaseOrder } = useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+  );
+
+  const load = useCallback(async () => {
+    if (!purchaseOrderId) {
+      return;
+    }
+    await store.initData(purchaseOrderId);
+  }, [purchaseOrderId]);
+  useOnMounted(load);
+
+  const complete = useCallback(async () => {
+    if (
+      purchaseOrder?.others.status ===
+      poCateringStatusSchema.Values.PONHT
+    ) {
+      modals.openConfirmModal({
+        size: "lg",
+        title: t("Confirm"),
+        children: (
+          <Flex direction="column">
+            <Text size="sm">
+              {t(
+                "The inventory quantity will be changed when the status is updated",
+              )}
+            </Text>
+            <Text size="sm">
+              {t(
+                "Are you sure you have checked the actual material quantity?",
+              )}
+            </Text>
+          </Flex>
+        ),
+        labels: { confirm: "OK", cancel: t("Cancel") },
+        onConfirm: async () => {
+          await store.save();
+        },
+      });
+    } else {
+      notifications.show({
+        color: "red.5",
+        message: t("Please update status"),
+      });
+    }
+  }, [purchaseOrder?.others.status, t]);
+
+  return (
+    <Stack gap={10}>
+      <PurchaseActions
+        returnUrl="/external-warehouse-entry"
+        completeButtonTitle="Save"
+        complete={complete}
+        disabledCompleteButton={disabled}
+      />
+      <Form />
+      <ImageButton />
+      <Table />
+    </Stack>
+  );
+};
+
+export default WarehouseImportDetail;

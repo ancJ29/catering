@@ -1,9 +1,17 @@
 import {
   Actions,
   ClientRoles,
+  POCateringStatus,
   POStatus,
   configs as actionConfigs,
+  poCateringStatusSchema,
+  poDeliveryTimeStatusSchema,
+  poServiceStatusSchema,
+  poStatusCatering,
   poStatusSchema,
+  purchaseOrderOthersSchema,
+  stringSchema,
+  xPurchaseOrderSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
@@ -14,13 +22,31 @@ import { z } from "zod";
 const response =
   actionConfigs[Actions.GET_PURCHASE_ORDERS].schema.response;
 
-const purchaseOrderSchema = response.shape.purchaseOrders.transform(
-  (array) => array[0],
-);
+export const purchaseOrderSchema =
+  response.shape.purchaseOrders.transform((array) => array[0]);
 
 export type PurchaseOrder = z.infer<typeof purchaseOrderSchema> & {
   name: string;
 };
+
+const xPurchaseOrderCateringSchema = xPurchaseOrderSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    name: stringSchema,
+    others: purchaseOrderOthersSchema
+      .omit({
+        status: true,
+      })
+      .extend({
+        status: poCateringStatusSchema,
+      }),
+  });
+
+export type PurchaseOrderCatering = z.infer<
+  typeof xPurchaseOrderCateringSchema
+>;
 
 export type PurchaseOrderDetail =
   PurchaseOrder["purchaseOrderDetails"][0];
@@ -28,7 +54,9 @@ export type PurchaseOrderDetail =
 async function _getPurchaseOrders(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
-  statuses?: POStatus[],
+  statuses: POStatus[],
+  excludeStatuses: POStatus[],
+  receivingCateringId?: string,
 ): Promise<PurchaseOrder[]> {
   return await loadAll<PurchaseOrder>({
     key: "purchaseOrders",
@@ -37,6 +65,8 @@ async function _getPurchaseOrders(
       from,
       to,
       statuses,
+      excludeStatuses,
+      receivingCateringId,
     },
   });
 }
@@ -45,6 +75,7 @@ type PurchaseOrderProps = {
   from?: number;
   to?: number;
   statuses?: POStatus[];
+  receivingCateringId?: string;
 };
 
 export async function getPurchaseOrders({
@@ -52,7 +83,7 @@ export async function getPurchaseOrders({
   to,
   statuses = [],
 }: PurchaseOrderProps) {
-  return _getPurchaseOrders(from, to, statuses).then(
+  return _getPurchaseOrders(from, to, statuses, []).then(
     (purchaseOrders) => {
       return purchaseOrders.map((el) => ({
         ...el,
@@ -60,6 +91,36 @@ export async function getPurchaseOrders({
       }));
     },
   );
+}
+
+export async function getPurchaseOrdersByCatering({
+  from,
+  to,
+  statuses = [],
+  receivingCateringId,
+}: PurchaseOrderProps): Promise<PurchaseOrderCatering[]> {
+  return _getPurchaseOrders(
+    from,
+    to,
+    [],
+    statuses,
+    receivingCateringId,
+  ).then((purchaseOrders) => {
+    return purchaseOrders.map((el) => ({
+      ...el,
+      name: el.code,
+      others: {
+        ...el.others,
+        status: getCateringStatus(el.others.status),
+      },
+    }));
+  });
+}
+
+export function getCateringStatus(
+  status: POStatus,
+): POCateringStatus {
+  return poStatusCatering[status];
 }
 
 export async function getPurchaseOrderById(
@@ -93,15 +154,20 @@ type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
 
 export async function updatePurchaseOrderStatus(
   params: UpdateStatusRequest,
+  showToast = true,
 ) {
   await callApi<UpdateStatusRequest, { id: string }>({
     action: Actions.UPDATE_PURCHASE_ORDER_STATUS,
     params,
     options: {
-      toastMessage: "Purchase order status updated",
-      reloadOnSuccess: {
-        delay: 700,
-      },
+      toastMessage: showToast
+        ? "Purchase order status updated"
+        : undefined,
+      reloadOnSuccess: showToast
+        ? {
+          delay: 700,
+        }
+        : undefined,
     },
   });
 }
@@ -150,6 +216,23 @@ export function statusOrderColor(status: POStatus, level = 6) {
   return `${colors[status]}.${level}`;
 }
 
+export function statusOrderCateringColor(
+  status: POCateringStatus,
+  level = 6,
+) {
+  const colors: Record<POCateringStatus, string> = {
+    // cspell:disable
+    CN: "cyan", // Chưa nhận
+    CNK: "orange", // Chờ nhập kho
+    PONHT: "yellow", // PO nhận hoàn tất
+    // cspell:disable
+  };
+  if (!status) {
+    return "";
+  }
+  return `${colors[status]}.${level}`;
+}
+
 export function changeablePurchaseOrderStatus(
   current: POStatus,
   next: POStatus,
@@ -168,4 +251,45 @@ export function changeablePurchaseOrderStatus(
   //   return true;
   // }
   return false;
+}
+
+export function statusOrderCateringOptions(
+  t: (key: string) => string,
+) {
+  const statusOptions: OptionProps[] =
+    poCateringStatusSchema.options.map((status) => ({
+      label: t(`purchaseOrder.cateringStatus.${status}`),
+      value: status,
+    }));
+  return [statusOptions];
+}
+
+export function xStatusOrderCateringOptions(
+  t: (key: string) => string,
+) {
+  const statusOptions: OptionProps[] = poCateringStatusSchema.options
+    .filter((status) => status !== poCateringStatusSchema.Values.CNK)
+    .map((status) => ({
+      label: t(`purchaseOrder.cateringStatus.${status}`),
+      value: status,
+    }));
+  return [statusOptions];
+}
+
+export function deliveryTimeStatusAndServiceStatusOrderOptions(
+  t: (key: string) => string,
+) {
+  const deliveryTimeStatusOptions: OptionProps[] =
+    poDeliveryTimeStatusSchema.options.map((deliveryTimeStatus) => ({
+      label: t(
+        `purchaseOrder.deliveryTimeStatus.${deliveryTimeStatus}`,
+      ),
+      value: deliveryTimeStatus,
+    }));
+  const serviceStatusOptions: OptionProps[] =
+    poServiceStatusSchema.options.map((serviceStatus) => ({
+      label: t(`purchaseOrder.serviceStatus.${serviceStatus}`),
+      value: serviceStatus,
+    }));
+  return [deliveryTimeStatusOptions, serviceStatusOptions];
 }

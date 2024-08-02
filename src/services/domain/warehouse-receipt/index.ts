@@ -3,6 +3,7 @@ import {
   configs as actionConfigs,
   wrTypeSchema,
 } from "@/auto-generated/api-configs";
+import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
 import { OptionProps } from "@/types";
 import {
@@ -88,6 +89,17 @@ export async function getAllWarehouseImports(
       from,
       to,
     },
+  });
+}
+
+const { request: addRequest } =
+  actionConfigs[Actions.ADD_WAREHOUSE_RECEIPT].schema;
+export type AddRequest = z.infer<typeof addRequest>;
+
+export async function addWarehouseReceipt(params: AddRequest) {
+  await callApi<AddRequest, { id: string }>({
+    action: Actions.ADD_WAREHOUSE_RECEIPT,
+    params,
   });
 }
 

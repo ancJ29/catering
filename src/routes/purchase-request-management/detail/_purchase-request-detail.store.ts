@@ -148,9 +148,6 @@ export default {
     );
     return total;
   },
-  getPrice(materialId: string) {
-    return store.getSnapshot().currents[materialId]?.price || 0;
-  },
   async update(status: PRStatus, priority: string) {
     const { materials } = useMaterialStore.getState();
     const state = store.getSnapshot();

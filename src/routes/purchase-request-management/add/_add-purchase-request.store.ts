@@ -206,7 +206,7 @@ export default {
   ) {
     const state = store.getSnapshot();
     const { materials } = useMaterialStore.getState();
-    await addPurchaseRequest(
+    const result = await addPurchaseRequest(
       purchaseRequest,
       state.selectedMaterialIds.map((materialId) => {
         const material = materials.get(materialId);
@@ -222,6 +222,7 @@ export default {
       }),
     );
     dispatch({ type: ActionType.RESET });
+    return result;
   },
 };
 

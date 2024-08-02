@@ -113,3 +113,23 @@ export async function getMaterialInventories(materialIds: string[]) {
     params: { materialIds },
   });
 }
+
+const { request: changeInventoryRequest } =
+  actionConfigs[Actions.ADD_TO_INVENTORY].schema;
+type ChangeInventoryRequest = z.infer<typeof changeInventoryRequest>;
+
+export async function addToInventory(params: ChangeInventoryRequest) {
+  await callApi<ChangeInventoryRequest, { id: string }>({
+    action: Actions.ADD_TO_INVENTORY,
+    params,
+  });
+}
+
+export async function removeFromInventory(
+  params: ChangeInventoryRequest,
+) {
+  await callApi<ChangeInventoryRequest, { id: string }>({
+    action: Actions.REMOVE_FROM_INVENTORY,
+    params,
+  });
+}

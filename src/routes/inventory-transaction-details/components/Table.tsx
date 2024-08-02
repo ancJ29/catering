@@ -21,24 +21,18 @@ const Table = ({
   return (
     <Grid>
       <Grid.Col pb={0}>
-        <div>
-          <ScrollTable header={<Header />}>
-            {store
-              .getWarehouse(
-                monthlyInventoryId,
-                cateringId,
-                materialId,
-              )
-              .map((detail: Detail, i: number) => (
-                <Item
-                  key={detail.id}
-                  index={i}
-                  detail={detail}
-                  unit={unit}
-                />
-              ))}
-          </ScrollTable>
-        </div>
+        <ScrollTable header={<Header />}>
+          {store
+            .getWarehouse(monthlyInventoryId, cateringId, materialId)
+            .map((detail: Detail, i: number) => (
+              <Item
+                key={detail.id}
+                index={i}
+                detail={detail}
+                unit={unit}
+              />
+            ))}
+        </ScrollTable>
       </Grid.Col>
     </Grid>
   );

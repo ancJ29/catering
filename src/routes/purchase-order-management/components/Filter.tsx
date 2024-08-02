@@ -3,7 +3,11 @@ import CustomButton from "@/components/c-catering/CustomButton";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
-import { Department, Supplier } from "@/services/domain";
+import {
+  Department,
+  statusOrderOptions,
+  Supplier,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
@@ -19,7 +23,6 @@ type FilterProps = {
   receivingCateringIds?: string[];
   supplierIds?: string[];
   purchaseOrderIds: string[];
-  statusOptions: OptionProps[];
   clearable?: boolean;
   onClear: () => void;
   onReload: (keyword?: string) => void;
@@ -37,7 +40,6 @@ const Filter = ({
   receivingCateringIds,
   supplierIds,
   purchaseOrderIds,
-  statusOptions,
   clearable,
   onClear,
   onReload,
@@ -62,6 +64,10 @@ const Filter = ({
       value: p.id,
     }));
   }, [suppliers]);
+
+  const [statusOptions] = useMemo(() => {
+    return statusOrderOptions(t);
+  }, [t]);
 
   return (
     <Stack gap={10} align="end">

@@ -95,12 +95,6 @@ export default {
     const { materials } = useMaterialStore.getState();
     await updatePurchaseOrder({
       ...state.purchaseOrder,
-      prCode: state.purchaseOrder.others.prCode,
-      type: state.purchaseOrder.others.type,
-      priority: state.purchaseOrder.others.priority,
-      receivingCateringId:
-        state.purchaseOrder.others.receivingCateringId,
-      status: state.purchaseOrder.others.status,
       purchaseOrderDetails: Object.values(state.updates).map((e) => {
         const material = materials.get(e.materialId);
         const amount = convertAmountForward({
@@ -120,6 +114,12 @@ export default {
           amount,
           actualAmount,
           paymentAmount,
+          others: {
+            supplierNote: e.supplierNote || "",
+            internalNote: e.internalNote || "",
+            price: e.price || 0,
+            vat: e.vat || 0,
+          },
         };
       }),
     });

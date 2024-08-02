@@ -60,6 +60,7 @@ const PurchaseInternalDetail = () => {
       ),
       status: purchaseInternal?.others.status,
       prCode: purchaseInternal?.others.prCode,
+      purchaseRequestId: purchaseInternal?.purchaseRequestId,
     });
     setCurrents(purchaseInternal?.purchaseInternalDetails || []);
     setUpdates(
@@ -131,10 +132,13 @@ const PurchaseInternalDetail = () => {
         values.deliveryDate,
         values.deliveryTime,
       ),
+      purchaseRequestId: values.purchaseRequestId,
       deliveryCateringId: values.deliveryCateringId,
-      prCode: values.prCode,
-      receivingCateringId: values.receivingCateringId,
-      status: values.status,
+      others: {
+        prCode: values.prCode,
+        receivingCateringId: values.receivingCateringId,
+        status: values.status,
+      },
       purchaseInternalDetails: Object.values(updates).map((e) => {
         const amount = convertAmountForward({
           material: materials.get(e.materialId),

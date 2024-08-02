@@ -38,7 +38,6 @@ const Table = ({ disabled }: TableProps) => {
                 material={materials.get(materialId)}
                 requestDetail={currents[materialId]}
                 isSelected={store.isSelected(materialId)}
-                price={store.getPrice(materialId)}
                 onChangeAmount={(value) =>
                   store.setAmount(materialId, value)
                 }

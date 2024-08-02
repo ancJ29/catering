@@ -274,6 +274,19 @@ export default [
         url: "/inventory-management",
       },
       {
+        roles: [ClientRoles.CATERING],
+        key: "external-warehouse-entry",
+        label: "External Warehouse Entry",
+        icon: "file-arrow-left",
+        url: "/external-warehouse-entry",
+      },
+      {
+        roles: [ClientRoles.CATERING],
+        key: "internal-warehouse-entry",
+        label: "Internal Warehouse Entry",
+        icon: "file-arrow-right",
+      },
+      {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "check-inventory",
         label: "Check Inventory",

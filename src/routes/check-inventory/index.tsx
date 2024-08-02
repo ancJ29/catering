@@ -1,4 +1,3 @@
-import { ClientRoles } from "@/auto-generated/api-configs";
 import CateringSelector from "@/components/c-catering/CateringSelector";
 import CustomButton from "@/components/c-catering/CustomButton";
 import MaterialFilter from "@/components/c-catering/MaterialFilter";
@@ -34,7 +33,7 @@ import RadioChecked from "./components/RadioChecked";
 
 const CheckInventory = () => {
   const t = useTranslation();
-  const { user, role } = useAuthStore();
+  const { cateringId: userCateringId, isCatering } = useAuthStore();
   const { materials } = useMaterialStore();
   const { departmentNameById } = useMetaDataStore();
   const [cateringId, setCateringId] = useState("");
@@ -83,8 +82,8 @@ const CheckInventory = () => {
   });
 
   useEffect(() => {
-    if (role === ClientRoles.CATERING) {
-      setCatering(user?.departmentIds?.[0]);
+    if (isCatering) {
+      setCatering(userCateringId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

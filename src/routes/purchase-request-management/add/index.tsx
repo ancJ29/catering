@@ -1,4 +1,3 @@
-import { ClientRoles } from "@/auto-generated/api-configs";
 import PurchaseActions from "@/components/c-catering/PurchaseActions";
 import PurchaseRequestInformationForm from "@/components/c-catering/PurchaseRequestInformationForm";
 import useTranslation from "@/hooks/useTranslation";
@@ -22,7 +21,7 @@ import Table from "./components/Table";
 
 const AddPurchaseRequest = () => {
   const t = useTranslation();
-  const { user, role } = useAuthStore();
+  const { cateringId, isCatering } = useAuthStore();
   const [opened, setOpened] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedSource, setSelectedSource] = useState<string | null>(
@@ -49,8 +48,8 @@ const AddPurchaseRequest = () => {
 
   useEffect(() => {
     store.reset();
-    if (role === ClientRoles.CATERING) {
-      handleChangeValues("departmentId", user?.departmentIds?.[0]);
+    if (isCatering) {
+      handleChangeValues("departmentId", cateringId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -166,13 +165,20 @@ const AddPurchaseRequest = () => {
       });
       return;
     }
-    await store.createPurchasingRequest(values);
+    const result = await store.createPurchasingRequest(values);
     setValues(initialPurchaseRequestForm);
     setSelectedSource(null);
-    notifications.show({
-      color: "blue.5",
-      message: t("Add purchase request successfully"),
-    });
+    if (result) {
+      notifications.show({
+        color: "blue.5",
+        message: t("Add purchase request successfully"),
+      });
+    } else {
+      notifications.show({
+        color: "red.5",
+        message: t("Add purchase request failed"),
+      });
+    }
   };
 
   return (

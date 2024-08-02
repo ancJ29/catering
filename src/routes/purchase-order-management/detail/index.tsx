@@ -42,7 +42,7 @@ const PurchaseOrderDetail = () => {
     [],
   );
   const [updates, setUpdates] = useState<
-    Record<string, _PurchaseOrderDetail>
+  Record<string, _PurchaseOrderDetail>
   >({});
   const form = useForm<PurchaseOrderForm>({
     initialValues: initialPurchaseOrderForm,
@@ -141,11 +141,6 @@ const PurchaseOrderDetail = () => {
     }
     await updatePurchaseOrder({
       ...po,
-      prCode: po.others.prCode,
-      type: po.others.type,
-      priority: po.others.priority,
-      receivingCateringId: po.others.receivingCateringId,
-      status: po.others.status,
       purchaseOrderDetails: Object.values(updates).map((e) => {
         const material = materials.get(e.materialId);
         const amount = convertAmountForward({
@@ -157,9 +152,6 @@ const PurchaseOrderDetail = () => {
           amount,
           actualAmount: e.amount,
           paymentAmount: e.amount,
-          price: e.others.price,
-          supplierNote: e.others.supplierNote,
-          internalNote: e.others.internalNote,
         };
       }),
     });

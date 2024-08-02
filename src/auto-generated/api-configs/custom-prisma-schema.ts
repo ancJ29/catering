@@ -42,12 +42,7 @@ import {
   warehouseReceiptDetailOthersSchema,
   warehouseReceiptOthersSchema,
 } from "./others";
-import {
-  dateSchema,
-  nullishStringSchema,
-  numberSchema,
-  stringSchema,
-} from "./schema";
+import { dateSchema, numberSchema, stringSchema } from "./schema";
 
 export const xUserSchema = userSchema
   .omit({
@@ -202,15 +197,18 @@ export const xPurchaseOrderSchema = purchaseOrderSchema
 export const xAddPurchaseRequest = z.object({
   deliveryDate: dateSchema,
   departmentId: stringSchema,
-  type: stringSchema,
-  priority: stringSchema,
-  purchaseRequestDetails: z
-    .object({
-      materialId: stringSchema,
-      amount: numberSchema,
-      price: numberSchema,
-      supplierNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  others: purchaseRequestOthersSchema.omit({ status: true }),
+  purchaseRequestDetails: purchaseRequestDetailSchema
+    .omit({
+      id: true,
+      others: true,
+      purchaseRequestId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseRequestDetailOthersSchema,
     })
     .array(),
 });
@@ -219,53 +217,59 @@ export const xUpdatePurchaseRequest = z.object({
   id: stringSchema,
   deliveryDate: dateSchema,
   departmentId: stringSchema,
-  type: stringSchema,
-  priority: stringSchema,
-  status: stringSchema,
-  purchaseRequestDetails: z
-    .object({
-      id: stringSchema,
-      materialId: stringSchema,
-      amount: numberSchema,
-      price: numberSchema,
-      supplierNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  others: purchaseRequestOthersSchema,
+  purchaseRequestDetails: purchaseRequestDetailSchema
+    .omit({
+      others: true,
+      purchaseRequestId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseRequestDetailOthersSchema,
     })
     .array(),
   deletePurchaseRequestDetailIds: stringSchema.array(),
 });
 
-export const xUpdatePurchaseInternal = z.object({
-  id: stringSchema,
+export const xAddPurchaseInternal = z.object({
   deliveryDate: dateSchema,
+  purchaseRequestId: stringSchema,
   deliveryCateringId: stringSchema,
-  prCode: stringSchema,
-  receivingCateringId: stringSchema,
-  status: stringSchema,
-  purchaseInternalDetails: z
-    .object({
-      id: stringSchema,
-      materialId: stringSchema,
-      amount: numberSchema,
-      actualAmount: numberSchema,
-      kitchenDeliveryNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  others: purchaseInternalOthersSchema.omit({ status: true }),
+  purchaseInternalDetails: purchaseInternalDetailSchema
+    .omit({
+      id: true,
+      others: true,
+      purchaseInternalId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+      actualAmount: true,
+    })
+    .extend({
+      others: purchaseInternalDetailOthersSchema,
     })
     .array(),
 });
 
-export const xAddPurchaseInternal = z.object({
+export const xUpdatePurchaseInternal = z.object({
+  id: stringSchema,
   deliveryDate: dateSchema,
-  receivingCateringId: stringSchema,
-  deliveryCateringId: stringSchema,
   purchaseRequestId: stringSchema,
-  prCode: stringSchema,
-  purchaseInternalDetails: z
-    .object({
-      amount: numberSchema,
-      materialId: stringSchema,
-      supplierNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  deliveryCateringId: stringSchema,
+  others: purchaseInternalOthersSchema,
+  purchaseInternalDetails: purchaseInternalDetailSchema
+    .omit({
+      others: true,
+      purchaseInternalId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseInternalDetailOthersSchema,
     })
     .array(),
 });
@@ -273,54 +277,63 @@ export const xAddPurchaseInternal = z.object({
 export const xAddPurchaseCoordination = z.object({
   deliveryDate: dateSchema,
   purchaseRequestId: stringSchema,
-  receivingCateringId: stringSchema,
-  prCode: stringSchema,
-  type: stringSchema,
-  priority: stringSchema,
-  createdById: stringSchema,
-  createAt: dateSchema,
-  approvedById: stringSchema,
-  approvedAt: dateSchema,
-  purchaseCoordinationDetails: z
-    .object({
-      price: numberSchema,
-      amount: numberSchema,
-      materialId: stringSchema,
-      supplierNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  others: purchaseCoordinationOthersSchema.omit({ status: true }),
+  purchaseCoordinationDetails: purchaseCoordinationDetailSchema
+    .omit({
+      id: true,
+      others: true,
+      purchaseCoordinationId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseCoordinationDetailOthersSchema,
     })
     .array(),
 });
 
 export const xUpdatePurchaseCoordination = z.object({
   id: stringSchema,
-  prCode: stringSchema,
-  receivingCateringId: stringSchema,
-  createdById: stringSchema,
-  createAt: dateSchema,
-  approvedById: stringSchema,
-  approvedAt: dateSchema,
   deliveryDate: dateSchema,
-  type: stringSchema,
-  priority: stringSchema,
-  status: stringSchema,
+  purchaseRequestId: stringSchema,
+  others: purchaseCoordinationOthersSchema,
+  purchaseCoordinationDetails: purchaseCoordinationDetailSchema
+    .omit({
+      others: true,
+      purchaseCoordinationId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseCoordinationDetailOthersSchema,
+    })
+    .array(),
 });
 
 export const xAddPurchaseOrder = z.object({
   deliveryDate: dateSchema,
   supplierId: stringSchema,
   purchaseCoordinationId: stringSchema,
-  prCode: stringSchema,
-  type: stringSchema,
-  priority: stringSchema,
-  receivingCateringId: stringSchema,
-  purchaseOrderDetails: z
-    .object({
-      materialId: stringSchema,
-      amount: numberSchema,
-      price: numberSchema,
-      supplierNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  others: purchaseOrderOthersSchema.omit({
+    status: true,
+    deliveryTimeStatus: true,
+    serviceStatus: true,
+  }),
+  purchaseOrderDetails: purchaseOrderDetailSchema
+    .omit({
+      id: true,
+      actualAmount: true,
+      paymentAmount: true,
+      others: true,
+      purchaseOrderId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseOrderDetailOthersSchema,
     })
     .array(),
 });
@@ -330,21 +343,17 @@ export const xUpdatePurchaseOrder = z.object({
   deliveryDate: dateSchema,
   supplierId: stringSchema,
   purchaseCoordinationId: stringSchema,
-  prCode: stringSchema,
-  type: stringSchema,
-  priority: stringSchema,
-  receivingCateringId: stringSchema,
-  status: stringSchema,
-  purchaseOrderDetails: z
-    .object({
-      id: stringSchema,
-      materialId: stringSchema,
-      amount: numberSchema,
-      actualAmount: numberSchema,
-      paymentAmount: numberSchema,
-      price: numberSchema,
-      supplierNote: nullishStringSchema,
-      internalNote: nullishStringSchema,
+  others: purchaseOrderOthersSchema,
+  purchaseOrderDetails: purchaseOrderDetailSchema
+    .omit({
+      others: true,
+      purchaseOrderId: true,
+      lastModifiedBy: true,
+      createdAt: true,
+      updatedAt: true,
+    })
+    .extend({
+      others: purchaseOrderDetailOthersSchema,
     })
     .array(),
 });
@@ -371,3 +380,28 @@ export const xWarehouseReceiptSchema = warehouseReceiptSchema
       })
       .array(),
   });
+
+export const xAddWarehouseReceiptSchema = z.object({
+  date: dateSchema,
+  departmentId: stringSchema,
+  others: warehouseReceiptOthersSchema,
+  warehouseReceiptDetails: warehouseReceiptDetailSchema
+    .omit({
+      id: true,
+      warehouseReceiptId: true,
+      others: true,
+      createdAt: true,
+      updatedAt: true,
+      lastModifiedBy: true,
+    })
+    .extend({
+      others: warehouseReceiptDetailOthersSchema,
+    })
+    .array(),
+});
+
+export const xUpdateInventorySchema = z.object({
+  materialId: stringSchema,
+  departmentId: stringSchema,
+  amount: numberSchema,
+});

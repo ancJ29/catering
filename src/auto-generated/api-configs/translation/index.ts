@@ -6,6 +6,9 @@ import {
   MaterialType,
   PCStatus,
   PIStatus,
+  POCateringStatus,
+  PODeliveryTimeStatus,
+  POServiceStatus,
   POStatus,
   ProductCategory,
   ProductType,
@@ -34,7 +37,11 @@ type PurchaseRequestKey =
   | `purchaseRequest.status.${PRStatus}`;
 type PurchaseInternalKey = `purchaseInternal.status.${PIStatus}`;
 type PurchaseCoordinationKey = `purchaseCoordination.status.${PCStatus}`;
-type PurchaseOrderKey = `purchaseOrder.status.${POStatus}`;
+type PurchaseOrderKey =
+  | `purchaseOrder.status.${POStatus}`
+  | `purchaseOrder.serviceStatus.${POServiceStatus}`
+  | `purchaseOrder.deliveryTimeStatus.${PODeliveryTimeStatus}`
+  | `purchaseOrder.cateringStatus.${POCateringStatus}`;
 type WarehouseReceiptKey = `warehouseReceipt.type.${WRType}`;
 
 const departmentDictionaries: {
@@ -330,6 +337,14 @@ const purchaseOrderDictionaries: {
     "purchaseOrder.status.DLLTT": "Payment scheduled",
     "purchaseOrder.status.TT1P": "Partial payment",
     "purchaseOrder.status.DTT": "Paid",
+    "purchaseOrder.serviceStatus.GOOD": "Good",
+    "purchaseOrder.serviceStatus.AVERAGE": "Avarege",
+    "purchaseOrder.serviceStatus.POOR": "Poor",
+    "purchaseOrder.deliveryTimeStatus.ON_TIME": "Đúng giờ",
+    "purchaseOrder.deliveryTimeStatus.LATE": "Trễ",
+    "purchaseOrder.cateringStatus.CN": "Not Received",
+    "purchaseOrder.cateringStatus.CNK": "Pending Entry",
+    "purchaseOrder.cateringStatus.PONHT": "PO Completed",
     /* cspell:enable */
   },
   vi: {
@@ -346,6 +361,14 @@ const purchaseOrderDictionaries: {
     "purchaseOrder.status.DLLTT": "Đã lập lịch thanh toán",
     "purchaseOrder.status.TT1P": "Thanh toán 1 phần",
     "purchaseOrder.status.DTT": "Đã thanh toán",
+    "purchaseOrder.serviceStatus.GOOD": "Tốt",
+    "purchaseOrder.serviceStatus.AVERAGE": "Bình thường",
+    "purchaseOrder.serviceStatus.POOR": "Kém",
+    "purchaseOrder.deliveryTimeStatus.ON_TIME": "Đúng giờ",
+    "purchaseOrder.deliveryTimeStatus.LATE": "Trễ",
+    "purchaseOrder.cateringStatus.CN": "Chưa nhận",
+    "purchaseOrder.cateringStatus.CNK": "Chờ nhập kho",
+    "purchaseOrder.cateringStatus.PONHT": "PO nhận hoàn tất",
     /* cspell:enable */
   },
 };

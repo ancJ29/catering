@@ -1,7 +1,12 @@
+import { poStatusSchema } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
-import { PurchaseOrder, getPurchaseOrders } from "@/services/domain";
+import {
+  getPurchaseOrdersByCatering,
+  PurchaseOrderCatering,
+} from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { endOfDay, startOfDay } from "@/utils";
@@ -9,21 +14,22 @@ import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FilterType,
   configs,
   defaultCondition,
   filter,
+  FilterType,
 } from "./_configs";
 import Filter from "./components/Filter";
 
-const PurchaseOrderManagement = () => {
+const ExternalWarehouseEntry = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const [purchaseOrders, setPurchaseOrders] = useState<
-    PurchaseOrder[]
-  >([]);
+  const [currents, setCurrents] = useState<PurchaseOrderCatering[]>(
+    [],
+  );
   const { caterings } = useCateringStore();
   const { suppliers } = useSupplierStore();
+  const { cateringId, isCatering } = useAuthStore();
 
   const dataGridConfigs = useMemo(
     () => configs(t, caterings, suppliers),
@@ -31,16 +37,24 @@ const PurchaseOrderManagement = () => {
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseOrders(await getPurchaseOrders({ from, to }));
+    setCurrents(
+      await getPurchaseOrdersByCatering({
+        from,
+        to,
+        statuses: [poStatusSchema.Values.DTC],
+        receivingCateringId: isCatering ? cateringId : undefined,
+      }),
+    );
   };
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseOrders;
-  }, [purchaseOrders]);
+    return currents;
+  }, [currents]);
 
   const {
     condition,
@@ -54,7 +68,7 @@ const PurchaseOrderManagement = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseOrder, FilterType>({
+  } = useFilterData<PurchaseOrderCatering, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -72,30 +86,24 @@ const PurchaseOrderManagement = () => {
     }
   };
 
-  const onRowClick = (item: PurchaseOrder) => {
-    navigate(`/purchase-order-management/${item.id}`);
+  const onRowClick = (item: PurchaseOrderCatering) => {
+    navigate(`/external-warehouse-entry/${item.id}`);
   };
 
   return (
-    <Stack gap={10} key={caterings.size}>
+    <Stack gap={10} key={suppliers.size}>
       <Filter
         key={counter}
         keyword={keyword}
         from={condition?.from}
         to={condition?.to}
         statuses={condition?.statuses}
-        receivingCateringIds={condition?.receivingCateringIds}
         supplierIds={condition?.supplierIds}
         purchaseOrderIds={names}
         clearable={filtered}
         onClear={reset}
         onReload={reload}
         onChangeStatuses={updateCondition.bind(null, "statuses", "")}
-        onChangeReceivingCateringIds={updateCondition.bind(
-          null,
-          "receivingCateringIds",
-          "",
-        )}
         onChangeSupplierIds={updateCondition.bind(
           null,
           "supplierIds",
@@ -117,4 +125,4 @@ const PurchaseOrderManagement = () => {
   );
 };
 
-export default PurchaseOrderManagement;
+export default ExternalWarehouseEntry;

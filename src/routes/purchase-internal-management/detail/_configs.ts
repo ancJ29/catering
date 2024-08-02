@@ -8,6 +8,7 @@ export const initialPurchaseInternalForm: PurchaseInternalForm = {
   deliveryTime: "06:00",
   status: "DG",
   prCode: "",
+  purchaseRequestId: "",
 };
 
 export type PurchaseInternalForm = {
@@ -18,4 +19,5 @@ export type PurchaseInternalForm = {
   deliveryTime: string;
   status: PIStatus;
   prCode: string;
+  purchaseRequestId: string;
 };

@@ -1,4 +1,8 @@
-import { PRStatus } from "@/auto-generated/api-configs";
+import {
+  PRPriority,
+  PRStatus,
+  PRType,
+} from "@/auto-generated/api-configs";
 import {
   AddPurchaseCoordinationRequest,
   AddPurchaseInternalRequest,
@@ -198,26 +202,32 @@ export default {
             deliveryDate:
               state.purchaseRequest?.deliveryDate || new Date(),
             purchaseRequestId: state.purchaseRequest?.id || "",
-            receivingCateringId:
-              state.purchaseRequest?.departmentId || "",
-            prCode: state.purchaseRequest?.code || "",
-            type: state.purchaseRequest?.others.type || "",
-            priority: state.purchaseRequest?.others.priority || "",
-            createdById: state.purchaseRequest?.createdById || "",
-            createAt: state.purchaseRequest?.createdAt || new Date(),
-            approvedById: state.purchaseRequest?.approvedById || "",
-            approvedAt:
-              state.purchaseRequest?.approvedAt || new Date(),
+            others: {
+              receivingCateringId:
+                state.purchaseRequest?.departmentId || "",
+              prCode: state.purchaseRequest?.code || "",
+              type: state.purchaseRequest?.others.type as PRType,
+              priority: state.purchaseRequest?.others
+                .priority as PRPriority,
+              createdById: state.purchaseRequest?.createdById || "",
+              createAt:
+                state.purchaseRequest?.createdAt || new Date(),
+              approvedById: state.purchaseRequest?.approvedById || "",
+              approvedAt:
+                state.purchaseRequest?.approvedAt || new Date(),
+            },
             purchaseCoordinationDetails: coordinationDetails.map(
               (cd) => ({
-                price: cd.price,
                 amount: convertAmountForward({
                   material: materials.get(cd.materialId),
                   amount: cd.dispatchQuantity,
                 }),
                 materialId: cd.materialId,
-                supplierNote: "",
-                internalNote: cd.internalNote,
+                others: {
+                  price: cd.price,
+                  supplierNote: "",
+                  internalNote: cd.internalNote,
+                },
               }),
             ),
           });
@@ -225,11 +235,13 @@ export default {
           purchaseInternal.push({
             deliveryDate:
               state.purchaseRequest?.deliveryDate || new Date(),
-            receivingCateringId:
-              state.purchaseRequest?.departmentId || "",
             deliveryCateringId: key,
             purchaseRequestId: state.purchaseRequest?.id || "",
-            prCode: state.purchaseRequest?.code || "",
+            others: {
+              prCode: state.purchaseRequest?.code || "",
+              receivingCateringId:
+                state.purchaseRequest?.departmentId || "",
+            },
             purchaseInternalDetails: coordinationDetails.map(
               (cd) => ({
                 amount: convertAmountForward({
@@ -237,8 +249,10 @@ export default {
                   amount: cd.dispatchQuantity,
                 }),
                 materialId: cd.materialId,
-                supplierNote: "",
-                internalNote: cd.internalNote,
+                others: {
+                  kitchenDeliveryNote: "",
+                  internalNote: cd.internalNote,
+                },
               }),
             ),
           });
@@ -311,7 +325,7 @@ function reducer(action: Action, state: State): State {
           materialIds: state.materialIds.filter(
             (id) => id !== action.materialId,
           ),
-          selectedMaterialIds: state.materialIds.filter(
+          selectedMaterialIds: state.selectedMaterialIds.filter(
             (id) => id !== action.materialId,
           ),
           deletedRequestDetailIds: state.deletedRequestDetailIds,

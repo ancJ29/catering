@@ -463,12 +463,54 @@ export const poStatusOrders: Record<string, number> = {
   // cspell:enable
 };
 
+export const poServiceStatusSchema = z.enum([
+  // cspell:disable
+  "GOOD", // Tốt
+  "AVERAGE", // Bình thường
+  "POOR", // Kém
+  // cspell:enable
+]);
+
+export const poDeliveryTimeStatusSchema = z.enum([
+  // cspell:disable
+  "ON_TIME", // Đúng giờ
+  "LATE", // Trễ
+  // cspell:enable
+]);
+
+export const poCateringStatusSchema = z.enum([
+  // cspell:disable
+  "CN", // Chưa nhận
+  "CNK", // Chờ nhập kho
+  "PONHT", // PO nhận hoàn tất
+  // cspell:enable
+]);
+
+export const poStatusCatering: Record<POStatus, POCateringStatus> = {
+  // cspell:disable
+  DTC: "CN", // Đã từ chối
+  DG: "CN", // Đã gửi: đã tạo & gửi PO đến NCC
+  DD: "CN", // Đã duyệt: NCC duyệt PO
+  SSGH: "CN", // Sẵn sàng giao hàng
+  NK1P: "CNK", // Nhập kho 1 phần
+  DNK: "PONHT", // Đã nhập kho
+  DKTSL: "PONHT", // Đã kiểm tra sai lệch
+  DTDNTT: "PONHT", // Đã tạo đề nghị thanh toán
+  DCBSHD: "PONHT", // Đã cập nhật số hoá đơn
+  DLLTT: "PONHT", // Đã lập lịch thanh toán
+  TT1P: "PONHT", // Thanh toán 1 phần
+  DTT: "PONHT", // Đã thanh toán
+  // cspell:enable
+};
+
 export const purchaseOrderOthersSchema = z.object({
   prCode: stringSchema,
   status: poStatusSchema,
   type: prTypeSchema,
   priority: prPrioritySchema,
   receivingCateringId: stringSchema,
+  serviceStatus: poServiceStatusSchema.default("GOOD"),
+  deliveryTimeStatus: poDeliveryTimeStatusSchema.default("ON_TIME"),
 });
 
 export const purchaseOrderDetailOthersSchema = z.object({
@@ -515,4 +557,7 @@ export type PRStatus = z.infer<typeof prStatusSchema>;
 export type PIStatus = z.infer<typeof piStatusSchema>;
 export type PCStatus = z.infer<typeof pcStatusSchema>;
 export type POStatus = z.infer<typeof poStatusSchema>;
+export type POServiceStatus = z.infer<typeof poServiceStatusSchema>;
+export type PODeliveryTimeStatus = z.infer<typeof poDeliveryTimeStatusSchema>;
+export type POCateringStatus = z.infer<typeof poCateringStatusSchema>;
 export type WRType = z.infer<typeof wrTypeSchema>;

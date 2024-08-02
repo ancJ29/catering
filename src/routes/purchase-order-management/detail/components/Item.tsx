@@ -51,7 +51,6 @@ const Item = ({
           thousandSeparator=""
           allowNegative={false}
           defaultValue={amount}
-          value={amount}
           onChange={(val) => onChangeAmount(parseInt(val.toString()))}
           allowDecimal={material?.others.allowFloat}
           disabled={disabled}
@@ -108,7 +107,7 @@ const Item = ({
   ];
 
   return (
-    <Table.Tr>
+    <Table.Tr key={amount}>
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign} pr={col.pr}>
           {col.content}

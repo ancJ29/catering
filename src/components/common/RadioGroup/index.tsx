@@ -11,6 +11,8 @@ interface IRadioGroupProps {
   onChange?: (value: string) => void;
   classNameBox?: string;
   children?: React.ReactNode;
+  disabled?: boolean;
+  w?: string | number;
 }
 
 const RadioGroup = ({
@@ -21,6 +23,8 @@ const RadioGroup = ({
   value,
   onChange,
   classNameBox,
+  disabled = false,
+  w,
 }: IRadioGroupProps) => {
   const t = useTranslation();
 
@@ -34,6 +38,7 @@ const RadioGroup = ({
         onChange?.(newValue);
       }}
       classNames={{ label: classes.label }}
+      w={w}
     >
       <Group className={classNameBox} mt="xs">
         {options.map(({ label, value }, idx) => (
@@ -44,6 +49,7 @@ const RadioGroup = ({
             classNames={{
               label: classes.label,
             }}
+            disabled={disabled}
           />
         ))}
       </Group>

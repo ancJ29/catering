@@ -254,6 +254,7 @@ export default {
   "Material source options": "Material source options",
   "Please complete all information": "Please complete all information",
   "Add purchase request successfully": "Add purchase request successfully",
+  "Add purchase request failed": "Add purchase request failed",
   "Update purchase request successfully":
     "Update purchase request successfully",
   "Return to purchase request list": "Return to purchase request list",
@@ -393,4 +394,20 @@ export default {
   "Warehouse receipt export - import date": "Export - import date",
   "Warehouse Transfer": "Warehouse Transfer",
   "Warehouse Receipt Detail": "Warehouse Receipt Detail",
+  "External Warehouse Entry": "External Warehouse Entry",
+  "Internal Warehouse Entry": "Internal Warehouse Entry",
+  "Warehouse Import Receipt": "Warehouse Import Receipt",
+  "Purchase order delivery time": "Delivery time",
+  "Purchase order service attitude": "Service attitude",
+  "Attach image": "Attach image",
+  "View attached image": "View attached image",
+  "Save general information": "Save general information",
+  "Received": "Received",
+  "Adjusted": "Adjusted",
+  "Actual": "Actual",
+  "Ordered": "Ordered",
+  "The inventory quantity will be changed when the status is updated":
+    "The inventory quantity will be changed when the status is updated",
+  "Are you sure you have checked the actual material quantity?":
+    "Are you sure you have checked the actual material quantity?",
 } satisfies Record<string, string>;

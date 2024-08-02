@@ -3,6 +3,7 @@ import {
   ClientRoles,
   PRPriority,
   PRStatus,
+  PRType,
   configs as actionConfigs,
   prPrioritySchema,
   prStatusSchema,
@@ -84,7 +85,7 @@ export async function addPurchaseRequest(
   purchaseRequest: PurchaseRequestForm,
   purchaseDetails: RequestDetail[],
 ) {
-  await callApi<AddRequest, { id: string }>({
+  return await callApi<AddRequest, { id: string }>({
     action: Actions.ADD_PURCHASE_REQUEST,
     params: {
       deliveryDate: getDateTime(
@@ -92,14 +93,18 @@ export async function addPurchaseRequest(
         purchaseRequest.deliveryTime,
       ),
       departmentId: purchaseRequest.departmentId || "",
-      type: purchaseRequest.type || "",
-      priority: purchaseRequest.priority || "",
+      others: {
+        type: purchaseRequest.type as PRType,
+        priority: purchaseRequest.priority as PRPriority,
+      },
       purchaseRequestDetails: purchaseDetails.map((e) => ({
         materialId: e.materialId,
         amount: e.amount,
-        price: e.price || 0,
-        supplierNote: e.supplierNote,
-        internalNote: e.internalNote,
+        others: {
+          price: e.price || 0,
+          supplierNote: e.supplierNote,
+          internalNote: e.internalNote,
+        },
       })),
     },
   });
@@ -122,16 +127,21 @@ export async function updatePurchaseRequest(
       id: purchaseRequest.id,
       deliveryDate: purchaseRequest.deliveryDate,
       departmentId: purchaseRequest.departmentId,
-      type: purchaseRequest.others.type,
-      priority: priority ?? purchaseRequest.others.priority,
-      status,
+      others: {
+        type: purchaseRequest.others.type,
+        priority:
+          (priority as PRPriority) ?? purchaseRequest.others.priority,
+        status,
+      },
       purchaseRequestDetails: purchaseDetails.map((e) => ({
         id: e?.id || "",
         materialId: e.materialId,
         amount: e.amount,
-        price: e.price || 0,
-        supplierNote: e.supplierNote,
-        internalNote: e.internalNote,
+        others: {
+          price: e.price || 0,
+          supplierNote: e.supplierNote,
+          internalNote: e.internalNote,
+        },
       })),
       deletePurchaseRequestDetailIds: deletedRequestDetailIds,
     },
@@ -208,9 +218,9 @@ export function changeablePurchaseRequestStatus(
       next === "DDP" ||
       next === "DH")
   ) {
-    // if (role === ClientRoles.OWNER) {
-    //   return true;
-    // }
+    if (role === ClientRoles.OWNER) {
+      return true;
+    }
   }
   // if (role === ClientRoles.OWNER) {
   //   return true;

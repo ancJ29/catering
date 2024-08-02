@@ -15,7 +15,10 @@ const Table = () => {
     <Grid mt={10}>
       <Grid.Col span={12} pb={0}>
         <div>
-          <ScrollTable header={<Header />}>
+          <ScrollTable
+            header={<Header />}
+            h="calc(-8.5rem - 80px + 100vh)"
+          >
             {Object.values(currents).map((dailyMenu) => (
               <Item
                 key={dailyMenu.id}

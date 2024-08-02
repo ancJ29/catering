@@ -34,12 +34,6 @@ export type AddPurchaseCoordinationRequest = z.infer<
   typeof addRequest
 >;
 
-const { request: updateRequest } =
-  actionConfigs[Actions.UPDATE_PURCHASE_COORDINATION].schema;
-export type UpdatePurchaseCoordinationRequest = z.infer<
-  typeof updateRequest
->;
-
 async function _getPurchaseCoordinations(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
@@ -91,30 +85,18 @@ export async function addPurchaseCoordination(
   });
 }
 
-export async function updatePurchaseCoordination(
-  status: PCStatus,
-  purchaseCoordination?: PurchaseCoordination,
-) {
-  if (!purchaseCoordination) {
-    return;
-  }
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_COORDINATION].schema;
+type UpdatePurchaseCoordinationRequest = z.infer<
+  typeof updateRequest
+>;
 
+export async function updatePurchaseCoordination(
+  params: UpdatePurchaseCoordinationRequest,
+) {
   await callApi<UpdatePurchaseCoordinationRequest, { id: string }>({
     action: Actions.UPDATE_PURCHASE_COORDINATION,
-    params: {
-      id: purchaseCoordination.id,
-      prCode: purchaseCoordination.others.prCode,
-      receivingCateringId:
-        purchaseCoordination.others.receivingCateringId,
-      createdById: purchaseCoordination.others.createdById,
-      createAt: purchaseCoordination.others.createAt,
-      approvedById: purchaseCoordination.others.approvedById,
-      approvedAt: purchaseCoordination.others.approvedAt,
-      deliveryDate: purchaseCoordination.deliveryDate,
-      type: purchaseCoordination.others.type,
-      priority: purchaseCoordination.others.priority,
-      status,
-    },
+    params,
   });
 }
 

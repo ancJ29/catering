@@ -28,35 +28,36 @@ const Table = ({
   return (
     <Grid mt={10}>
       <Grid.Col span={12} pb={0}>
-        <div>
-          <ScrollTable header={<Header />}>
-            {purchaseInternalDetails.map((purchaseInternalDetail) => (
-              <Item
-                key={purchaseInternalDetail.id}
-                purchaseInternalDetail={purchaseInternalDetail}
-                onChangeAmount={(value) =>
-                  onChangeAmount(
-                    purchaseInternalDetail.materialId,
-                    value,
-                  )
-                }
-                onChangeInternalNote={(value) =>
-                  onChangeInternalNote(
-                    purchaseInternalDetail.materialId,
-                    value,
-                  )
-                }
-                onChangeKitchenDeliveryNote={(value) =>
-                  onChangeKitchenDeliveryNote(
-                    purchaseInternalDetail.materialId,
-                    value,
-                  )
-                }
-                disabled={disabled}
-              />
-            ))}
-          </ScrollTable>
-        </div>
+        <ScrollTable
+          header={<Header />}
+          h="calc(-8.5rem - 150px + 100vh)"
+        >
+          {purchaseInternalDetails.map((purchaseInternalDetail) => (
+            <Item
+              key={purchaseInternalDetail.id}
+              purchaseInternalDetail={purchaseInternalDetail}
+              onChangeAmount={(value) =>
+                onChangeAmount(
+                  purchaseInternalDetail.materialId,
+                  value,
+                )
+              }
+              onChangeInternalNote={(value) =>
+                onChangeInternalNote(
+                  purchaseInternalDetail.materialId,
+                  value,
+                )
+              }
+              onChangeKitchenDeliveryNote={(value) =>
+                onChangeKitchenDeliveryNote(
+                  purchaseInternalDetail.materialId,
+                  value,
+                )
+              }
+              disabled={disabled}
+            />
+          ))}
+        </ScrollTable>
       </Grid.Col>
     </Grid>
   );

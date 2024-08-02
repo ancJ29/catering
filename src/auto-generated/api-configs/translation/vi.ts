@@ -253,6 +253,7 @@ export default {
   "Material source options": "Tùy chọn nguồn nguyên liệu",
   "Please complete all information": "Vui lòng hoàn thành tất cả thông tin",
   "Add purchase request successfully": "Thêm yêu cầu mua hàng thành công",
+  "Add purchase request failed": "Thêm yêu cầu mua hàng thất bại",
   "Update purchase request successfully":
     "Cập nhật yêu cầu mua hàng thành công",
   "Return to purchase request list": "Quay lại danh sách yêu cầu mua hàng",
@@ -392,4 +393,20 @@ export default {
   "Warehouse receipt export - import date": "Ngày xuất - nhập",
   "Warehouse Transfer": "TH chuyển kho",
   "Warehouse Receipt Detail": "Chi tiết phiếu kho",
+  "External Warehouse Entry": "Nhập kho mua ngoài",
+  "Internal Warehouse Entry": "Nhập kho nội bộ",
+  "Warehouse Import Receipt": "Phiếu nhập kho",
+  "Purchase order delivery time": "Thời gian giao",
+  "Purchase order service attitude": "Thái độ phục vụ",
+  "Attach image": "Đính kèm hình ảnh",
+  "View attached image": "Xem hình ảnh đính kèm",
+  "Save general information": "Lưu thông tin chung",
+  "Received": "Đã nhận",
+  "Adjusted": "Điều chỉnh",
+  "Actual": "Thực tế",
+  "Ordered": "Lúc đặt",
+  "The inventory quantity will be changed when the status is updated":
+    "Số lượng tồn kho sẽ được thay đổi khi cập nhật tình trạng",
+  "Are you sure you have checked the actual material quantity?":
+    "Bạn chắc chắn đã kiểm tra số lượng nguyên liệu thực tế?",
 } satisfies Record<string, string>;

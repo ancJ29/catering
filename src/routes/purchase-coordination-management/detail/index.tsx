@@ -5,7 +5,7 @@ import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import useAuthStore from "@/stores/auth.store";
 import { formatTime } from "@/utils";
-import { Flex, Stack, Text } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
@@ -60,7 +60,7 @@ const PurchaseCoordinationDetail = () => {
   }, [purchaseCoordinationId, role, setValues]);
   useOnMounted(load);
 
-  const complete = () => {
+  const complete = useCallback(async () => {
     modals.openConfirmModal({
       title: t("Confirm"),
       children: (
@@ -86,26 +86,24 @@ const PurchaseCoordinationDetail = () => {
         }
       },
     });
-  };
+  }, [navigate, t]);
 
   return (
-    <Stack>
-      <Flex direction="column" gap={10}>
-        <PurchaseActions
-          returnUrl="/purchase-coordination-management"
-          completeButtonTitle="Create PO"
-          complete={complete}
-          disabledCompleteButton={disabled}
-        />
-        <Form values={values} />
-        <Steppers status={values.status} disabled={disabled} />
-        <MaterialListButton
-          opened={opened}
-          onClick={toggle}
-          style={{ marginLeft: "auto" }}
-        />
-        <Table opened={opened} disabled={disabled} />
-      </Flex>
+    <Stack gap={10}>
+      <PurchaseActions
+        returnUrl="/purchase-coordination-management"
+        completeButtonTitle="Create PO"
+        complete={complete}
+        disabledCompleteButton={disabled}
+      />
+      <Form values={values} />
+      <Steppers status={values.status} disabled={disabled} />
+      <MaterialListButton
+        opened={opened}
+        onClick={toggle}
+        style={{ marginLeft: "auto" }}
+      />
+      <Table opened={opened} disabled={disabled} />
     </Stack>
   );
 };
