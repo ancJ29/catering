@@ -4,7 +4,6 @@ import useTranslation from "@/hooks/useTranslation";
 import {
   PurchaseInternal,
   getPurchaseInternals,
-  statusInternalOptions,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { endOfWeek, startOfDay } from "@/utils";
@@ -23,13 +22,9 @@ const PurchaseInternalManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseInternals, setPurchaseInternals] = useState<
-    PurchaseInternal[]
+  PurchaseInternal[]
   >([]);
   const { caterings } = useCateringStore();
-
-  const [statusOptions] = useMemo(() => {
-    return statusInternalOptions(t);
-  }, [t]);
 
   const dataGridConfigs = useMemo(
     () => configs(t, caterings),
@@ -91,7 +86,6 @@ const PurchaseInternalManagement = () => {
         receivingCateringIds={condition?.receivingCateringIds}
         deliveryCateringIds={condition?.deliveryCateringIds}
         purchaseCoordinationIds={names}
-        statusOptions={statusOptions}
         clearable={filtered}
         onClear={reset}
         onReload={reload}

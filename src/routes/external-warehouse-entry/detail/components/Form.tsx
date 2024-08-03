@@ -1,6 +1,6 @@
 import { poCateringStatusSchema } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
-import DateInput from "@/components/common/DateInput";
+import DateTimeInput from "@/components/common/DateTimeInput";
 import RadioGroup from "@/components/common/RadioGroup";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
@@ -11,6 +11,7 @@ import {
 } from "@/services/domain";
 import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
+import { formatTime } from "@/utils";
 import { Flex } from "@mantine/core";
 import { useMemo, useSyncExternalStore } from "react";
 import store from "../_item.store";
@@ -49,11 +50,22 @@ const Form = () => {
           data={[purchaseOrder?.code || ""]}
           disabled={true}
         />
-        <DateInput
+        {/* <DateInput
           label={t("Purchase order date")}
           value={purchaseOrder?.deliveryDate}
           onChangeDate={() => null}
           w="25vw"
+          disabled={true}
+        /> */}
+        <DateTimeInput
+          label={t("Purchase order date")}
+          date={purchaseOrder?.deliveryDate.getTime()}
+          onChangeDate={() => null}
+          minDate={new Date()}
+          time={formatTime(purchaseOrder?.deliveryDate, "HH:mm")}
+          onChangeTime={() => null}
+          w="25vw"
+          required
           disabled={true}
         />
         <Select

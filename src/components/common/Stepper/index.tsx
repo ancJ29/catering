@@ -21,7 +21,7 @@ interface StepperProps<T>
   status: T;
   fz: number;
   statuses: T[];
-  onChangeValue?: (value: T) => void;
+  onChangeStatus?: (value: T) => void;
   map: Map<number, T>;
   statusColor: (status: T, level?: number) => string;
   disabled?: boolean;
@@ -39,7 +39,7 @@ const Stepper = <T extends string>({
   status,
   fz,
   statuses,
-  onChangeValue,
+  onChangeStatus,
   map,
   statusColor,
   disabled = false,
@@ -70,9 +70,9 @@ const Stepper = <T extends string>({
   const click = useCallback(
     (idx: number) => {
       setActive(idx);
-      onChangeValue?.(statuses[idx]);
+      onChangeStatus?.(statuses[idx]);
     },
-    [onChangeValue, statuses],
+    [onChangeStatus, statuses],
   );
 
   return (

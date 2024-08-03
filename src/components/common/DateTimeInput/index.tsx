@@ -6,7 +6,7 @@ import classes from "./DateTimeInput.module.scss";
 
 type DateTimeInputProps = {
   label?: string;
-  date: number;
+  date?: number;
   time: string;
   onChangeDate: (value?: number) => void;
   onChangeTime: (value?: string) => void;
@@ -48,7 +48,7 @@ const DateTimeInput = ({
       )}
       <div className={classNames(classes.expand, dateTimeClassName)}>
         <DateInput
-          value={new Date(date)}
+          value={new Date(date || 0)}
           onChangeDate={onChangeDate}
           minDate={minDate}
           w={"70%"}

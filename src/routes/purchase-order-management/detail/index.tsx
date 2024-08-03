@@ -181,7 +181,7 @@ const PurchaseOrderDetail = () => {
           <Form values={form.values} />
           <Steppers
             status={form.values.status}
-            onChangeValue={handleChangeStatus}
+            onChangeStatus={handleChangeStatus}
           />
           <SendMail
             email={form.values.email}

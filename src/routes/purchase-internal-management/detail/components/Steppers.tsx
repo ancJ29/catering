@@ -14,11 +14,16 @@ const statuses = piStatusSchema.options;
 const map = new Map<number, PIStatus>(statuses.map((s, i) => [i, s]));
 
 type SteppersProps = {
-  status: PIStatus;
+  status?: PIStatus;
   disabled?: boolean;
+  onChangeStatus?: (value: PIStatus) => void;
 };
 
-const Steppers = ({ status, disabled }: SteppersProps) => {
+const Steppers = ({
+  status = piStatusSchema.Values.DG,
+  disabled,
+  onChangeStatus,
+}: SteppersProps) => {
   return (
     <Stepper
       size="sm"
@@ -31,6 +36,7 @@ const Steppers = ({ status, disabled }: SteppersProps) => {
       StatusComponent={Status}
       keyPrefix="purchaseInternal"
       disabled={disabled}
+      onChangeStatus={onChangeStatus}
     />
   );
 };

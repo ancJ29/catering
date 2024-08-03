@@ -1,49 +1,43 @@
-import { poStatusSchema } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  getPurchaseOrdersByCatering,
-  PurchaseOrderCatering,
+  getPurchaseInternals,
+  PurchaseInternal,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
-import useSupplierStore from "@/stores/supplier.store";
 import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  configs,
   defaultCondition,
   filter,
   FilterType,
-} from "./_configs";
+} from "../purchase-internal-management/_configs";
+import { configs } from "./_configs";
 import Filter from "./components/Filter";
 
-const ExternalWarehouseEntry = () => {
+const InternalWarehouseEntry = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const [currents, setCurrents] = useState<PurchaseOrderCatering[]>(
-    [],
-  );
+  const [currents, setCurrents] = useState<PurchaseInternal[]>([]);
   const { caterings } = useCateringStore();
-  const { suppliers } = useSupplierStore();
   const { cateringId, isCatering } = useAuthStore();
 
   const dataGridConfigs = useMemo(
-    () => configs(t, caterings, suppliers),
-    [t, caterings, suppliers],
+    () => configs(t, caterings),
+    [t, caterings],
   );
 
   const getData = async (from?: number, to?: number) => {
     setCurrents(
-      await getPurchaseOrdersByCatering({
+      await getPurchaseInternals(
         from,
         to,
-        statuses: [poStatusSchema.Values.DTC],
-        receivingCateringId: isCatering ? cateringId : "xxx",
-      }),
+        isCatering ? cateringId : "xxx",
+      ),
     );
   };
 
@@ -58,7 +52,6 @@ const ExternalWarehouseEntry = () => {
 
   const {
     condition,
-    counter,
     data,
     keyword,
     names,
@@ -68,7 +61,7 @@ const ExternalWarehouseEntry = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseOrderCatering, FilterType>({
+  } = useFilterData<PurchaseInternal, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -86,27 +79,26 @@ const ExternalWarehouseEntry = () => {
     }
   };
 
-  const onRowClick = (item: PurchaseOrderCatering) => {
-    navigate(`/external-warehouse-entry/${item.id}`);
+  const onRowClick = (item: PurchaseInternal) => {
+    navigate(`/internal-warehouse-entry/${item.id}`);
   };
 
   return (
-    <Stack gap={10} key={suppliers.size}>
+    <Stack gap={10} key={caterings.size}>
       <Filter
-        key={counter}
         keyword={keyword}
         from={condition?.from}
         to={condition?.to}
         statuses={condition?.statuses}
-        supplierIds={condition?.supplierIds}
-        purchaseOrderIds={names}
+        deliveryCateringIds={condition?.deliveryCateringIds}
+        purchaseCoordinationIds={names}
         clearable={filtered}
         onClear={reset}
         onReload={reload}
         onChangeStatuses={updateCondition.bind(null, "statuses", "")}
-        onChangeSupplierIds={updateCondition.bind(
+        onChangeDeliveryCateringIds={updateCondition.bind(
           null,
-          "supplierIds",
+          "deliveryCateringIds",
           "",
         )}
         onChangeDateRange={onChangeDateRange}
@@ -125,4 +117,4 @@ const ExternalWarehouseEntry = () => {
   );
 };
 
-export default ExternalWarehouseEntry;
+export default InternalWarehouseEntry;

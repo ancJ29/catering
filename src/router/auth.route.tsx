@@ -57,7 +57,9 @@ const componentMap: Record<string, LazyExoticComponent> = {
   WarehouseManagement: lazy(() => import("@/routes/warehouse-management")),
   WarehouseDetailManagement: lazy(() => import("@/routes/warehouse-management/detail")),
   ExternalWareHouseEntry: lazy(() => import("@/routes/external-warehouse-entry")),
-  WarehouseImportDetail: lazy(() => import("@/routes/external-warehouse-entry/detail")),
+  ExternalWarehouseImportDetail: lazy(() => import("@/routes/external-warehouse-entry/detail")),
+  InternalWareHouseEntry: lazy(() => import("@/routes/internal-warehouse-entry")),
+  InternalWarehouseImportDetail: lazy(() => import("@/routes/internal-warehouse-entry/detail")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -433,7 +435,27 @@ const configs: Config[] = [
   },
   {
     path: "/external-warehouse-entry/:purchaseOrderId",
-    element: "WarehouseImportDetail",
+    element: "ExternalWarehouseImportDetail",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Warehouse Import Receipt",
+      },
+    },
+  },
+  {
+    path: "/internal-warehouse-entry",
+    element: "InternalWareHouseEntry",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Internal Warehouse Entry",
+      },
+    },
+  },
+  {
+    path: "/internal-warehouse-entry/:purchaseInternalId",
+    element: "InternalWarehouseImportDetail",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {

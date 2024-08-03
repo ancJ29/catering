@@ -32,6 +32,7 @@ export type AddPurchaseInternalRequest = z.infer<typeof addRequest>;
 async function _getPurchaseInternals(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
+  receivingCateringId?: string,
 ): Promise<PurchaseInternal[]> {
   return await loadAll<PurchaseInternal>({
     key: "purchaseInternals",
@@ -39,6 +40,7 @@ async function _getPurchaseInternals(
     params: {
       from,
       to,
+      receivingCateringId,
     },
   });
 }
@@ -46,13 +48,16 @@ async function _getPurchaseInternals(
 export async function getPurchaseInternals(
   from?: number,
   to?: number,
+  receivingCateringId?: string,
 ) {
-  return _getPurchaseInternals(from, to).then((purchaseInternals) => {
-    return purchaseInternals.map((el) => ({
-      ...el,
-      name: el.code,
-    }));
-  });
+  return _getPurchaseInternals(from, to, receivingCateringId).then(
+    (purchaseInternals) => {
+      return purchaseInternals.map((el) => ({
+        ...el,
+        name: el.code,
+      }));
+    },
+  );
 }
 
 export async function getPurchaseInternalById(
@@ -86,6 +91,24 @@ export async function updatePurchaseInternal(params: UpdateRequest) {
     params,
     options: {
       toastMessage: "Your changes have been saved",
+    },
+  });
+}
+
+const { request: updateStatusRequest } =
+  actionConfigs[Actions.UPDATE_PURCHASE_INTERNAL_STATUS].schema;
+type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
+export async function updatePurchaseInternalStatus(
+  params: UpdateStatusRequest,
+) {
+  await callApi<UpdateStatusRequest, { id: string }>({
+    action: Actions.UPDATE_PURCHASE_INTERNAL_STATUS,
+    params,
+    options: {
+      toastMessage: "Purchase internal status updated",
+      reloadOnSuccess: {
+        delay: 700,
+      },
     },
   });
 }
@@ -124,7 +147,7 @@ export function changeablePurchaseInternalStatus(
   if (!role) {
     return false;
   }
-  if (role === ClientRoles.OWNER) {
+  if (role === ClientRoles.OWNER || role === ClientRoles.CATERING) {
     return true;
   }
   return false;

@@ -15,14 +15,12 @@ type FilterProps = {
   from?: number;
   to?: number;
   statuses?: string[];
-  receivingCateringIds?: string[];
   deliveryCateringIds?: string[];
   purchaseCoordinationIds: string[];
   clearable?: boolean;
   onClear: () => void;
   onReload: (keyword?: string) => void;
   onChangeStatuses: (value: string[]) => void;
-  onChangeReceivingCateringIds: (value: string[]) => void;
   onChangeDeliveryCateringIds: (value: string[]) => void;
   onChangeDateRange: (from?: number, to?: number) => void;
 };
@@ -32,14 +30,12 @@ const Filter = ({
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
   statuses,
-  receivingCateringIds,
   deliveryCateringIds,
   purchaseCoordinationIds,
   clearable,
   onClear,
   onReload,
   onChangeStatuses,
-  onChangeReceivingCateringIds,
   onChangeDeliveryCateringIds,
   onChangeDateRange,
 }: FilterProps) => {
@@ -57,50 +53,39 @@ const Filter = ({
   }, [t]);
 
   return (
-    <Flex gap={10} align="end" direction="column">
-      <Flex align="end" gap={10}>
-        <DateRangeInput
-          label={t("Purchase internal date")}
-          from={from}
-          to={to}
-          onChange={onChangeDateRange}
-          w={"22vw"}
-        />
-        <CustomButton disabled={!clearable} onClick={onClear}>
-          {t("Clear")}
-        </CustomButton>
-      </Flex>
-      <Flex gap={10} w="-webkit-fill-available" justify="end">
-        <AutocompleteForFilterData
-          label={t("Purchase internal io code")}
-          w={"20vw"}
-          data={purchaseCoordinationIds}
-          defaultValue={keyword}
-          onReload={onReload}
-          disabled={false}
-        />
-        <MultiSelect
-          value={statuses}
-          label={t("Status")}
-          w={"20vw"}
-          options={statusOptions}
-          onChange={onChangeStatuses}
-        />
-        <MultiSelect
-          value={receivingCateringIds}
-          label={t("Purchase internal receiving catering")}
-          w={"20vw"}
-          options={_caterings}
-          onChange={onChangeReceivingCateringIds}
-        />
-        <MultiSelect
-          value={deliveryCateringIds}
-          label={t("Purchase internal delivery catering")}
-          w={"20vw"}
-          options={_caterings}
-          onChange={onChangeDeliveryCateringIds}
-        />
-      </Flex>
+    <Flex gap={10} justify="end" align="end">
+      <AutocompleteForFilterData
+        label={t("Purchase internal io code")}
+        w={"20vw"}
+        data={purchaseCoordinationIds}
+        defaultValue={keyword}
+        onReload={onReload}
+        disabled={false}
+      />
+      <MultiSelect
+        value={statuses}
+        label={t("Status")}
+        w={"20vw"}
+        options={statusOptions}
+        onChange={onChangeStatuses}
+      />
+      <MultiSelect
+        value={deliveryCateringIds}
+        label={t("Purchase internal delivery catering")}
+        w={"20vw"}
+        options={_caterings}
+        onChange={onChangeDeliveryCateringIds}
+      />
+      <DateRangeInput
+        label={t("Purchase internal date")}
+        from={from}
+        to={to}
+        onChange={onChangeDateRange}
+        w={"22vw"}
+      />
+      <CustomButton disabled={!clearable} onClick={onClear}>
+        {t("Clear")}
+      </CustomButton>
     </Flex>
   );
 };
