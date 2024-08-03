@@ -285,6 +285,7 @@ export default [
         key: "internal-warehouse-entry",
         label: "Internal Warehouse Entry",
         icon: "file-arrow-right",
+        url: "/internal-warehouse-entry",
       },
       {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],

@@ -896,6 +896,7 @@ export const configs = {
       request: getSchema.extend({
         from: dateSchema.optional(),
         to: dateSchema.optional(),
+        receivingCateringId: optionalStringSchema,
       }),
       response: listResponse.extend({
         purchaseInternals: xPurchaseInternalSchema.array(),
