@@ -7,4 +7,5 @@ export type InternalDetail = {
   actualPrice: number;
   kitchenDeliveryNote: string;
   internalNote: string;
+  isChecked: boolean;
 };

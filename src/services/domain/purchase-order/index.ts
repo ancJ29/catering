@@ -154,20 +154,15 @@ type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
 
 export async function updatePurchaseOrderStatus(
   params: UpdateStatusRequest,
-  showToast = true,
 ) {
   await callApi<UpdateStatusRequest, { id: string }>({
     action: Actions.UPDATE_PURCHASE_ORDER_STATUS,
     params,
     options: {
-      toastMessage: showToast
-        ? "Purchase order status updated"
-        : undefined,
-      reloadOnSuccess: showToast
-        ? {
-          delay: 700,
-        }
-        : undefined,
+      toastMessage: "Purchase order status updated",
+      reloadOnSuccess: {
+        delay: 700,
+      },
     },
   });
 }
@@ -258,18 +253,6 @@ export function statusOrderCateringOptions(
 ) {
   const statusOptions: OptionProps[] =
     poCateringStatusSchema.options.map((status) => ({
-      label: t(`purchaseOrder.cateringStatus.${status}`),
-      value: status,
-    }));
-  return [statusOptions];
-}
-
-export function xStatusOrderCateringOptions(
-  t: (key: string) => string,
-) {
-  const statusOptions: OptionProps[] = poCateringStatusSchema.options
-    .filter((status) => status !== poCateringStatusSchema.Values.CNK)
-    .map((status) => ({
       label: t(`purchaseOrder.cateringStatus.${status}`),
       value: status,
     }));

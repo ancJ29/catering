@@ -8,4 +8,5 @@ export type OrderDetail = {
   vat: number;
   supplierNote: string;
   internalNote: string;
+  isChecked: boolean;
 };

@@ -1,4 +1,3 @@
-import { poCateringStatusSchema } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
 import DateTimeInput from "@/components/common/DateTimeInput";
 import RadioGroup from "@/components/common/RadioGroup";
@@ -6,8 +5,8 @@ import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import {
   deliveryTimeStatusAndServiceStatusOrderOptions,
+  statusOrderCateringOptions,
   Supplier,
-  xStatusOrderCateringOptions,
 } from "@/services/domain";
 import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
@@ -32,7 +31,7 @@ const Form = () => {
   }, [suppliers]);
 
   const [statusOptions] = useMemo(() => {
-    return xStatusOrderCateringOptions(t);
+    return statusOrderCateringOptions(t);
   }, [t]);
 
   const [deliveryTimeStatusOptions, serviceStatusOptions] =
@@ -50,13 +49,6 @@ const Form = () => {
           data={[purchaseOrder?.code || ""]}
           disabled={true}
         />
-        {/* <DateInput
-          label={t("Purchase order date")}
-          value={purchaseOrder?.deliveryDate}
-          onChangeDate={() => null}
-          w="25vw"
-          disabled={true}
-        /> */}
         <DateTimeInput
           label={t("Purchase order date")}
           date={purchaseOrder?.deliveryDate.getTime()}
@@ -78,12 +70,7 @@ const Form = () => {
       </Flex>
       <Flex justify="space-between" align="end" gap={10}>
         <RadioGroup
-          value={
-            purchaseOrder?.others.status ===
-            poCateringStatusSchema.Values.CNK
-              ? poCateringStatusSchema.Values.CN
-              : purchaseOrder?.others.status
-          }
+          value={purchaseOrder?.others.status}
           label={t("Status")}
           options={statusOptions}
           disabled={disabled}
@@ -104,7 +91,7 @@ const Form = () => {
           options={serviceStatusOptions}
           disabled={disabled}
           onChange={store.setServiceStatus}
-          w="25vw"
+          w="20vw"
         />
       </Flex>
     </Flex>

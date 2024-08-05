@@ -7,7 +7,7 @@ import Header from "./Header";
 import Item from "./Item";
 
 const Table = () => {
-  const { currents, disabled } = useSyncExternalStore(
+  const { currents, disabled, key } = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
   );
@@ -17,39 +17,51 @@ const Table = () => {
       <MantineTable withTableBorder withColumnBorders>
         <DisplayHeader />
       </MantineTable>
-      <MantineTable mt="-10px" withTableBorder>
-        <Header />
-        <MantineTable.Tbody>
-          {Object.values(currents).map(
-            (internalDetail: InternalDetail, index: number) => (
-              <Item
-                key={internalDetail.id}
-                index={index}
-                internalDetail={internalDetail}
-                disabled={disabled}
-                onChangeActualAmount={(value) =>
-                  store.setActualAmount(
-                    internalDetail.materialId,
-                    value,
-                  )
-                }
-                onChangeActualPrice={(value) =>
-                  store.setActualPrice(
-                    internalDetail.materialId,
-                    value,
-                  )
-                }
-                onChangeKitchenDeliveryNote={(value) =>
-                  store.setKitchenDeliveryNote(
-                    internalDetail.materialId,
-                    value,
-                  )
-                }
-              />
-            ),
-          )}
-        </MantineTable.Tbody>
-      </MantineTable>
+      <MantineTable.ScrollContainer
+        minWidth={500}
+        h="calc(-8.5rem - 280px + 100vh)"
+        mt="-10px"
+      >
+        <MantineTable key={key} withTableBorder>
+          <Header />
+          <MantineTable.Tbody>
+            {Object.values(currents).map(
+              (internalDetail: InternalDetail, index: number) => (
+                <Item
+                  key={internalDetail.id}
+                  index={index}
+                  internalDetail={internalDetail}
+                  disabled={disabled}
+                  onChangeActualAmount={(value) =>
+                    store.setActualAmount(
+                      internalDetail.materialId,
+                      value,
+                    )
+                  }
+                  onChangeActualPrice={(value) =>
+                    store.setActualPrice(
+                      internalDetail.materialId,
+                      value,
+                    )
+                  }
+                  onChangeKitchenDeliveryNote={(value) =>
+                    store.setKitchenDeliveryNote(
+                      internalDetail.materialId,
+                      value,
+                    )
+                  }
+                  onChangeChecked={(value) =>
+                    store.setIsChecked(
+                      internalDetail.materialId,
+                      value,
+                    )
+                  }
+                />
+              ),
+            )}
+          </MantineTable.Tbody>
+        </MantineTable>
+      </MantineTable.ScrollContainer>
     </>
   );
 };

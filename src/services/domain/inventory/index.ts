@@ -103,6 +103,12 @@ export async function updateInventory(inventories: Inventory[]) {
   await callApi<Request, unknown>({
     action: Actions.UPDATE_INVENTORY,
     params: inventories,
+    options: {
+      toastMessage: "Your changes have been saved",
+      reloadOnSuccess: {
+        delay: 700,
+      },
+    },
   });
 }
 

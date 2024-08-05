@@ -387,6 +387,7 @@ export const purchaseInternalOthersSchema = z.object({
 });
 
 export const purchaseInternalDetailOthersSchema = z.object({
+  isChecked: optionalBooleanSchema.default(false),
   kitchenDeliveryNote: nullishStringSchema,
   internalNote: nullishStringSchema,
 });
@@ -505,7 +506,7 @@ export const poStatusCatering: Record<POStatus, POCateringStatus> = {
 
 export const purchaseOrderOthersSchema = z.object({
   prCode: stringSchema,
-  status: poStatusSchema,
+  status: poStatusSchema.optional().default("DG"),
   type: prTypeSchema,
   priority: prPrioritySchema,
   receivingCateringId: stringSchema,
@@ -514,6 +515,7 @@ export const purchaseOrderOthersSchema = z.object({
 });
 
 export const purchaseOrderDetailOthersSchema = z.object({
+  isChecked: optionalBooleanSchema.default(false),
   supplierNote: nullishStringSchema,
   internalNote: nullishStringSchema,
   price: numberSchema,

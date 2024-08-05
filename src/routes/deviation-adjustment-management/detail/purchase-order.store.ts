@@ -115,6 +115,7 @@ export default {
           actualAmount,
           paymentAmount,
           others: {
+            isChecked: e.isChecked,
             supplierNote: e.supplierNote || "",
             internalNote: e.internalNote || "",
             price: e.price || 0,
@@ -197,6 +198,7 @@ function initOrderDetails(
       vat: purchaseOrderDetail.others.vat,
       supplierNote: purchaseOrderDetail.others.supplierNote || "",
       internalNote: purchaseOrderDetail.others.internalNote || "",
+      isChecked: purchaseOrderDetail.others.isChecked || false,
     };
   });
   return currents;

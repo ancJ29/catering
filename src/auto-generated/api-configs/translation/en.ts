@@ -410,4 +410,6 @@ export default {
     "The inventory quantity will be changed when the status is updated",
   "Are you sure you have checked the actual material quantity?":
     "Are you sure you have checked the actual material quantity?",
+  "Purchase internal status updated": "Purchase internal status updated",  
+  "Please check all the amounts of materials": "Please check all the amounts of materials",
 } satisfies Record<string, string>;

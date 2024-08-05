@@ -7,7 +7,7 @@ import Header from "./Header";
 import Item from "./Item";
 
 const Table = () => {
-  const { currents, disabled } = useSyncExternalStore(
+  const { currents, disabled, key } = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
   );
@@ -17,30 +17,48 @@ const Table = () => {
       <MantineTable withTableBorder withColumnBorders>
         <DisplayHeader />
       </MantineTable>
-      <MantineTable mt="-10px" withTableBorder>
-        <Header />
-        <MantineTable.Tbody>
-          {Object.values(currents).map(
-            (orderDetail: OrderDetail, index: number) => (
-              <Item
-                key={orderDetail.id}
-                index={index}
-                orderDetail={orderDetail}
-                disabled={disabled}
-                onChangeActualAmount={(value) =>
-                  store.setActualAmount(orderDetail.materialId, value)
-                }
-                onChangeActualPrice={(value) =>
-                  store.setActualPrice(orderDetail.materialId, value)
-                }
-                onChangeSupplierNote={(value) =>
-                  store.setSupplierNote(orderDetail.materialId, value)
-                }
-              />
-            ),
-          )}
-        </MantineTable.Tbody>
-      </MantineTable>
+      <MantineTable.ScrollContainer
+        minWidth={500}
+        h="calc(-8.5rem - 280px + 100vh)"
+        mt="-10px"
+      >
+        <MantineTable key={key} withTableBorder>
+          <Header />
+          <MantineTable.Tbody>
+            {Object.values(currents).map(
+              (orderDetail: OrderDetail, index: number) => (
+                <Item
+                  key={orderDetail.id}
+                  index={index}
+                  orderDetail={orderDetail}
+                  disabled={disabled}
+                  onChangeActualAmount={(value) =>
+                    store.setActualAmount(
+                      orderDetail.materialId,
+                      value,
+                    )
+                  }
+                  onChangeActualPrice={(value) =>
+                    store.setActualPrice(
+                      orderDetail.materialId,
+                      value,
+                    )
+                  }
+                  onChangeSupplierNote={(value) =>
+                    store.setSupplierNote(
+                      orderDetail.materialId,
+                      value,
+                    )
+                  }
+                  onChangeChecked={(value) =>
+                    store.setIsChecked(orderDetail.materialId, value)
+                  }
+                />
+              ),
+            )}
+          </MantineTable.Tbody>
+        </MantineTable>
+      </MantineTable.ScrollContainer>
     </>
   );
 };

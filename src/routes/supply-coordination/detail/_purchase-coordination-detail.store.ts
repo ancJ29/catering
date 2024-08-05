@@ -250,6 +250,7 @@ export default {
                 }),
                 materialId: cd.materialId,
                 others: {
+                  isChecked: false,
                   kitchenDeliveryNote: "",
                   internalNote: cd.internalNote,
                 },

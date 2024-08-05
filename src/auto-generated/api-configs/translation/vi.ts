@@ -409,4 +409,6 @@ export default {
     "Số lượng tồn kho sẽ được thay đổi khi cập nhật tình trạng",
   "Are you sure you have checked the actual material quantity?":
     "Bạn chắc chắn đã kiểm tra số lượng nguyên liệu thực tế?",
+  "Purchase internal status updated": "Đã cập nhật trạng thái đơn hàng",  
+  "Please check all the amounts of materials": "Vui lòng kiểm tra toàn bộ số lượng các loại nguyên liệu",
 } satisfies Record<string, string>;

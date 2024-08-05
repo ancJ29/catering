@@ -200,6 +200,7 @@ export default {
           }),
           materialId: cd.materialId,
           others: {
+            isChecked: false,
             price: cd.price,
             supplierNote: cd.supplierNote,
             internalNote: cd.internalNote,

@@ -1,10 +1,8 @@
 import NumberInput from "@/components/common/NumberInput";
-import useTranslation from "@/hooks/useTranslation";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
 import { numberWithDelimiter } from "@/utils";
-import { Button, Flex, Table, TextInput } from "@mantine/core";
-import { IconDeviceFloppy } from "@tabler/icons-react";
+import { Checkbox, Flex, Table, TextInput } from "@mantine/core";
 import { InternalDetail } from "../_configs";
 
 type ItemProps = {
@@ -14,6 +12,7 @@ type ItemProps = {
   onChangeActualAmount: (value: number) => void;
   onChangeActualPrice: (value: number) => void;
   onChangeKitchenDeliveryNote: (value: string) => void;
+  onChangeChecked: (value: boolean) => void;
 };
 
 const Item = ({
@@ -23,8 +22,8 @@ const Item = ({
   onChangeActualAmount,
   onChangeActualPrice,
   onChangeKitchenDeliveryNote,
+  onChangeChecked,
 }: ItemProps) => {
-  const t = useTranslation();
   const { materials } = useMaterialStore();
   const material = materials.get(internalDetail.materialId);
 
@@ -51,7 +50,7 @@ const Item = ({
     },
     {
       content: (
-        <Flex gap={10} align="center">
+        <Flex gap={10} align="center" ml={10}>
           <NumberInput
             thousandSeparator=""
             isPositive={true}
@@ -60,15 +59,14 @@ const Item = ({
             allowDecimal={material?.others.allowFloat}
             isInteger={!material?.others.allowFloat}
             disabled={disabled}
-            w="50%"
+            w="80%"
           />
-          <Button
-            variant="outline"
-            leftSection={<IconDeviceFloppy size={16} />}
-            size="xs"
-          >
-            {t("Save")}
-          </Button>
+          <Checkbox
+            defaultChecked={internalDetail.isChecked}
+            onChange={(event) =>
+              onChangeChecked(event.currentTarget.checked)
+            }
+          />
         </Flex>
       ),
       align: "right",

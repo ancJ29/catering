@@ -1,5 +1,5 @@
 import { piStatusSchema } from "@/auto-generated/api-configs";
-import PurchaseActions from "@/components/c-catering/PurchaseActions";
+import WarehouseEntryActions from "@/components/c-catering/WarehouseEntryActions";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import Steppers from "@/routes/purchase-internal-management/detail/components/Steppers";
@@ -16,10 +16,8 @@ import Table from "./components/Table";
 const InternalWarehouseImportDetail = () => {
   const t = useTranslation();
   const { purchaseInternalId } = useParams();
-  const { disabled, purchaseInternal } = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-  );
+  const { disabled, purchaseInternal, changed } =
+    useSyncExternalStore(store.subscribe, store.getSnapshot);
 
   const load = useCallback(async () => {
     if (!purchaseInternalId) {
@@ -29,48 +27,72 @@ const InternalWarehouseImportDetail = () => {
   }, [purchaseInternalId]);
   useOnMounted(load);
 
-  const complete = useCallback(async () => {
-    if (
-      purchaseInternal?.others.status === piStatusSchema.Values.DNK
-    ) {
-      modals.openConfirmModal({
-        size: "lg",
-        title: t("Confirm"),
-        children: (
-          <Flex direction="column">
-            <Text size="sm">
-              {t(
-                "The inventory quantity will be changed when the status is updated",
-              )}
-            </Text>
-            <Text size="sm">
-              {t(
-                "Are you sure you have checked the actual material quantity?",
-              )}
-            </Text>
-          </Flex>
-        ),
-        labels: { confirm: "OK", cancel: t("Cancel") },
-        onConfirm: async () => {
-          await store.save();
-        },
-      });
-    } else {
+  const showFailNotification = useCallback(
+    (status?: string) => {
       notifications.show({
         color: "red.5",
-        message: t("Please update status"),
+        message: status ?? t("Please update status"),
       });
+    },
+    [t],
+  );
+
+  const complete = useCallback(async () => {
+    const isCheckAll = store.isCheckAll();
+    const status = purchaseInternal?.others.status;
+
+    switch (status) {
+      case piStatusSchema.Values.DD:
+        showFailNotification();
+        break;
+      case piStatusSchema.Values.DG:
+        showFailNotification();
+        break;
+      case piStatusSchema.Values.SSGH:
+        showFailNotification();
+        break;
+      case piStatusSchema.Values.NK1P:
+        store.update();
+        break;
+      case piStatusSchema.Values.DNK:
+        if (isCheckAll) {
+          modals.openConfirmModal({
+            size: "md",
+            title: <Text fw="bold">{t("Confirm")}</Text>,
+            children: (
+              <Flex direction="column">
+                <Text size="sm">
+                  {t(
+                    "The inventory quantity will be changed when the status is updated",
+                  )}
+                </Text>
+                <Text size="sm">
+                  {t(
+                    "Are you sure you have checked the actual material quantity?",
+                  )}
+                </Text>
+              </Flex>
+            ),
+            labels: { confirm: "OK", cancel: t("Cancel") },
+            onConfirm: async () => {
+              await store.save();
+            },
+          });
+        } else {
+          showFailNotification(
+            t("Please check all the amounts of materials"),
+          );
+        }
+        break;
     }
-  }, [purchaseInternal?.others.status, t]);
+  }, [purchaseInternal?.others.status, showFailNotification, t]);
+
+  const onReset = async () => {
+    await store.initData(purchaseInternalId || "");
+  };
 
   return (
     <Stack gap={10}>
-      <PurchaseActions
-        returnUrl="/internal-warehouse-entry"
-        completeButtonTitle="Save"
-        complete={complete}
-        disabledCompleteButton={disabled}
-      />
       <Form />
       <Steppers
         status={purchaseInternal?.others.status}
@@ -78,6 +100,13 @@ const InternalWarehouseImportDetail = () => {
       />
       <ImageButton />
       <Table />
+      <WarehouseEntryActions
+        returnUrl="/internal-warehouse-entry"
+        onReset={onReset}
+        changed={changed}
+        onCompleted={complete}
+        disabled={disabled}
+      />
     </Stack>
   );
 };

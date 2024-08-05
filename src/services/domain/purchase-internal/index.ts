@@ -85,13 +85,18 @@ const { request: updateRequest } =
   actionConfigs[Actions.UPDATE_PURCHASE_INTERNAL].schema;
 type UpdateRequest = z.infer<typeof updateRequest>;
 
-export async function updatePurchaseInternal(params: UpdateRequest) {
+export async function updatePurchaseInternal(
+  params: UpdateRequest,
+  showToast = true,
+) {
   await callApi<UpdateRequest, { id: string }>({
     action: Actions.UPDATE_PURCHASE_INTERNAL,
     params,
-    options: {
-      toastMessage: "Your changes have been saved",
-    },
+    options: showToast
+      ? {
+        toastMessage: "Your changes have been saved",
+      }
+      : undefined,
   });
 }
 

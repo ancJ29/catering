@@ -136,6 +136,7 @@ export default {
     await updateInventory(
       Object.values(store.getSnapshot().updates).map((e) => {
         const material = materials.get(e.materialId);
+        const isAudited = e.others.isAudited || false;
         return {
           ...e,
           amount: convertAmountForward({
@@ -146,15 +147,19 @@ export default {
             ...e.others,
             amountAfterAudit: convertAmountForward({
               material,
-              amount: e.others.amountAfterAudit,
+              amount: isAudited ? 0 : e.others.amountAfterAudit,
             }),
             amountShippedAfterAudit: convertAmountForward({
               material,
-              amount: e.others.amountShippedAfterAudit,
+              amount: isAudited
+                ? 0
+                : e.others.amountShippedAfterAudit,
             }),
             amountReceivedAfterAudit: convertAmountForward({
               material,
-              amount: e.others.amountReceivedAfterAudit,
+              amount: isAudited
+                ? 0
+                : e.others.amountReceivedAfterAudit,
             }),
           },
         };

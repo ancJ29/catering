@@ -27,7 +27,7 @@ const PurchaseActions = ({
   const t = useTranslation();
   const navigate = useNavigate();
 
-  const onClick = () => {
+  const onReturn = () => {
     navigate(returnUrl);
     window.location.reload();
   };
@@ -51,7 +51,7 @@ const PurchaseActions = ({
       >
         {t(completeButtonTitle)}
       </Button>
-      <Button onClick={onClick} variant="outline">
+      <Button onClick={onReturn} variant="outline">
         {t(returnButtonTitle)}
       </Button>
     </Flex>

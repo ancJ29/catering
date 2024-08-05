@@ -3,15 +3,19 @@ import {
   piStatusSchema,
 } from "@/auto-generated/api-configs";
 import {
+  addToInventory,
   getPurchaseInternalById,
   Material,
   PurchaseInternal,
   PurchaseInternalDetail,
+  updatePurchaseInternal,
+  updatePurchaseInternalStatus,
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import {
   cloneDeep,
   convertAmountBackward,
+  convertAmountForward,
   createStore,
 } from "@/utils";
 import { InternalDetail } from "./_configs";
@@ -21,6 +25,8 @@ type State = {
   currents: Record<string, InternalDetail>;
   updates: Record<string, InternalDetail>;
   disabled: boolean;
+  changed: boolean;
+  key: number;
 };
 
 enum ActionType {
@@ -30,6 +36,7 @@ enum ActionType {
   SET_KITCHEN_DELIVERY_NOTE = "SET_KITCHEN_DELIVERY_NOTE",
   SET_PRICE = "SET_PRICE",
   SET_STATUS = "SET_STATUS",
+  SET_CHECKED = "SET_CHECKED",
 }
 
 type Action = {
@@ -40,12 +47,15 @@ type Action = {
   note?: string;
   price?: number;
   status?: string;
+  isChecked?: boolean;
 };
 
 const defaultState = {
   currents: {},
   updates: {},
   disabled: true,
+  changed: false,
+  key: Date.now(),
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -76,87 +86,61 @@ export default {
   setStatus(status: string) {
     dispatch({ type: ActionType.SET_STATUS, status });
   },
+  setIsChecked(materialId: string, isChecked: boolean) {
+    dispatch({ type: ActionType.SET_CHECKED, materialId, isChecked });
+  },
+  isCheckAll() {
+    for (const item of Object.values(store.getSnapshot().updates)) {
+      if (!item.isChecked) {
+        return false;
+      }
+    }
+    return true;
+  },
   async save() {
     const state = store.getSnapshot();
+    const { materials } = useMaterialStore.getState();
     const purchaseInternal = state.purchaseInternal;
     if (!purchaseInternal) {
       return;
     }
+    const _purchaseInternal = setUpPurchaseInternal(
+      purchaseInternal,
+      state,
+      materials,
+    );
+    const _addToInventory = setUpAddToInventory(
+      purchaseInternal,
+      state,
+      materials,
+    );
 
-    // const _purchaseInternal = {
-    //   ...purchaseInternal,
-    //   others: {
-    //     ...purchaseInternal.others,
-    //     status: piStatusSchema.Values.DNK,
-    //   },
-    //   purchaseInternalDetails: Object.values(state.updates).map(
-    //     (item) => {
-    //       const amount = convertAmountForward({
-    //         material: materials.get(item.materialId),
-    //         amount: item.amount,
-    //       });
-    //       const actualAmount = convertAmountForward({
-    //         material: materials.get(item.materialId),
-    //         amount: item.actualAmount,
-    //       });
-    //       return {
-    //         id: item.id,
-    //         materialId: item.materialId,
-    //         amount,
-    //         actualAmount,
-    //         paymentAmount: actualAmount,
-    //         others: {
-    //           kitchenDeliveryNote: item.kitchenDeliveryNote,
-    //           internalNote: item.internalNote,
-    //           price: item.actualPrice,
-    //         },
-    //       };
-    //     },
-    //   ),
-    // };
-
-    // const _warehouseReceipt = {
-    //   date: purchaseInternal.deliveryDate,
-    //   departmentId: purchaseInternal.others.receivingCateringId,
-    //   others: {
-    //     type: wrTypeSchema.Values.NDCK,
-    //     cateringId: purchaseInternal.others.receivingCateringId,
-    //   },
-    //   warehouseReceiptDetails: Object.values(state.updates).map(
-    //     (item) => ({
-    //       materialId: item.materialId,
-    //       amount: convertAmountForward({
-    //         material: materials.get(item.materialId),
-    //         amount: item.actualAmount,
-    //       }),
-    //       price: item.actualPrice,
-    //       others: {
-    //         memo: item.kitchenDeliveryNote,
-    //       },
-    //     }),
-    //   ),
-    // };
-
-    // const _addToInventory = Object.values(state.updates).map(
-    //   (item) => ({
-    //     materialId: item.materialId,
-    //     amount: convertAmountForward({
-    //       material: materials.get(item.materialId),
-    //       amount: item.actualAmount,
-    //     }),
-    //     departmentId: purchaseInternal.others.receivingCateringId,
-    //   }),
-    // );
-
-    // Promise.all([
-    //   updatePurchaseInternal(_purchaseInternal),
-    //   addWarehouseReceipt(_warehouseReceipt),
-    //   addToInventory(_addToInventory),
-    // ]);
-    // await updatePurchaseInternalStatus({
-    //   id: purchaseInternal.id,
-    //   status: piStatusSchema.Values.DNK,
-    // });
+    Promise.all([
+      updatePurchaseInternal(_purchaseInternal, false),
+      addToInventory(_addToInventory),
+    ]);
+    await updatePurchaseInternalStatus({
+      id: purchaseInternal.id,
+      status: piStatusSchema.Values.DNK,
+    });
+  },
+  async update() {
+    const state = store.getSnapshot();
+    const { materials } = useMaterialStore.getState();
+    const purchaseInternal = state.purchaseInternal;
+    if (!purchaseInternal) {
+      return;
+    }
+    const _purchaseInternal = setUpPurchaseInternal(
+      purchaseInternal,
+      state,
+      materials,
+    );
+    await updatePurchaseInternal(_purchaseInternal, false);
+    await updatePurchaseInternalStatus({
+      id: purchaseInternal.id,
+      status: piStatusSchema.Values.NK1P,
+    });
   },
 };
 
@@ -176,9 +160,9 @@ function reducer(action: Action, state: State): State {
           updates: cloneDeep(currents),
           disabled:
             action.purchaseInternal.others.status ===
-              piStatusSchema.Values.NK1P ||
-            action.purchaseInternal.others.status ===
-              piStatusSchema.Values.DNK,
+            piStatusSchema.Values.DNK,
+          changed: false,
+          key: Date.now(),
         };
       }
       break;
@@ -190,6 +174,7 @@ function reducer(action: Action, state: State): State {
         };
         return {
           ...state,
+          changed: true,
         };
       }
       break;
@@ -199,6 +184,10 @@ function reducer(action: Action, state: State): State {
           ...state.updates[action.materialId],
           kitchenDeliveryNote: action.note,
         };
+        return {
+          ...state,
+          changed: true,
+        };
       }
       break;
     case ActionType.SET_PRICE:
@@ -206,6 +195,10 @@ function reducer(action: Action, state: State): State {
         state.updates[action.materialId] = {
           ...state.updates[action.materialId],
           actualPrice: action.price,
+        };
+        return {
+          ...state,
+          changed: true,
         };
       }
       break;
@@ -219,6 +212,22 @@ function reducer(action: Action, state: State): State {
             purchaseInternal,
           };
         }
+        return {
+          ...state,
+          changed: true,
+        };
+      }
+      break;
+    case ActionType.SET_CHECKED:
+      if (action.materialId && action.isChecked !== undefined) {
+        state.updates[action.materialId] = {
+          ...state.updates[action.materialId],
+          isChecked: action.isChecked,
+        };
+        return {
+          ...state,
+          changed: true,
+        };
       }
       break;
   }
@@ -260,5 +269,60 @@ function initInternalDetail(
     kitchenDeliveryNote:
       purchaseInternalDetail.others.kitchenDeliveryNote || "",
     internalNote: purchaseInternalDetail.others.internalNote || "",
+    isChecked: purchaseInternalDetail.others.isChecked || false,
   };
+}
+
+function setUpPurchaseInternal(
+  purchaseInternal: PurchaseInternal,
+  state: State,
+  materials: Map<string, Material>,
+) {
+  return {
+    ...purchaseInternal,
+    others: {
+      ...purchaseInternal.others,
+      status: piStatusSchema.Values.DNK,
+    },
+    purchaseInternalDetails: Object.values(state.updates).map(
+      (item) => {
+        const amount = convertAmountForward({
+          material: materials.get(item.materialId),
+          amount: item.amount,
+        });
+        const actualAmount = convertAmountForward({
+          material: materials.get(item.materialId),
+          amount: item.actualAmount,
+        });
+        return {
+          id: item.id,
+          materialId: item.materialId,
+          amount,
+          actualAmount,
+          paymentAmount: actualAmount,
+          others: {
+            isChecked: item.isChecked,
+            kitchenDeliveryNote: item.kitchenDeliveryNote,
+            internalNote: item.internalNote,
+            price: item.actualPrice,
+          },
+        };
+      },
+    ),
+  };
+}
+
+function setUpAddToInventory(
+  purchaseInternal: PurchaseInternal,
+  state: State,
+  materials: Map<string, Material>,
+) {
+  return Object.values(state.updates).map((item) => ({
+    materialId: item.materialId,
+    amount: convertAmountForward({
+      material: materials.get(item.materialId),
+      amount: item.actualAmount,
+    }),
+    departmentId: purchaseInternal.others.receivingCateringId,
+  }));
 }
