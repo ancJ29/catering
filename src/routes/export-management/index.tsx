@@ -9,7 +9,6 @@ import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   configs,
   defaultCondition,
@@ -20,7 +19,6 @@ import Filter from "./components/Filter";
 
 const ExportManagement = () => {
   const t = useTranslation();
-  const navigate = useNavigate();
   const [currents, setCurrents] = useState<WarehouseReceipt[]>([]);
   const { caterings } = useCateringStore();
 
@@ -67,10 +65,6 @@ const ExportManagement = () => {
     }
   };
 
-  const onRowClick = (item: WarehouseReceipt) => {
-    navigate(`/export-management/${item.id}`);
-  };
-
   const handleChangeCircumstance = (value: string) => {
     updateCondition("circumstance", "", value);
     if (value === "XCK") {
@@ -101,7 +95,6 @@ const ExportManagement = () => {
         onChangeDateRange={onChangeDateRange}
       />
       <DataGrid
-        onRowClick={onRowClick}
         page={page}
         limit={10}
         isPaginated
