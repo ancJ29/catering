@@ -5,7 +5,6 @@ import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import {
   deliveryTimeStatusAndServiceStatusOrderOptions,
-  statusOrderCateringOptions,
   Supplier,
 } from "@/services/domain";
 import useSupplierStore from "@/stores/supplier.store";
@@ -29,10 +28,6 @@ const Form = () => {
       value: s.id,
     }));
   }, [suppliers]);
-
-  const [statusOptions] = useMemo(() => {
-    return statusOrderCateringOptions(t);
-  }, [t]);
 
   const [deliveryTimeStatusOptions, serviceStatusOptions] =
     useMemo(() => {
@@ -68,15 +63,7 @@ const Form = () => {
           disabled={true}
         />
       </Flex>
-      <Flex justify="space-between" align="end" gap={10}>
-        <RadioGroup
-          value={purchaseOrder?.others.status}
-          label={t("Status")}
-          options={statusOptions}
-          disabled={disabled}
-          w="30vw"
-          onChange={store.setStatus}
-        />
+      <Flex justify="end" align="end" gap={10}>
         <RadioGroup
           value={purchaseOrder?.others.deliveryTimeStatus}
           label={t("Purchase order delivery time")}

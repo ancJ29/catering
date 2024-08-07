@@ -9,7 +9,7 @@ import {
 import {
   addToInventory,
   addWarehouseReceipt,
-  getCateringStatus,
+  getPOCateringStatus,
   getPurchaseOrderById,
   Material,
   PurchaseOrder,
@@ -181,7 +181,7 @@ function reducer(action: Action, state: State): State {
           ...action.purchaseOrder,
           others: {
             ...action.purchaseOrder.others,
-            status: getCateringStatus(
+            status: getPOCateringStatus(
               action.purchaseOrder.others.status,
             ),
           },

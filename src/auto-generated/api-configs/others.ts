@@ -380,6 +380,24 @@ export const piStatusOrders: Record<string, number> = {
   // cspell:enable
 };
 
+export const piCateringStatusSchema = z.enum([
+  // cspell:disable
+  "CN", // Chưa nhận
+  "CNK", // Chờ nhập kho
+  "PINHT", // PI nhận hoàn tất
+  // cspell:enable
+]);
+
+export const piStatusCatering: Record<PIStatus, PICateringStatus> = {
+  // cspell:disable
+  DG: "CN", // Đã gửi
+  DD: "CN", // Đã duyệt
+  SSGH: "CN", // Sẵn sàng giao hàng
+  NK1P: "CNK", // Nhập kho một phần
+  DNK: "PINHT", // Đã nhập kho
+  // cspell:enable
+};
+
 export const purchaseInternalOthersSchema = z.object({
   prCode: stringSchema,
   receivingCateringId: stringSchema,
@@ -557,6 +575,7 @@ export type PRType = z.infer<typeof prTypeSchema>;
 export type PRPriority = z.infer<typeof prPrioritySchema>;
 export type PRStatus = z.infer<typeof prStatusSchema>;
 export type PIStatus = z.infer<typeof piStatusSchema>;
+export type PICateringStatus = z.infer<typeof piCateringStatusSchema>;
 export type PCStatus = z.infer<typeof pcStatusSchema>;
 export type POStatus = z.infer<typeof poStatusSchema>;
 export type POServiceStatus = z.infer<typeof poServiceStatusSchema>;

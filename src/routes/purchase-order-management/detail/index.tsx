@@ -165,7 +165,10 @@ const PurchaseOrderDetail = () => {
   };
 
   return (
-    <ServiceWrapper title={`${t("Details")} ${form.values.code}`}>
+    <ServiceWrapper
+      title={`${t("Details")} ${form.values.code}`}
+      isTranslate={false}
+    >
       <Stack>
         <Flex direction="column" gap={10}>
           <PurchaseActions

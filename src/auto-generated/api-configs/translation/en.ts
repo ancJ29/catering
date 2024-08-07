@@ -412,4 +412,9 @@ export default {
     "Are you sure you have checked the actual material quantity?",
   "Purchase internal status updated": "Purchase internal status updated",  
   "Please check all the amounts of materials": "Please check all the amounts of materials",
+  "Export List": "Export List",
+  "Warehouse receipt date": "Delivery date",
+  "warehouseReceipt.circumstance.XTK": "Warehouse export",
+  "warehouseReceipt.circumstance.XCK": "Warehouse transfer exit",
+  "Warehouse receipt case": "Case",
 } satisfies Record<string, string>;

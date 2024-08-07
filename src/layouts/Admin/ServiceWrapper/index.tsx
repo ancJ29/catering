@@ -13,9 +13,14 @@ import Navbar from "../Navbar";
 type Props = {
   children: React.ReactNode;
   title?: string;
+  isTranslate?: boolean;
 };
 
-const ServiceWrapper = ({ title, children }: Props) => {
+const ServiceWrapper = ({
+  title,
+  children,
+  isTranslate = true,
+}: Props) => {
   const t = useTranslation();
   const location = useLocation();
   const [opened, { toggle, close, open }] = useDisclosure(false);
@@ -40,7 +45,7 @@ const ServiceWrapper = ({ title, children }: Props) => {
     >
       <AppShell.Header withBorder={false}>
         <AdminHeader
-          title={t(title)}
+          title={isTranslate ? t(title) : title}
           burger={
             <Burger opened={opened} onClick={toggle} size="sm" />
           }

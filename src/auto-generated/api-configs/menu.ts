@@ -288,6 +288,13 @@ export default [
         url: "/internal-warehouse-entry",
       },
       {
+        roles: [ClientRoles.CATERING],
+        key: "export-management",
+        label: "Export List",
+        icon: "table-export",
+        url: "/export-management",
+      },
+      {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "check-inventory",
         label: "Check Inventory",

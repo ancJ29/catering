@@ -3,7 +3,10 @@ import CustomButton from "@/components/c-catering/CustomButton";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
-import { Department, statusInternalOptions } from "@/services/domain";
+import {
+  Department,
+  statusInternalCateringOptions,
+} from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { endOfWeek, startOfWeek } from "@/utils";
@@ -49,7 +52,7 @@ const Filter = ({
   }, [caterings]);
 
   const [statusOptions] = useMemo(() => {
-    return statusInternalOptions(t);
+    return statusInternalCateringOptions(t);
   }, [t]);
 
   return (

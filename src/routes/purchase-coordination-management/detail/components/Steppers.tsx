@@ -27,7 +27,7 @@ const Steppers = ({ status, disabled }: SteppersProps) => {
       statusColor={statusCoordinationColor}
       changeableStatus={changeablePurchaseCoordinationStatus}
       StatusComponent={Status}
-      keyPrefix="purchaseCoordination"
+      keyPrefix="purchaseCoordination.status"
       disabled={disabled}
     />
   );

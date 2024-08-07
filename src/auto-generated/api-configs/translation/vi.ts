@@ -411,4 +411,9 @@ export default {
     "Bạn chắc chắn đã kiểm tra số lượng nguyên liệu thực tế?",
   "Purchase internal status updated": "Đã cập nhật trạng thái đơn hàng",  
   "Please check all the amounts of materials": "Vui lòng kiểm tra toàn bộ số lượng các loại nguyên liệu",
+  "Export List": "Danh sách phiếu xuất",
+  "Warehouse receipt date": "Ngày nhận",
+  "warehouseReceipt.circumstance.XTK": "Xuất tại kho",
+  "warehouseReceipt.circumstance.XCK": "Xuất chuyển kho",
+  "Warehouse receipt case": "Trường hợp",
 } satisfies Record<string, string>;

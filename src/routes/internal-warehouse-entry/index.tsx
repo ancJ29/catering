@@ -2,8 +2,8 @@ import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  getPurchaseInternals,
-  PurchaseInternal,
+  getPurchaseInternalsByCatering,
+  PurchaseInternalCatering,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
@@ -12,17 +12,19 @@ import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  configs,
   defaultCondition,
   filter,
   FilterType,
-} from "../purchase-internal-management/_configs";
-import { configs } from "./_configs";
+} from "./_configs";
 import Filter from "./components/Filter";
 
 const InternalWarehouseEntry = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const [currents, setCurrents] = useState<PurchaseInternal[]>([]);
+  const [currents, setCurrents] = useState<
+  PurchaseInternalCatering[]
+  >([]);
   const { caterings } = useCateringStore();
   const { cateringId, isCatering } = useAuthStore();
 
@@ -33,7 +35,7 @@ const InternalWarehouseEntry = () => {
 
   const getData = async (from?: number, to?: number) => {
     setCurrents(
-      await getPurchaseInternals(
+      await getPurchaseInternalsByCatering(
         from,
         to,
         isCatering ? cateringId : "xxx",
@@ -61,7 +63,7 @@ const InternalWarehouseEntry = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseInternal, FilterType>({
+  } = useFilterData<PurchaseInternalCatering, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -79,7 +81,7 @@ const InternalWarehouseEntry = () => {
     }
   };
 
-  const onRowClick = (item: PurchaseInternal) => {
+  const onRowClick = (item: PurchaseInternalCatering) => {
     navigate(`/internal-warehouse-entry/${item.id}`);
   };
 

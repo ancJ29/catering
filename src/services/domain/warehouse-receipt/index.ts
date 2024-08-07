@@ -104,11 +104,40 @@ export async function addWarehouseReceipt(params: AddRequest) {
 }
 
 export function typeWarehouseOptions(t: (key: string) => string) {
-  const statusOptions: OptionProps[] = wrTypeSchema.options.map(
+  const typeOptions: OptionProps[] = wrTypeSchema.options.map(
     (type) => ({
       label: t(`warehouseReceipt.type.${type}`),
       value: type,
     }),
   );
-  return [statusOptions];
+  return [typeOptions];
+}
+
+export function typeWarehouseExportOptions(
+  t: (key: string) => string,
+) {
+  const typeOptions: OptionProps[] = [
+    // cspell:disable
+    "XCK",
+    "XDCK",
+    "XKK",
+    "XSD",
+    "XTH",
+    // cspell:enable
+  ].map((type) => ({
+    label: t(`warehouseReceipt.type.${type}`),
+    value: type,
+  }));
+  return [typeOptions];
+}
+
+export const circumstances = ["XTK", "XCK"];
+export function circumstanceWarehouseExportOptions(
+  t: (key: string) => string,
+) {
+  const typeOptions: OptionProps[] = circumstances.map((type) => ({
+    label: t(`warehouseReceipt.circumstance.${type}`),
+    value: type,
+  }));
+  return [typeOptions];
 }

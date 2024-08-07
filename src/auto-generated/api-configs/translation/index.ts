@@ -5,6 +5,7 @@ import {
   MaterialOrderCycle,
   MaterialType,
   PCStatus,
+  PICateringStatus,
   PIStatus,
   POCateringStatus,
   PODeliveryTimeStatus,
@@ -35,7 +36,9 @@ type PurchaseRequestKey =
   | `purchaseRequest.type.${PRType}`
   | `purchaseRequest.priority.${PRPriority}`
   | `purchaseRequest.status.${PRStatus}`;
-type PurchaseInternalKey = `purchaseInternal.status.${PIStatus}`;
+type PurchaseInternalKey =
+  | `purchaseInternal.status.${PIStatus}`
+  | `purchaseInternal.cateringStatus.${PICateringStatus}`;
 type PurchaseCoordinationKey = `purchaseCoordination.status.${PCStatus}`;
 type PurchaseOrderKey =
   | `purchaseOrder.status.${POStatus}`
@@ -283,6 +286,9 @@ const purchaseInternalDictionaries: {
     "purchaseInternal.status.SSGH": "Ready to deliver",
     "purchaseInternal.status.NK1P": "Partially warehoused",
     "purchaseInternal.status.DNK": "Stocked",
+    "purchaseInternal.cateringStatus.CN": "Not Received",
+    "purchaseInternal.cateringStatus.CNK": "Pending Entry",
+    "purchaseInternal.cateringStatus.PINHT": "PI Completed",
   },
   vi: {
     /* cspell:disable */
@@ -291,6 +297,9 @@ const purchaseInternalDictionaries: {
     "purchaseInternal.status.SSGH": "Sẵn sàng giao hàng",
     "purchaseInternal.status.NK1P": "Nhập kho một phần",
     "purchaseInternal.status.DNK": "Đã nhập kho",
+    "purchaseInternal.cateringStatus.CN": "Chưa nhận",
+    "purchaseInternal.cateringStatus.CNK": "Chờ nhập kho",
+    "purchaseInternal.cateringStatus.PINHT": "PI nhận hoàn tất",
     /* cspell:enable */
   },
 };
@@ -379,15 +388,15 @@ const warehouseReceiptDictionaries: {
 } = {
   en: {
     /* cspell:disable */
-    "warehouseReceipt.type.NDCK": "Adjustment Warehouse Entry",
-    "warehouseReceipt.type.NKK": "Inventory Entry",
-    "warehouseReceipt.type.NTKLD": "First Time Inventory Entry",
-    "warehouseReceipt.type.NTNCC": "Supplier Entry",
-    "warehouseReceipt.type.XCK": "Warehouse Transfer Exit",
-    "warehouseReceipt.type.XDCK": "Adjustment Warehouse Exit",
-    "warehouseReceipt.type.XKK": "Inventory Exit",
-    "warehouseReceipt.type.XSD": "Usage Exit",
-    "warehouseReceipt.type.XTH": "Return Goods Exit",
+    "warehouseReceipt.type.NDCK": "Adjustment warehouse entry",
+    "warehouseReceipt.type.NKK": "Inventory entry",
+    "warehouseReceipt.type.NTKLD": "First time inventory entry",
+    "warehouseReceipt.type.NTNCC": "Supplier entry",
+    "warehouseReceipt.type.XCK": "Warehouse transfer exit",
+    "warehouseReceipt.type.XDCK": "Adjustment warehouse exit",
+    "warehouseReceipt.type.XKK": "Inventory exit",
+    "warehouseReceipt.type.XSD": "Usage exit",
+    "warehouseReceipt.type.XTH": "Return goods exit",
     /* cspell:enable */
   },
   vi: {

@@ -34,7 +34,7 @@ const Steppers = ({
       statusColor={statusInternalColor}
       changeableStatus={changeablePurchaseInternalStatus}
       StatusComponent={Status}
-      keyPrefix="purchaseInternal"
+      keyPrefix="purchaseInternal.status"
       disabled={disabled}
       onChangeStatus={onChangeStatus}
     />

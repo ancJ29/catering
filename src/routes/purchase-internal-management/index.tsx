@@ -6,7 +6,7 @@ import {
   getPurchaseInternals,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
-import { endOfWeek, startOfDay } from "@/utils";
+import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +63,7 @@ const PurchaseInternalManagement = () => {
   const onChangeDateRange = (from?: number, to?: number) => {
     if (condition?.from && condition?.to && from && to) {
       const _from = startOfDay(from);
-      const _to = endOfWeek(to);
+      const _to = endOfDay(to);
       if (from < condition.from || to > condition.to) {
         getData(_from, _to);
       }

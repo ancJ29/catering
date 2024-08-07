@@ -30,7 +30,7 @@ const DeviationAdjustmentDetail = () => {
   };
 
   return (
-    <ServiceWrapper title={`${t("Details")}`}>
+    <ServiceWrapper title={`${t("Details")}`} isTranslate={false}>
       <Stack>
         <Flex direction="column" gap={10}>
           <PurchaseActions

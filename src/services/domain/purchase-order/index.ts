@@ -111,13 +111,13 @@ export async function getPurchaseOrdersByCatering({
       name: el.code,
       others: {
         ...el.others,
-        status: getCateringStatus(el.others.status),
+        status: getPOCateringStatus(el.others.status),
       },
     }));
   });
 }
 
-export function getCateringStatus(
+export function getPOCateringStatus(
   status: POStatus,
 ): POCateringStatus {
   return poStatusCatering[status];
@@ -245,6 +245,20 @@ export function changeablePurchaseOrderStatus(
   // if (role === ClientRoles.OWNER || role === ClientRoles.SUPPLIER) {
   //   return true;
   // }
+  return false;
+}
+
+export function changeablePurchaseOrderCateringStatus(
+  current: POCateringStatus,
+  next: POCateringStatus,
+  role?: ClientRoles,
+) {
+  if (!role) {
+    return false;
+  }
+  if (role === ClientRoles.OWNER || role === ClientRoles.CATERING) {
+    return true;
+  }
   return false;
 }
 

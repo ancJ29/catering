@@ -1,8 +1,8 @@
-import { piStatusSchema } from "@/auto-generated/api-configs";
+import { piCateringStatusSchema } from "@/auto-generated/api-configs";
 import WarehouseEntryActions from "@/components/c-catering/WarehouseEntryActions";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
-import Steppers from "@/routes/purchase-internal-management/detail/components/Steppers";
+import ServiceWrapper from "@/layouts/Admin/ServiceWrapper";
 import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import store from "./_item.store";
 import Form from "./components/Form";
 import ImageButton from "./components/ImageButton";
+import Steppers from "./components/Steppers";
 import Table from "./components/Table";
 
 const InternalWarehouseImportDetail = () => {
@@ -42,19 +43,13 @@ const InternalWarehouseImportDetail = () => {
     const status = purchaseInternal?.others.status;
 
     switch (status) {
-      case piStatusSchema.Values.DD:
+      case piCateringStatusSchema.Values.CN:
         showFailNotification();
         break;
-      case piStatusSchema.Values.DG:
-        showFailNotification();
-        break;
-      case piStatusSchema.Values.SSGH:
-        showFailNotification();
-        break;
-      case piStatusSchema.Values.NK1P:
+      case piCateringStatusSchema.Values.CNK:
         store.update();
         break;
-      case piStatusSchema.Values.DNK:
+      case piCateringStatusSchema.Values.PINHT:
         if (isCheckAll) {
           modals.openConfirmModal({
             size: "md",
@@ -92,22 +87,29 @@ const InternalWarehouseImportDetail = () => {
   };
 
   return (
-    <Stack gap={10}>
-      <Form />
-      <Steppers
-        status={purchaseInternal?.others.status}
-        onChangeStatus={store.setStatus}
-      />
-      <ImageButton />
-      <Table />
-      <WarehouseEntryActions
-        returnUrl="/internal-warehouse-entry"
-        onReset={onReset}
-        changed={changed}
-        onCompleted={complete}
-        disabled={disabled}
-      />
-    </Stack>
+    <ServiceWrapper
+      title={`${t("Warehouse Import Receipt")} ${
+        purchaseInternal?.code
+      }`}
+      isTranslate={false}
+    >
+      <Stack gap={10}>
+        <Form />
+        <Steppers
+          status={purchaseInternal?.others.status}
+          onChangeStatus={store.setStatus}
+        />
+        <ImageButton />
+        <Table />
+        <WarehouseEntryActions
+          returnUrl="/internal-warehouse-entry"
+          onReset={onReset}
+          changed={changed}
+          onCompleted={complete}
+          disabled={disabled}
+        />
+      </Stack>
+    </ServiceWrapper>
   );
 };
 

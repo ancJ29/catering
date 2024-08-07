@@ -1,9 +1,15 @@
 import {
   Actions,
   ClientRoles,
+  PICateringStatus,
   PIStatus,
   configs as actionConfigs,
+  piCateringStatusSchema,
+  piStatusCatering,
   piStatusSchema,
+  purchaseInternalOthersSchema,
+  stringSchema,
+  xPurchaseInternalSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import { loadAll } from "@/services/data-loaders";
@@ -58,6 +64,50 @@ export async function getPurchaseInternals(
       }));
     },
   );
+}
+
+const xPurchaseInternalCateringSchema = xPurchaseInternalSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    name: stringSchema,
+    others: purchaseInternalOthersSchema
+      .omit({
+        status: true,
+      })
+      .extend({
+        status: piCateringStatusSchema,
+      }),
+  });
+
+export type PurchaseInternalCatering = z.infer<
+  typeof xPurchaseInternalCateringSchema
+>;
+
+export async function getPurchaseInternalsByCatering(
+  from?: number,
+  to?: number,
+  receivingCateringId?: string,
+): Promise<PurchaseInternalCatering[]> {
+  return _getPurchaseInternals(from, to, receivingCateringId).then(
+    (purchaseInternal) => {
+      return purchaseInternal.map((el) => ({
+        ...el,
+        name: el.code,
+        others: {
+          ...el.others,
+          status: getPICateringStatus(el.others.status),
+        },
+      }));
+    },
+  );
+}
+
+export function getPICateringStatus(
+  status: PIStatus,
+): PICateringStatus {
+  return piStatusCatering[status];
 }
 
 export async function getPurchaseInternalById(
@@ -128,6 +178,17 @@ export function statusInternalOptions(t: (key: string) => string) {
   return [statusOptions];
 }
 
+export function statusInternalCateringOptions(
+  t: (key: string) => string,
+) {
+  const statusOptions: OptionProps[] =
+    piCateringStatusSchema.options.map((status) => ({
+      label: t(`purchaseInternal.cateringStatus.${status}`),
+      value: status,
+    }));
+  return [statusOptions];
+}
+
 export function statusInternalColor(status: PIStatus, level = 6) {
   const colors: Record<PIStatus, string> = {
     // cspell:disable
@@ -144,9 +205,40 @@ export function statusInternalColor(status: PIStatus, level = 6) {
   return `${colors[status]}.${level}`;
 }
 
+export function statusInternalCateringColor(
+  status: PICateringStatus,
+  level = 6,
+) {
+  const colors: Record<PICateringStatus, string> = {
+    // cspell:disable
+    CN: "cyan", // Chưa nhận
+    CNK: "orange", // Chờ nhập kho
+    PINHT: "yellow", // PI nhận hoàn tất
+    // cspell:disable
+  };
+  if (!status) {
+    return "";
+  }
+  return `${colors[status]}.${level}`;
+}
+
 export function changeablePurchaseInternalStatus(
   current: PIStatus,
   next: PIStatus,
+  role?: ClientRoles,
+) {
+  if (!role) {
+    return false;
+  }
+  if (role === ClientRoles.OWNER || role === ClientRoles.CATERING) {
+    return true;
+  }
+  return false;
+}
+
+export function changeablePurchaseInternalCateringStatus(
+  current: PICateringStatus,
+  next: PICateringStatus,
   role?: ClientRoles,
 ) {
   if (!role) {

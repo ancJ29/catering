@@ -32,7 +32,7 @@ const map = new Map<number, POStatus>(statuses.map((s, i) => [i, s]));
 
 type SteppersProps = {
   status?: POStatus;
-  onChangeStatus: (value: POStatus) => void;
+  onChangeStatus?: (value: POStatus) => void;
   disabled?: boolean;
 };
 
@@ -65,7 +65,7 @@ const Steppers = ({
         statusColor={statusOrderColor}
         changeableStatus={changeablePurchaseOrderStatus}
         StatusComponent={Status}
-        keyPrefix="purchaseOrder"
+        keyPrefix="purchaseOrder.status"
         disabled={disabled}
         isChanged={isChanged}
         onChangeStatus={onChangeStatus}

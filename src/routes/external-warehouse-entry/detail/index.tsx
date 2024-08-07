@@ -2,6 +2,7 @@ import { poCateringStatusSchema } from "@/auto-generated/api-configs";
 import WarehouseEntryActions from "@/components/c-catering/WarehouseEntryActions";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
+import ServiceWrapper from "@/layouts/Admin/ServiceWrapper";
 import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -10,6 +11,7 @@ import { useParams } from "react-router-dom";
 import store from "./_item.store";
 import Form from "./components/Form";
 import ImageButton from "./components/ImageButtons";
+import Steppers from "./components/Steppers";
 import Table from "./components/Table";
 
 const ExternalWarehouseImportDetail = () => {
@@ -87,18 +89,30 @@ const ExternalWarehouseImportDetail = () => {
   };
 
   return (
-    <Stack gap={10}>
-      <Form />
-      <ImageButton />
-      <Table />
-      <WarehouseEntryActions
-        returnUrl="/external-warehouse-entry"
-        onReset={onReset}
-        changed={changed}
-        onCompleted={complete}
-        disabled={disabled}
-      />
-    </Stack>
+    <ServiceWrapper
+      title={`${t("Warehouse Import Receipt")} ${
+        purchaseOrder?.code
+      }`}
+      isTranslate={false}
+    >
+      <Stack gap={10}>
+        <Form />
+        <Steppers
+          status={purchaseOrder?.others.status}
+          disabled={disabled}
+          onChangeStatus={store.setStatus}
+        />
+        <ImageButton />
+        <Table />
+        <WarehouseEntryActions
+          returnUrl="/external-warehouse-entry"
+          onReset={onReset}
+          changed={changed}
+          onCompleted={complete}
+          disabled={disabled}
+        />
+      </Stack>
+    </ServiceWrapper>
   );
 };
 

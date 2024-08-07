@@ -54,7 +54,7 @@ const PurchaseRequestSteppers = ({
       statusColor={statusRequestColor}
       changeableStatus={changeablePurchaseRequestStatus}
       StatusComponent={PurchaseRequestStatus}
-      keyPrefix="purchaseRequest"
+      keyPrefix="purchaseRequest.status"
       disabled={disabled}
       isChanged={isChanged}
     />

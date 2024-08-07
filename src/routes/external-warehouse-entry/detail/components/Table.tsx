@@ -19,7 +19,7 @@ const Table = () => {
       </MantineTable>
       <MantineTable.ScrollContainer
         minWidth={500}
-        h="calc(-8.5rem - 280px + 100vh)"
+        h="calc(-8.5rem - 340px + 100vh)"
         mt="-10px"
       >
         <MantineTable key={key} withTableBorder>

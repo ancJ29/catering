@@ -94,7 +94,7 @@ const Stepper = <T extends string>({
           idx <= active ? (
             <StatusComponent status={s} fz={fz} c={c} />
           ) : (
-            t(`${keyPrefix}.status.${s}`)
+            t(`${keyPrefix}.${s}`)
           );
         return (
           <MantineStepper.Step

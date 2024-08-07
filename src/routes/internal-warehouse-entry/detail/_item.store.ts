@@ -1,12 +1,15 @@
 import {
-  PIStatus,
+  PICateringStatus,
+  piCateringStatusSchema,
   piStatusSchema,
 } from "@/auto-generated/api-configs";
 import {
   addToInventory,
+  getPICateringStatus,
   getPurchaseInternalById,
   Material,
   PurchaseInternal,
+  PurchaseInternalCatering,
   PurchaseInternalDetail,
   updatePurchaseInternal,
   updatePurchaseInternalStatus,
@@ -21,7 +24,7 @@ import {
 import { InternalDetail } from "./_configs";
 
 type State = {
-  purchaseInternal?: PurchaseInternal;
+  purchaseInternal?: PurchaseInternalCatering;
   currents: Record<string, InternalDetail>;
   updates: Record<string, InternalDetail>;
   disabled: boolean;
@@ -153,14 +156,23 @@ function reducer(action: Action, state: State): State {
           action.purchaseInternal,
           materials,
         );
+        const purchaseInternal = {
+          ...action.purchaseInternal,
+          others: {
+            ...action.purchaseInternal.others,
+            status: getPICateringStatus(
+              action.purchaseInternal.others.status,
+            ),
+          },
+        };
         return {
           ...state,
-          purchaseInternal: action.purchaseInternal,
+          purchaseInternal,
           currents,
           updates: cloneDeep(currents),
           disabled:
-            action.purchaseInternal.others.status ===
-            piStatusSchema.Values.DNK,
+            purchaseInternal.others.status ===
+            piCateringStatusSchema.Values.PINHT,
           changed: false,
           key: Date.now(),
         };
@@ -206,7 +218,8 @@ function reducer(action: Action, state: State): State {
       if (action.status) {
         const purchaseInternal = state.purchaseInternal;
         if (purchaseInternal) {
-          purchaseInternal.others.status = action.status as PIStatus;
+          purchaseInternal.others.status =
+            action.status as PICateringStatus;
           return {
             ...state,
             purchaseInternal,
@@ -274,7 +287,7 @@ function initInternalDetail(
 }
 
 function setUpPurchaseInternal(
-  purchaseInternal: PurchaseInternal,
+  purchaseInternal: PurchaseInternalCatering,
   state: State,
   materials: Map<string, Material>,
 ) {
@@ -313,7 +326,7 @@ function setUpPurchaseInternal(
 }
 
 function setUpAddToInventory(
-  purchaseInternal: PurchaseInternal,
+  purchaseInternal: PurchaseInternalCatering,
   state: State,
   materials: Map<string, Material>,
 ) {
