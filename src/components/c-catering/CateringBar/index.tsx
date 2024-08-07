@@ -229,16 +229,14 @@ const CateringBar = ({
           onChangeShift={onChangeShift}
         />
       )}
-      {!isCatering && (
-        <Button
-          onClick={() => {
-            setCateringName("");
-            onClear();
-          }}
-        >
-          {t("Clear")}
-        </Button>
-      )}
+      <Button
+        onClick={() => {
+          setCateringName("");
+          onClear();
+        }}
+      >
+        {t("Clear")}
+      </Button>
     </Flex>
   );
 };

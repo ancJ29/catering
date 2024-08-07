@@ -4,8 +4,6 @@ import axios from "axios";
 import { v4 as uuid } from "uuid";
 import logger from "../logger";
 
-const debugCode = import.meta.env.DEBUG_CODE || undefined;
-
 export default async function request(
   data: GenericObject,
   token?: string,
@@ -16,9 +14,8 @@ export default async function request(
   const encoded = await encode(data);
   const nonce = await _nonce(timestamp, encoded, requestId);
   logger.trace(`[request] [${timestamp}] [${nonce}]`);
-  const DEBUG_MODE =
-    localStorage.getItem("__DEBUG_MODE") === "UXNNvrAA";
-
+  const DEBUG_CODE = localStorage.__DEBUG_CODE || "";
+  const DEBUG_MODE = Boolean(localStorage.getItem("__DEBUG_MODE"));
   return axios
     .request({
       method: "POST",
@@ -26,7 +23,7 @@ export default async function request(
       data: DEBUG_MODE
         ? data
         : {
-          ...(debugCode ? data : {}),
+          ...(DEBUG_CODE ? data : {}),
           data: encoded,
         },
       headers: {
@@ -35,8 +32,8 @@ export default async function request(
         "x-client-nonce": nonce,
         "x-client-timestamp": timestamp,
         "x-client-request-id": requestId,
-        "x-debug-code": debugCode,
-        "x-debug-mode": localStorage.getItem("__DEBUG_MODE"),
+        "x-debug-code": DEBUG_CODE,
+        "x-debug-mode": DEBUG_MODE,
       },
     })
     .then(async (res) => {
