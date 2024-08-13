@@ -61,6 +61,7 @@ const componentMap: Record<string, LazyExoticComponent> = {
   InternalWareHouseEntry: lazy(() => import("@/routes/internal-warehouse-entry")),
   InternalWarehouseImportDetail: lazy(() => import("@/routes/internal-warehouse-entry/detail")),
   ExportManagement: lazy(() => import("@/routes/export-management")),
+  ExportInventory: lazy(() => import("@/routes/export-inventory")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -459,6 +460,16 @@ const configs: Config[] = [
       element: ServiceWrapper as Wrapper,
       props: {
         title: "Export List",
+      },
+    },
+  },
+  {
+    path: "/export-inventory",
+    element: "ExportInventory",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Export Inventory",
       },
     },
   },

@@ -12,7 +12,6 @@ import store from "./_inventory.store";
 
 export const configs = (
   t: (key: string) => string,
-  materials: Map<string, Material>,
   isAuditedAllItems: boolean,
   onAuditedAllItems: (checked: boolean) => void,
 ): DataGridColumnProps[] => {
@@ -37,7 +36,7 @@ export const configs = (
       header: t("Amount after audit"),
       textAlign: "right",
       width: "8%",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return store.getAmountAfterAudit(row.id).toLocaleString();
       },
     },
@@ -46,7 +45,7 @@ export const configs = (
       header: t("Amount shipped after audit"),
       textAlign: "right",
       width: "8%",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return store
           .getAmountShippedAfterAudit(row.id)
           .toLocaleString();
@@ -57,7 +56,7 @@ export const configs = (
       header: t("Amount received after audit"),
       textAlign: "right",
       width: "8%",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return store
           .getAmountReceivedAfterAudit(row.id)
           .toLocaleString();
@@ -68,7 +67,7 @@ export const configs = (
       header: t("System amount"),
       width: "8%",
       textAlign: "right",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return store.getSystemAmount(row.id).toLocaleString();
       },
     },
@@ -77,7 +76,7 @@ export const configs = (
       header: t("Physical amount"),
       textAlign: "right",
       width: "10%",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return (
           <NumberInput
             key={row.id}
@@ -85,8 +84,8 @@ export const configs = (
             isPositive={true}
             defaultValue={store.getAmount(row.id)}
             onChange={(value) => store.setAmount(row.id, value)}
-            allowDecimal={materials.get(row.id)?.others.allowFloat}
-            isInteger={!materials.get(row.id)?.others.allowFloat}
+            allowDecimal={row?.others.allowFloat}
+            isInteger={!row?.others.allowFloat}
             style={{ paddingLeft: "2rem" }}
           />
         );
@@ -97,7 +96,7 @@ export const configs = (
       header: t("Difference"),
       textAlign: "right",
       width: "8%",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return store.getDifference(row.id).toLocaleString();
       },
     },
@@ -108,7 +107,7 @@ export const configs = (
         paddingLeft: "0.8rem",
       },
       width: "15%",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return (
           <TextInput
             defaultValue={store.getMemo(row.id)}
@@ -135,7 +134,7 @@ export const configs = (
       ),
       width: "6%",
       textAlign: "center",
-      renderCell: (_, row) => {
+      renderCell: (_, row: Material) => {
         return (
           <Center w="full">
             <Checkbox

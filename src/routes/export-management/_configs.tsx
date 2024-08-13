@@ -1,7 +1,7 @@
-import { WarehouseReceipt } from "@/services/domain";
+import { Department, WarehouseReceipt } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { endOfMonth, formatTime, startOfMonth } from "@/utils";
-import { Department } from "../catering-management/_configs";
+import { z } from "zod";
 
 export const configs = (
   t: (key: string) => string,
@@ -61,14 +61,14 @@ export type FilterType = {
   from: number;
   to: number;
   type: string;
-  circumstance: string;
+  case: string;
 };
 
 export const defaultCondition: FilterType = {
   from: startOfMonth(Date.now()),
   to: endOfMonth(Date.now()),
   type: "",
-  circumstance: "",
+  case: "",
 };
 
 export function filter(wr: WarehouseReceipt, condition?: FilterType) {
@@ -83,3 +83,9 @@ export function filter(wr: WarehouseReceipt, condition?: FilterType) {
   }
   return true;
 }
+
+export const caseSchema = z.enum([
+  "Released from warehouse",
+  "Warehouse transfer",
+]);
+export type Case = z.infer<typeof caseSchema>;

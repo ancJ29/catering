@@ -295,6 +295,13 @@ export default [
         url: "/export-management",
       },
       {
+        roles: [ClientRoles.CATERING],
+        key: "export-inventory",
+        label: "Export Inventory",
+        icon: "forklift",
+        url: "/export-inventory",
+      },
+      {
         roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "check-inventory",
         label: "Check Inventory",

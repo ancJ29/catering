@@ -1,6 +1,10 @@
+import MultiSelect from "@/components/common/MultiSelect";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { typeAndGroupOptions } from "@/services/domain";
+import {
+  materialOrderCycleOptions,
+  typeAndGroupOptions,
+} from "@/services/domain";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { useMemo } from "react";
 import AutocompleteForFilterData from "../AutocompleteForFilterData";
@@ -12,10 +16,12 @@ type MaterialFilterProps = {
   keyword?: string;
   clearable?: boolean;
   materialNames: string[];
+  orderCycles?: string[];
   onClear: () => void;
   onReload: (keyword?: string) => void;
   onChangeGroup: (value: string) => void;
   onChangeType: (value: string) => void;
+  onChangeOrderCycles?: (value: string[]) => void;
 };
 
 const MaterialFilter = ({
@@ -23,17 +29,23 @@ const MaterialFilter = ({
   group,
   keyword,
   materialNames,
+  orderCycles,
   clearable,
   onClear,
   onReload,
   onChangeGroup,
   onChangeType,
+  onChangeOrderCycles,
 }: MaterialFilterProps) => {
   const t = useTranslation();
   const { materialGroupByType } = useMetaDataStore();
   const [typeOptions, groupOptions] = useMemo(() => {
     return typeAndGroupOptions(materialGroupByType, type || "", t);
   }, [materialGroupByType, t, type]);
+
+  const [orderCycleOptions] = useMemo(() => {
+    return materialOrderCycleOptions(t);
+  }, [t]);
 
   return (
     <>
@@ -58,6 +70,15 @@ const MaterialFilter = ({
         defaultValue={keyword}
         onReload={onReload}
       />
+      {onChangeOrderCycles && (
+        <MultiSelect
+          value={orderCycles}
+          label={t("Material order cycle")}
+          w={"20vw"}
+          options={orderCycleOptions}
+          onChange={onChangeOrderCycles}
+        />
+      )}
       <CustomButton disabled={!clearable} onClick={onClear}>
         {t("Clear")}
       </CustomButton>

@@ -1,7 +1,6 @@
-import { WarehouseReceipt } from "@/services/domain";
+import { Department, WarehouseReceipt } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { endOfWeek, formatTime, startOfWeek } from "@/utils";
-import { Department } from "../catering-management/_configs";
 
 export const configs = (
   t: (key: string) => string,

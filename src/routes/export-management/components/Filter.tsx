@@ -2,22 +2,20 @@ import CustomButton from "@/components/c-catering/CustomButton";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import {
-  circumstanceWarehouseExportOptions,
-  typeWarehouseExportOptions,
-} from "@/services/domain";
+import { typeWarehouseExportOptions } from "@/services/domain";
 import { Flex } from "@mantine/core";
 import { useMemo } from "react";
+import { caseSchema } from "../_configs";
 
 type FilterProps = {
   from?: number;
   to?: number;
   type?: string;
-  circumstance?: string;
+  case?: string;
   clearable?: boolean;
   onClear: () => void;
   onChangeType: (value: string) => void;
-  onChangeCircumstance: (value: string) => void;
+  onChangeCase: (value: string) => void;
   onChangeDateRange: (from?: number, to?: number) => void;
 };
 
@@ -25,21 +23,17 @@ const Filter = ({
   from,
   to,
   type,
-  circumstance,
+  case: _case,
   clearable,
   onClear,
   onChangeType,
-  onChangeCircumstance,
+  onChangeCase,
   onChangeDateRange,
 }: FilterProps) => {
   const t = useTranslation();
 
   const [typeOptions] = useMemo(() => {
     return typeWarehouseExportOptions(t);
-  }, [t]);
-
-  const [circumstanceOptions] = useMemo(() => {
-    return circumstanceWarehouseExportOptions(t);
   }, [t]);
 
   return (
@@ -52,11 +46,11 @@ const Filter = ({
         w={"22vw"}
       />
       <Select
-        value={circumstance}
+        value={_case}
         label={t("Warehouse receipt case")}
         w={"20vw"}
-        options={circumstanceOptions}
-        onChange={(value) => onChangeCircumstance(value || "")}
+        data={caseSchema.options}
+        onChange={(value) => onChangeCase(value || "")}
       />
       <Select
         value={type}

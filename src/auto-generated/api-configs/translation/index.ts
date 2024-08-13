@@ -392,7 +392,7 @@ const warehouseReceiptDictionaries: {
     "warehouseReceipt.type.NKK": "Inventory entry",
     "warehouseReceipt.type.NTKLD": "First time inventory entry",
     "warehouseReceipt.type.NTNCC": "Supplier entry",
-    "warehouseReceipt.type.XCK": "Warehouse transfer exit",
+    "warehouseReceipt.type.XCK": "Warehouse Transfer",
     "warehouseReceipt.type.XDCK": "Adjustment warehouse exit",
     "warehouseReceipt.type.XKK": "Inventory exit",
     "warehouseReceipt.type.XSD": "Usage exit",

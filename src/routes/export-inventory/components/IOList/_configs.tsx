@@ -1,12 +1,20 @@
+import Status from "@/routes/internal-warehouse-entry/components/Status";
 import {
   Department,
+  Material,
   PurchaseInternalCatering,
+  PurchaseInternalDetail,
 } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { endOfWeek, formatTime, startOfWeek } from "@/utils";
-import Status from "./components/Status";
+import {
+  convertAmountBackward,
+  endOfWeek,
+  formatTime,
+  startOfWeek,
+} from "@/utils";
+import store from "../../_export.store";
 
-export const configs = (
+export const piConfigs = (
   t: (key: string) => string,
   caterings: Map<string, Department>,
 ): DataGridColumnProps[] => {
@@ -14,7 +22,7 @@ export const configs = (
     {
       key: "ioCode",
       header: t("Purchase internal io code"),
-      width: "12%",
+      width: "20%",
       style: { fontWeight: "bold" },
       renderCell: (_, row: PurchaseInternalCatering) => {
         return row.code || "N/A";
@@ -23,7 +31,7 @@ export const configs = (
     {
       key: "prCode",
       header: t("Purchase internal pr code"),
-      width: "12%",
+      width: "20%",
       style: { fontWeight: "bold" },
       renderCell: (_, row: PurchaseInternalCatering) => {
         return row.others.prCode || "N/A";
@@ -32,7 +40,7 @@ export const configs = (
     {
       key: "receivingKitchen",
       header: t("Purchase internal receiving catering"),
-      width: "17%",
+      width: "20%",
       renderCell: (_, row: PurchaseInternalCatering) => {
         return (
           <span>
@@ -45,21 +53,9 @@ export const configs = (
       },
     },
     {
-      key: "deliveryKitchen",
-      header: t("Purchase internal delivery catering"),
-      width: "17%",
-      renderCell: (_, row: PurchaseInternalCatering) => {
-        return (
-          <span>
-            {caterings.get(row.deliveryCateringId || "")?.name}
-          </span>
-        );
-      },
-    },
-    {
       key: "deliveryDate",
       header: t("Purchase internal date"),
-      width: "12%",
+      width: "15%",
       renderCell: (_, row: PurchaseInternalCatering) => {
         return formatTime(row.deliveryDate);
       },
@@ -67,7 +63,7 @@ export const configs = (
     {
       key: "status",
       header: t("Status"),
-      width: "25%",
+      width: "20%",
       textAlign: "center",
       renderCell: (_, row: PurchaseInternalCatering) => {
         if (!row.others.status) {
@@ -79,12 +75,60 @@ export const configs = (
   ];
 };
 
+export const piDetailConfigs = (
+  t: (key: string) => string,
+  materials: Map<string, Material>,
+): DataGridColumnProps[] => {
+  return [
+    {
+      key: "name",
+      header: t("Material name"),
+      width: "30%",
+      renderCell: (_, row: PurchaseInternalDetail) => {
+        return materials.get(row.materialId)?.name || "N/A";
+      },
+    },
+    {
+      key: "quantity",
+      header: t("Quantity"),
+      width: "25%",
+      textAlign: "right",
+      renderCell: (_, row: PurchaseInternalDetail) => {
+        return convertAmountBackward({
+          material: materials.get(row.materialId),
+          amount: row.amount,
+        }).toLocaleString();
+      },
+    },
+    {
+      key: "inventory",
+      header: t("Inventory"),
+      width: "25%",
+      textAlign: "right",
+      renderCell: (_, row: PurchaseInternalDetail) => {
+        return store.getInventory(row.materialId).toLocaleString();
+      },
+    },
+    {
+      key: "unit",
+      header: t("Material unit"),
+      width: "20%",
+      textAlign: "center",
+      renderCell: (_, row: PurchaseInternalDetail) => {
+        return (
+          materials.get(row.materialId)?.others?.unit?.name || "N/A"
+        );
+      },
+    },
+  ];
+};
+
 export type FilterType = {
   id: string;
   from: number;
   to: number;
   statuses: string[];
-  deliveryCateringIds: string[];
+  receivingCateringIds: string[];
 };
 
 export const defaultCondition: FilterType = {
@@ -92,7 +136,7 @@ export const defaultCondition: FilterType = {
   from: startOfWeek(Date.now()),
   to: endOfWeek(Date.now()),
   statuses: [],
-  deliveryCateringIds: [],
+  receivingCateringIds: [],
 };
 
 export function filter(
@@ -107,10 +151,12 @@ export function filter(
     return false;
   }
   if (
-    condition?.deliveryCateringIds &&
-    condition.deliveryCateringIds.length > 0 &&
-    pi.deliveryCateringId &&
-    !condition.deliveryCateringIds.includes(pi.deliveryCateringId)
+    condition?.receivingCateringIds &&
+    condition.receivingCateringIds.length > 0 &&
+    pi.others.receivingCateringId &&
+    !condition.receivingCateringIds.includes(
+      pi.others.receivingCateringId,
+    )
   ) {
     return false;
   }

@@ -21,13 +21,13 @@ const PurchaseTotal = ({
       p="8px"
     >
       <CustomText>{t("Total").toUpperCase()}</CustomText>
-      <Title order={3}>
+      <Title order={4}>
         {t("Quantity of material")}:{" "}
         <CustomText c="primary" span>
           {totalMaterial}
         </CustomText>
       </Title>
-      <Title order={3}>
+      <Title order={4}>
         {t("Total")}:{" "}
         <CustomText c="primary" span>
           {numberWithDelimiter(totalPrice)}
@@ -45,7 +45,7 @@ interface CustomTextProps extends TextProps {
 
 const CustomText = ({ children, ...props }: CustomTextProps) => {
   return (
-    <Text fw={600} fz={22} {...props}>
+    <Text fw={600} fz={20} {...props}>
       {children}
     </Text>
   );

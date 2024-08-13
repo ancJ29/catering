@@ -28,7 +28,7 @@ import Scroll from "../InfiniteScroll";
 import LastUpdated from "../LastUpdated";
 import classes from "./DataGrid.module.scss";
 
-const limitOptions = [10, 20, 50, 100].map((el) => ({
+const limitOptions = [5, 10, 20, 50, 100].map((el) => ({
   value: el,
   label: el.toString(),
 }));

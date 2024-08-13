@@ -53,7 +53,10 @@ const ExportExcel = ({
       }}
     >
       <Combobox.Target>
-        <Button onClick={() => combobox.toggleDropdown()}>
+        <Button
+          variant="outline"
+          onClick={() => combobox.toggleDropdown()}
+        >
           {t("Functions")}
         </Button>
       </Combobox.Target>

@@ -6,6 +6,7 @@ import {
   Input,
   Pill,
   PillsInput,
+  ScrollArea,
   Text,
   useCombobox,
 } from "@mantine/core";
@@ -141,7 +142,11 @@ const MultiSelect = ({
         </Combobox.DropdownTarget>
 
         <Combobox.Dropdown>
-          <Combobox.Options>{comboboxOptions}</Combobox.Options>
+          <Combobox.Options>
+            <ScrollArea.Autosize type="scroll" mah={220}>
+              {comboboxOptions}
+            </ScrollArea.Autosize>
+          </Combobox.Options>
         </Combobox.Dropdown>
       </Combobox>
     </div>

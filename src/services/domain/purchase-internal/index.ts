@@ -29,7 +29,9 @@ export type PurchaseInternal = z.infer<
   name: string;
 };
 export type PurchaseInternalDetail =
-  PurchaseInternal["purchaseInternalDetails"][0];
+  PurchaseInternal["purchaseInternalDetails"][0] & {
+    name: string;
+  };
 
 const { request: addRequest } =
   actionConfigs[Actions.ADD_PURCHASE_INTERNAL].schema;
@@ -39,6 +41,8 @@ async function _getPurchaseInternals(
   from = startOfWeek(Date.now()),
   to = endOfWeek(Date.now()),
   receivingCateringId?: string,
+  deliveryCateringId?: string,
+  statuses?: PIStatus[],
 ): Promise<PurchaseInternal[]> {
   return await loadAll<PurchaseInternal>({
     key: "purchaseInternals",
@@ -47,6 +51,8 @@ async function _getPurchaseInternals(
       from,
       to,
       receivingCateringId,
+      deliveryCateringId,
+      statuses,
     },
   });
 }
@@ -89,19 +95,25 @@ export async function getPurchaseInternalsByCatering(
   from?: number,
   to?: number,
   receivingCateringId?: string,
+  deliveryCateringId?: string,
+  statuses?: PIStatus[],
 ): Promise<PurchaseInternalCatering[]> {
-  return _getPurchaseInternals(from, to, receivingCateringId).then(
-    (purchaseInternal) => {
-      return purchaseInternal.map((el) => ({
-        ...el,
-        name: el.code,
-        others: {
-          ...el.others,
-          status: getPICateringStatus(el.others.status),
-        },
-      }));
-    },
-  );
+  return _getPurchaseInternals(
+    from,
+    to,
+    receivingCateringId,
+    deliveryCateringId,
+    statuses,
+  ).then((purchaseInternal) => {
+    return purchaseInternal.map((el) => ({
+      ...el,
+      name: el.code,
+      others: {
+        ...el.others,
+        status: getPICateringStatus(el.others.status),
+      },
+    }));
+  });
 }
 
 export function getPICateringStatus(

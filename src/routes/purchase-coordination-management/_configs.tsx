@@ -1,8 +1,7 @@
 import PurchaseRequestStatus from "@/components/c-catering/PurchaseRequestSteppers/PurchaseRequestStatus";
-import { PurchaseCoordination } from "@/services/domain";
+import { Department, PurchaseCoordination } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { endOfWeek, formatTime, startOfWeek } from "@/utils";
-import { Department } from "../catering-management/_configs";
 import Priority from "../purchase-request-management/components/Priority";
 import { User } from "../user-management/_configs";
 import MemoPopover from "./components/MemoPopover";

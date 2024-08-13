@@ -154,6 +154,7 @@ export default {
         price: el.others.price || 0,
         quantity: el.others.quantity,
         estimatedQuantity: el.others.estimatedQuantity,
+        productionOrderQuantity: el.others.productionOrderQuantity,
         total: el.others.total,
         status: el.others.status,
         itemByType: el.others.itemByType,

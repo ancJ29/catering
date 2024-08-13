@@ -2,6 +2,7 @@ import {
   Actions,
   configs as actionConfigs,
   booleanSchema,
+  materialOrderCycleSchema,
   numberSchema,
   stringSchema,
   xMaterialSchema,
@@ -136,4 +137,15 @@ export function typeAndGroupOptions(
       }));
   }
   return [typeOptions, groupOptions];
+}
+
+export function materialOrderCycleOptions(
+  t: (key: string) => string,
+) {
+  const orderCycleOptions: OptionProps[] =
+    materialOrderCycleSchema.options.map((orderCycle: string) => ({
+      label: t(`materials.orderCycle.${orderCycle}`),
+      value: orderCycle,
+    }));
+  return [orderCycleOptions];
 }

@@ -1,3 +1,4 @@
+import { wrTypeSchema } from "@/auto-generated/api-configs";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
@@ -10,6 +11,7 @@ import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  caseSchema,
   configs,
   defaultCondition,
   filter,
@@ -65,19 +67,23 @@ const ExportManagement = () => {
     }
   };
 
-  const handleChangeCircumstance = (value: string) => {
-    updateCondition("circumstance", "", value);
-    if (value === "XCK") {
-      updateCondition("type", "", value);
+  const handleChangeCase = (value: string) => {
+    updateCondition("case", "", value);
+    if (value === caseSchema.Values["Warehouse transfer"]) {
+      updateCondition("type", "", wrTypeSchema.Values.XCK);
     }
   };
 
   const handleChangeType = (value: string) => {
     updateCondition("type", "", value);
-    if (value === "XCK") {
-      updateCondition("circumstance", "", value);
+    if (value === caseSchema.Values["Warehouse transfer"]) {
+      updateCondition("case", "", wrTypeSchema.Values.XCK);
     } else {
-      updateCondition("circumstance", "", "XTK");
+      updateCondition(
+        "case",
+        "",
+        caseSchema.Values["Released from warehouse"],
+      );
     }
   };
 
@@ -87,11 +93,11 @@ const ExportManagement = () => {
         from={condition?.from}
         to={condition?.to}
         type={condition?.type}
-        circumstance={condition?.circumstance}
+        case={condition?.case}
         clearable={filtered}
         onClear={reset}
         onChangeType={handleChangeType}
-        onChangeCircumstance={handleChangeCircumstance}
+        onChangeCase={handleChangeCase}
         onChangeDateRange={onChangeDateRange}
       />
       <DataGrid

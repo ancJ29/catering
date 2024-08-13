@@ -44,14 +44,8 @@ const CheckInventory = () => {
   );
 
   const dataGridConfigs = useMemo(
-    () =>
-      configs(
-        t,
-        materials,
-        isAuditedAllItems,
-        store.setAuditedAllItems,
-      ),
-    [isAuditedAllItems, materials, t],
+    () => configs(t, isAuditedAllItems, store.setAuditedAllItems),
+    [isAuditedAllItems, t],
   );
 
   const cateringName = useMemo(() => {

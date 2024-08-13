@@ -108,6 +108,11 @@ export const inventoryOthersSchema = z.object({
   amountShippedAfterAudit: numberSchema.default(0),
   amountReceivedAfterAudit: numberSchema.default(0),
   isAudited: booleanSchema.optional().default(false),
+  expiryDays: z.object({
+    amount: numberSchema,
+    productionDate: dateSchema,
+    expiryDate: dateSchema,
+  }).array(),
 });
 
 export const customerOthersSchema = z.object({
@@ -256,7 +261,6 @@ export const materialOthersSchema = z.object({
       unitId: stringSchema,
     })
     .optional(),
-  expiryDays: optionalNumberSchema,
 });
 
 export const materialGroupByType = [

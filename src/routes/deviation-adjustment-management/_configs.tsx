@@ -1,8 +1,11 @@
 import AddressPopover from "@/components/c-catering/AddressPopover";
-import { PurchaseOrder, Supplier } from "@/services/domain";
+import {
+  Department,
+  PurchaseOrder,
+  Supplier,
+} from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { endOfWeek, formatTime, startOfWeek } from "@/utils";
-import { Department } from "../catering-management/_configs";
 import Status from "../purchase-order-management/components/Status";
 
 export const configs = (

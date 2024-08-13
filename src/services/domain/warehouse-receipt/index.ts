@@ -130,14 +130,3 @@ export function typeWarehouseExportOptions(
   }));
   return [typeOptions];
 }
-
-export const circumstances = ["XTK", "XCK"];
-export function circumstanceWarehouseExportOptions(
-  t: (key: string) => string,
-) {
-  const typeOptions: OptionProps[] = circumstances.map((type) => ({
-    label: t(`warehouseReceipt.circumstance.${type}`),
-    value: type,
-  }));
-  return [typeOptions];
-}

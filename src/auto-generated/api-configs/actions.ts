@@ -40,6 +40,7 @@ import {
   bomOthersSchema,
   dailyMenuOthersSchema,
   inventoryOthersSchema,
+  piStatusSchema,
   poStatusSchema,
   prStatusSchema,
   supplierOthersSchema,
@@ -897,6 +898,8 @@ export const configs = {
         from: dateSchema.optional(),
         to: dateSchema.optional(),
         receivingCateringId: optionalStringSchema,
+        deliveryCateringId: optionalStringSchema,
+        statuses: piStatusSchema.array().optional(),
       }),
       response: listResponse.extend({
         purchaseInternals: xPurchaseInternalSchema.array(),

@@ -1,3 +1,4 @@
+import useTranslation from "@/hooks/useTranslation";
 import { OptionProps } from "@/types";
 import { Select as MantineSelect, SelectProps } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
@@ -17,11 +18,12 @@ const Select = ({
   value = "",
   ...props
 }: ISelectProps) => {
+  const t = useTranslation();
   const data = useMemo(() => {
     if (_data) {
       return _data.map((el, idx) => ({
         value: el,
-        label: el,
+        label: t(el),
         isLastOption: idx === _data?.length - 1,
       }));
     }
@@ -30,7 +32,7 @@ const Select = ({
       label,
       isLastOption: idx === options?.length - 1,
     }));
-  }, [options, _data]);
+  }, [_data, options, t]);
 
   return (
     <MantineSelect
@@ -43,6 +45,7 @@ const Select = ({
         input: "c-catering-truncate",
         label: classes.label,
       }}
+      maxDropdownHeight={220}
       {...props}
     />
   );
