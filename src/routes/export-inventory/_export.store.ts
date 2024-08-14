@@ -360,6 +360,9 @@ export default {
   },
   isValidAmount() {
     const state = store.getSnapshot();
+    if (Object.keys(state.exportDetails).length === 0) {
+      return false;
+    }
     const hasZeroAmount = Object.values(state.exportDetails).some(
       (exportDetail) => exportDetail.amount === 0,
     );
@@ -370,7 +373,7 @@ export default {
   },
   isValidExportReceipt() {
     const state = store.getSnapshot();
-    return state.exportReceipt?.type !== null;
+    return state.exportReceipt?.type !== undefined;
   },
   async exportReceipt() {
     /*

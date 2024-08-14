@@ -28,9 +28,9 @@ const ExportReceipt = () => {
           color: "green.5",
           message: t("Add export successfully"),
         });
-      setTimeout(() => {
-        window.location.reload();
-      }, 800);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 800);
     }
   };
 
