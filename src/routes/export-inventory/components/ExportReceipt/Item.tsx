@@ -1,7 +1,11 @@
 import useTranslation from "@/hooks/useTranslation";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
-import { formatTime, roundToDecimals } from "@/utils";
+import {
+  formatTime,
+  numberWithDelimiter,
+  roundToDecimals,
+} from "@/utils";
 import { Button, Table } from "@mantine/core";
 import { ExportDetail } from "../../_configs";
 import store from "../../_export.store";
@@ -32,21 +36,22 @@ const Item = ({ index, exportDetail }: ItemProps) => {
       align: "center",
     },
     {
-      content: exportDetail.price.toLocaleString(),
+      content: numberWithDelimiter(exportDetail.price),
       align: "right",
     },
     {
-      content: store.getInventory(exportDetail.materialId),
+      content: numberWithDelimiter(
+        store.getInventory(exportDetail.materialId),
+      ),
       align: "right",
     },
     {
-      content: exportDetail.amount,
+      content: numberWithDelimiter(exportDetail.amount),
       align: "right",
     },
     {
-      content: roundToDecimals(
-        exportDetail.price * exportDetail.amount,
-        10,
+      content: numberWithDelimiter(
+        roundToDecimals(exportDetail.price * exportDetail.amount, 10),
       ),
       align: "right",
     },
