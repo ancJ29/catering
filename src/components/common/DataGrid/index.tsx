@@ -55,6 +55,7 @@ function DataGrid<
   onSort,
   onChangePage,
   onRowClick,
+  selectedRow,
 }: DataGridProps<T>) {
   const [configs, setConfig] = useState(columns);
   const [rows, setRows] = useState<T[]>(data || []);
@@ -138,6 +139,7 @@ function DataGrid<
         hasUpdateColumn,
         onSort: sortHandler,
         onRowClick,
+        selectedRow,
       },
     );
   }, [
@@ -153,6 +155,7 @@ function DataGrid<
     page,
     rows,
     sortHandler,
+    selectedRow,
   ]);
 
   useEffect(() => {
@@ -266,6 +269,7 @@ function _contentBuilder<
     hasOrderColumn = false,
     onSort,
     onRowClick,
+    selectedRow,
   }: {
     orderFrom?: number;
     noResultText?: string;
@@ -275,6 +279,7 @@ function _contentBuilder<
     onSort?: (column: DataGridColumnProps) => void;
     onRowClick?: (row: T) => void;
     actionHandlers?: DataGridActionProps<T>;
+    selectedRow?: T;
   } = {},
 ) {
   // const t = useTranslation();
@@ -294,6 +299,7 @@ function _contentBuilder<
             key={idx}
             className={classes.dataRow}
             onClick={onRowClick?.bind(null, row)}
+            bg={selectedRow === row ? "primary.2" : undefined}
           >
             <OrderCell
               hasOrderColumn={hasOrderColumn}

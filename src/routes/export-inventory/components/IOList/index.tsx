@@ -130,13 +130,6 @@ const IOList = () => {
           defaultValue={keyword}
           onReload={reload}
         />
-        {/* <MultiSelect
-          value={condition?.statuses}
-          label={t("Status")}
-          w={"20vw"}
-          options={statusOptions}
-          onChange={updateCondition.bind(null, "statuses", "")}
-        /> */}
         <MultiSelect
           value={condition?.receivingCateringIds}
           label={t("Purchase internal receiving catering")}
@@ -177,6 +170,7 @@ const IOList = () => {
             data={data}
             onChangePage={setPage}
             onRowClick={(item) => setSelectedPI(item)}
+            selectedRow={selectedPI}
           />
         </Grid.Col>
         <Grid.Col span={6} mt={selectedPI ? 0 : 56}>

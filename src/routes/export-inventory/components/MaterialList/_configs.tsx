@@ -77,7 +77,7 @@ export const configs = (
             key={row.id}
             thousandSeparator=""
             isPositive={true}
-            defaultValue={inventories[row.id]?.amount || 0}
+            defaultValue={store.getAmountInventory(row.id)}
             onChange={(value) =>
               store.setAmountInventory(row.id, value)
             }

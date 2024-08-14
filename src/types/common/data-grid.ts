@@ -18,6 +18,7 @@ export type DataGridProps<T> = {
   hasActionColumn?: boolean;
   actionHandlers?: DataGridActionProps<T>;
   ActionComponent?: () => ReactNode;
+  selectedRow?: T;
 };
 
 export type DataGridColumnProps = {

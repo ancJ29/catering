@@ -4,6 +4,7 @@ import {
   wrTypeSchema,
 } from "@/auto-generated/api-configs";
 import {
+  addWarehouseReceipt,
   Customer,
   DailyMenu,
   getAllInventories,
@@ -13,6 +14,8 @@ import {
   Inventory,
   Material,
   PurchaseInternalCatering,
+  removeFromInventory,
+  updatePurchaseInternalStatus,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import useCustomerStore from "@/stores/customer.store";
@@ -20,6 +23,7 @@ import useMaterialStore from "@/stores/material.store";
 import {
   cloneDeep,
   convertAmountBackward,
+  convertAmountForward,
   createStore,
   endOfDay,
   endOfWeek,
@@ -35,6 +39,7 @@ import {
   initialExportInventoryForm,
   Tab,
   Type,
+  typeSchema,
 } from "./_configs";
 import { MenuMaterial } from "./components/Menu/_configs";
 
@@ -54,6 +59,7 @@ type State = {
   currentMenuMaterials: Record<string, MenuMaterial>;
   updateMenuMaterials: Record<string, MenuMaterial>;
   selectedMenuMaterialIds: string[];
+  selectedPurchaseInternal?: PurchaseInternalCatering;
 };
 
 enum ActionType {
@@ -201,6 +207,11 @@ export default {
   setActiveTab(tab: Tab) {
     dispatch({ type: ActionType.SET_TAB, tab });
   },
+  getAmountInventory(materialId: string) {
+    return (
+      store.getSnapshot().updateInventories[materialId]?.amount || 0
+    );
+  },
   setAmountInventory(materialId: string, amount: number) {
     dispatch({
       type: ActionType.SET_AMOUNT_INVENTORY,
@@ -284,7 +295,7 @@ export default {
       store.getSnapshot().exportDetails,
     ).reduce((sum, exportDetail) => {
       const amount =
-        state.updateInventories[exportDetail.materialId]?.amount || 0;
+        state.exportDetails[exportDetail.materialId]?.amount || 0;
       const price =
         materials.get(exportDetail.materialId)?.others.prices?.[
           cateringId || ""
@@ -346,6 +357,68 @@ export default {
   },
   addMenuMaterialToExportReceipt() {
     dispatch({ type: ActionType.ADD_MENU_MATERIAL_TO_EXPORT });
+  },
+  isValidAmount() {
+    const state = store.getSnapshot();
+    const hasZeroAmount = Object.values(state.exportDetails).some(
+      (exportDetail) => exportDetail.amount === 0,
+    );
+    if (hasZeroAmount) {
+      return false;
+    }
+    return true;
+  },
+  isValidExportReceipt() {
+    const state = store.getSnapshot();
+    return state.exportReceipt?.type !== null;
+  },
+  async exportReceipt() {
+    /*
+      - create export receipt
+    */
+    const state = store.getSnapshot();
+    const { cateringId } = useAuthStore.getState();
+    const { materials } = useMaterialStore.getState();
+
+    if (!cateringId || !state.exportReceipt) {
+      return false;
+    }
+
+    const _removeFromInventory = setUpRemoveFromInventory(
+      state.exportDetails,
+      materials,
+      cateringId,
+    );
+
+    const isXCK =
+      state.exportReceipt?.type === wrTypeSchema.Values.XCK &&
+      state.selectedPurchaseInternal !== undefined &&
+      state.form.type === typeSchema.Values["Export on demand"];
+
+    const _updatePurchaseInternalStatus = {
+      id: state.selectedPurchaseInternal?.id || "",
+      status: piStatusSchema.Values.SSGH,
+    };
+
+    const _warehouseReceipt = setUpWarehouseReceipt(
+      state.exportReceipt,
+      state.exportDetails,
+      materials,
+      cateringId,
+      isXCK,
+    );
+
+    Promise.all([
+      removeFromInventory(_removeFromInventory),
+      addWarehouseReceipt(_warehouseReceipt),
+      isXCK
+        ? updatePurchaseInternalStatus(
+          _updatePurchaseInternalStatus,
+          false,
+        )
+        : undefined,
+    ]);
+    return true;
   },
 };
 
@@ -427,6 +500,7 @@ function reducer(action: Action, state: State): State {
       if (action.materialId && action.amount) {
         state.updateInventories[action.materialId].amount =
           action.amount;
+        return { ...state };
       }
       break;
     case ActionType.SET_SELECT_ALL:
@@ -494,6 +568,7 @@ function reducer(action: Action, state: State): State {
           ...state,
           exportDetails,
           key: Date.now(),
+          selectedPurchaseInternal: undefined,
         };
       }
       break;
@@ -526,6 +601,7 @@ function reducer(action: Action, state: State): State {
           ...state,
           key: Date.now(),
           exportDetails,
+          selectedPurchaseInternal: action.purchaseInternalCatering,
         };
       }
       break;
@@ -617,6 +693,7 @@ function reducer(action: Action, state: State): State {
           ...state,
           exportDetails,
           key: Date.now(),
+          selectedPurchaseInternal: undefined,
         };
       }
       break;
@@ -743,4 +820,51 @@ function sortDailyMenus(
 
     return compareTargetName(a, b);
   });
+}
+
+function setUpRemoveFromInventory(
+  exportDetails: Record<string, ExportDetail>,
+  materials: Map<string, Material>,
+  departmentId: string,
+) {
+  return Object.values(exportDetails).map((exportDetail) => ({
+    materialId: exportDetail.materialId,
+    amount: convertAmountForward({
+      material: materials.get(exportDetail.materialId),
+      amount: exportDetail.amount,
+    }),
+    departmentId,
+  }));
+}
+
+function setUpWarehouseReceipt(
+  exportReceipt: ExportReceipt,
+  exportDetails: Record<string, ExportDetail>,
+  materials: Map<string, Material>,
+  cateringId: string,
+  isXCK: boolean,
+) {
+  return {
+    date: exportReceipt.date,
+    departmentId: cateringId,
+    others: {
+      type: exportReceipt.type || wrTypeSchema.Values.XCK,
+      cateringId: isXCK
+        ? exportReceipt.receivingCateringId
+        : undefined,
+    },
+    warehouseReceiptDetails: Object.values(exportDetails).map(
+      (exportDetail) => ({
+        materialId: exportDetail.materialId,
+        amount: convertAmountForward({
+          material: materials.get(exportDetail.materialId),
+          amount: exportDetail.amount,
+        }),
+        price: exportDetail.price,
+        others: {
+          memo: "",
+        },
+      }),
+    ),
+  };
 }

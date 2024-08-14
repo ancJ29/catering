@@ -167,15 +167,20 @@ const { request: updateStatusRequest } =
 type UpdateStatusRequest = z.infer<typeof updateStatusRequest>;
 export async function updatePurchaseInternalStatus(
   params: UpdateStatusRequest,
+  showToast = true,
 ) {
   await callApi<UpdateStatusRequest, { id: string }>({
     action: Actions.UPDATE_PURCHASE_INTERNAL_STATUS,
     params,
     options: {
-      toastMessage: "Purchase internal status updated",
-      reloadOnSuccess: {
-        delay: 700,
-      },
+      toastMessage: showToast
+        ? "Purchase internal status updated"
+        : undefined,
+      reloadOnSuccess: showToast
+        ? {
+          delay: 700,
+        }
+        : undefined,
     },
   });
 }
