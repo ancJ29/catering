@@ -276,10 +276,6 @@ export default {
       exportReceiptType: type as WRType,
     });
   },
-  getProductionDate(materialId: string) {
-    return store.getSnapshot().currentInventories[materialId]?.others
-      .expiryDays[0]?.productionDate;
-  },
   getExpiryDate(materialId: string) {
     return store.getSnapshot().currentInventories[materialId]?.others
       .expiryDays[0]?.expiryDate;

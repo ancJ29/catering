@@ -9,4 +9,5 @@ export type OrderDetail = {
   internalNote: string;
   vat: number;
   isChecked: boolean;
+  expiryDate: number;
 };

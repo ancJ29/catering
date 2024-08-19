@@ -404,4 +404,5 @@ export const xUpdateInventorySchema = z.object({
   materialId: stringSchema,
   departmentId: stringSchema,
   amount: numberSchema,
+  expiryDate: dateSchema.optional(),
 });

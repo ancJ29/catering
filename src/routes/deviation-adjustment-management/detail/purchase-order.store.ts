@@ -120,6 +120,7 @@ export default {
             internalNote: e.internalNote || "",
             price: e.price || 0,
             vat: e.vat || 0,
+            expiryDate: e.expiryDate,
           },
         };
       }),
@@ -199,6 +200,7 @@ function initOrderDetails(
       supplierNote: purchaseOrderDetail.others.supplierNote || "",
       internalNote: purchaseOrderDetail.others.internalNote || "",
       isChecked: purchaseOrderDetail.others.isChecked || false,
+      expiryDate: purchaseOrderDetail.others.expiryDate,
     };
   });
   return currents;

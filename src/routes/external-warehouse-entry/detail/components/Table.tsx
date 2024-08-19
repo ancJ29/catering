@@ -44,6 +44,9 @@ const Table = () => {
                       value,
                     )
                   }
+                  onChangeExpiryDate={(value) =>
+                    store.setExpiryDate(orderDetail.materialId, value)
+                  }
                   onChangeSupplierNote={(value) =>
                     store.setSupplierNote(
                       orderDetail.materialId,

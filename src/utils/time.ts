@@ -100,3 +100,9 @@ export function endOfMonth(timestamp: number): number {
   date.setUTCHours(23, 59, 59, 999);
   return date.getTime();
 }
+
+export function addDayToDate(date: Date, days: number) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + days);
+  return newDate;
+}

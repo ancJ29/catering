@@ -9,4 +9,5 @@ export type OrderDetail = {
   supplierNote: string;
   internalNote: string;
   isChecked: boolean;
+  expiryDate: Date;
 };

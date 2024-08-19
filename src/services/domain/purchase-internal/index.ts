@@ -29,9 +29,7 @@ export type PurchaseInternal = z.infer<
   name: string;
 };
 export type PurchaseInternalDetail =
-  PurchaseInternal["purchaseInternalDetails"][0] & {
-    name: string;
-  };
+  PurchaseInternal["purchaseInternalDetails"][0];
 
 const { request: addRequest } =
   actionConfigs[Actions.ADD_PURCHASE_INTERNAL].schema;

@@ -15,6 +15,7 @@ import {
 } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import {
+  addDayToDate,
   cloneDeep,
   convertAmountBackward,
   convertAmountForward,
@@ -205,6 +206,10 @@ export default {
             supplierNote: cd.supplierNote,
             internalNote: cd.internalNote,
             vat: 0,
+            expiryDate: addDayToDate(
+              state.purchaseCoordination?.deliveryDate || new Date(),
+              7,
+            ),
           },
         })),
       });

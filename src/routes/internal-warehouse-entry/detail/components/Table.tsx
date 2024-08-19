@@ -44,6 +44,12 @@ const Table = () => {
                       value,
                     )
                   }
+                  onChangeExpiryDate={(value) =>
+                    store.setExpiryDate(
+                      internalDetail.materialId,
+                      value,
+                    )
+                  }
                   onChangeKitchenDeliveryNote={(value) =>
                     store.setKitchenDeliveryNote(
                       internalDetail.materialId,

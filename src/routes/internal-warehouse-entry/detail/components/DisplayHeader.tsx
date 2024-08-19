@@ -11,10 +11,10 @@ const DisplayHeader = () => {
         <Table.Th w="20%" ta="center">
           {t("Material name")}
         </Table.Th>
-        <Table.Th w="7%" ta="center">
+        <Table.Th w="5%" ta="center">
           {t("Material unit")}
         </Table.Th>
-        <Table.Th w="30%" ta="center">
+        <Table.Th w="27%" ta="center">
           <Flex direction="column" justify="center" w="100%">
             <Flex
               justify="center"
@@ -55,7 +55,10 @@ const DisplayHeader = () => {
             </Flex>
           </Flex>
         </Table.Th>
-        <Table.Th w="20%" ta="center">
+        <Table.Th w="10%" ta="center">
+          {t("Expiry date")}
+        </Table.Th>
+        <Table.Th w="15%" ta="center">
           {t("Kitchen delivery note")}
         </Table.Th>
       </Table.Tr>

@@ -84,7 +84,7 @@ export const piDetailConfigs = (
       key: "name",
       header: t("Material name"),
       width: "30%",
-      renderCell: (_, row: PurchaseInternalDetail) => {
+      renderCell: (_, row: InternalDetail) => {
         return materials.get(row.materialId)?.name || "N/A";
       },
     },
@@ -93,7 +93,7 @@ export const piDetailConfigs = (
       header: t("Quantity"),
       width: "25%",
       textAlign: "right",
-      renderCell: (_, row: PurchaseInternalDetail) => {
+      renderCell: (_, row: InternalDetail) => {
         return convertAmountBackward({
           material: materials.get(row.materialId),
           amount: row.amount,
@@ -105,7 +105,7 @@ export const piDetailConfigs = (
       header: t("Inventory"),
       width: "25%",
       textAlign: "right",
-      renderCell: (_, row: PurchaseInternalDetail) => {
+      renderCell: (_, row: InternalDetail) => {
         return store.getInventory(row.materialId).toLocaleString();
       },
     },
@@ -114,7 +114,7 @@ export const piDetailConfigs = (
       header: t("Material unit"),
       width: "20%",
       textAlign: "center",
-      renderCell: (_, row: PurchaseInternalDetail) => {
+      renderCell: (_, row: InternalDetail) => {
         return (
           materials.get(row.materialId)?.others?.unit?.name || "N/A"
         );
@@ -168,3 +168,7 @@ export function filter(
   }
   return true;
 }
+
+export type InternalDetail = PurchaseInternalDetail & {
+  name: string;
+};

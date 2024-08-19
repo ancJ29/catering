@@ -430,4 +430,7 @@ export default {
   "Expiry date": "Expiry date",
   "Export": "Export",
   "Warehouse receipt export date": "Export date",
+  "Export quantity": "Export quantity",
+  "Add export successfully": "Add export successfully",
+  "Please check type of export receipt": "Please check type of export receipt",
 } satisfies Record<string, string>;

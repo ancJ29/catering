@@ -60,7 +60,7 @@ const Filter = ({
     <Flex gap={10} justify="end" align="end">
       <AutocompleteForFilterData
         label={t("Purchase order po code")}
-        w={"20vw"}
+        w="20vw"
         data={purchaseOrderIds}
         defaultValue={keyword}
         onReload={onReload}
@@ -68,14 +68,14 @@ const Filter = ({
       <MultiSelect
         value={supplierIds}
         label={t("Purchase order supplier")}
-        w={"20vw"}
+        w="20vw"
         options={_suppliers}
         onChange={onChangeSupplierIds}
       />
       <MultiSelect
         value={statuses}
         label={t("Status")}
-        w={"20vw"}
+        w="22vw"
         options={statusOptions}
         onChange={onChangeStatuses}
       />
@@ -84,7 +84,7 @@ const Filter = ({
         from={from}
         to={to}
         onChange={onChangeDateRange}
-        w={"22vw"}
+        w="22vw"
       />
       <CustomButton disabled={!clearable} onClick={onClear}>
         {t("Clear")}

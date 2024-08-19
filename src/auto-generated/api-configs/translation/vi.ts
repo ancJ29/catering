@@ -429,4 +429,8 @@ export default {
   "Expiry date": "Hạn dùng",
   "Export": "Xuất",
   "Warehouse receipt export date": "Ngày nhận",
+  "Export quantity": "Số lượng xuất",
+  "Add export successfully": "Thêm phiếu xuất thành công",
+  "Please check type of export receipt":
+    "Vui lòng kiểm tra loại của phiếu xuất",
 } satisfies Record<string, string>;

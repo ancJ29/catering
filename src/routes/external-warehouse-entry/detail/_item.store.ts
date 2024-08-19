@@ -46,6 +46,7 @@ enum ActionType {
   SET_SERVICE_STATUS = "SET_SERVICE_STATUS",
   SET_DELIVERY_TIME_STATUS = "SET_DELIVERY_TIME_STATUS",
   SET_CHECKED = "SET_CHECKED",
+  SET_EXPIRY_DATE = "SET_EXPIRY_DATE",
 }
 
 type Action = {
@@ -57,6 +58,7 @@ type Action = {
   price?: number;
   status?: string;
   isChecked?: boolean;
+  date?: number;
 };
 
 const defaultState = {
@@ -115,6 +117,9 @@ export default {
       }
     }
     return true;
+  },
+  setExpiryDate(materialId: string, date?: number) {
+    dispatch({ type: ActionType.SET_EXPIRY_DATE, materialId, date });
   },
   async save() {
     const state = store.getSnapshot();
@@ -289,6 +294,14 @@ function reducer(action: Action, state: State): State {
         };
       }
       break;
+    case ActionType.SET_EXPIRY_DATE:
+      if (action.materialId && action.date) {
+        state.updates[action.materialId] = {
+          ...state.updates[action.materialId],
+          expiryDate: action.date,
+        };
+      }
+      break;
   }
   return state;
 }
@@ -318,6 +331,8 @@ function initOrderDetail(
     material,
     amount: purchaseOrderDetail.actualAmount,
   });
+  // const expiryDate = new Date();
+  // expiryDate.setDate(expiryDate.getDate() + 7);
   return {
     id: purchaseOrderDetail.id,
     materialId: purchaseOrderDetail.materialId,
@@ -329,6 +344,7 @@ function initOrderDetail(
     internalNote: purchaseOrderDetail.others.internalNote || "",
     vat: purchaseOrderDetail.others.vat,
     isChecked: purchaseOrderDetail.others.isChecked,
+    expiryDate: purchaseOrderDetail.others.expiryDate.getTime(),
   };
 }
 
@@ -364,6 +380,7 @@ function setUpPurchaseOrder(
           internalNote: item.internalNote,
           price: item.actualPrice,
           vat: item.vat,
+          expiryDate: new Date(item.expiryDate),
         },
       };
     }),
@@ -410,5 +427,6 @@ function setUpAddToInventory(
       amount: item.actualAmount,
     }),
     departmentId: purchaseOrder.others.receivingCateringId,
+    expiryDate: new Date(item.expiryDate),
   }));
 }

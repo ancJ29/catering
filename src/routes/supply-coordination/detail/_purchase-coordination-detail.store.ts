@@ -20,6 +20,7 @@ import {
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
 import {
+  addDayToDate,
   cloneDeep,
   convertAmountBackward,
   convertAmountForward,
@@ -253,6 +254,10 @@ export default {
                   isChecked: false,
                   kitchenDeliveryNote: "",
                   internalNote: cd.internalNote,
+                  expiryDate: addDayToDate(
+                    state.purchaseRequest?.deliveryDate || new Date(),
+                    7,
+                  ),
                 },
               }),
             ),

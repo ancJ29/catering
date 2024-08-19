@@ -8,4 +8,5 @@ export type InternalDetail = {
   kitchenDeliveryNote: string;
   internalNote: string;
   isChecked: boolean;
+  expiryDate: number;
 };

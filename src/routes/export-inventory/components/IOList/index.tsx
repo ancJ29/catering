@@ -8,7 +8,6 @@ import useTranslation from "@/hooks/useTranslation";
 import {
   Department,
   PurchaseInternalCatering,
-  PurchaseInternalDetail,
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useMaterialStore from "@/stores/material.store";
@@ -27,6 +26,7 @@ import {
   defaultCondition,
   filter,
   FilterType,
+  InternalDetail,
   piConfigs,
   piDetailConfigs,
 } from "./_configs";
@@ -96,7 +96,7 @@ const IOList = () => {
     data: detailData,
     page: detailPage,
     setPage: setDetailPage,
-  } = useFilterData<PurchaseInternalDetail>({
+  } = useFilterData<InternalDetail>({
     dataLoader: detailDataLoader,
   });
 

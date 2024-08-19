@@ -40,6 +40,7 @@ enum ActionType {
   SET_PRICE = "SET_PRICE",
   SET_STATUS = "SET_STATUS",
   SET_CHECKED = "SET_CHECKED",
+  SET_EXPIRY_DATE = "SET_EXPIRY_DATE",
 }
 
 type Action = {
@@ -51,6 +52,7 @@ type Action = {
   price?: number;
   status?: string;
   isChecked?: boolean;
+  date?: number;
 };
 
 const defaultState = {
@@ -91,6 +93,9 @@ export default {
   },
   setIsChecked(materialId: string, isChecked: boolean) {
     dispatch({ type: ActionType.SET_CHECKED, materialId, isChecked });
+  },
+  setExpiryDate(materialId: string, date?: number) {
+    dispatch({ type: ActionType.SET_EXPIRY_DATE, materialId, date });
   },
   isCheckAll() {
     for (const item of Object.values(store.getSnapshot().updates)) {
@@ -243,6 +248,14 @@ function reducer(action: Action, state: State): State {
         };
       }
       break;
+    case ActionType.SET_EXPIRY_DATE:
+      if (action.materialId && action.date) {
+        state.updates[action.materialId] = {
+          ...state.updates[action.materialId],
+          expiryDate: action.date,
+        };
+      }
+      break;
   }
   return state;
 }
@@ -283,6 +296,7 @@ function initInternalDetail(
       purchaseInternalDetail.others.kitchenDeliveryNote || "",
     internalNote: purchaseInternalDetail.others.internalNote || "",
     isChecked: purchaseInternalDetail.others.isChecked || false,
+    expiryDate: purchaseInternalDetail.others.expiryDate.getTime(),
   };
 }
 
@@ -318,6 +332,7 @@ function setUpPurchaseInternal(
             kitchenDeliveryNote: item.kitchenDeliveryNote,
             internalNote: item.internalNote,
             price: item.actualPrice,
+            expiryDate: new Date(item.expiryDate),
           },
         };
       },
@@ -337,5 +352,6 @@ function setUpAddToInventory(
       amount: item.actualAmount,
     }),
     departmentId: purchaseInternal.others.receivingCateringId,
+    expiryDate: new Date(item.expiryDate),
   }));
 }

@@ -1,5 +1,5 @@
 import AddressPopover from "@/components/c-catering/AddressPopover";
-import { PurchaseInternal } from "@/services/domain";
+import { Department, PurchaseInternal } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { endOfWeek, formatTime, startOfWeek } from "@/utils";
 import Status from "./components/Status";

@@ -108,11 +108,12 @@ export const inventoryOthersSchema = z.object({
   amountShippedAfterAudit: numberSchema.default(0),
   amountReceivedAfterAudit: numberSchema.default(0),
   isAudited: booleanSchema.optional().default(false),
-  expiryDays: z.object({
-    amount: numberSchema,
-    productionDate: dateSchema,
-    expiryDate: dateSchema,
-  }).array(),
+  expiryDays: z
+    .object({
+      amount: numberSchema,
+      expiryDate: dateSchema,
+    })
+    .array(),
 });
 
 export const customerOthersSchema = z.object({
@@ -412,6 +413,7 @@ export const purchaseInternalDetailOthersSchema = z.object({
   isChecked: optionalBooleanSchema.default(false),
   kitchenDeliveryNote: nullishStringSchema,
   internalNote: nullishStringSchema,
+  expiryDate: dateSchema,
 });
 
 export const pcStatusSchema = z.enum([
@@ -542,6 +544,7 @@ export const purchaseOrderDetailOthersSchema = z.object({
   internalNote: nullishStringSchema,
   price: numberSchema,
   vat: optionalNumberSchema.default(0),
+  expiryDate: dateSchema,
 });
 
 export const wrTypeSchema = z.enum([

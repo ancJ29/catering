@@ -6,13 +6,14 @@ const Header = () => {
       <Table.Tr>
         <Table.Th w="3%" />
         <Table.Th w="20%" />
+        <Table.Th w="5%" />
         <Table.Th w="7%" />
-        <Table.Th w="8%" />
-        <Table.Th w="8%" />
-        <Table.Th w="14%" />
+        <Table.Th w="7%" />
+        <Table.Th w="13%" />
         <Table.Th w="10%" />
         <Table.Th w="10%" />
-        <Table.Th w="20%" />
+        <Table.Th w="10%" />
+        <Table.Th w="15%" />
       </Table.Tr>
     </Table.Thead>
   );

@@ -1,3 +1,4 @@
+import DateInput from "@/components/common/DateInput";
 import NumberInput from "@/components/common/NumberInput";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
@@ -11,6 +12,7 @@ type ItemProps = {
   disabled: boolean;
   onChangeActualAmount: (value: number) => void;
   onChangeActualPrice: (value: number) => void;
+  onChangeExpiryDate: (value?: number) => void;
   onChangeSupplierNote: (value: string) => void;
   onChangeChecked: (value: boolean) => void;
 };
@@ -21,6 +23,7 @@ const Item = ({
   disabled,
   onChangeActualAmount,
   onChangeActualPrice,
+  onChangeExpiryDate,
   onChangeSupplierNote,
   onChangeChecked,
 }: ItemProps) => {
@@ -86,6 +89,15 @@ const Item = ({
         />
       ),
       align: "right",
+    },
+    {
+      content: (
+        <DateInput
+          defaultValue={new Date(orderDetail.expiryDate)}
+          onChangeDate={onChangeExpiryDate}
+        />
+      ),
+      align: "center",
     },
     {
       content: (
