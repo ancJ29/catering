@@ -178,6 +178,22 @@ export async function updatePurchaseOrder(params: UpdateRequest) {
   });
 }
 
+const { request: sendMailRequest } =
+  actionConfigs[Actions.SEND_PURCHASE_ORDER_TO_SUPPLIER].schema;
+type SendMailRequest = z.infer<typeof sendMailRequest>;
+
+export async function sendPurchaseOrderToSupplier(
+  params: SendMailRequest,
+) {
+  await callApi<SendMailRequest, { id: string }>({
+    action: Actions.SEND_PURCHASE_ORDER_TO_SUPPLIER,
+    params,
+    options: {
+      toastMessage: "Save and email to supplier successfully",
+    },
+  });
+}
+
 export function statusOrderOptions(t: (key: string) => string) {
   const statusOptions: OptionProps[] = poStatusSchema.options.map(
     (status) => ({

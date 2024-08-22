@@ -1,36 +1,32 @@
 import useTranslation from "@/hooks/useTranslation";
 import { Button, Flex, TextInput } from "@mantine/core";
-import { ChangeEvent, useCallback } from "react";
+import { UseFormReturnType } from "@mantine/form";
+import { PurchaseOrderForm } from "../_configs";
 
 type SendMailProps = {
-  email: string;
-  onChangeEmail: (email: string) => void;
+  form: UseFormReturnType<PurchaseOrderForm>;
   disabled?: boolean;
+  onButtonClick: () => void;
 };
 
 const SendMail = ({
-  email,
-  onChangeEmail,
+  form,
   disabled = false,
+  onButtonClick,
 }: SendMailProps) => {
   const t = useTranslation();
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      onChangeEmail(e?.target.value);
-    },
-    [onChangeEmail],
-  );
 
   return (
     <Flex gap={10}>
       <TextInput
-        value={email}
-        onChange={handleChange}
         w="25vw"
         placeholder={t("Save and email to supplier")}
         disabled={disabled}
+        {...form.getInputProps("email")}
       />
-      <Button disabled={disabled}>{t("Send")}</Button>
+      <Button onClick={onButtonClick} disabled={disabled}>
+        {t("Send")}
+      </Button>
     </Flex>
   );
 };

@@ -7,6 +7,7 @@ import Header from "./Header";
 import Item from "./Item";
 
 type TableProps = {
+  isEmailError: boolean;
   purchaseOrderDetails: PurchaseOrderDetail[];
   disabled: boolean;
   onChangeAmount: (materialId: string, amount: number) => void;
@@ -15,6 +16,7 @@ type TableProps = {
 };
 
 const Table = ({
+  isEmailError,
   purchaseOrderDetails,
   disabled,
   onChangeAmount,
@@ -41,7 +43,9 @@ const Table = ({
         <div>
           <ScrollTable
             header={<Header />}
-            h="calc(-8.5rem - 240px + 100vh)"
+            h={`calc(-8.5rem - 240px - ${
+              isEmailError ? 20 : 0
+            }px + 100vh)`}
           >
             {purchaseOrderDetails.map((purchaseOrderDetail) => (
               <Item

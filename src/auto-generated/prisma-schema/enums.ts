@@ -52,44 +52,14 @@ export const Gender = {
   "OTHER": "OTHER" as Gender,
 };
 
-export const messageStatusEnum = z.nativeEnum({
-  PENDING: "PENDING",
-  SENT: "SENT",
-  FAILED: "FAILED"
+export const templateTypeEnum = z.nativeEnum({
+  PURCHASE_ORDER_CONFIRMATION: "PURCHASE_ORDER_CONFIRMATION"
 } as {
-  "PENDING": "PENDING",
-  "SENT": "SENT",
-  "FAILED": "FAILED",
+  "PURCHASE_ORDER_CONFIRMATION": "PURCHASE_ORDER_CONFIRMATION",
 });
 
-export type MessageStatus = "PENDING" | "SENT" | "FAILED";
+export type TemplateType = "PURCHASE_ORDER_CONFIRMATION";
 
-export const MessageStatus = {
-  "PENDING": "PENDING" as MessageStatus,
-  "SENT": "SENT" as MessageStatus,
-  "FAILED": "FAILED" as MessageStatus,
-};
-
-export const messageTypeEnum = z.nativeEnum({
-  SMS: "SMS",
-  EMAIL: "EMAIL",
-  PHONE: "PHONE",
-  SLACK: "SLACK",
-  ZALO: "ZALO"
-} as {
-  "SMS": "SMS",
-  "EMAIL": "EMAIL",
-  "PHONE": "PHONE",
-  "SLACK": "SLACK",
-  "ZALO": "ZALO",
-});
-
-export type MessageType = "SMS" | "EMAIL" | "PHONE" | "SLACK" | "ZALO";
-
-export const MessageType = {
-  "SMS": "SMS" as MessageType,
-  "EMAIL": "EMAIL" as MessageType,
-  "PHONE": "PHONE" as MessageType,
-  "SLACK": "SLACK" as MessageType,
-  "ZALO": "ZALO" as MessageType,
+export const TemplateType = {
+  "PURCHASE_ORDER_CONFIRMATION": "PURCHASE_ORDER_CONFIRMATION" as TemplateType,
 };

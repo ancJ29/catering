@@ -3,8 +3,6 @@ import {
   customerProductSchema,
   departmentSchema,
   menuSchema,
-  messageSchema,
-  messageTemplateSchema,
   monthlyInventorySchema,
   productSchema,
   unitSchema,
@@ -156,67 +154,6 @@ export const configs = {
           id: optionalStringSchema,
         })
         .array(),
-    },
-  },
-  [Actions.GET_MESSAGES]: {
-    name: Actions.GET_MESSAGES,
-    group: ActionGroups.MESSAGE_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: getSchema.extend({
-        from: optionalStringSchema,
-        templateId: optionalStringSchema,
-      }),
-      response: listResponse.extend({
-        messages: messageSchema.array(),
-      }),
-    },
-  },
-  [Actions.GET_ALL_MESSAGE_TEMPLATES]: {
-    name: Actions.GET_ALL_MESSAGE_TEMPLATES,
-    group: ActionGroups.MESSAGE_MANAGEMENT,
-    type: ActionType.READ,
-    schema: {
-      request: z.object({}),
-      response: messageTemplateSchema.array(),
-    },
-  },
-  [Actions.ADD_MESSAGE_TEMPLATE]: {
-    name: Actions.ADD_MESSAGE_TEMPLATE,
-    group: ActionGroups.MESSAGE_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: messageTemplateSchema
-        .pick({
-          name: true,
-          code: true,
-          description: true,
-          template: true,
-          type: true,
-        })
-        .extend({
-          config: z.record(stringSchema),
-        }),
-    },
-  },
-  [Actions.DISABLE_MESSAGE_TEMPLATE]: {
-    name: Actions.DISABLE_MESSAGE_TEMPLATE,
-    group: ActionGroups.MESSAGE_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: z.object({
-        code: stringSchema,
-      }),
-    },
-  },
-  [Actions.ENABLE_MESSAGE_TEMPLATE]: {
-    name: Actions.ENABLE_MESSAGE_TEMPLATE,
-    group: ActionGroups.MESSAGE_MANAGEMENT,
-    type: ActionType.WRITE,
-    schema: {
-      request: z.object({
-        code: stringSchema,
-      }),
     },
   },
   [Actions.CHANGE_PASSWORD]: {
@@ -996,6 +933,17 @@ export const configs = {
       request: z.object({
         id: stringSchema,
         status: stringSchema,
+      }),
+    },
+  },
+  [Actions.SEND_PURCHASE_ORDER_TO_SUPPLIER]: {
+    name: Actions.SEND_PURCHASE_ORDER_TO_SUPPLIER,
+    group: ActionGroups.PURCHASE_ORDER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        id: stringSchema,
+        email: stringSchema,
       }),
     },
   },

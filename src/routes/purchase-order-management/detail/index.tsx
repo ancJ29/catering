@@ -10,6 +10,7 @@ import {
   PurchaseOrderDetail as _PurchaseOrderDetail,
   getPurchaseOrderById,
   PurchaseOrder,
+  sendPurchaseOrderToSupplier,
   updatePurchaseOrder,
   updatePurchaseOrderStatus,
 } from "@/services/domain";
@@ -46,8 +47,13 @@ const PurchaseOrderDetail = () => {
   >({});
   const form = useForm<PurchaseOrderForm>({
     initialValues: initialPurchaseOrderForm,
+    validate: {
+      email: (value) =>
+        /^\S+@\S+$/.test(value) ? null : t("Invalid email"),
+    },
   });
   const [po, setPO] = useState<PurchaseOrder>();
+  const [isEmailError, setIsEmailError] = useState(false);
 
   const load = useCallback(async () => {
     if (!purchaseOrderId) {
@@ -135,6 +141,19 @@ const PurchaseOrderDetail = () => {
     form.setFieldValue("status", status);
   };
 
+  const sendMailToSupplier = async () => {
+    if (form.validate().hasErrors) {
+      setIsEmailError(true);
+      form.validate();
+      return;
+    }
+    setIsEmailError(false);
+    await sendPurchaseOrderToSupplier({
+      id: purchaseOrderId || "",
+      email: form.values.email,
+    });
+  };
+
   const complete = async () => {
     if (!po) {
       return;
@@ -187,13 +206,12 @@ const PurchaseOrderDetail = () => {
             onChangeStatus={handleChangeStatus}
           />
           <SendMail
-            email={form.values.email}
-            onChangeEmail={(email) =>
-              form.setFieldValue("email", email)
-            }
+            form={form}
             disabled={disabled}
+            onButtonClick={sendMailToSupplier}
           />
           <Table
+            isEmailError={isEmailError}
             purchaseOrderDetails={currents}
             disabled={disabled}
             onChangeAmount={handleChangeAmount}
