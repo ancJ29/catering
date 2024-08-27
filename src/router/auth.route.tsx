@@ -71,6 +71,9 @@ const configs: Config[] = [
     element: "Dashboard",
     wrapper: {
       element: ServiceWrapper as Wrapper,
+      props: {
+        title: "Dashboard",
+      },
     },
   },
   {

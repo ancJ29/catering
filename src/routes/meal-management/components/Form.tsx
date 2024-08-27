@@ -2,10 +2,11 @@ import DateInput from "@/components/common/DateInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import { Department } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
-import { useMemo, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 import store from "../_meal.store";
 
 const Form = () => {
@@ -15,6 +16,7 @@ const Form = () => {
     store.getSnapshot,
   );
   const { activeCaterings } = useCateringStore();
+  const { isCatering, cateringId } = useAuthStore();
 
   const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
@@ -25,6 +27,11 @@ const Form = () => {
     );
   }, [activeCaterings]);
 
+  useEffect(() => {
+    isCatering && store.setSelectedCateringId(cateringId || "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Flex justify="end" align="end" gap={10}>
       <Select
@@ -33,6 +40,7 @@ const Form = () => {
         w="20vw"
         options={_caterings}
         onChange={store.setSelectedCateringId}
+        disabled={isCatering}
       />
       <DateInput
         label={t("Meal date")}

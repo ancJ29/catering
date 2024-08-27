@@ -2,6 +2,7 @@ export * from "./bom";
 export * from "./customer";
 export * from "./customer-product";
 export * from "./daily-menu";
+export * from "./dashboard";
 export * from "./department";
 export * from "./inventory";
 export * from "./material";

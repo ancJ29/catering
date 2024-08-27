@@ -1005,4 +1005,27 @@ export const configs = {
       request: xAddWarehouseReceiptSchema,
     },
   },
+  [Actions.GET_CATERING_DASHBOARD]: {
+    name: Actions.GET_CATERING_DASHBOARD,
+    group: ActionGroups.DASHBOARD_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: z.object({
+        cateringId: stringSchema,
+        customerIds: stringSchema.array(),
+      }),
+      response: z.object({
+        shiftService: numberSchema,
+        mealCount: numberSchema,
+        revenue: numberSchema,
+        cost: numberSchema,
+        externalWarehouseEntry: numberSchema,
+        internalWarehouseEntry: numberSchema,
+        warehouseUsageOrder: numberSchema,
+        inventoryCheckInOrder: numberSchema,
+        inventoryCheckOutOrder: numberSchema,
+        purchaseRequest: numberSchema,
+      }),
+    },
+  },
 } satisfies Record<Actions, ActionConfig>;
