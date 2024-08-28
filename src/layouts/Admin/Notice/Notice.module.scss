@@ -1,0 +1,29 @@
+.item {
+  padding: 1rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  &:hover {
+    background: var(--hover-background-color);
+  }
+}
+
+.btnIcon {
+  background: none;
+
+  &:hover {
+    background: var(--hover-background-color);
+  }
+}
+
+.anchor {
+  display: flex;
+  justify-content: right;
+  padding: 8px;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

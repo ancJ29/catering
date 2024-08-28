@@ -11,6 +11,7 @@ import { IconLogout } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 import LanguageSelector from "../LanguageSelector";
 import Logo from "../Logo";
+import Notice from "../Notice";
 import classes from "./AdminHeader.module.scss";
 
 const AdminHeader = ({
@@ -33,14 +34,15 @@ const AdminHeader = ({
           </Title>
         </Center>
         <Flex align="center">
+          <Notice />
+          <LanguageSelector />
           <NavLink
             className="c-catering-text-main"
-            style={{ display: "flex" }}
+            style={{ display: "flex", marginLeft: "5px" }}
             to="/profile"
           >
             <Text fw={700}>{user?.fullName || ""}</Text>
           </NavLink>
-          <LanguageSelector />
           <UnstyledButton className={classes["logout-icon"]}>
             <IconLogout
               onClick={() => {

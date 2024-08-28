@@ -31,7 +31,7 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
           <Text c="primary" ta="start" fw="bold">
             {`${index + 1}. ${t(item.title)}`}
           </Text>
-          <Text ta="start">{t(item.content)}</Text>
+          <Text ta="start">{item.content}</Text>
         </Flex>
         <Flex gap={5}>
           <IconEye strokeWidth="1.5" color="#51b68c" />

@@ -38,8 +38,8 @@ const LanguageSelector = () => {
           <Button
             onClick={() => setOpened(!opened)}
             p={0}
-            h={40}
-            w={40}
+            h={30}
+            w={30}
             radius={999}
             className={classes.btnIcon}
           >

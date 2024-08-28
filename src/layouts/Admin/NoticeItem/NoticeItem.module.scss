@@ -1,0 +1,14 @@
+.container {
+  border-bottom: 1px solid var(--mantine-color-dimmed);
+  padding: var(--mantine-spacing-md);
+  flex-direction: column;
+  gap: 5px;
+
+  &:hover {
+    background: var(--hover-background-color);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}

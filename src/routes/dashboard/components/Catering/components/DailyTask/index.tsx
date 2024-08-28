@@ -52,7 +52,7 @@ const DailyTask = ({ dashboard }: DailyTaskProps) => {
     },
     {
       title: "Update meal plans",
-      content: "Update meal plan description",
+      content: t("Update meal plan description"),
       url: "/meal-management",
     },
   ];

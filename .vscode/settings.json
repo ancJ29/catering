@@ -4,8 +4,8 @@
     "./src/types/auto-generated",
   ],
   "cSpell.words": [
-    "tailwindcss",
     "arrowParens",
+    "Autosize",
     "clsx",
     "Controll",
     "mantine",
