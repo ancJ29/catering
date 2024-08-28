@@ -1,6 +1,5 @@
 import useTranslation from "@/hooks/useTranslation";
 import {
-  Anchor,
   Button,
   Flex,
   Indicator,
@@ -42,14 +41,10 @@ const Notice = () => {
           </Indicator>
         </Popover.Target>
         <Popover.Dropdown p={0} w={400}>
-          <Anchor
-            underline="hover"
-            onClick={() => null}
-            className={classes.anchor}
-          >
+          <Flex className={classes.markAllRead}>
             <IconCheck color="#51b68c" />
             <Text fw="bold">{t("Mark all read")}</Text>
-          </Anchor>
+          </Flex>
           <ScrollArea.Autosize mah={300} type="always" scrollbars="y">
             {Array.from({ length: 20 }).map((_, index) => (
               <NoticeItem key={index} />

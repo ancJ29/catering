@@ -17,10 +17,11 @@
   }
 }
 
-.anchor {
+.markAllRead {
   display: flex;
   justify-content: right;
   padding: 8px;
+  color: var(--mantine-primary-color-7);
 
   &:hover {
     text-decoration: underline;
