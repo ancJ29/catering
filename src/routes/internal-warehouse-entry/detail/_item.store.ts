@@ -287,7 +287,7 @@ function initInternalDetail(
     amount: purchaseInternalDetail.actualAmount,
   });
 
-  logger.warn(purchaseInternalDetail.others.expiryDate.getTime());
+  logger.info(purchaseInternalDetail.others.expiryDate);
 
   return {
     id: purchaseInternalDetail.id,
