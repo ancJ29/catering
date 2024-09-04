@@ -74,6 +74,7 @@ export default {
     const purchaseInternal = await getPurchaseInternalById(
       purchaseInternalId,
     );
+    logger.info("initData", purchaseInternal);
     dispatch({ type: ActionType.INIT_DATA, purchaseInternal });
   },
   setActualAmount(materialId: string, amount: number) {
@@ -265,6 +266,7 @@ function initInternalDetails(
   purchaseInternal: PurchaseInternal,
   materials: Map<string, Material>,
 ) {
+  logger.info("purchaseInternal", purchaseInternal);
   return Object.fromEntries(
     purchaseInternal?.purchaseInternalDetails.map((e) => [
       e.materialId,
