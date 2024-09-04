@@ -10,6 +10,7 @@ const dateKeys = new Map<string, boolean>(
     to: true,
     deliveryDate: true,
     approvedAt: true,
+    expiryDate: true,
   }),
 );
 
