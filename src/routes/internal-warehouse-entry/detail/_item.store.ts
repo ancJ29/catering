@@ -285,6 +285,9 @@ function initInternalDetail(
     material,
     amount: purchaseInternalDetail.actualAmount,
   });
+
+  console.log(purchaseInternalDetail.others.expiryDate.getTime());
+
   return {
     id: purchaseInternalDetail.id,
     materialId: purchaseInternalDetail.materialId,
@@ -296,7 +299,8 @@ function initInternalDetail(
       purchaseInternalDetail.others.kitchenDeliveryNote || "",
     internalNote: purchaseInternalDetail.others.internalNote || "",
     isChecked: purchaseInternalDetail.others.isChecked || false,
-    expiryDate: purchaseInternalDetail.others.expiryDate.getTime(),
+    // expiryDate: purchaseInternalDetail.others.expiryDate.getTime(),
+    expiryDate: 0,
   };
 }
 
