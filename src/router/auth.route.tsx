@@ -484,7 +484,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
-        routeGroup: "nternal-warehouse-entry",
+        routeGroup: "internal-warehouse-entry",
         title: "Internal Warehouse Entry",
       },
     },
