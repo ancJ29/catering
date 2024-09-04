@@ -22,7 +22,7 @@ export function endOfWeek(timestamp: number) {
 }
 
 export function startOfDay(timestamp: number) {
-  return timestamp - (timestamp % ONE_DAY);
+  return dayjs(timestamp).startOf("day").valueOf();
 }
 
 export function isBeforeYesterday(timestamp: number) {

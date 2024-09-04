@@ -1,6 +1,7 @@
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
+import useUrlHash from "@/hooks/useUrlHash";
 import {
   getPurchaseInternalsByCatering,
   PurchaseInternalCatering as PurchaseInternal,
@@ -31,20 +32,18 @@ const InternalWarehouseEntry = () => {
     [t, caterings],
   );
 
-  const getData = async (from?: number, to?: number) => {
-    setCurrents(
-      await getPurchaseInternalsByCatering(
-        from,
-        to,
-        isCatering ? cateringId : "xxx",
-      ),
-    );
-  };
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const getData = useCallback(
+    async (from?: number, to?: number) => {
+      setCurrents(
+        await getPurchaseInternalsByCatering(
+          from,
+          to,
+          isCatering ? cateringId : "xxx",
+        ),
+      );
+    },
+    [cateringId, isCatering],
+  );
 
   const dataLoader = useCallback(() => {
     return currents;
@@ -61,23 +60,41 @@ const InternalWarehouseEntry = () => {
     updateCondition,
     filtered,
     reset,
+    setCondition,
   } = useFilterData<PurchaseInternal, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
   });
 
-  const onChangeDateRange = (from?: number, to?: number) => {
-    if (condition?.from && condition?.to && from && to) {
-      const _from = startOfDay(from);
-      const _to = endOfDay(to);
-      if (from < condition.from || to > condition.to) {
-        getData(_from, _to);
+  useEffect(() => {
+    getData(condition?.from, condition?.to);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onChangeDateRange = useCallback(
+    (from?: number, to?: number) => {
+      if (condition?.from && condition?.to && from && to) {
+        const _from = startOfDay(from);
+        const _to = endOfDay(to);
+        if (from < condition.from || to > condition.to) {
+          getData(_from, _to);
+        }
+        updateCondition("from", "", _from);
+        updateCondition("to", "", to);
       }
-      updateCondition("from", "", _from);
-      updateCondition("to", "", to);
-    }
-  };
+    },
+    [condition?.from, condition?.to, getData, updateCondition],
+  );
+
+  const callback = useCallback(
+    (condition: FilterType) => {
+      setCondition(condition);
+      onChangeDateRange(condition?.from, condition?.to);
+    },
+    [onChangeDateRange, setCondition],
+  );
+  useUrlHash(condition ?? defaultCondition, callback);
 
   const onRowClick = (item: PurchaseInternal) => {
     navigate(`/internal-warehouse-entry/${item.id}`);

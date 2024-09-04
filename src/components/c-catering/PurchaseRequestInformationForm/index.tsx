@@ -5,6 +5,7 @@ import {
   Department,
   typePriorityAndStatusRequestOptions,
 } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps, PurchaseRequestForm } from "@/types";
 import { formatTime, isSameDate } from "@/utils";
@@ -34,6 +35,7 @@ const PurchaseRequestInformationForm = ({
 }: PurchaseRequestInformationFormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
+  const { isCatering } = useAuthStore();
 
   const [typeOptions, priorityOptions] = useMemo(() => {
     return typePriorityAndStatusRequestOptions(t);
@@ -58,7 +60,7 @@ const PurchaseRequestInformationForm = ({
         onChange={(value) => onChangeValues("departmentId", value)}
         required
         error={errors["departmentId"]}
-        disabled={disabled}
+        disabled={isCatering || disabled}
       />
       <DateTimeInput
         label={t("Purchase request date")}

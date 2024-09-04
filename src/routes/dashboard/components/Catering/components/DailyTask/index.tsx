@@ -1,5 +1,8 @@
 import useTranslation from "@/hooks/useTranslation";
+import { FilterType as ExternalWarehouseFilterType } from "@/routes/external-warehouse-entry/_configs";
+import { FilterType as InternalWarehouseFilterType } from "@/routes/internal-warehouse-entry/_configs";
 import { CateringDashboard } from "@/services/domain";
+import { buildHash, endOfDay, startOfDay } from "@/utils";
 import { Card, Flex } from "@mantine/core";
 import { IconBookmark } from "@tabler/icons-react";
 import { DailyTaskType } from "../../_configs";
@@ -13,20 +16,39 @@ type DailyTaskProps = {
 
 const DailyTask = ({ dashboard }: DailyTaskProps) => {
   const t = useTranslation();
+
+  const internalWarehouseCondition: InternalWarehouseFilterType = {
+    id: "",
+    from: startOfDay(Date.now()),
+    to: endOfDay(Date.now()),
+    statuses: [],
+    deliveryCateringIds: [],
+  };
+  const internalWarehouseHash = buildHash(internalWarehouseCondition);
+
+  const externalWarehouseCondition: ExternalWarehouseFilterType = {
+    id: "",
+    from: startOfDay(Date.now()),
+    to: endOfDay(Date.now()),
+    statuses: [],
+    supplierIds: [],
+  };
+  const externalWarehouseHash = buildHash(externalWarehouseCondition);
+
   const data: DailyTaskType[] = [
     {
       title: "Supplier orders",
       content: `${t("Today, there are")} ${
         dashboard?.externalWarehouseEntry || 0
       } ${t("PO order(s) to import")}`,
-      url: "/external-warehouse-entry",
+      url: `/external-warehouse-entry#${externalWarehouseHash}`,
     },
     {
       title: "Internal orders to complete",
       content: `${t("Today, there are")} ${
         dashboard?.internalWarehouseEntry || 0
       } ${t("transfer order(s) to import")}`,
-      url: "/internal-warehouse-entry",
+      url: `/internal-warehouse-entry#${internalWarehouseHash}`,
     },
     {
       title: "Warehouse usage output",
