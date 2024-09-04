@@ -48,42 +48,38 @@ const Table = ({ opened, disabled }: TableProps) => {
   return (
     <Grid mt={10}>
       <Grid.Col span={opened ? 9 : 12} pb={0}>
-        <div>
-          <ScrollTable
-            header={<Header />}
-            h="calc(-8.5rem - 240px + 100vh)"
-          >
-            {materialIds.map((materialId) => (
-              <Item
-                key={materialId}
-                material={materials.get(materialId)}
-                coordinationDetail={currents[materialId]}
-                price={store.getPrice(materialId)}
-                supplierData={store.getSupplierData(materialId)}
-                onChangeOrderQuantity={(value) =>
-                  store.setQuantity(materialId, value)
-                }
-                onChangSupplierNote={(value) =>
-                  store.setSupplierNote(materialId, value)
-                }
-                onChangeInternalNote={(value) =>
-                  store.setInternalNote(materialId, value)
-                }
-                onChangeSupplierId={(value) =>
-                  store.setSupplierId(materialId, value)
-                }
-                removeMaterial={() =>
-                  store.removeMaterial(materialId)
-                }
-                disabled={disabled}
-              />
-            ))}
-          </ScrollTable>
-          <PurchaseTotal
-            totalMaterial={store.getTotalMaterial()}
-            totalPrice={store.getTotalPrice()}
-          />
-        </div>
+        <ScrollTable
+          header={<Header />}
+          h="calc(-8.5rem - 240px + 100vh)"
+        >
+          {materialIds.map((materialId) => (
+            <Item
+              key={materialId}
+              material={materials.get(materialId)}
+              coordinationDetail={currents[materialId]}
+              price={store.getPrice(materialId)}
+              supplierData={store.getSupplierData(materialId)}
+              onChangeOrderQuantity={(value) =>
+                store.setQuantity(materialId, value)
+              }
+              onChangSupplierNote={(value) =>
+                store.setSupplierNote(materialId, value)
+              }
+              onChangeInternalNote={(value) =>
+                store.setInternalNote(materialId, value)
+              }
+              onChangeSupplierId={(value) =>
+                store.setSupplierId(materialId, value)
+              }
+              removeMaterial={() => store.removeMaterial(materialId)}
+              disabled={disabled}
+            />
+          ))}
+        </ScrollTable>
+        <PurchaseTotal
+          totalMaterial={store.getTotalMaterial()}
+          totalPrice={store.getTotalPrice()}
+        />
       </Grid.Col>
       <Grid.Col
         span={3}

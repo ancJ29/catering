@@ -185,6 +185,7 @@ const PurchaseOrderDetail = () => {
 
   return (
     <ServiceWrapper
+      routeGroup="purchase-order"
       title={`${t("Details")} ${form.values.code}`}
       isTranslate={false}
     >

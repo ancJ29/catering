@@ -1,5 +1,4 @@
 import ScrollTable from "@/components/c-catering/ScrollTable";
-import { Grid } from "@mantine/core";
 import { Detail } from "../_configs";
 import store from "../_monthly_inventory.store";
 import Header from "./Header";
@@ -19,22 +18,18 @@ const Table = ({
   unit,
 }: TableProps) => {
   return (
-    <Grid>
-      <Grid.Col pb={0}>
-        <ScrollTable header={<Header />}>
-          {store
-            .getWarehouse(monthlyInventoryId, cateringId, materialId)
-            .map((detail: Detail, i: number) => (
-              <Item
-                key={detail.id}
-                index={i}
-                detail={detail}
-                unit={unit}
-              />
-            ))}
-        </ScrollTable>
-      </Grid.Col>
-    </Grid>
+    <ScrollTable header={<Header />}>
+      {store
+        .getWarehouse(monthlyInventoryId, cateringId, materialId)
+        .map((detail: Detail, i: number) => (
+          <Item
+            key={detail.id}
+            index={i}
+            detail={detail}
+            unit={unit}
+          />
+        ))}
+    </ScrollTable>
   );
 };
 

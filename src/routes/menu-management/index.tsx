@@ -131,10 +131,7 @@ const MenuManagement = () => {
         onTargetChange={(target) =>
           dispatch({
             type: ActionType.OVERRIDE,
-            overrideState: {
-              target,
-              // shift: target.shifts[0] || "",
-            },
+            overrideState: { target },
           })
         }
         onExportMenu={handleExportMenu}

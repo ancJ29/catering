@@ -73,7 +73,7 @@ const Item = ({ index, exportDetail }: ItemProps) => {
   ];
 
   return (
-    <Table.Tr>
+    <Table.Tr bg={exportDetail.amount === 0 ? "primary.0" : "white"}>
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign}>
           {col.content}

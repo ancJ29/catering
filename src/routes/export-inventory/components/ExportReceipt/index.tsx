@@ -38,7 +38,7 @@ const ExportReceipt = () => {
     <Flex direction="column" gap={10}>
       <Form />
       <Table />
-      <Flex justify="end" mt={10}>
+      <Flex justify="end">
         <Button onClick={complete}>{t("Export Inventory")}</Button>
       </Flex>
     </Flex>

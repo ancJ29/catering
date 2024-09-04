@@ -10,30 +10,57 @@ import classes from "./navbar.module.scss";
 
 // TODO: remove debug
 // const debug = window.location.hostname.includes("localhost");
-const debug = false;
+const debug = true;
 
 type NavbarProps = {
   opened?: boolean;
   menu: Menu;
   level?: number;
   onOpenNavbar?: () => void;
+  routeGroup?: string;
 };
 const Navbar = ({
   level = 1,
   opened,
   menu,
   onOpenNavbar,
+  routeGroup,
 }: NavbarProps) => {
   const t = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [active, setActive] = useState(location.pathname);
   const [activeKey, setActiveKey] = useState("");
+  const [_menu, setMenu] = useState<Menu>([]);
 
   useEffect(() => {
     setActive(location.pathname);
     setActiveKey("");
-  }, [location.pathname]);
+    if (
+      routeGroup &&
+      routeGroup !== "*" &&
+      !_hasRouteGroup(menu, routeGroup)
+    ) {
+      navigate("/");
+    }
+  }, [routeGroup, location.pathname, menu, navigate]);
+
+  useEffect(() => {
+    setMenu(
+      menu.filter((el) => {
+        if (debug) {
+          if (el.url) {
+            return true;
+          }
+          if (el.subs?.length) {
+            return !!el.subs.find((el) => !!el.url);
+          }
+          return false;
+        }
+        return true;
+      }),
+    );
+  }, [menu]);
 
   const open = useCallback(
     (item: { key: string; url?: string; subs?: unknown[] }) => {
@@ -57,59 +84,45 @@ const Navbar = ({
     [navigate, t],
   );
 
-  return menu.length ? (
+  if (!_menu.length) {
+    return <></>;
+  }
+
+  return (
     <Box
       className={classes.wrapper}
       pb={level === 1 ? "2rem" : "0"}
       onClick={onOpenNavbar}
     >
-      {menu
-        .filter((el) => {
-          if (debug) {
-            if (el.url) {
-              return true;
-            }
-            if (el.subs?.length) {
-              return !!el.subs.find((el) => !!el.url);
-            }
-            return false;
-          }
-          return true;
-        })
-        .map((item, idx) => {
-          const isActive = _isActive(item, active);
-          if (!item.url && !item.subs?.find((el) => el.url)) {
-            return null;
-          }
-          return (
-            <NavLink
-              opened={item.subs && activeKey === item.key}
-              key={idx}
-              h="3rem"
-              onClick={open.bind(null, item)}
-              label={opened ? t(item.label) : ""}
-              classNames={{
-                children: "c-catering-p-0",
-              }}
-              className={clsx(
-                classes.item,
-                isActive ? classes.active : "",
-              )}
-              leftSection={<Icon {...item} disabled={opened} />}
-            >
-              {item.subs && opened && (
-                <Navbar
-                  opened
-                  level={level + 1}
-                  menu={item.subs || []}
-                />
-              )}
-            </NavLink>
-          );
-        })}
+      {_menu.map((item, idx) => {
+        const isActive = _isActive(item, active);
+        return (
+          <NavLink
+            opened={item.subs && activeKey === item.key}
+            key={idx}
+            h="3rem"
+            onClick={open.bind(null, item)}
+            label={opened ? t(item.label) : ""}
+            classNames={{
+              children: "c-catering-p-0",
+            }}
+            className={clsx(
+              classes.item,
+              isActive ? classes.active : "",
+            )}
+            leftSection={<Icon {...item} disabled={opened} />}
+          >
+            {item.subs && opened && (
+              <Navbar
+                opened
+                level={level + 1}
+                menu={item.subs || []}
+              />
+            )}
+          </NavLink>
+        );
+      })}
     </Box>
-  ) : (
-    <></>
   );
 };
 export default Navbar;
@@ -121,6 +134,28 @@ function _isActive(item: MenuItem, activeUrl: string): boolean {
   if (item.subs) {
     return item.subs.some((sub: MenuItem) =>
       _isActive(sub, activeUrl),
+    );
+  }
+  return false;
+}
+
+function _hasRouteGroup(
+  menu: MenuItem[],
+  routeGroup: string,
+): boolean {
+  return menu.some((item) => _isRouteGroupInMenu(item, routeGroup));
+}
+
+function _isRouteGroupInMenu(
+  item: MenuItem,
+  routeGroup: string,
+): boolean {
+  if (routeGroup === item.key) {
+    return true;
+  }
+  if (item.subs) {
+    return item.subs.some((sub: MenuItem) =>
+      _isRouteGroupInMenu(sub, routeGroup),
     );
   }
   return false;

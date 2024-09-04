@@ -454,4 +454,5 @@ export default {
   "warehouse usage orders to import": "phiếu xuất kho sử dụng",
   "inventory check order(s) to import": "phiếu nhập kiểm kê",
   "inventory check order(s) to export": "phiếu xuất kiểm kê",
+  "Mark all read": "Đánh dấu tất cả đã đọc",
 } satisfies Record<string, string>;

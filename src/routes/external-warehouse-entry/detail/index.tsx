@@ -90,6 +90,7 @@ const ExternalWarehouseImportDetail = () => {
 
   return (
     <ServiceWrapper
+      routeGroup="external-warehouse-entry"
       title={`${t("Warehouse Import Receipt")} ${
         purchaseOrder?.code
       }`}

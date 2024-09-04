@@ -1,8 +1,8 @@
-import { ScrollArea, Table } from "@mantine/core";
+import { ScrollArea, ScrollAreaProps, Table } from "@mantine/core";
 import React from "react";
 import classes from "./ScrollArea.module.scss";
 
-type ScrollTableProps = {
+type ScrollTableProps = ScrollAreaProps & {
   h?: string;
   withColumnBorders?: boolean;
   header: React.ReactNode;
@@ -13,9 +13,10 @@ const ScrollTable = ({
   header,
   withColumnBorders,
   children,
+  ...props
 }: ScrollTableProps) => {
   return (
-    <ScrollArea h={h}>
+    <ScrollArea h={h} {...props}>
       <Table
         className={classes.table}
         withColumnBorders={withColumnBorders}

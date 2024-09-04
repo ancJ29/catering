@@ -1,6 +1,5 @@
 import ScrollTable from "@/components/c-catering/ScrollTable";
 import { PurchaseInternalDetail } from "@/services/domain";
-import { Grid } from "@mantine/core";
 import Header from "./Header";
 import Item from "./Item";
 
@@ -26,40 +25,33 @@ const Table = ({
   disabled,
 }: TableProps) => {
   return (
-    <Grid mt={10}>
-      <Grid.Col span={12} pb={0}>
-        <ScrollTable
-          header={<Header />}
-          h="calc(-8.5rem - 150px + 100vh)"
-        >
-          {purchaseInternalDetails.map((purchaseInternalDetail) => (
-            <Item
-              key={purchaseInternalDetail.id}
-              purchaseInternalDetail={purchaseInternalDetail}
-              onChangeAmount={(value) =>
-                onChangeAmount(
-                  purchaseInternalDetail.materialId,
-                  value,
-                )
-              }
-              onChangeInternalNote={(value) =>
-                onChangeInternalNote(
-                  purchaseInternalDetail.materialId,
-                  value,
-                )
-              }
-              onChangeKitchenDeliveryNote={(value) =>
-                onChangeKitchenDeliveryNote(
-                  purchaseInternalDetail.materialId,
-                  value,
-                )
-              }
-              disabled={disabled}
-            />
-          ))}
-        </ScrollTable>
-      </Grid.Col>
-    </Grid>
+    <ScrollTable
+      header={<Header />}
+      h="calc(-8.5rem - 150px + 100vh)"
+    >
+      {purchaseInternalDetails.map((purchaseInternalDetail) => (
+        <Item
+          key={purchaseInternalDetail.id}
+          purchaseInternalDetail={purchaseInternalDetail}
+          onChangeAmount={(value) =>
+            onChangeAmount(purchaseInternalDetail.materialId, value)
+          }
+          onChangeInternalNote={(value) =>
+            onChangeInternalNote(
+              purchaseInternalDetail.materialId,
+              value,
+            )
+          }
+          onChangeKitchenDeliveryNote={(value) =>
+            onChangeKitchenDeliveryNote(
+              purchaseInternalDetail.materialId,
+              value,
+            )
+          }
+          disabled={disabled}
+        />
+      ))}
+    </ScrollTable>
   );
 };
 

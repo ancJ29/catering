@@ -26,6 +26,9 @@ import {
   SupplierSelectItemData,
 } from "./_configs";
 
+type SM = Record<string, SupplierMaterial>;
+type SupplierMaterialsByMaterial = Record<string, SM>;
+
 type State = {
   purchaseCoordination?: PurchaseCoordination;
   currents: Record<string, CoordinationDetail>;
@@ -400,11 +403,6 @@ function initCoordinationDetail(
       purchaseCoordinationDetail.others.internalNote || "",
   };
 }
-
-type SupplierMaterialsByMaterial = Record<
-string,
-Record<string, SupplierMaterial>
->;
 
 function initSupplierMaterial(
   materials: Map<string, Material>,

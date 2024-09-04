@@ -213,7 +213,6 @@ const BomManagement = () => {
             {condition.productId && (
               <MaterialSelector
                 disabled={!condition.productId}
-                // key={`${materialIds.length}.${counter}`}
                 key={counter}
                 materialIds={materialIds}
                 onAdd={store.add}

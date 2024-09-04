@@ -331,8 +331,6 @@ function initOrderDetail(
     material,
     amount: purchaseOrderDetail.actualAmount,
   });
-  // const expiryDate = new Date();
-  // expiryDate.setDate(expiryDate.getDate() + 7);
   return {
     id: purchaseOrderDetail.id,
     materialId: purchaseOrderDetail.materialId,

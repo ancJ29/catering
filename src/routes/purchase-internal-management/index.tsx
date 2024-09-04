@@ -21,9 +21,7 @@ import Filter from "./components/Filter";
 const PurchaseInternalManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const [purchaseInternals, setPurchaseInternals] = useState<
-  PurchaseInternal[]
-  >([]);
+  const [currents, setCurrents] = useState<PurchaseInternal[]>([]);
   const { caterings } = useCateringStore();
 
   const dataGridConfigs = useMemo(
@@ -32,7 +30,7 @@ const PurchaseInternalManagement = () => {
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseInternals(await getPurchaseInternals(from, to));
+    setCurrents(await getPurchaseInternals(from, to));
   };
 
   useEffect(() => {
@@ -40,8 +38,8 @@ const PurchaseInternalManagement = () => {
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseInternals;
-  }, [purchaseInternals]);
+    return currents;
+  }, [currents]);
 
   const {
     condition,

@@ -352,7 +352,7 @@ function sortDailyMenus(
     return 0;
   };
 
-  return dailyMenus.sort((a, b) => {
+  return dailyMenus?.sort((a, b) => {
     const nameA = customers.get(a.customerId)?.name || "";
     const nameB = customers.get(b.customerId)?.name || "";
 

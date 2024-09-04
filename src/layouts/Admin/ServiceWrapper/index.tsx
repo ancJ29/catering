@@ -11,15 +11,17 @@ import AdminHeader from "../AdminHeader";
 import Navbar from "../Navbar";
 
 type Props = {
-  children: React.ReactNode;
+  routeGroup?: string;
   title?: string;
   isTranslate?: boolean;
+  children: React.ReactNode;
 };
 
 const ServiceWrapper = ({
+  routeGroup,
   title,
-  children,
   isTranslate = true,
+  children,
 }: Props) => {
   const t = useTranslation();
   const location = useLocation();
@@ -52,7 +54,12 @@ const ServiceWrapper = ({
         />
       </AppShell.Header>
       <AppShell.Navbar>
-        <Navbar opened={opened} menu={menu} onOpenNavbar={open} />
+        <Navbar
+          opened={opened}
+          menu={menu}
+          onOpenNavbar={open}
+          routeGroup={routeGroup}
+        />
       </AppShell.Navbar>
       <AppShell.Main>
         <Box

@@ -48,48 +48,43 @@ const Table = ({ opened, showNeedToOrder = true }: TableProps) => {
   return (
     <Grid mt={10}>
       <Grid.Col span={opened ? 9 : 12} pb={0}>
-        <div>
-          <ScrollTable
-            header={
-              <Header
-                isSelectAll={isSelectAll}
-                onChangeIsSelectAll={store.setIsSelectAll}
-                showNeedToOrder={showNeedToOrder}
-              />
-            }
-            h="calc(-8.5rem - 200px + 100vh)"
-          >
-            {materialIds.map((materialId) => (
-              <Item
-                key={materialId}
-                material={materials.get(materialId)}
-                requestDetail={currents[materialId]}
-                isSelected={store.isSelected(materialId)}
-                // price={store.getPrice(materialId)}
-                onChangeAmount={(value) =>
-                  store.setAmount(materialId, value)
-                }
-                onChangeIsSelected={(value) =>
-                  store.setIsSelected(materialId, value)
-                }
-                onChangSupplierNote={(value) =>
-                  store.setSupplierNote(materialId, value)
-                }
-                onChangeInternalNote={(value) =>
-                  store.setInternalNote(materialId, value)
-                }
-                removeMaterial={() =>
-                  store.removeMaterial(materialId)
-                }
-                showNeedToOrder={showNeedToOrder}
-              />
-            ))}
-          </ScrollTable>
-          <PurchaseTotal
-            totalMaterial={store.getTotalMaterial()}
-            totalPrice={store.getTotalPrice()}
-          />
-        </div>
+        <ScrollTable
+          header={
+            <Header
+              isSelectAll={isSelectAll}
+              onChangeIsSelectAll={store.setIsSelectAll}
+              showNeedToOrder={showNeedToOrder}
+            />
+          }
+          h="calc(-8.5rem - 200px + 100vh)"
+        >
+          {materialIds.map((materialId) => (
+            <Item
+              key={materialId}
+              material={materials.get(materialId)}
+              requestDetail={currents[materialId]}
+              isSelected={store.isSelected(materialId)}
+              onChangeAmount={(value) =>
+                store.setAmount(materialId, value)
+              }
+              onChangeIsSelected={(value) =>
+                store.setIsSelected(materialId, value)
+              }
+              onChangSupplierNote={(value) =>
+                store.setSupplierNote(materialId, value)
+              }
+              onChangeInternalNote={(value) =>
+                store.setInternalNote(materialId, value)
+              }
+              removeMaterial={() => store.removeMaterial(materialId)}
+              showNeedToOrder={showNeedToOrder}
+            />
+          ))}
+        </ScrollTable>
+        <PurchaseTotal
+          totalMaterial={store.getTotalMaterial()}
+          totalPrice={store.getTotalPrice()}
+        />
       </Grid.Col>
       <Grid.Col
         span={3}

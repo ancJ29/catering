@@ -43,7 +43,6 @@ const Supply = ({
         options={_caterings}
         onChange={store.setGeneralCatering}
         required
-        // disabled={disabled}
         disabled={!isAllPurchaseInternal ?? disabled}
         allowDeselect={false}
       />

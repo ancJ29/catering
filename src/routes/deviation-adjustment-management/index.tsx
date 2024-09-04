@@ -26,9 +26,7 @@ const DeviationAdjustmentManagement = () => {
   const navigate = useNavigate();
   const { caterings } = useCateringStore();
   const { suppliers } = useSupplierStore();
-  const [purchaseOrders, setPurchaseOrders] = useState<
-  PurchaseOrder[]
-  >([]);
+  const [currents, setCurrents] = useState<PurchaseOrder[]>([]);
 
   const [statusOptions] = useMemo(() => {
     return statusOrderOptions(t);
@@ -40,7 +38,7 @@ const DeviationAdjustmentManagement = () => {
   );
 
   const getData = async (from?: number, to?: number) => {
-    setPurchaseOrders(
+    setCurrents(
       await getPurchaseOrders({
         from,
         to,
@@ -57,8 +55,8 @@ const DeviationAdjustmentManagement = () => {
   }, []);
 
   const dataLoader = useCallback(() => {
-    return purchaseOrders;
-  }, [purchaseOrders]);
+    return currents;
+  }, [currents]);
 
   const {
     condition,
@@ -95,7 +93,7 @@ const DeviationAdjustmentManagement = () => {
   };
 
   return (
-    <Stack gap={10} key={caterings.size}>
+    <Stack gap={10} key={suppliers.size}>
       <Filter
         key={counter}
         keyword={keyword}

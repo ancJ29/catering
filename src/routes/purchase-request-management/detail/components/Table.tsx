@@ -3,7 +3,7 @@ import ScrollTable from "@/components/c-catering/ScrollTable";
 import Header from "@/routes/purchase-request-management/components/Header";
 import Item from "@/routes/purchase-request-management/components/Item";
 import useMaterialStore from "@/stores/material.store";
-import { Grid } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { useSyncExternalStore } from "react";
 import store from "../_purchase-request-detail.store";
 
@@ -19,51 +19,45 @@ const Table = ({ disabled }: TableProps) => {
   );
 
   return (
-    <Grid mt={10}>
-      <Grid.Col span={12} pb={0}>
-        <div>
-          <ScrollTable
-            header={
-              <Header
-                isSelectAll={isSelectAll}
-                onChangeIsSelectAll={store.setIsSelectAll}
-                disabled={disabled}
-              />
-            }
-            h="calc(-8.5rem - 200px + 100vh)"
-          >
-            {materialIds.map((materialId) => (
-              <Item
-                key={materialId}
-                material={materials.get(materialId)}
-                requestDetail={currents[materialId]}
-                isSelected={store.isSelected(materialId)}
-                onChangeAmount={(value) =>
-                  store.setAmount(materialId, value)
-                }
-                onChangeIsSelected={(value) =>
-                  store.setIsSelected(materialId, value)
-                }
-                onChangSupplierNote={(value) =>
-                  store.setSupplierNote(materialId, value)
-                }
-                onChangeInternalNote={(value) =>
-                  store.setInternalNote(materialId, value)
-                }
-                removeMaterial={() =>
-                  store.removeMaterial(materialId)
-                }
-                disabled={disabled}
-              />
-            ))}
-          </ScrollTable>
-          <PurchaseTotal
-            totalMaterial={store.getTotalMaterial()}
-            totalPrice={store.getTotalPrice()}
+    <Flex mt={10} direction="column">
+      <ScrollTable
+        header={
+          <Header
+            isSelectAll={isSelectAll}
+            onChangeIsSelectAll={store.setIsSelectAll}
+            disabled={disabled}
           />
-        </div>
-      </Grid.Col>
-    </Grid>
+        }
+        h="calc(-8.5rem - 194px + 100vh)"
+      >
+        {materialIds.map((materialId) => (
+          <Item
+            key={materialId}
+            material={materials.get(materialId)}
+            requestDetail={currents[materialId]}
+            isSelected={store.isSelected(materialId)}
+            onChangeAmount={(value) =>
+              store.setAmount(materialId, value)
+            }
+            onChangeIsSelected={(value) =>
+              store.setIsSelected(materialId, value)
+            }
+            onChangSupplierNote={(value) =>
+              store.setSupplierNote(materialId, value)
+            }
+            onChangeInternalNote={(value) =>
+              store.setInternalNote(materialId, value)
+            }
+            removeMaterial={() => store.removeMaterial(materialId)}
+            disabled={disabled}
+          />
+        ))}
+      </ScrollTable>
+      <PurchaseTotal
+        totalMaterial={store.getTotalMaterial()}
+        totalPrice={store.getTotalPrice()}
+      />
+    </Flex>
   );
 };
 

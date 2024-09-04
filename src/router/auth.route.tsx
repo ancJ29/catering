@@ -67,11 +67,16 @@ const componentMap: Record<string, LazyExoticComponent> = {
 
 const configs: Config[] = [
   {
+    path: "/*",
+    element: () => <Navigate to="/dashboard" />,
+  },
+  {
     path: "/dashboard",
     element: "Dashboard",
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        // routeGroup:  "dashboard",
         title: "Dashboard",
       },
     },
@@ -82,6 +87,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "user",
         title: "User Management",
       },
     },
@@ -92,6 +98,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "menu-management",
         title: "Menu Management",
       },
     },
@@ -102,6 +109,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "menu-management",
         title: "Menu Management",
       },
     },
@@ -112,6 +120,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "unit",
         title: "Unit Management",
       },
     },
@@ -122,6 +131,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "bom",
         title: "BOM Management",
       },
     },
@@ -132,6 +142,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "customer",
         title: "Customer Management",
       },
     },
@@ -142,6 +153,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "customer",
         title: "Customer Management",
       },
     },
@@ -152,6 +164,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "customer",
         title: "Customer Management",
       },
     },
@@ -162,6 +175,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "catering",
         title: "Catering Management",
       },
     },
@@ -172,6 +186,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "catering",
         title: "Catering Management",
       },
     },
@@ -182,6 +197,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "product",
         title: "Product Management",
       },
     },
@@ -192,6 +208,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "material",
         title: "Material Management",
       },
     },
@@ -202,6 +219,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "material",
         title: "Material Management",
       },
     },
@@ -212,6 +230,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "supplier",
         title: "Supplier Management",
       },
     },
@@ -222,6 +241,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "supplier",
         title: "Supplier Management",
       },
     },
@@ -232,6 +252,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "supplier",
         title: "Supplier Management",
       },
     },
@@ -242,13 +263,10 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "*",
         title: "Profile",
       },
     },
-  },
-  {
-    path: "/*",
-    element: () => <Navigate to="/dashboard" />,
   },
   {
     path: "/inventory-management",
@@ -256,6 +274,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "inventory",
         title: "Inventory List",
       },
     },
@@ -266,6 +285,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "check-inventory",
         title: "Check Inventory",
       },
     },
@@ -276,6 +296,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-request",
         title: "Purchase Request Management",
       },
     },
@@ -286,6 +307,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-request",
         title: "Purchase Request Detail",
       },
     },
@@ -296,6 +318,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-request",
         title: "Add Purchase Request",
       },
     },
@@ -306,6 +329,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "supply-coordination",
         title: "Supply Coordination",
       },
     },
@@ -316,6 +340,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "supply-coordination",
         title: "Purchase Request Detail",
       },
     },
@@ -326,6 +351,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-order",
         title: "Purchase Order Management",
       },
     },
@@ -340,6 +366,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-internal",
         title: "Purchase Internal Management",
       },
     },
@@ -350,6 +377,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-internal",
         title: "Purchase Internal Detail",
       },
     },
@@ -360,6 +388,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-coordination",
         title: "Purchase Coordination Management",
       },
     },
@@ -370,6 +399,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "purchase-coordination",
         title: "Purchase Coordination Detail",
       },
     },
@@ -380,6 +410,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "meal",
         title: "Meal Management",
       },
     },
@@ -390,6 +421,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "deviation-adjustment",
         title: "Deviation Adjustment Management",
       },
     },
@@ -404,6 +436,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "inventory-transaction-details",
         title: "Inventory Transaction Details",
       },
     },
@@ -414,6 +447,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "warehouse",
         title: "Warehouse Management",
       },
     },
@@ -424,6 +458,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "warehouse",
         title: "Warehouse Receipt Detail",
       },
     },
@@ -434,6 +469,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "external-warehouse-entry",
         title: "External Warehouse Entry",
       },
     },
@@ -448,6 +484,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "nternal-warehouse-entry",
         title: "Internal Warehouse Entry",
       },
     },
@@ -462,6 +499,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "export-management",
         title: "Export List",
       },
     },
@@ -472,6 +510,7 @@ const configs: Config[] = [
     wrapper: {
       element: ServiceWrapper as Wrapper,
       props: {
+        routeGroup: "export-inventory",
         title: "Export Inventory",
       },
     },
@@ -485,6 +524,7 @@ function _buildRouteConfig(config: Config) {
     typeof config.element === "string"
       ? componentMap[config.element]
       : config.element;
+
   return {
     path: config.path,
     element: config.wrapper ? (

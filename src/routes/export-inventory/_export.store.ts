@@ -369,12 +369,9 @@ export default {
   },
   isValidExportReceipt() {
     const state = store.getSnapshot();
-    return state.exportReceipt?.type !== undefined;
+    return state.exportReceipt?.type !== null;
   },
   async exportReceipt() {
-    /*
-      - create export receipt
-    */
     const state = store.getSnapshot();
     const { cateringId } = useAuthStore.getState();
     const { materials } = useMaterialStore.getState();

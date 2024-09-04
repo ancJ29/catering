@@ -454,4 +454,5 @@ export default {
   "warehouse usage orders to import": "warehouse usage order(s) to import",
   "inventory check order(s) to import": "inventory check order(s) to import",
   "inventory check order(s) to export": "inventory check order(s) to export",
+  "Mark all read": "Mark all read",
 } satisfies Record<string, string>;

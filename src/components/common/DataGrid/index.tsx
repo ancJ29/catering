@@ -282,7 +282,6 @@ function _contentBuilder<
     selectedRow?: T;
   } = {},
 ) {
-  // const t = useTranslation();
   return (
     <div>
       <Headers

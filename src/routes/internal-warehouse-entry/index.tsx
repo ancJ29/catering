@@ -3,7 +3,7 @@ import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import {
   getPurchaseInternalsByCatering,
-  PurchaseInternalCatering,
+  PurchaseInternalCatering as PurchaseInternal,
 } from "@/services/domain";
 import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
@@ -22,9 +22,7 @@ import Filter from "./components/Filter";
 const InternalWarehouseEntry = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const [currents, setCurrents] = useState<
-  PurchaseInternalCatering[]
-  >([]);
+  const [currents, setCurrents] = useState<PurchaseInternal[]>([]);
   const { caterings } = useCateringStore();
   const { cateringId, isCatering } = useAuthStore();
 
@@ -63,7 +61,7 @@ const InternalWarehouseEntry = () => {
     updateCondition,
     filtered,
     reset,
-  } = useFilterData<PurchaseInternalCatering, FilterType>({
+  } = useFilterData<PurchaseInternal, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
@@ -81,7 +79,7 @@ const InternalWarehouseEntry = () => {
     }
   };
 
-  const onRowClick = (item: PurchaseInternalCatering) => {
+  const onRowClick = (item: PurchaseInternal) => {
     navigate(`/internal-warehouse-entry/${item.id}`);
   };
 
