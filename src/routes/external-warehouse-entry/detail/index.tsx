@@ -7,7 +7,7 @@ import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useSyncExternalStore } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import store from "./_item.store";
 import Form from "./components/Form";
 import ImageButton from "./components/ImageButtons";
@@ -16,6 +16,7 @@ import Table from "./components/Table";
 
 const ExternalWarehouseImportDetail = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const { purchaseOrderId } = useParams();
   const { disabled, purchaseOrder, changed } = useSyncExternalStore(
     store.subscribe,
@@ -26,8 +27,8 @@ const ExternalWarehouseImportDetail = () => {
     if (!purchaseOrderId) {
       return;
     }
-    await store.initData(purchaseOrderId);
-  }, [purchaseOrderId]);
+    await store.initData(purchaseOrderId, navigate);
+  }, [navigate, purchaseOrderId]);
   useOnMounted(load);
 
   const showFailNotification = useCallback(
@@ -85,7 +86,7 @@ const ExternalWarehouseImportDetail = () => {
   }, [purchaseOrder?.others.status, showFailNotification, t]);
 
   const onReset = async () => {
-    await store.initData(purchaseOrderId || "");
+    await store.initData(purchaseOrderId || "", navigate);
   };
 
   return (

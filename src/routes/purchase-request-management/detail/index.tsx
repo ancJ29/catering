@@ -13,16 +13,17 @@ import {
   initialPurchaseRequestForm,
 } from "@/types";
 import { formatTime } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import store from "./_purchase-request-detail.store";
 import Table from "./components/Table";
 
 const PurchaseRequestDetail = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const { role } = useAuthStore();
   const { purchaseRequestId } = useParams();
   const [disabled, setDisabled] = useState(true);
@@ -37,6 +38,9 @@ const PurchaseRequestDetail = () => {
     }
     await store.initData(purchaseRequestId);
     const purchaseRequest = store.getPurchaseRequest();
+    if (!purchaseRequest) {
+      navigate("/");
+    }
     setValues({
       departmentId: purchaseRequest?.departmentId,
       deliveryDate: purchaseRequest?.deliveryDate.getTime(),
@@ -54,7 +58,7 @@ const PurchaseRequestDetail = () => {
         (role === ClientRoles.CATERING || role === ClientRoles.OWNER)
       ),
     );
-  }, [purchaseRequestId, role, setValues]);
+  }, [navigate, purchaseRequestId, role, setValues]);
   useOnMounted(load);
 
   const complete = async () => {
@@ -78,31 +82,29 @@ const PurchaseRequestDetail = () => {
   };
 
   return (
-    <Stack>
-      <Flex direction="column" gap={10}>
-        <PurchaseActions
-          returnUrl="/purchase-request-management"
-          completeButtonTitle="Approved"
-          complete={complete}
-          disabledCompleteButton={disabled}
-          rejectButtonTitle="Not approved"
-          onReject={rejectPurchaseRequest}
-          disabledRejectButton={disabled}
-        />
-        <PurchaseRequestInformationForm
-          values={values}
-          onChangeValues={() => null}
-          getInputProps={getInputProps}
-          errors={errors}
-          disabled={true}
-          disabledPriority={disabled}
-        />
-        <PurchaseRequestSteppers
-          status={values.status}
-          onChange={(value) => setFieldValue("status", value)}
-        />
-        <Table disabled={disabled} />
-      </Flex>
+    <Stack gap={10}>
+      <PurchaseActions
+        returnUrl="/purchase-request-management"
+        completeButtonTitle="Approved"
+        complete={complete}
+        disabledCompleteButton={disabled}
+        rejectButtonTitle="Not approved"
+        onReject={rejectPurchaseRequest}
+        disabledRejectButton={disabled}
+      />
+      <PurchaseRequestInformationForm
+        values={values}
+        onChangeValues={() => null}
+        getInputProps={getInputProps}
+        errors={errors}
+        disabled={true}
+        disabledPriority={disabled}
+      />
+      <PurchaseRequestSteppers
+        status={values.status}
+        onChange={(value) => setFieldValue("status", value)}
+      />
+      <Table disabled={disabled} />
     </Stack>
   );
 };

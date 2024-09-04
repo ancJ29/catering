@@ -22,6 +22,7 @@ import {
   createStore,
 } from "@/utils";
 import { InternalDetail } from "./_configs";
+import { NavigateFunction } from "react-router-dom";
 
 type State = {
   purchaseInternal?: PurchaseInternalCatering;
@@ -69,10 +70,13 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  async initData(purchaseInternalId: string) {
+  async initData(purchaseInternalId: string, navigate: NavigateFunction) {
     const purchaseInternal = await getPurchaseInternalById(
       purchaseInternalId,
     );
+    if(!purchaseInternal) {
+      navigate("/");
+    }
     dispatch({ type: ActionType.INIT_DATA, purchaseInternal });
   },
   setActualAmount(materialId: string, amount: number) {

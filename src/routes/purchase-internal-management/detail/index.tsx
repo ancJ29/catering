@@ -19,7 +19,7 @@ import {
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   PurchaseInternalForm,
   initialPurchaseInternalForm,
@@ -29,6 +29,7 @@ import Steppers from "./components/Steppers";
 import Table from "./components/Table";
 
 const PurchaseInternalDetail = () => {
+  const navigate = useNavigate();
   const { purchaseInternalId } = useParams();
   const { role } = useAuthStore();
   const [disabled, setDisabled] = useState(true);
@@ -48,6 +49,9 @@ const PurchaseInternalDetail = () => {
     const purchaseInternal = await getPurchaseInternalById(
       purchaseInternalId,
     );
+    if(!purchaseInternal) {
+      navigate("/");
+    }
     setValues({
       id: purchaseInternal?.id,
       receivingCateringId:
@@ -80,7 +84,7 @@ const PurchaseInternalDetail = () => {
           role === ClientRoles.SUPPLIER)
       ),
     );
-  }, [purchaseInternalId, role, setValues]);
+  }, [navigate, purchaseInternalId, role, setValues]);
   useOnMounted(load);
 
   const handleChangeAmount = (materialId: string, amount: number) => {

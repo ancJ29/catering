@@ -21,8 +21,11 @@ const WarehouseDetailManagement = () => {
       return;
     }
     const warehouses = await getWarehouseReceiptById(warehouseId);
+    if (!warehouses) {
+      navigate("/");
+    }
     setWarehouse(warehouses);
-  }, [warehouseId]);
+  }, [navigate, warehouseId]);
   useOnMounted(load);
 
   const onClickReturn = () => {

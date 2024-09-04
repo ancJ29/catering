@@ -4,7 +4,7 @@ import ServiceWrapper from "@/layouts/Admin/ServiceWrapper";
 import Steppers from "@/routes/purchase-order-management/detail/components/Steppers";
 import { Flex, Stack } from "@mantine/core";
 import { useEffect, useSyncExternalStore } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Controls from "./components/Controls";
 import Form from "./components/Form";
 import Table from "./components/Table";
@@ -12,6 +12,7 @@ import store from "./purchase-order.store";
 
 const DeviationAdjustmentDetail = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const { purchaseOrderId } = useParams();
   const { purchaseOrder, disabled } = useSyncExternalStore(
     store.subscribe,
@@ -20,7 +21,7 @@ const DeviationAdjustmentDetail = () => {
 
   useEffect(() => {
     if (purchaseOrderId) {
-      store.initData(purchaseOrderId);
+      store.initData(purchaseOrderId, navigate);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

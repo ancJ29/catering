@@ -21,7 +21,7 @@ import { convertAmountForward, formatTime } from "@/utils";
 import { Flex, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   initialPurchaseOrderForm,
   PurchaseOrderForm,
@@ -33,6 +33,7 @@ import Table from "./components/Table";
 
 const PurchaseOrderDetail = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const { purchaseOrderId } = useParams();
   const { role } = useAuthStore();
   const { materials } = useMaterialStore();
@@ -60,6 +61,9 @@ const PurchaseOrderDetail = () => {
       return;
     }
     const purchaseOrder = await getPurchaseOrderById(purchaseOrderId);
+    if (!purchaseOrder) {
+      navigate("/");
+    }
     setCurrents(purchaseOrder?.purchaseOrderDetails || []);
     setUpdates(
       Object.fromEntries(
@@ -88,7 +92,7 @@ const PurchaseOrderDetail = () => {
       ),
     );
     setDisabledButton(role !== ClientRoles.OWNER);
-  }, [form, purchaseOrderId, role, suppliers]);
+  }, [form, navigate, purchaseOrderId, role, suppliers]);
 
   useEffect(() => {
     load();

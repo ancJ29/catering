@@ -7,7 +7,7 @@ import { Flex, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useSyncExternalStore } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import store from "./_item.store";
 import Form from "./components/Form";
 import ImageButton from "./components/ImageButton";
@@ -16,6 +16,7 @@ import Table from "./components/Table";
 
 const InternalWarehouseImportDetail = () => {
   const t = useTranslation();
+  const navigate = useNavigate();
   const { purchaseInternalId } = useParams();
   const { disabled, purchaseInternal, changed } =
     useSyncExternalStore(store.subscribe, store.getSnapshot);
@@ -24,8 +25,8 @@ const InternalWarehouseImportDetail = () => {
     if (!purchaseInternalId) {
       return;
     }
-    await store.initData(purchaseInternalId);
-  }, [purchaseInternalId]);
+    await store.initData(purchaseInternalId, navigate);
+  }, [navigate, purchaseInternalId]);
   useOnMounted(load);
 
   const showFailNotification = useCallback(
@@ -83,7 +84,7 @@ const InternalWarehouseImportDetail = () => {
   }, [purchaseInternal?.others.status, showFailNotification, t]);
 
   const onReset = async () => {
-    await store.initData(purchaseInternalId || "");
+    await store.initData(purchaseInternalId || "", navigate);
   };
 
   return (

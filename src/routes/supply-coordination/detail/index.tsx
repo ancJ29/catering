@@ -36,6 +36,9 @@ const SupplyCoordinationDetail = () => {
     }
     await store.initData(purchaseRequestId);
     const purchaseRequest = store.getPurchaseRequest();
+    if (!purchaseRequest) {
+      navigate("/");
+    }
     setValues({
       departmentId: purchaseRequest?.departmentId,
       deliveryDate: purchaseRequest?.deliveryDate.getTime(),
@@ -53,7 +56,7 @@ const SupplyCoordinationDetail = () => {
         (role === ClientRoles.SUPPLIER || role === ClientRoles.OWNER)
       ),
     );
-  }, [purchaseRequestId, role, setValues]);
+  }, [navigate, purchaseRequestId, role, setValues]);
   useOnMounted(load);
 
   const handlePurchaseOutside = () => {

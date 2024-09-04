@@ -38,6 +38,9 @@ const PurchaseCoordinationDetail = () => {
     }
     await store.initData(purchaseCoordinationId);
     const purchaseCoordination = store.getPurchaseCoordination();
+    if(!purchaseCoordination) {
+      navigate("/");
+    }
     setValues({
       id: purchaseCoordination?.id,
       receivingCateringId:
@@ -57,7 +60,7 @@ const PurchaseCoordinationDetail = () => {
         (role === ClientRoles.SUPPLIER || role === ClientRoles.OWNER)
       ),
     );
-  }, [purchaseCoordinationId, role, setValues]);
+  }, [navigate, purchaseCoordinationId, role, setValues]);
   useOnMounted(load);
 
   const complete = useCallback(async () => {

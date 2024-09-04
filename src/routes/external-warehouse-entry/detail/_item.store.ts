@@ -25,6 +25,7 @@ import {
   convertAmountForward,
   createStore,
 } from "@/utils";
+import { NavigateFunction } from "react-router-dom";
 import { OrderDetail } from "./_configs";
 
 type State = {
@@ -75,8 +76,14 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  async initData(purchaseOrderId: string) {
+  async initData(
+    purchaseOrderId: string,
+    navigate: NavigateFunction,
+  ) {
     const purchaseOrder = await getPurchaseOrderById(purchaseOrderId);
+    if (!purchaseOrder) {
+      navigate("/");
+    }
     dispatch({ type: ActionType.INIT_DATA, purchaseOrder });
   },
   setActualAmount(materialId: string, amount: number) {
