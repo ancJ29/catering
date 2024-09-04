@@ -14,7 +14,6 @@ import {
   updatePurchaseInternal,
   updatePurchaseInternalStatus,
 } from "@/services/domain";
-import logger from "@/services/logger";
 import useMaterialStore from "@/stores/material.store";
 import {
   cloneDeep,
@@ -74,7 +73,6 @@ export default {
     const purchaseInternal = await getPurchaseInternalById(
       purchaseInternalId,
     );
-    logger.info("initData", purchaseInternal);
     dispatch({ type: ActionType.INIT_DATA, purchaseInternal });
   },
   setActualAmount(materialId: string, amount: number) {
@@ -266,7 +264,6 @@ function initInternalDetails(
   purchaseInternal: PurchaseInternal,
   materials: Map<string, Material>,
 ) {
-  logger.info("purchaseInternal", purchaseInternal);
   return Object.fromEntries(
     purchaseInternal?.purchaseInternalDetails.map((e) => [
       e.materialId,
@@ -288,9 +285,6 @@ function initInternalDetail(
     material,
     amount: purchaseInternalDetail.actualAmount,
   });
-
-  logger.info(purchaseInternalDetail.others.expiryDate);
-
   return {
     id: purchaseInternalDetail.id,
     materialId: purchaseInternalDetail.materialId,
@@ -302,8 +296,7 @@ function initInternalDetail(
       purchaseInternalDetail.others.kitchenDeliveryNote || "",
     internalNote: purchaseInternalDetail.others.internalNote || "",
     isChecked: purchaseInternalDetail.others.isChecked || false,
-    // expiryDate: purchaseInternalDetail.others.expiryDate.getTime(),
-    expiryDate: 0,
+    expiryDate: purchaseInternalDetail.others.expiryDate.getTime(),
   };
 }
 
