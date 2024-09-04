@@ -14,6 +14,7 @@ import {
   updatePurchaseInternal,
   updatePurchaseInternalStatus,
 } from "@/services/domain";
+import logger from "@/services/logger";
 import useMaterialStore from "@/stores/material.store";
 import {
   cloneDeep,
@@ -286,7 +287,7 @@ function initInternalDetail(
     amount: purchaseInternalDetail.actualAmount,
   });
 
-  console.log(purchaseInternalDetail.others.expiryDate.getTime());
+  logger.warn(purchaseInternalDetail.others.expiryDate.getTime());
 
   return {
     id: purchaseInternalDetail.id,
