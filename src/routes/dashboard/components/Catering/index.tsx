@@ -19,7 +19,6 @@ const CateringDashboard = () => {
       const customers = customersByCateringId.get(cateringId || "");
       const data = await getCateringDashboard(
         customers?.map((customer) => customer.id) || [],
-        cateringId,
       );
       setDashboard(data);
     };

@@ -24,7 +24,7 @@ const PurchaseRequestManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseRequests, setPurchaseRequests] = useState<
-    PurchaseRequest[]
+  PurchaseRequest[]
   >([]);
   const { caterings } = useCateringStore();
 

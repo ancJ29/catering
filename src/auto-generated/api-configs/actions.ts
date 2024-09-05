@@ -608,7 +608,7 @@ export const configs = {
     schema: {
       request: getSchema.extend({
         materialId: optionalStringSchema,
-        departmentId: stringSchema,
+        departmentId: optionalStringSchema,
       }),
       response: listResponse.extend({
         inventories: xInventorySchema.array(),
@@ -910,7 +910,6 @@ export const configs = {
         to: dateSchema.optional(),
         statuses: poStatusSchema.array().optional(),
         excludeStatuses: poStatusSchema.array().optional(),
-        receivingCateringId: optionalStringSchema,
       }),
       response: listResponse.extend({
         purchaseOrders: xPurchaseOrderSchema.array(),
@@ -1011,7 +1010,6 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: z.object({
-        cateringId: stringSchema,
         customerIds: stringSchema.array(),
       }),
       response: z.object({

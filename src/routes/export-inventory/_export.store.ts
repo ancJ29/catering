@@ -134,7 +134,7 @@ export default {
     const state = store.getSnapshot();
     const [inventories, purchaseInternalCaterings, dailyMenus] =
       await Promise.all([
-        getAllInventories(cateringId),
+        getAllInventories(),
         getPurchaseInternalsByCatering(
           startOfWeek(Date.now()),
           endOfWeek(Date.now()),

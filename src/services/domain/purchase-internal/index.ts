@@ -58,16 +58,13 @@ async function _getPurchaseInternals(
 export async function getPurchaseInternals(
   from?: number,
   to?: number,
-  receivingCateringId?: string,
 ) {
-  return _getPurchaseInternals(from, to, receivingCateringId).then(
-    (purchaseInternals) => {
-      return purchaseInternals.map((el) => ({
-        ...el,
-        name: el.code,
-      }));
-    },
-  );
+  return _getPurchaseInternals(from, to).then((purchaseInternals) => {
+    return purchaseInternals.map((el) => ({
+      ...el,
+      name: el.code,
+    }));
+  });
 }
 
 const xPurchaseInternalCateringSchema = xPurchaseInternalSchema

@@ -56,7 +56,6 @@ async function _getPurchaseOrders(
   to = endOfWeek(Date.now()),
   statuses: POStatus[],
   excludeStatuses: POStatus[],
-  receivingCateringId?: string,
 ): Promise<PurchaseOrder[]> {
   return await loadAll<PurchaseOrder>({
     key: "purchaseOrders",
@@ -66,7 +65,6 @@ async function _getPurchaseOrders(
       to,
       statuses,
       excludeStatuses,
-      receivingCateringId,
     },
   });
 }
@@ -75,7 +73,6 @@ type PurchaseOrderProps = {
   from?: number;
   to?: number;
   statuses?: POStatus[];
-  receivingCateringId?: string;
 };
 
 export async function getPurchaseOrders({
@@ -97,24 +94,19 @@ export async function getPurchaseOrdersByCatering({
   from,
   to,
   statuses = [],
-  receivingCateringId,
 }: PurchaseOrderProps): Promise<PurchaseOrderCatering[]> {
-  return _getPurchaseOrders(
-    from,
-    to,
-    [],
-    statuses,
-    receivingCateringId,
-  ).then((purchaseOrders) => {
-    return purchaseOrders.map((el) => ({
-      ...el,
-      name: el.code,
-      others: {
-        ...el.others,
-        status: getPOCateringStatus(el.others.status),
-      },
-    }));
-  });
+  return _getPurchaseOrders(from, to, [], statuses).then(
+    (purchaseOrders) => {
+      return purchaseOrders.map((el) => ({
+        ...el,
+        name: el.code,
+        others: {
+          ...el.others,
+          status: getPOCateringStatus(el.others.status),
+        },
+      }));
+    },
+  );
 }
 
 export function getPOCateringStatus(

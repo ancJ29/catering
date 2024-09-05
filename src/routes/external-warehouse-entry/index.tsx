@@ -7,7 +7,6 @@ import {
   getPurchaseOrdersByCatering,
   PurchaseOrderCatering,
 } from "@/services/domain";
-import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { endOfDay, startOfDay } from "@/utils";
@@ -30,26 +29,21 @@ const ExternalWarehouseEntry = () => {
   );
   const { caterings } = useCateringStore();
   const { suppliers } = useSupplierStore();
-  const { cateringId, isCatering } = useAuthStore();
 
   const dataGridConfigs = useMemo(
     () => configs(t, caterings, suppliers),
     [t, caterings, suppliers],
   );
 
-  const getData = useCallback(
-    async (from?: number, to?: number) => {
-      setCurrents(
-        await getPurchaseOrdersByCatering({
-          from,
-          to,
-          statuses: [poStatusSchema.Values.DTC],
-          receivingCateringId: isCatering ? cateringId : "xxx",
-        }),
-      );
-    },
-    [cateringId, isCatering],
-  );
+  const getData = useCallback(async (from?: number, to?: number) => {
+    setCurrents(
+      await getPurchaseOrdersByCatering({
+        from,
+        to,
+        statuses: [poStatusSchema.Values.DTC],
+      }),
+    );
+  }, []);
 
   useEffect(() => {
     getData(condition?.from, condition?.to);

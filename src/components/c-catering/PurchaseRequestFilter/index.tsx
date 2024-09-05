@@ -2,6 +2,7 @@ import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
 import { Department } from "@/services/domain";
+import useAuthStore from "@/stores/auth.store";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps } from "@/types";
 import { ONE_DAY } from "@/utils";
@@ -57,6 +58,7 @@ const PurchaseRequestFilter = ({
 }: PurchaseOrderFilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
+  const { isCatering } = useAuthStore();
   const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(caterings.values()).map((p: Department) => ({
       label: p.name,
@@ -78,7 +80,7 @@ const PurchaseRequestFilter = ({
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10} w="-webkit-fill-available">
+      <Flex gap={10} w="-webkit-fill-available" justify="end">
         <AutocompleteForFilterData
           label={t("Purchase request id")}
           w={"20vw"}
@@ -110,13 +112,16 @@ const PurchaseRequestFilter = ({
             onChange={onChangeStatuses}
           />
         )}
-        <MultiSelect
-          value={departmentIds}
-          label={t("Purchase request kitchen")}
-          w={"20vw"}
-          options={_caterings}
-          onChange={onChangeDepartmentIds}
-        />
+        {!isCatering && (
+          <MultiSelect
+            value={departmentIds}
+            label={t("Purchase request kitchen")}
+            w={"20vw"}
+            options={_caterings}
+            onChange={onChangeDepartmentIds}
+            disabled={isCatering}
+          />
+        )}
       </Flex>
     </Flex>
   );

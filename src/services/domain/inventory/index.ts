@@ -20,7 +20,7 @@ type Request = z.infer<typeof request>;
 const schema = response.omit({ cursor: true, hasMore: true });
 
 export async function getAllInventories(
-  departmentId: string,
+  departmentId?: string,
 ): Promise<Inventory[]> {
   const key = `domain.inventory.getAllInventories.${departmentId}`;
   if (cache.has(key)) {
