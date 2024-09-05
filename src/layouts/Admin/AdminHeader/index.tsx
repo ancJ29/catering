@@ -44,15 +44,7 @@ const AdminHeader = ({
             <Text fw={700}>{user?.fullName || ""}</Text>
           </NavLink>
           <UnstyledButton className={classes["logout-icon"]}>
-            <IconLogout
-              onClick={() => {
-                removeToken();
-                if (import.meta.env.DEV) {
-                  localStorage.clear();
-                  localStorage.__LAST_ACCESS__ = Date.now();
-                }
-              }}
-            />
+            <IconLogout onClick={removeToken} />
           </UnstyledButton>
         </Flex>
       </Flex>
