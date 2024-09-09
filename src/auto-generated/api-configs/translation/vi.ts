@@ -455,4 +455,5 @@ export default {
   "inventory check order(s) to import": "phiếu nhập kiểm kê",
   "inventory check order(s) to export": "phiếu xuất kiểm kê",
   "Mark all read": "Đánh dấu tất cả đã đọc",
+  "Choose": "Chọn",
 } satisfies Record<string, string>;

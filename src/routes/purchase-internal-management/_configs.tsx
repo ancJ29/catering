@@ -14,6 +14,7 @@ export const configs = (
       header: t("Purchase internal io code"),
       width: "12%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternal) => {
         return row.code || "N/A";
       },
@@ -23,6 +24,7 @@ export const configs = (
       header: t("Purchase internal pr code"),
       width: "12%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternal) => {
         return row.others.prCode || "N/A";
       },
@@ -31,6 +33,7 @@ export const configs = (
       key: "receivingKitchen",
       header: t("Purchase internal receiving catering"),
       width: "17%",
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternal) => {
         return (
           <span>
@@ -46,6 +49,7 @@ export const configs = (
       key: "deliveryKitchen",
       header: t("Purchase internal delivery catering"),
       width: "17%",
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternal) => {
         return (
           <span>

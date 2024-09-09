@@ -21,12 +21,14 @@ export const configs = (
       sortable: true,
       header: t("Material name"),
       width: "15%",
+      defaultVisible: true,
     },
     {
       key: "unit",
       width: "5%",
       textAlign: "center",
       header: t("Unit"),
+      defaultVisible: true,
       renderCell: (_, row: Material) => {
         return row.others?.unit?.name || "N/A";
       },
@@ -132,6 +134,7 @@ export const configs = (
           />
         </Stack>
       ),
+      headerMobile: t("Checked"),
       width: "6%",
       textAlign: "center",
       renderCell: (_, row: Material) => {

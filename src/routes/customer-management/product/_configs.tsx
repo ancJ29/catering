@@ -15,6 +15,7 @@ export const configs = (
       sortable: true,
       header: t("Product"),
       width: "40%",
+      defaultVisible: true,
       renderCell: (_, row: CustomerProduct) => {
         return productById.get(row.productId)?.name || "N/A";
       },

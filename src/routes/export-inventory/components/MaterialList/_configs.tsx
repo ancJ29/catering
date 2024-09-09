@@ -17,6 +17,7 @@ export const configs = (
       sortable: true,
       header: t("Material name"),
       width: "25%",
+      defaultVisible: true,
     },
     {
       key: "group",
@@ -93,7 +94,7 @@ export const configs = (
       key: "checked",
       header: (
         <Stack gap={5} align="center">
-          <Text fw="bold">{t("Checked")}</Text>
+          <Text fw="bold">{t("Choose")}</Text>
           <Checkbox
             checked={isSelectAll}
             color="white"
@@ -104,8 +105,10 @@ export const configs = (
           />
         </Stack>
       ),
+      headerMobile: t("Choose"),
       width: "10%",
       textAlign: "center",
+      defaultVisible: true,
       renderCell: (_, row: Material) => {
         return (
           <Center w="full">

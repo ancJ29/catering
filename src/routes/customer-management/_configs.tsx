@@ -17,12 +17,14 @@ export const configs = (
       sortable: true,
       header: t("Customer"),
       width: "20%",
+      defaultVisible: true,
     },
     {
       key: "code",
       header: t("Customer code"),
       width: "15%",
       textAlign: "left",
+      defaultVisible: true,
     },
     {
       key: "catering",

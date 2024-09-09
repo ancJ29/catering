@@ -11,12 +11,14 @@ export const configs = (
       sortable: true,
       header: t("Material name"),
       width: "20%",
+      defaultVisible: true,
     },
     {
       key: "code",
       sortable: true,
       header: t("Material code"),
       width: "5%",
+      defaultVisible: true,
       renderCell: (_, row: Material) => {
         return row.others.internalCode || "N/A";
       },

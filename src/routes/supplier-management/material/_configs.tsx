@@ -43,6 +43,7 @@ export const configs = (
       header: t("Material name"),
       width: "35%",
       textAlign: "left",
+      defaultVisible: true,
       renderCell(_, sm: SupplierMaterial) {
         return <span>{sm.material.name}</span>;
       },
@@ -52,6 +53,7 @@ export const configs = (
       header: t("Material price"),
       width: "10%",
       textAlign: "left",
+      defaultVisible: true,
       renderCell(_, sm: SupplierMaterial) {
         return (
           <NumberInput
@@ -68,6 +70,7 @@ export const configs = (
       header: t("Material unit"),
       width: "10%",
       textAlign: "center",
+      defaultVisible: true,
       renderCell: (_, sm: SupplierMaterial) => {
         const material = materialById.get(sm.material.id);
         return material?.others?.unit?.name || "N/A";

@@ -18,6 +18,7 @@ export const configs = (
       header: t("Catering name"),
       width: "25%",
       textAlign: "left",
+      defaultVisible: true,
       renderCell(_, row: Catering) {
         return <span>{row.name || "-"}</span>;
       },
@@ -26,6 +27,7 @@ export const configs = (
       key: "address",
       header: t("Catering address"),
       width: "25%",
+      defaultVisible: true,
       renderCell(_, row: Catering) {
         return <span>{row?.others.address || "N/A"}</span>;
       },

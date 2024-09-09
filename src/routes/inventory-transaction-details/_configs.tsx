@@ -25,6 +25,7 @@ export const configs = (
       key: "cateringName",
       header: t("Catering name"),
       width: "10%",
+      defaultVisible: true,
       renderCell: (_, row: MonthlyInventory) => {
         return caterings.get(row.departmentId)?.name || "N/A";
       },
@@ -33,6 +34,7 @@ export const configs = (
       key: "materialType",
       width: "10%",
       header: t("Material type"),
+      defaultVisible: true,
       renderCell: (_, row: MonthlyInventory) => {
         const material = materials.get(row.materialId);
         if (!material?.others.type) {

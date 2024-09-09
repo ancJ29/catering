@@ -19,12 +19,14 @@ export const configs = (
       sortable: true,
       header: t("Cuisine name"),
       width: "30%",
+      defaultVisible: true,
     },
     {
       key: "code",
       sortable: true,
       header: t("Cuisine code"),
       width: "20%",
+      defaultVisible: true,
       renderCell: (_, product: Product) => {
         return product.others.internalCode;
       },

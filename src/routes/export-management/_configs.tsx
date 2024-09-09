@@ -12,6 +12,7 @@ export const configs = (
       key: "code",
       header: t("Warehouse receipt code"),
       width: "15%",
+      defaultVisible: true,
       renderCell: (_, row: WarehouseReceipt) => {
         return row.code || "N/A";
       },
@@ -20,6 +21,7 @@ export const configs = (
       key: "date",
       header: t("Warehouse receipt date"),
       width: "15%",
+      defaultVisible: true,
       renderCell: (_, row: WarehouseReceipt) => {
         return formatTime(row.date, "DD/MM/YYYY");
       },
@@ -28,6 +30,7 @@ export const configs = (
       key: "deliveryKitchen",
       header: t("Warehouse receipt delivery catering"),
       width: "20%",
+      defaultVisible: true,
       renderCell: (_, row: WarehouseReceipt) => {
         return (
           <span>{caterings.get(row.departmentId || "")?.name}</span>

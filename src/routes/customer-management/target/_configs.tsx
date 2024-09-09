@@ -15,12 +15,14 @@ export const configs = (
       sortable: true,
       header: t("Meal target audience"),
       width: "30%",
+      defaultVisible: true,
     },
     {
       key: "shift",
       header: t("Meal shift"),
       width: "5%",
       textAlign: "center",
+      defaultVisible: true,
     },
     {
       key: "allowedSpending",

@@ -24,7 +24,7 @@ const PurchaseCoordinationManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseCoordinations, setPurchaseCoordinations] = useState<
-    PurchaseCoordination[]
+  PurchaseCoordination[]
   >([]);
   const { caterings } = useCateringStore();
   const { users } = useUserStore();

@@ -19,11 +19,13 @@ export type DataGridProps<T> = {
   actionHandlers?: DataGridActionProps<T>;
   ActionComponent?: () => ReactNode;
   selectedRow?: T;
+  header?: string | ReactNode;
 };
 
 export type DataGridColumnProps = {
   key: string;
   header?: string | React.ReactNode;
+  headerMobile?: string | React.ReactNode;
   sortable?: boolean;
   sorting?: false | "asc" | "desc";
   width?: number | string;
@@ -44,6 +46,7 @@ export type DataGridColumnProps = {
     /* eslint-enable @typescript-eslint/no-explicit-any */
   ) => string | number | React.ReactNode;
   hidden?: boolean;
+  defaultVisible?: boolean;
 };
 
 export type DataGridActionProps<T> = {

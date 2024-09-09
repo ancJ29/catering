@@ -455,4 +455,5 @@ export default {
   "inventory check order(s) to import": "inventory check order(s) to import",
   "inventory check order(s) to export": "inventory check order(s) to export",
   "Mark all read": "Mark all read",
+  "Choose": "Choose",
 } satisfies Record<string, string>;

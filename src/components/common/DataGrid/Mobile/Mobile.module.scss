@@ -1,0 +1,11 @@
+.item {
+  border-top: 1px solid var(--border-color);
+}
+
+.item:first-child {
+  border: none;
+}
+
+.header {
+  border-bottom: 1px solid var(--border-color);
+}

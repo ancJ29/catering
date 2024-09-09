@@ -11,6 +11,7 @@ export const configs = (
       key: "code",
       header: t("Warehouse receipt code"),
       width: "15%",
+      defaultVisible: true,
       renderCell: (_, row: WarehouseReceipt) => {
         return row.code || "N/A";
       },
@@ -19,6 +20,7 @@ export const configs = (
       key: "type",
       header: t("Warehouse receipt type"),
       width: "15%",
+      defaultVisible: true,
       renderCell: (_, row: WarehouseReceipt) => {
         if (!row.others.type) {
           return "N/A";
@@ -30,6 +32,7 @@ export const configs = (
       key: "catering",
       header: t("Warehouse receipt created by catering"),
       width: "15%",
+      defaultVisible: true,
       renderCell: (_, row: WarehouseReceipt) => {
         return (
           <span>{caterings.get(row.departmentId || "")?.name}</span>

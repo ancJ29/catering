@@ -18,6 +18,7 @@ export const configs = (
       header: t("Purchase coordination pr code"),
       width: "11%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseCoordination) => {
         return row.others.prCode || "N/A";
       },
@@ -26,6 +27,7 @@ export const configs = (
       key: "kitchen",
       header: t("Purchase coordination catering"),
       width: "10%",
+      defaultVisible: true,
       renderCell: (_, row: PurchaseCoordination) => {
         return (
           <span>

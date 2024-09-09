@@ -15,6 +15,7 @@ export const configs = (
       header: t("Purchase request id"),
       width: "15%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseRequest) => {
         return row.code || "N/A";
       },
@@ -23,6 +24,7 @@ export const configs = (
       key: "kitchen",
       header: t("Purchase request kitchen"),
       width: "25%",
+      defaultVisible: true,
       renderCell: (_, row: PurchaseRequest) => {
         return (
           <span>{caterings.get(row.departmentId || "")?.name}</span>

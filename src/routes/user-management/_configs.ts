@@ -20,18 +20,21 @@ export const configs = (
       sortable: true,
       header: t("Username"),
       width: "15%",
+      defaultVisible: true,
     },
     {
       key: "fullName",
       sortable: true,
       header: t("Full name"),
       width: "15%",
+      defaultVisible: true,
     },
     {
       key: "email",
       sortable: true,
       header: t("Email"),
       width: "25%",
+      defaultVisible: true,
     },
     {
       key: "roles",

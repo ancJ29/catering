@@ -10,11 +10,13 @@ export const configs = (
       key: "name",
       header: t("Supplier name"),
       width: "15%",
+      defaultVisible: true,
     },
     {
       key: "code",
       header: t("Supplier code"),
       width: "8%",
+      defaultVisible: true,
     },
     {
       key: "taxCode",

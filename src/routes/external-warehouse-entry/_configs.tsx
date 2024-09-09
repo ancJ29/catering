@@ -18,6 +18,7 @@ export const configs = (
       header: t("Purchase order po code"),
       width: "12%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseOrderCatering) => {
         return row.code || "N/A";
       },
@@ -26,6 +27,7 @@ export const configs = (
       key: "kitchen",
       header: t("Purchase order catering"),
       width: "17%",
+      defaultVisible: true,
       renderCell: (_, row: PurchaseOrderCatering) => {
         return (
           <span>

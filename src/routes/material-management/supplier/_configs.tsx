@@ -30,6 +30,7 @@ export const configs = (
       header: t("Supplier name"),
       width: "25%",
       textAlign: "left",
+      defaultVisible: true,
       renderCell(_, sm: SupplierMaterial) {
         return <span>{sm.supplier.name}</span>;
       },

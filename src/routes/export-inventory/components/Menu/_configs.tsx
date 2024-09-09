@@ -13,6 +13,7 @@ export const dailyMenuConfigs = (
       key: "productName",
       header: t("Product Name"),
       width: "30%",
+      defaultVisible: true,
       renderCell: (_, row: MenuItem) => {
         return products.get(row.productId)?.name || "N/A";
       },
@@ -62,6 +63,7 @@ export const materialConfigs = (
       key: "materialName",
       header: t("Material name"),
       width: "20%",
+      defaultVisible: true,
       renderCell: (_, row: MenuMaterial) => {
         return materials.get(row.materialId)?.name || "N/A";
       },
@@ -71,6 +73,7 @@ export const materialConfigs = (
       header: t("Unit"),
       width: "10%",
       textAlign: "center",
+      defaultVisible: true,
       renderCell: (_, row: MenuMaterial) => {
         return (
           materials.get(row.materialId)?.others.unit?.name || "N/A"

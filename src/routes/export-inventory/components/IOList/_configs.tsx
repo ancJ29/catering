@@ -24,6 +24,7 @@ export const piConfigs = (
       header: t("Purchase internal io code"),
       width: "20%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternalCatering) => {
         return row.code || "N/A";
       },
@@ -33,6 +34,7 @@ export const piConfigs = (
       header: t("Purchase internal pr code"),
       width: "20%",
       style: { fontWeight: "bold" },
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternalCatering) => {
         return row.others.prCode || "N/A";
       },
@@ -41,6 +43,7 @@ export const piConfigs = (
       key: "receivingKitchen",
       header: t("Purchase internal receiving catering"),
       width: "20%",
+      defaultVisible: true,
       renderCell: (_, row: PurchaseInternalCatering) => {
         return (
           <span>
@@ -84,6 +87,7 @@ export const piDetailConfigs = (
       key: "name",
       header: t("Material name"),
       width: "30%",
+      defaultVisible: true,
       renderCell: (_, row: InternalDetail) => {
         return materials.get(row.materialId)?.name || "N/A";
       },
@@ -93,6 +97,7 @@ export const piDetailConfigs = (
       header: t("Quantity"),
       width: "25%",
       textAlign: "right",
+      defaultVisible: true,
       renderCell: (_, row: InternalDetail) => {
         return convertAmountBackward({
           material: materials.get(row.materialId),
