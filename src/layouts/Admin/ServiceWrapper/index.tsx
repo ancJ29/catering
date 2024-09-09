@@ -1,14 +1,13 @@
 import useTranslation from "@/hooks/useTranslation";
 import useAuthStore from "@/stores/auth.store";
 import { Menu } from "@/types";
-import { AppShell, Box, Burger, Button } from "@mantine/core";
-import { useDisclosure, useWindowScroll } from "@mantine/hooks";
-import { IconArrowUp } from "@tabler/icons-react";
+import { AppShell, Box, Burger } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { BrowserView } from "react-device-detect";
 import { useLocation } from "react-router-dom";
 import AdminHeader from "../AdminHeader";
 import Navbar from "../Navbar";
+import ScrollToTopButton from "../ScrollToTopButton";
 
 type Props = {
   routeGroup?: string;
@@ -26,7 +25,6 @@ const ServiceWrapper = ({
   const t = useTranslation();
   const location = useLocation();
   const [opened, { toggle, close, open }] = useDisclosure(false);
-  const [scroll, scrollTo] = useWindowScroll();
   const { user } = useAuthStore();
   const [menu] = useState<Menu>(user?.menu || []);
 
@@ -73,24 +71,7 @@ const ServiceWrapper = ({
           {children}
         </Box>
       </AppShell.Main>
-      <BrowserView>
-        {scroll.y >= 10 && (
-          <Button
-            variant="outline"
-            radius={999}
-            p={0}
-            w={40}
-            h={40}
-            pos="fixed"
-            bottom="3rem"
-            left={"50%"}
-            onClick={() => scrollTo({ y: 0 })}
-            bg="#ced4da"
-          >
-            <IconArrowUp />
-          </Button>
-        )}
-      </BrowserView>
+      <ScrollToTopButton />
     </AppShell>
   );
 };
