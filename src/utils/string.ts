@@ -41,3 +41,15 @@ export function fromSpace(str: string) {
 export function toSpace(str: string) {
   return str.replace(/-/g, " ");
 }
+
+export function getInitials(fullName: string) {
+  const nameParts = fullName.split(" ");
+  if (nameParts.length < 2) {
+    return fullName;
+  }
+
+  const initials = nameParts.map((part) =>
+    part.charAt(0).toUpperCase(),
+  );
+  return initials.join("");
+}

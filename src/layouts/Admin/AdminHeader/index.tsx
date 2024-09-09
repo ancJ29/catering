@@ -1,9 +1,10 @@
 import useAuthStore from "@/stores/auth.store";
+import { getInitials } from "@/utils";
 import {
+  Avatar,
   Card,
   Center,
   Flex,
-  Text,
   Title,
   UnstyledButton,
 } from "@mantine/core";
@@ -33,15 +34,13 @@ const AdminHeader = ({
             <Logo title={title?.toUpperCase()} />
           </Title>
         </Center>
-        <Flex align="center">
-          <Notice />
+        <Flex align="center" gap={8}>
           <LanguageSelector />
-          <NavLink
-            className="c-catering-text-main"
-            style={{ display: "flex", marginLeft: "5px" }}
-            to="/profile"
-          >
-            <Text fw={700}>{user?.fullName || ""}</Text>
+          <Notice />
+          <NavLink className="c-catering-text-main" to="/profile">
+            <Avatar color="primary" radius="xl">
+              {getInitials(user?.fullName || "")}
+            </Avatar>
           </NavLink>
           <UnstyledButton className={classes["logout-icon"]}>
             <IconLogout onClick={removeToken} />
