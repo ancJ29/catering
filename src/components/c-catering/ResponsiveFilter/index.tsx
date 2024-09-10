@@ -19,7 +19,7 @@ const ResponsiveFilter = ({ children }: ResponsiveFilterProps) => {
         size="xs"
         hiddenFrom="sm"
       >
-        <Flex direction="column" gap={10}>
+        <Flex direction="column" gap={10} align="end">
           {children}
         </Flex>
       </Drawer>
