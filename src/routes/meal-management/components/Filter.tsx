@@ -9,7 +9,7 @@ import { Flex } from "@mantine/core";
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 import store from "../_meal.store";
 
-const Form = () => {
+const Filter = () => {
   const t = useTranslation();
   const { selectedCateringId, date } = useSyncExternalStore(
     store.subscribe,
@@ -37,7 +37,7 @@ const Form = () => {
       <Select
         value={selectedCateringId}
         label={t("Meal catering")}
-        w="20vw"
+        w={{ base: "40%", sm: "20rem" }}
         options={_caterings}
         onChange={store.setSelectedCateringId}
         disabled={isCatering}
@@ -46,10 +46,10 @@ const Form = () => {
         label={t("Meal date")}
         value={new Date(date)}
         onChangeDate={store.setDate}
-        w="20vw"
+        w={{ base: "40%", sm: "20rem" }}
       />
     </Flex>
   );
 };
 
-export default Form;
+export default Filter;

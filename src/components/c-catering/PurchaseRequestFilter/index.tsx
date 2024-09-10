@@ -74,16 +74,25 @@ const PurchaseRequestFilter = ({
           from={from}
           to={to}
           onChange={onChangeDateRange}
-          w={"22vw"}
+          w={{ base: "100%", sm: "22vw" }}
         />
-        <CustomButton disabled={!clearable} onClick={onClear}>
+        <CustomButton
+          disabled={!clearable}
+          onClick={onClear}
+          visibleFrom="sm"
+        >
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10} w="-webkit-fill-available" justify="end">
+      <Flex
+        direction={{ base: "column", sm: "row" }}
+        gap={10}
+        w="-webkit-fill-available"
+        justify="end"
+      >
         <AutocompleteForFilterData
           label={t("Purchase request id")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           data={purchaseOrderIds}
           defaultValue={keyword}
           onReload={onReload}
@@ -92,14 +101,14 @@ const PurchaseRequestFilter = ({
         <MultiSelect
           value={types}
           label={t("Purchase request type")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={typeOptions}
           onChange={onChangeTypes}
         />
         <MultiSelect
           value={priorities}
           label={t("Purchase request priority")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={priorityOptions}
           onChange={onChangePriorities}
         />
@@ -107,7 +116,7 @@ const PurchaseRequestFilter = ({
           <MultiSelect
             value={statuses}
             label={t("Status")}
-            w={"20vw"}
+            w={{ base: "100%", sm: "20vw" }}
             options={statusOptions}
             onChange={onChangeStatuses}
           />
@@ -116,13 +125,20 @@ const PurchaseRequestFilter = ({
           <MultiSelect
             value={departmentIds}
             label={t("Purchase request kitchen")}
-            w={"20vw"}
+            w={{ base: "100%", sm: "20vw" }}
             options={_caterings}
             onChange={onChangeDepartmentIds}
             disabled={isCatering}
           />
         )}
       </Flex>
+      <CustomButton
+        disabled={!clearable}
+        onClick={onClear}
+        hiddenFrom="sm"
+      >
+        {t("Clear")}
+      </CustomButton>
     </Flex>
   );
 };

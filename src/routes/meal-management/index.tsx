@@ -4,7 +4,7 @@ import { Box, Flex, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCallback } from "react";
 import store from "./_meal.store";
-import Form from "./components/Form";
+import Filter from "./components/Filter";
 import Table from "./components/Table";
 
 const MealManagement = () => {
@@ -25,7 +25,7 @@ const MealManagement = () => {
             {t("Save")}
           </CustomButton>
         </Box>
-        <Form />
+        <Filter />
         <Table />
       </Flex>
     </Stack>

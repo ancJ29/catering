@@ -133,7 +133,7 @@ const UserManagement = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-end",
-            gap: 8,
+            gap: 5,
           }}
         >
           <TextInput
@@ -142,14 +142,14 @@ const UserManagement = () => {
           />
           <Button
             ml={10}
-            w={100}
+            w={110}
             type="submit"
             disabled={!filter.keyword}
           >
             {t("Search")}
           </Button>
         </form>
-        <Button w={100} onClick={addUser}>
+        <Button w={{ base: 80, sm: 100 }} onClick={addUser}>
           {t("Add")}
         </Button>
       </Flex>

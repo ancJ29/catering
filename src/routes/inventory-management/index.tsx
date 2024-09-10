@@ -20,8 +20,12 @@ const CustomerManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex justify="end" align={"center"}>
-        <AutocompleteForFilterData data={names} onReload={reload} />
+      <Flex justify="end" align="center">
+        <AutocompleteForFilterData
+          data={names}
+          onReload={reload}
+          w={{ base: "50%", sm: "20rem" }}
+        />
       </Flex>
       <DataGrid
         hasOrderColumn

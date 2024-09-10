@@ -1,15 +1,18 @@
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
+import { ResponsiveWidth } from "@/types";
 import { Flex } from "@mantine/core";
 
 type MonthYearPickerProps = {
   date: number;
   onChangeDate: (date: number) => void;
+  w?: ResponsiveWidth;
 };
 
 const MonthYearPicker = ({
   date,
   onChangeDate,
+  w,
 }: MonthYearPickerProps) => {
   const t = useTranslation();
   const monthList: string[] = Array.from({ length: 12 }, (_, i) =>
@@ -39,7 +42,7 @@ const MonthYearPicker = ({
   };
 
   return (
-    <Flex gap={10} w="20vw">
+    <Flex gap={10} w={w}>
       <Select
         value={(new Date(date).getMonth() + 1).toString()}
         label={t("Month")}

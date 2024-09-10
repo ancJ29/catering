@@ -1,5 +1,6 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
+import ResponsiveFilter from "@/components/c-catering/ResponsiveFilter";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
@@ -55,11 +56,16 @@ const Filter = ({
     return statusInternalCateringOptions(t);
   }, [t]);
 
-  return (
-    <Flex gap={10} justify="end" align="end">
+  const filterComponent = (
+    <Flex
+      direction={{ base: "column", sm: "row" }}
+      gap={10}
+      justify="end"
+      align="end"
+    >
       <AutocompleteForFilterData
         label={t("Purchase internal io code")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         data={purchaseCoordinationIds}
         defaultValue={keyword}
         onReload={onReload}
@@ -68,14 +74,14 @@ const Filter = ({
       <MultiSelect
         value={statuses}
         label={t("Status")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         options={statusOptions}
         onChange={onChangeStatuses}
       />
       <MultiSelect
         value={deliveryCateringIds}
         label={t("Purchase internal delivery catering")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         options={_caterings}
         onChange={onChangeDeliveryCateringIds}
       />
@@ -84,12 +90,21 @@ const Filter = ({
         from={from}
         to={to}
         onChange={onChangeDateRange}
-        w={"22vw"}
+        w={{ base: "100%", sm: "22vw" }}
       />
       <CustomButton disabled={!clearable} onClick={onClear}>
         {t("Clear")}
       </CustomButton>
     </Flex>
+  );
+
+  return (
+    <>
+      <Flex direction="column" visibleFrom="sm">
+        {filterComponent}
+      </Flex>
+      <ResponsiveFilter>{filterComponent}</ResponsiveFilter>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
-import { Text } from "@mantine/core";
+import { ResponsiveWidth } from "@/types";
+import { Flex, Text } from "@mantine/core";
 import classNames from "classnames";
 import DateInput from "../DateInput";
 import classes from "./DateRangeInput.module.scss";
@@ -10,7 +11,7 @@ type DateRangeInputProps = {
   rangeClassName?: string;
   placeholder?: string;
   onChange?: (from?: number, to?: number) => void;
-  w?: string;
+  w?: ResponsiveWidth;
 };
 
 const DateRangeInput = ({
@@ -27,7 +28,7 @@ const DateRangeInput = ({
   };
 
   return (
-    <div className={classes.container} style={{ width: w }}>
+    <Flex direction="column" w={w} className={classes.container}>
       {label && <Text className={classes.label}>{label}</Text>}
       <div className={classNames(classes.expand, rangeClassName)}>
         <DateInput
@@ -44,7 +45,7 @@ const DateRangeInput = ({
           onChangeDate={(value) => _onChange(from || value, value)}
         />
       </div>
-    </div>
+    </Flex>
   );
 };
 

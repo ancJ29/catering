@@ -1,5 +1,6 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
+import ResponsiveFilter from "@/components/c-catering/ResponsiveFilter";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
@@ -12,7 +13,7 @@ import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { OptionProps } from "@/types";
 import { endOfWeek, startOfWeek } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { useMemo } from "react";
 
 type FilterProps = {
@@ -69,24 +70,33 @@ const Filter = ({
     return statusOrderOptions(t);
   }, [t]);
 
-  return (
-    <Stack gap={10} align="end">
+  const filterComponent = (
+    <Flex direction="column" gap={10} align="end">
       <Flex align="end" gap={10}>
         <DateRangeInput
           label={t("Purchase order date")}
           from={from}
           to={to}
           onChange={onChangeDateRange}
-          w={"22vw"}
+          w={{ base: "100%", sm: "22vw" }}
         />
-        <CustomButton disabled={!clearable} onClick={onClear}>
+        <CustomButton
+          disabled={!clearable}
+          onClick={onClear}
+          visibleFrom="sm"
+        >
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10} w="-webkit-fill-available" justify="end">
+      <Flex
+        direction={{ base: "column", sm: "row" }}
+        gap={10}
+        w="-webkit-fill-available"
+        justify="end"
+      >
         <AutocompleteForFilterData
           label={t("Purchase order po code")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           data={purchaseOrderIds}
           defaultValue={keyword}
           onReload={onReload}
@@ -94,26 +104,42 @@ const Filter = ({
         <MultiSelect
           value={supplierIds}
           label={t("Purchase order supplier")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={_suppliers}
           onChange={onChangeSupplierIds}
         />
         <MultiSelect
           value={statuses}
           label={t("Status")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={statusOptions}
           onChange={onChangeStatuses}
         />
         <MultiSelect
           value={receivingCateringIds}
           label={t("Purchase order catering")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={_caterings}
           onChange={onChangeReceivingCateringIds}
         />
       </Flex>
-    </Stack>
+      <CustomButton
+        disabled={!clearable}
+        onClick={onClear}
+        hiddenFrom="sm"
+      >
+        {t("Clear")}
+      </CustomButton>
+    </Flex>
+  );
+
+  return (
+    <>
+      <Flex direction="column" visibleFrom="sm">
+        {filterComponent}
+      </Flex>
+      <ResponsiveFilter>{filterComponent}</ResponsiveFilter>
+    </>
   );
 };
 

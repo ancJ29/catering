@@ -1,12 +1,13 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
+import ResponsiveFilter from "@/components/c-catering/ResponsiveFilter";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import { Department, typeAndGroupOptions } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { OptionProps } from "@/types";
-import { Flex, Stack } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { useMemo } from "react";
 import MonthYearPicker from "./MonthYearPicker";
 
@@ -56,18 +57,31 @@ const Filter = ({
     return typeAndGroupOptions(materialGroupByType, type || "", t);
   }, [materialGroupByType, t, type]);
 
-  return (
-    <Stack gap={10} align="end">
+  const filterComponent = (
+    <Flex direction="column" gap={10} align="end">
       <Flex align="end" gap={10}>
-        <MonthYearPicker date={date} onChangeDate={onChangeDate} />
-        <CustomButton disabled={!clearable} onClick={onClear}>
+        <MonthYearPicker
+          w={{ base: "100%", sm: "22vw" }}
+          date={date}
+          onChangeDate={onChangeDate}
+        />
+        <CustomButton
+          disabled={!clearable}
+          onClick={onClear}
+          visibleFrom="sm"
+        >
           {t("Clear")}
         </CustomButton>
       </Flex>
-      <Flex gap={10} w="-webkit-fill-available" justify="end">
+      <Flex
+        direction={{ base: "column", sm: "row" }}
+        gap={10}
+        w="-webkit-fill-available"
+        justify="end"
+      >
         <AutocompleteForFilterData
           label={t("Material name")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           data={materialNames}
           defaultValue={keyword}
           onReload={onReload}
@@ -75,26 +89,42 @@ const Filter = ({
         <Select
           value={cateringId}
           label={t("Catering name")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={_caterings}
           onChange={onChangeCateringId}
         />
         <Select
           value={type}
           label={t("Material type")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={typeOptions}
           onChange={(value) => onChangeType(value || "")}
         />
         <Select
           value={group}
           label={t("Material group")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={groupOptions}
           onChange={(value) => onChangeGroup(value || "")}
         />
       </Flex>
-    </Stack>
+      <CustomButton
+        disabled={!clearable}
+        onClick={onClear}
+        hiddenFrom="sm"
+      >
+        {t("Clear")}
+      </CustomButton>
+    </Flex>
+  );
+
+  return (
+    <>
+      <Flex direction="column" visibleFrom="sm">
+        {filterComponent}
+      </Flex>
+      <ResponsiveFilter>{filterComponent}</ResponsiveFilter>
+    </>
   );
 };
 

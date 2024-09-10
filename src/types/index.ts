@@ -28,3 +28,10 @@ export type Dictionary = Record<string, string>;
 export type Menu = z.infer<typeof menuSchema>;
 
 export type TextAlign = "left" | "right" | "center";
+
+export type ResponsiveWidth =
+  | number
+  | string
+  | Partial<
+  Record<"base" | "sm" | "md" | "lg" | "xl", number | string>
+  >;

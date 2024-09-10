@@ -52,34 +52,38 @@ const MaterialFilter = ({
       <Select
         value={type}
         label={t("Material type")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         options={typeOptions}
         onChange={(value) => onChangeType(value || "")}
       />
       <Select
         value={group}
         label={t("Material group")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         options={groupOptions}
         onChange={(value) => onChangeGroup(value || "")}
       />
       <AutocompleteForFilterData
         label={t("Material name")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         data={materialNames}
-        defaultValue={keyword}
+        value={keyword}
         onReload={onReload}
       />
       {onChangeOrderCycles && (
         <MultiSelect
           value={orderCycles}
           label={t("Material order cycle")}
-          w={"20vw"}
+          w={{ base: "100%", sm: "20vw" }}
           options={orderCycleOptions}
           onChange={onChangeOrderCycles}
         />
       )}
-      <CustomButton disabled={!clearable} onClick={onClear}>
+      <CustomButton
+        mt={{ base: 10, sm: 0 }}
+        disabled={!clearable}
+        onClick={onClear}
+      >
         {t("Clear")}
       </CustomButton>
     </>

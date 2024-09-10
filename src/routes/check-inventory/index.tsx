@@ -1,6 +1,4 @@
-import CateringSelector from "@/components/c-catering/CateringSelector";
 import CustomButton from "@/components/c-catering/CustomButton";
-import MaterialFilter from "@/components/c-catering/MaterialFilter";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
@@ -22,14 +20,13 @@ import {
   useSyncExternalStore,
 } from "react";
 import {
-  CheckType,
   configs,
   defaultCondition,
   filter,
   FilterType,
 } from "./_configs";
 import store from "./_inventory.store";
-import RadioChecked from "./components/RadioChecked";
+import Filter from "./components/Filter";
 
 const CheckInventory = () => {
   const t = useTranslation();
@@ -48,17 +45,12 @@ const CheckInventory = () => {
     [isAuditedAllItems, t],
   );
 
-  const cateringName = useMemo(() => {
-    return departmentNameById.get(cateringId || "") || "";
-  }, [cateringId, departmentNameById]);
-
   const dataLoader = useCallback(() => {
     return Array.from(materials.values());
   }, [materials]);
 
   const {
     condition,
-    counter,
     data,
     filtered,
     keyword,
@@ -107,7 +99,6 @@ const CheckInventory = () => {
       }
       setCateringId(cateringId);
       store.setCateringId(cateringId);
-      // .then(() => setKey(Date.now()));
     },
     [],
   );
@@ -120,53 +111,26 @@ const CheckInventory = () => {
   return (
     <Stack gap={10}>
       {/* <PendingOrderActions /> */}
-      <Flex justify="space-between" align="end" gap={10} w="100%">
-        <CateringSelector
-          style={{ width: "20vw" }}
-          cateringName={cateringName}
-          caterings={caterings}
-          setCatering={setCatering}
-        />
-        {cateringId && (
-          <Flex
-            justify="end"
-            align="end"
-            gap={10}
-            key={counter}
-            w="75%"
-          >
-            <MaterialFilter
-              type={condition?.type}
-              group={condition?.group}
-              keyword={keyword}
-              materialNames={names}
-              clearable={filtered}
-              onClear={() => {
-                reset();
-                setCatering("");
-              }}
-              onReload={reload}
-              onChangeGroup={updateCondition.bind(null, "group", "")}
-              onChangeType={(value) => {
-                setCondition({
-                  type: value,
-                  group: "",
-                  checkType: condition?.checkType || CheckType.ALL,
-                });
-              }}
-            />
-          </Flex>
-        )}
+      <Flex hiddenFrom="sm" justify="end">
         <CustomButton confirm disabled={!updated} onClick={save}>
           {t("Save")}
         </CustomButton>
       </Flex>
-      {cateringId && (
-        <RadioChecked
-          condition={condition}
-          updateCondition={updateCondition}
-        />
-      )}
+      <Filter
+        cateringId={cateringId}
+        caterings={caterings}
+        condition={condition}
+        keyword={keyword}
+        names={names}
+        filtered={filtered}
+        reset={reset}
+        reload={reload}
+        updateCondition={updateCondition}
+        setCatering={setCatering}
+        setCondition={setCondition}
+        updated={updated}
+        save={save}
+      />
       <DataGrid
         key={key}
         page={page}

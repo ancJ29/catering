@@ -19,25 +19,30 @@ const Form = () => {
   }, [form.case]);
 
   return (
-    <Flex gap={10} align="end" justify="end">
+    <Flex
+      direction={{ base: "column", sm: "row" }}
+      gap={10}
+      align="end"
+      justify="end"
+    >
       <RadioGroup
         value={form.case}
         label={t("Warehouse receipt case")}
         data={cases}
         onChange={store.setCase}
-        w="22vw"
+        w={{ base: "100%", sm: "22vw" }}
       />
       <Select
         value={form.type}
         label={t("Warehouse receipt type")}
         data={types}
         onChange={store.setType}
-        w="20vw"
+        w={{ base: "100%", sm: "20vw" }}
       />
       <DateInput
         label={t("Time")}
         value={form.date}
-        w="20vw"
+        w={{ base: "100%", sm: "20vw" }}
         onChangeDate={store.setDate}
       />
     </Flex>

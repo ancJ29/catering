@@ -55,9 +55,9 @@ const SupplierManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex justify="end" align={"center"} gap={10}>
+      <Flex justify="end" align="center" gap={10}>
         <AutocompleteForFilterData
-          w={"20vw"}
+          w={{ base: "50%", sm: "20rem" }}
           data={names}
           onReload={reload}
         />

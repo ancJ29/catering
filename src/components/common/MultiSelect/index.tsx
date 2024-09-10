@@ -1,7 +1,8 @@
-import { OptionProps } from "@/types";
+import { OptionProps, ResponsiveWidth } from "@/types";
 import {
   CheckIcon,
   Combobox,
+  Flex,
   Group,
   Input,
   Pill,
@@ -20,7 +21,7 @@ type MultiSelectProps = {
   value?: string[];
   placeholder?: string;
   onChange: (value: string[]) => void;
-  w?: string;
+  w?: ResponsiveWidth;
   disabled?: boolean;
 };
 
@@ -103,7 +104,7 @@ const MultiSelect = ({
   });
 
   return (
-    <div style={{ width: w }} ref={ref}>
+    <Flex w={w} direction="column" ref={ref}>
       {label && <Text className={classes.label}>{label}</Text>}
 
       <Combobox
@@ -149,7 +150,7 @@ const MultiSelect = ({
           </Combobox.Options>
         </Combobox.Dropdown>
       </Combobox>
-    </div>
+    </Flex>
   );
 };
 

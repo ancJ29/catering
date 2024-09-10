@@ -1,5 +1,6 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
+import ResponsiveFilter from "@/components/c-catering/ResponsiveFilter";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import MultiSelect from "@/components/common/MultiSelect";
 import useTranslation from "@/hooks/useTranslation";
@@ -50,16 +51,16 @@ const Filter = ({
     }));
   }, [caterings]);
 
-  return (
+  const filterComponent = (
     <Flex
+      direction={{ base: "column", sm: "row" }}
       gap={10}
-      w="-webkit-fill-available"
       justify="end"
       align="end"
     >
       <AutocompleteForFilterData
         label={t("Warehouse receipt code")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         data={warehouseReceiptCodes}
         defaultValue={keyword}
         onReload={onReload}
@@ -67,14 +68,14 @@ const Filter = ({
       <MultiSelect
         value={cateringIds}
         label={t("Warehouse receipt created by catering")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         options={_caterings}
         onChange={onChangeCateringIds}
       />
       <MultiSelect
         value={types}
         label={t("Warehouse receipt type")}
-        w={"20vw"}
+        w={{ base: "100%", sm: "20vw" }}
         options={typeOptions}
         onChange={onChangeTypes}
       />
@@ -83,12 +84,21 @@ const Filter = ({
         from={from}
         to={to}
         onChange={onChangeDateRange}
-        w={"22vw"}
+        w={{ base: "100%", sm: "22vw" }}
       />
       <CustomButton disabled={!clearable} onClick={onClear}>
         {t("Clear")}
       </CustomButton>
     </Flex>
+  );
+
+  return (
+    <>
+      <Flex direction="column" visibleFrom="sm">
+        {filterComponent}
+      </Flex>
+      <ResponsiveFilter>{filterComponent}</ResponsiveFilter>
+    </>
   );
 };
 

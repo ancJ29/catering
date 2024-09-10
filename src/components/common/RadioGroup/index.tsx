@@ -1,5 +1,5 @@
 import useTranslation from "@/hooks/useTranslation";
-import { OptionProps } from "@/types";
+import { OptionProps, ResponsiveWidth } from "@/types";
 import { Group, Radio } from "@mantine/core";
 import { useMemo } from "react";
 import classes from "./RadioGroup.module.scss";
@@ -14,7 +14,7 @@ interface IRadioGroupProps {
   classNameBox?: string;
   children?: React.ReactNode;
   disabled?: boolean;
-  w?: string | number;
+  w?: ResponsiveWidth;
 }
 
 const RadioGroup = ({

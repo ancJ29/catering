@@ -1,4 +1,3 @@
-import MaterialFilter from "@/components/c-catering/MaterialFilter";
 import DataGrid from "@/components/common/DataGrid";
 import {
   FilterType,
@@ -9,9 +8,10 @@ import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
+import Filter from "./components/Filter";
 
 const MaterialManagement = () => {
   const t = useTranslation();
@@ -43,24 +43,17 @@ const MaterialManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex justify="end" align="end" gap={10} key={counter}>
-        <MaterialFilter
-          type={condition?.type}
-          group={condition?.group}
-          keyword={keyword}
-          materialNames={names}
-          clearable={filtered}
-          onClear={reset}
-          onReload={reload}
-          onChangeGroup={updateCondition.bind(null, "group", "")}
-          onChangeType={(value) => {
-            setCondition({
-              type: value,
-              group: "",
-            });
-          }}
-        />
-      </Flex>
+      <Filter
+        counter={counter}
+        condition={condition}
+        keyword={keyword}
+        names={names}
+        filtered={filtered}
+        reset={reset}
+        reload={reload}
+        updateCondition={updateCondition}
+        setCondition={setCondition}
+      />
       <DataGrid
         page={page}
         limit={10}
