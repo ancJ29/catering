@@ -457,4 +457,5 @@ export default {
   "Mark all read": "Đánh dấu tất cả đã đọc",
   "Choose": "Chọn",
   "Filter": "Bộ lọc",
+  "Profile": "Hồ sơ",
 } satisfies Record<string, string>;

@@ -457,4 +457,5 @@ export default {
   "Mark all read": "Mark all read",
   "Choose": "Choose",
   "Filter": "Filter",
+  "Profile": "Profile",
 } satisfies Record<string, string>;

@@ -5,6 +5,7 @@ import {
   departmentSchema,
   inventorySchema,
   materialSchema,
+  notificationSchema,
   productSchema,
   purchaseCoordinationDetailSchema,
   purchaseCoordinationSchema,
@@ -15,6 +16,7 @@ import {
   purchaseRequestDetailSchema,
   purchaseRequestSchema,
   supplierSchema,
+  userNotificationSchema,
   userSchema,
   warehouseReceiptDetailSchema,
   warehouseReceiptSchema,
@@ -38,6 +40,7 @@ import {
   purchaseRequestDetailOthersSchema,
   purchaseRequestOthersSchema,
   supplierOthersSchema,
+  userNotificationOthersSchema,
   userOthersSchema,
   warehouseReceiptDetailOthersSchema,
   warehouseReceiptOthersSchema,
@@ -406,3 +409,12 @@ export const xUpdateInventorySchema = z.object({
   amount: numberSchema,
   expiryDate: dateSchema.optional(),
 });
+
+export const xNotificationSchema = userNotificationSchema
+  .omit({
+    others: true,
+  })
+  .extend({
+    others: userNotificationOthersSchema,
+    notification: notificationSchema,
+  });

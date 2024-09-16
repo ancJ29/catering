@@ -21,6 +21,8 @@ export enum ActionGroups {
   PURCHASE_REQUEST_MANAGEMENT = "Purchase request management",
   WAREHOUSE_RECEIPT_MANAGEMENT = "Warehouse receipt management",
   DASHBOARD_MANAGEMENT = "Dashboard management",
+  NOTIFICATION_MANAGEMENT = "Notification management",
+  TEMPLATE_MANAGEMENT = "Template management",
 }
 
 export enum Actions {
@@ -92,6 +94,10 @@ export enum Actions {
   GET_WAREHOUSE_IMPORTS = "get-warehouse-imports",
   ADD_WAREHOUSE_RECEIPT = "add-warehouse-receipt",
   GET_CATERING_DASHBOARD = "get-catering-dashboard",
+  GET_NOTIFICATIONS = "get-notifications",
+  ADD_NOTIFICATION = "add-notification",
+  UPDATE_NOTIFICATION = "update-notification",
+  GET_TEMPLATES = "get-templates",
 }
 
 export enum Permissions {
@@ -121,6 +127,8 @@ export enum Permissions {
   PURCHASE_REQUEST_FULL_ACCESS = "purchase-request-full-access",
   WAREHOUSE_RECEIPT_FULL_ACCESS = "warehouse-receipt-full-access",
   CATERING_DASHBOARD_FULL_ACCESS = "catering-dashboard-full-access",
+  NOTIFICATION_FULL_ACCESS = "notification-full-access",
+  TEMPLATE_FULL_ACCESS = "template-full-access",
 }
 
 export enum Policy {}

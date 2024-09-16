@@ -12,6 +12,7 @@ import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import useProductStore from "@/stores/product.store";
 import useSupplierStore from "@/stores/supplier.store";
+import useTemplatesStore from "@/stores/template.store";
 import useUserStore from "@/stores/user.store";
 import { LoadingOverlay, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
@@ -117,6 +118,7 @@ function _reload() {
       useCustomerStore.getState().reload();
       useCateringStore.getState().reload();
       useUserStore.getState().reload();
+      useTemplatesStore.getState().reload();
     }
   }, 200);
 }

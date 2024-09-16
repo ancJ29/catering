@@ -1,4 +1,10 @@
+import { userNotificationStatusSchema } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
+import {
+  getNotifications,
+  Notification,
+  updateNotification,
+} from "@/services/domain/notification";
 import {
   Button,
   Flex,
@@ -8,13 +14,44 @@ import {
   Text,
 } from "@mantine/core";
 import { IconBell, IconCheck } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NoticeItem from "../NoticeItem";
 import classes from "./Notice.module.scss";
 
 const Notice = () => {
   const t = useTranslation();
   const [opened, setOpened] = useState(false);
+  const [data, setData] = useState<Notification[]>([]);
+  const [total, setTotal] = useState(0);
+
+  const getData = async () => {
+    const data = await getNotifications();
+    setData(data);
+    setTotal(
+      data.filter(
+        (e) =>
+          e.others.status ===
+          userNotificationStatusSchema.Values.UNREAD,
+      ).length,
+    );
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const markAllRead = async () => {
+    await updateNotification(
+      data.map((notification) => ({
+        id: notification.id,
+        others: {
+          status: userNotificationStatusSchema.Values.READ,
+        },
+      })),
+    );
+    await getData();
+  };
+
   return (
     <Flex align="center">
       <Popover
@@ -27,7 +64,12 @@ const Notice = () => {
         onClose={() => setOpened(false)}
       >
         <Popover.Target>
-          <Indicator size="6" offset={6} color="error.7">
+          <Indicator
+            size="6"
+            offset={6}
+            color="error.7"
+            disabled={total === 0}
+          >
             <Button
               onClick={() => setOpened(!opened)}
               p={0}
@@ -43,11 +85,17 @@ const Notice = () => {
         <Popover.Dropdown p={0} w={400}>
           <Flex className={classes.markAllRead}>
             <IconCheck color="#51b68c" />
-            <Text fw="bold">{t("Mark all read")}</Text>
+            <Text onClick={markAllRead} fw="bold">
+              {t("Mark all read")}
+            </Text>
           </Flex>
           <ScrollArea.Autosize mah={300} type="always" scrollbars="y">
-            {Array.from({ length: 20 }).map((_, index) => (
-              <NoticeItem key={index} />
+            {data.map((notification, index) => (
+              <NoticeItem
+                key={index}
+                notification={notification}
+                reload={getData}
+              />
             ))}
           </ScrollArea.Autosize>
         </Popover.Dropdown>

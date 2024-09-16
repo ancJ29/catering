@@ -572,6 +572,12 @@ export const warehouseReceiptDetailOthersSchema = z.object({
   memo: optionalStringSchema,
 });
 
+export const userNotificationStatusSchema = z.enum(["UNREAD", "READ"]);
+
+export const userNotificationOthersSchema = z.object({
+  status: userNotificationStatusSchema,
+});
+
 export type ProductType = z.infer<typeof productTypeSchema>;
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type MaterialType = z.infer<typeof materialTypeSchema>;

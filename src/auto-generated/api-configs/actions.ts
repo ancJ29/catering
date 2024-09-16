@@ -5,6 +5,7 @@ import {
   menuSchema,
   monthlyInventorySchema,
   productSchema,
+  templateSchema,
   unitSchema,
 } from "@/auto-generated/prisma-schema";
 
@@ -20,6 +21,7 @@ import {
   xDepartmentSchema,
   xInventorySchema,
   xMaterialSchema,
+  xNotificationSchema,
   xProductSchema,
   xPurchaseCoordinationSchema,
   xPurchaseInternalSchema,
@@ -42,6 +44,7 @@ import {
   poStatusSchema,
   prStatusSchema,
   supplierOthersSchema,
+  userNotificationOthersSchema,
   userOthersSchema,
 } from "./others";
 import {
@@ -1023,6 +1026,55 @@ export const configs = {
         inventoryCheckInOrder: numberSchema,
         inventoryCheckOutOrder: numberSchema,
         purchaseRequest: numberSchema,
+      }),
+    },
+  },
+  [Actions.GET_NOTIFICATIONS]: {
+    name: Actions.GET_NOTIFICATIONS,
+    group: ActionGroups.NOTIFICATION_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema.extend({
+        from: dateSchema.optional(),
+        to: dateSchema.optional(),
+      }),
+      response: listResponse.extend({
+        notifications: xNotificationSchema.array(),
+      }),
+    },
+  },
+  [Actions.ADD_NOTIFICATION]: {
+    name: Actions.ADD_NOTIFICATION,
+    group: ActionGroups.NOTIFICATION_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        content: stringSchema,
+        userIds: stringSchema.array(),
+      }),
+    },
+  },
+  [Actions.UPDATE_NOTIFICATION]: {
+    name: Actions.UPDATE_NOTIFICATION,
+    group: ActionGroups.NOTIFICATION_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z
+        .object({
+          id: stringSchema,
+          others: userNotificationOthersSchema,
+        })
+        .array(),
+    },
+  },
+  [Actions.GET_TEMPLATES]: {
+    name: Actions.GET_TEMPLATES,
+    group: ActionGroups.TEMPLATE_MANAGEMENT,
+    type: ActionType.READ,
+    schema: {
+      request: getSchema,
+      response: listResponse.extend({
+        templates: templateSchema.array(),
       }),
     },
   },

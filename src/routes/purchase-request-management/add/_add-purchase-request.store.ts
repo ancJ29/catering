@@ -1,3 +1,4 @@
+import { TemplateType } from "@/auto-generated/prisma-schema";
 import {
   Inventory,
   Material,
@@ -7,7 +8,10 @@ import {
   getAllLowInventories,
   getAllPeriodicInventories,
 } from "@/services/domain";
+import { addNotification } from "@/services/domain/notification";
 import useMaterialStore from "@/stores/material.store";
+import useTemplateStore from "@/stores/template.store";
+import useUserStore from "@/stores/user.store";
 import {
   MaterialExcel,
   PurchaseRequestForm,
@@ -206,6 +210,8 @@ export default {
   ) {
     const state = store.getSnapshot();
     const { materials } = useMaterialStore.getState();
+    const { users } = useUserStore.getState();
+    const { templates } = useTemplateStore.getState();
     const result = await addPurchaseRequest(
       purchaseRequest,
       state.selectedMaterialIds.map((materialId) => {
@@ -221,6 +227,17 @@ export default {
         };
       }),
     );
+    await addNotification({
+      content:
+        templates.get(TemplateType.PURCHASE_REQUEST_CREATE)
+          ?.content || "",
+      userIds: Array.from(users.values())
+        .filter(
+          (user) =>
+            user.departments[0]?.id === purchaseRequest.departmentId,
+        )
+        .map((user) => user.id),
+    });
     dispatch({ type: ActionType.RESET });
     return result;
   },

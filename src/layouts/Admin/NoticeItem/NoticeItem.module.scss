@@ -1,7 +1,9 @@
 .container {
   border-bottom: 1px solid var(--mantine-color-dimmed);
   padding: var(--mantine-spacing-md);
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   gap: 5px;
 
   &:hover {
@@ -11,4 +13,11 @@
   &:last-child {
     border-bottom: none;
   }
+}
+
+.redDot {
+  width: 8px;
+  height: 8px;
+  background: var(--mantine-color-red-7);
+  border-radius: 50%;
 }
