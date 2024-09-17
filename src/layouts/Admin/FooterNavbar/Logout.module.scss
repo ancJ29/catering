@@ -1,0 +1,9 @@
+.container {
+  padding: 1.2rem;
+  display: flex;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--hover-background-color);
+  }
+}

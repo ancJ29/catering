@@ -69,28 +69,28 @@ const Dashboard = () => {
         <TextInput
           disabled
           pb=".8rem"
-          w={"30vw"}
+          w={{ base: "90vw", sm: "40vw" }}
           label={t("Username")}
           value={user?.userName}
           placeholder={t("Enter username")}
         />
         <PasswordInput
           pb=".8rem"
-          w={"30vw"}
+          w={{ base: "90vw", sm: "40vw" }}
           label={t("Password")}
           placeholder={t("Enter password")}
           {...form.getInputProps("currentPassword")}
         />
         <PasswordInput
           pb=".8rem"
-          w={"30vw"}
+          w={{ base: "90vw", sm: "40vw" }}
           label={t("New password")}
           placeholder={t("Enter new password")}
           {...form.getInputProps("newPassword")}
         />
         <PasswordInput
           pb=".8rem"
-          w={"30vw"}
+          w={{ base: "90vw", sm: "40vw" }}
           label={t("Re enter new password")}
           placeholder={t("Re enter new password")}
           {...form.getInputProps("reNewPassword")}

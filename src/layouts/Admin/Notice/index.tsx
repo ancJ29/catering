@@ -82,7 +82,7 @@ const Notice = () => {
             </Button>
           </Indicator>
         </Popover.Target>
-        <Popover.Dropdown p={0} w={400}>
+        <Popover.Dropdown p={0} w={350}>
           <Flex className={classes.markAllRead}>
             <IconCheck color="#51b68c" />
             <Text onClick={markAllRead} fw="bold">

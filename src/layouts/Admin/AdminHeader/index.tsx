@@ -1,15 +1,6 @@
 import useAuthStore from "@/stores/auth.store";
-import { getInitials } from "@/utils";
-import {
-  Avatar,
-  Card,
-  Center,
-  Flex,
-  Title,
-  UnstyledButton,
-} from "@mantine/core";
-import { IconLogout } from "@tabler/icons-react";
-import { NavLink } from "react-router-dom";
+import { Card, Flex } from "@mantine/core";
+import Avatar from "../Avatar";
 import LanguageSelector from "../LanguageSelector";
 import Logo from "../Logo";
 import Notice from "../Notice";
@@ -23,28 +14,21 @@ const AdminHeader = ({
   burger: React.ReactNode;
 }) => {
   const { user } = useAuthStore();
-  const { removeToken } = useAuthStore();
 
   return (
-    <Card h="4.5rem" className={classes.wrapper}>
+    <Card
+      h={{ base: "3.5rem", xs: "4.5rem" }}
+      className={classes.wrapper}
+    >
       <Flex display="flex" align="stretch" justify={"space-between"}>
-        <Center>
+        <Flex align="center" w="100%">
           {burger}
-          <Title pl="xs" size="1.2rem">
-            <Logo title={title?.toUpperCase()} />
-          </Title>
-        </Center>
+          <Logo title={title?.toUpperCase()} />
+        </Flex>
         <Flex align="center" gap={8}>
           <LanguageSelector />
           <Notice />
-          <NavLink className="c-catering-text-main" to="/profile">
-            <Avatar color="primary" radius="xl">
-              {getInitials(user?.fullName || "")}
-            </Avatar>
-          </NavLink>
-          <UnstyledButton className={classes["logout-icon"]}>
-            <IconLogout onClick={removeToken} />
-          </UnstyledButton>
+          <Avatar user={user} />
         </Flex>
       </Flex>
     </Card>

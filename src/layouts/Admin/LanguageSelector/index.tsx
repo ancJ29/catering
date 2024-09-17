@@ -24,7 +24,7 @@ const LanguageSelector = () => {
   };
 
   return (
-    <Flex align="center">
+    <Flex align="center" visibleFrom="xs">
       <Popover
         opened={opened}
         width={300}

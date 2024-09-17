@@ -1,6 +1,6 @@
 import useTranslation from "@/hooks/useTranslation";
 import { Menu, MenuItem } from "@/types";
-import { Box, NavLink, Text } from "@mantine/core";
+import { AppShell, Box, NavLink, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
@@ -89,40 +89,42 @@ const Navbar = ({
   }
 
   return (
-    <Box
-      className={classes.wrapper}
-      pb={level === 1 ? "2rem" : "0"}
-      onClick={onOpenNavbar}
-    >
-      {_menu.map((item, idx) => {
-        const isActive = _isActive(item, active);
-        return (
-          <NavLink
-            opened={item.subs && activeKey === item.key}
-            key={idx}
-            h="3rem"
-            onClick={open.bind(null, item)}
-            label={opened ? t(item.label) : ""}
-            classNames={{
-              children: "c-catering-p-0",
-            }}
-            className={clsx(
-              classes.item,
-              isActive ? classes.active : "",
-            )}
-            leftSection={<Icon {...item} disabled={opened} />}
-          >
-            {item.subs && opened && (
-              <Navbar
-                opened
-                level={level + 1}
-                menu={item.subs || []}
-              />
-            )}
-          </NavLink>
-        );
-      })}
-    </Box>
+    <AppShell.Section grow>
+      <Box
+        className={classes.wrapper}
+        pb={level === 1 ? "2rem" : "0"}
+        onClick={onOpenNavbar}
+      >
+        {_menu.map((item, idx) => {
+          const isActive = _isActive(item, active);
+          return (
+            <NavLink
+              opened={item.subs && activeKey === item.key}
+              key={idx}
+              h="3rem"
+              onClick={open.bind(null, item)}
+              label={opened ? t(item.label) : ""}
+              classNames={{
+                children: "c-catering-p-0",
+              }}
+              className={clsx(
+                classes.item,
+                isActive ? classes.active : "",
+              )}
+              leftSection={<Icon {...item} disabled={opened} />}
+            >
+              {item.subs && opened && (
+                <Navbar
+                  opened
+                  level={level + 1}
+                  menu={item.subs || []}
+                />
+              )}
+            </NavLink>
+          );
+        })}
+      </Box>
+    </AppShell.Section>
   );
 };
 export default Navbar;

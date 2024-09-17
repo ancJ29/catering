@@ -6,6 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AdminHeader from "../AdminHeader";
+import FooterNavbar from "../FooterNavbar";
 import Navbar from "../Navbar";
 import ScrollToTopButton from "../ScrollToTopButton";
 
@@ -58,6 +59,7 @@ const ServiceWrapper = ({
           onOpenNavbar={open}
           routeGroup={routeGroup}
         />
+        <FooterNavbar opened={opened} />
       </AppShell.Navbar>
       <AppShell.Main>
         <Box
