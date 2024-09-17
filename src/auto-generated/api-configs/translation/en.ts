@@ -458,4 +458,5 @@ export default {
   "Choose": "Choose",
   "Filter": "Filter",
   "Profile": "Profile",
+  "Logout": "Logout",
 } satisfies Record<string, string>;

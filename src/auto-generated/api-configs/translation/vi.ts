@@ -458,4 +458,5 @@ export default {
   "Choose": "Chọn",
   "Filter": "Bộ lọc",
   "Profile": "Hồ sơ",
+  "Logout": "Đăng xuất",
 } satisfies Record<string, string>;

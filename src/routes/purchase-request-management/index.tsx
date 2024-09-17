@@ -12,11 +12,11 @@ import {
 } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
-import { Button, Flex, Stack } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { configs } from "./_configs";
+import AddButton from "./components/AddButton";
 import Filter from "./components/Filter";
 
 const PurchaseRequestManagement = () => {
@@ -78,15 +78,8 @@ const PurchaseRequestManagement = () => {
   };
 
   return (
-    <Stack gap={10} key={caterings.size}>
-      <Flex justify="end" align="end">
-        <Button
-          onClick={() => navigate("/purchase-request-management/add")}
-          leftSection={<IconPlus size={16} />}
-        >
-          {t("Add purchase request")}
-        </Button>
-      </Flex>
+    <Stack gap={10} key={caterings.size} pos="relative">
+      <AddButton />
       <Filter
         condition={condition}
         keyword={keyword}
