@@ -291,7 +291,7 @@ export function changeableDailyMenuStatus(
   if (!role) {
     return false;
   }
-  if (role === ClientRoles.OWNER) {
+  if (role === ClientRoles.OWNER || role === ClientRoles.CATERING) {
     return true;
   }
   if (role === ClientRoles.PRODUCTION) {
@@ -300,15 +300,15 @@ export function changeableDailyMenuStatus(
     }
     return true;
   }
-  if (role === ClientRoles.CATERING) {
-    if (next === "NEW" || current === "NEW") {
-      return false;
-    }
-    if (current === "DELIVERED") {
-      return false;
-    }
-    return true;
-  }
+  // if (role === ClientRoles.CATERING) {
+  //   if (next === "NEW" || current === "NEW") {
+  //     return false;
+  //   }
+  //   if (current === "DELIVERED") {
+  //     return false;
+  //   }
+  //   return true;
+  // }
   return false;
 }
 

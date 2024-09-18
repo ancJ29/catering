@@ -161,7 +161,7 @@ const EditModal = () => {
         t,
         tab,
         user,
-        parsedParams.customer.others.cateringId,
+        // parsedParams.customer.others.cateringId,
         disabled,
         (productId: string) => {
           const target = parsedParams.customer.others.targets.find(

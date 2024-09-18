@@ -16,7 +16,7 @@ export const _configs = (
   t: (key: string) => string,
   mode: Mode,
   user: Payload,
-  cateringId: string,
+  // cateringId: string,
   _disabled: boolean,
   onNavigate: (productId: string) => void,
 ): DataGridColumnProps[] => {
@@ -47,7 +47,8 @@ export const _configs = (
     {
       key: "name",
       header: t("Cuisine name"),
-      width: isCatering ? "45rem" : "15rem",
+      // width: isCatering ? "45rem" : "15rem",
+      width: "15rem",
     },
     {
       key: "quantity",
@@ -81,7 +82,7 @@ export const _configs = (
       key: "costPrice",
       header: t("Cost price"),
       width: "100px",
-      hidden: isCatering,
+      // hidden: isCatering,
       textAlign: "right",
       renderCell: (_: unknown, product: Product) => {
         const cost = store.getProductPriceCost(product.id);
@@ -96,7 +97,7 @@ export const _configs = (
       key: "avgCostPrice",
       header: t("Average cost price"),
       width: "120px",
-      hidden: isCatering,
+      // hidden: isCatering,
       textAlign: "right",
       renderCell: (_: unknown, product: Product) => {
         const cost = store.getAverageCost(product.id);
@@ -112,7 +113,7 @@ export const _configs = (
       header: t("Ratio"),
       width: "100px",
       textAlign: "right",
-      hidden: isCatering,
+      // hidden: isCatering,
       renderCell: (_: unknown, product: Product) => {
         const ratio = store.getRatio(product.id);
         return (
