@@ -9,18 +9,18 @@ type CateringStore = {
   caterings: Map<string, Department>;
   activeCaterings: Map<string, Department>;
   names: string[];
-  reload: () => Promise<void>;
+  reload: (noCache?: boolean) => Promise<void>;
 };
 
 export default create<CateringStore>((set, get) => ({
   caterings: new Map(),
   activeCaterings: new Map(),
   names: [],
-  reload: async () => {
-    if (get().caterings.size) {
+  reload: async (noCache = false) => {
+    if (!noCache && get().caterings.size) {
       return;
     }
-    let data = await getAllDepartments();
+    let data = await getAllDepartments(noCache);
     data = data.filter((e) => e.others.role === ClientRoles.CATERING);
     const activeData = data.filter((e) => e.enabled);
     set(() => ({

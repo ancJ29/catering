@@ -157,7 +157,7 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
         {...form.getInputProps("department")}
       />
       <Box w={w}>
-        <Flex w={w} align="end" justify="between" gap={2}>
+        <Flex w={w} align="end" justify="between" gap={5}>
           <PasswordInput
             w={w}
             disabled
@@ -200,9 +200,9 @@ export default AddUserForm;
 
 function _validate(t: (s: string) => string) {
   return {
-    userName: isNotEmpty(t("field is required")),
-    fullName: isNotEmpty(t("field is required")),
-    role: isNotEmpty(t("field is required")),
+    userName: isNotEmpty(t("Field is required")),
+    fullName: isNotEmpty(t("Field is required")),
+    role: isNotEmpty(t("Field is required")),
     phone: (value: unknown) => {
       if (value) {
         if (typeof value !== "string") {

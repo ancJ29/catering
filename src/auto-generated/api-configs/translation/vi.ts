@@ -95,7 +95,7 @@ export default {
   "Enter new password": "Mật khẩu mới",
   "Enter password": "Nhập Mật khẩu",
   "Enter username": "Nhập tên đăng nhập",
-  "field is required": "vui lòng nhập thông tin",
+  "Field is required": "Vui lòng nhập thông tin",
   "Forgot your password": "Quên mật khẩu",
   "Fri": "T6",
   "Full name": "Họ tên",
@@ -202,7 +202,7 @@ export default {
   "Total sets": "Tổng số phần ăn",
   "Total suppliers": "Nhà cung cấp",
   "Tue": "T3",
-  "Type": "Type",
+  "Type": "Loại",
   "Unit Management": "Quản lý đơn vị",
   "Unit": "Đơn vị",
   "Unknown error!!!": "Lỗi không xác định!!!",
@@ -459,4 +459,8 @@ export default {
   "Filter": "Bộ lọc",
   "Profile": "Hồ sơ",
   "Logout": "Đăng xuất",
+  "Catering short name": "Tên viết tắt",
+  "Add catering": "Thêm bếp",
+  "Are you sure you want to add new catering?":
+    "Bạn có chắc chắn muốn thêm bếp mới?",
 } satisfies Record<string, string>;

@@ -170,7 +170,7 @@ function Laptop<T extends GenericObjectWithModificationInformation>({
     <Table.ScrollContainer
       minWidth={"100%"}
       p={0}
-      mt={20}
+      mt={10}
       w="100%"
       visibleFrom="sm"
     >

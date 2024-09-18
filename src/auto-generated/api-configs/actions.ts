@@ -39,6 +39,7 @@ import { ActionGroups, Actions, Policy, RequestDecorator } from "./enums";
 import {
   bomOthersSchema,
   dailyMenuOthersSchema,
+  departmentOthersSchema,
   inventoryOthersSchema,
   piStatusSchema,
   poStatusSchema,
@@ -284,6 +285,9 @@ export const configs = {
         })
         .partial({
           code: true,
+        })
+        .extend({
+          others: departmentOthersSchema,
         }),
       response: addResponse,
     },

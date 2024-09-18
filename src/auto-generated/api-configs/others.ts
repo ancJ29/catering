@@ -99,7 +99,6 @@ export const departmentOthersSchema = z.object({
   hasInventory: optionalBooleanSchema,
   totalSupplier: numberSchema.default(0),
   lastInventoryDate: dateSchema.nullish(),
-  address: nullishStringSchema,
 });
 
 export const inventoryOthersSchema = z.object({

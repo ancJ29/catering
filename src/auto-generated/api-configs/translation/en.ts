@@ -97,7 +97,7 @@ export default {
   "Enter new password": "Enter new password",
   "Enter password": "Enter password",
   "Enter username": "Enter username",
-  "field is required": "required",
+  "Field is required": "Required",
   "Forgot your password": "Forgot your password",
   "Fri": "Fri",
   "Full name": "Full name",
@@ -459,4 +459,8 @@ export default {
   "Filter": "Filter",
   "Profile": "Profile",
   "Logout": "Logout",
+  "Catering short name": "Short name",
+  "Add catering": "Add catering",
+  "Are you sure you want to add new catering?":
+    "Are you sure you want to add new catering?",
 } satisfies Record<string, string>;

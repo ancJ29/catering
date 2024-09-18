@@ -3,13 +3,15 @@ import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import useCateringStore from "@/stores/catering.store";
-import { Flex, Stack } from "@mantine/core";
+import { Button, Flex, Stack } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { Department, configs } from "./_configs";
+import AddCateringForm from "./components/AddCateringForm";
 
 const CateringManagement = () => {
   const t = useTranslation();
-  const { caterings } = useCateringStore();
+  const { caterings, reload: reloadCatering } = useCateringStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
   const dataLoader = useCallback(() => {
@@ -20,14 +22,30 @@ const CateringManagement = () => {
     dataLoader,
   });
 
+  const _reload = useCallback(async () => {
+    reloadCatering(true);
+    modals.closeAll();
+  }, [reloadCatering]);
+
+  const addCatering = useCallback(() => {
+    modals.open({
+      title: t("Add catering"),
+      classNames: { title: "c-catering-font-bold" },
+      centered: true,
+      size: "lg",
+      children: <AddCateringForm onSuccess={_reload} />,
+    });
+  }, [_reload, t]);
+
   return (
     <Stack gap={10}>
-      <Flex justify="end" align="center">
+      <Flex justify="space-between" align="center">
         <AutocompleteForFilterData
           data={names}
           onReload={reload}
           w={{ base: "50%", sm: "20rem" }}
         />
+        <Button onClick={addCatering}>{t("Add")}</Button>
       </Flex>
       <DataGrid
         hasOrderColumn

@@ -154,8 +154,8 @@ export default UpdateSupplierForm;
 
 function _validate(t: (s: string) => string) {
   return {
-    "name": isNotEmpty(t("field is required")),
-    "code": isNotEmpty(t("field is required")),
+    "name": isNotEmpty(t("Field is required")),
+    "code": isNotEmpty(t("Field is required")),
     "others.phone": (value: unknown) => {
       if (value) {
         if (typeof value !== "string") {

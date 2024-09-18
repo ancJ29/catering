@@ -153,8 +153,8 @@ export default EditUserForm;
 
 function _validate(t: (s: string) => string) {
   return {
-    userName: isNotEmpty(t("field is required")),
-    fullName: isNotEmpty(t("field is required")),
+    userName: isNotEmpty(t("Field is required")),
+    fullName: isNotEmpty(t("Field is required")),
     phone: (value: unknown) => {
       if (value) {
         if (typeof value !== "string") {
