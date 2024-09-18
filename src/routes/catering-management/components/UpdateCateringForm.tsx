@@ -1,12 +1,10 @@
-import {
-  ClientRoles,
-  emailSchema,
-} from "@/auto-generated/api-configs";
+import { emailSchema } from "@/auto-generated/api-configs";
 import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import {
-  addDepartment,
-  AddDepartmentRequest,
+  Department,
+  updateDepartment,
+  UpdateDepartmentRequest,
 } from "@/services/domain";
 import { isVietnamesePhoneNumber } from "@/utils";
 import { Button, Switch, Text, TextInput } from "@mantine/core";
@@ -14,48 +12,36 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
 
-const initialValues: AddDepartmentRequest = {
-  name: "",
-  code: "",
-  enabled: true,
-  level: 1,
-  phone: "",
-  email: "",
-  shortName: "",
-  address: "",
-  others: {
-    role: ClientRoles.CATERING,
-    isCenter: false,
-    totalSupplier: 0,
-  },
-};
-
 const w = "100%";
 
-type AddCateringFormProps = {
+type UpdateCateringFormProps = {
+  catering: Department;
   onSuccess: () => void;
 };
 
-const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
+const UpdateCateringForm = ({
+  catering,
+  onSuccess,
+}: UpdateCateringFormProps) => {
   const t = useTranslation();
-  const form = useForm<AddDepartmentRequest>({
+  const form = useForm<UpdateDepartmentRequest>({
     validate: _validate(t),
-    initialValues,
+    initialValues: catering,
   });
 
   const submit = useCallback(
-    (values: AddDepartmentRequest) => {
+    (values: UpdateDepartmentRequest) => {
       modals.openConfirmModal({
-        title: t("Add catering"),
+        title: t("Update catering"),
         children: (
           <Text size="sm">
-            {t("Are you sure you want to add new catering?")}
+            {t("Are you sure you want to update catering?")}
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
         onConfirm: async () => {
-          const res = await addDepartment(values);
-          res?.id && onSuccess();
+          await updateDepartment(values);
+          onSuccess();
         },
       });
     },
@@ -73,12 +59,6 @@ const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
         label={t("Name")}
         placeholder={t("Catering name")}
         {...form.getInputProps("name")}
-      />
-      <TextInput
-        w={w}
-        label={t("Code")}
-        placeholder={t("Code")}
-        {...form.getInputProps("code")}
       />
       <PhoneInput
         w={w}
@@ -109,14 +89,22 @@ const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
         w={w}
         label={t("Central catering")}
         labelPosition="left"
+        checked={form.values.others.isCenter}
         {...form.getInputProps("others.isCenter")}
       />
-      <Button type="submit">{t("Add")}</Button>
+      <Switch
+        w={w}
+        label={t("Active")}
+        labelPosition="left"
+        checked={form.values.enabled}
+        {...form.getInputProps("enabled")}
+      />
+      <Button type="submit">{t("Save")}</Button>
     </form>
   );
 };
 
-export default AddCateringForm;
+export default UpdateCateringForm;
 
 function _validate(t: (s: string) => string) {
   return {

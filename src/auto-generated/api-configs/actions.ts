@@ -314,6 +314,9 @@ export const configs = {
           email: true,
           address: true,
           level: true,
+        })
+        .extend({
+          others: departmentOthersSchema,
         }),
     },
   },

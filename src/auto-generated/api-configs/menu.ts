@@ -44,7 +44,7 @@ export default [
         url: "/product-management",
       },
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER],
+        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
         key: "bom",
         label: "BOM Management",
         icon: "components",

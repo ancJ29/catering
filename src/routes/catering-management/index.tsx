@@ -8,6 +8,7 @@ import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { Department, configs } from "./_configs";
 import AddCateringForm from "./components/AddCateringForm";
+import UpdateCateringForm from "./components/UpdateCateringForm";
 
 const CateringManagement = () => {
   const t = useTranslation();
@@ -37,6 +38,24 @@ const CateringManagement = () => {
     });
   }, [_reload, t]);
 
+  const updateCatering = useCallback(
+    (catering: Department) => {
+      modals.open({
+        title: t("Update catering"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <UpdateCateringForm
+            catering={catering}
+            onSuccess={_reload}
+          />
+        ),
+      });
+    },
+    [_reload, t],
+  );
+
   return (
     <Stack gap={10}>
       <Flex justify="space-between" align="center">
@@ -51,6 +70,7 @@ const CateringManagement = () => {
         hasOrderColumn
         columns={dataGridConfigs}
         data={data}
+        onRowClick={updateCatering}
       />
     </Stack>
   );

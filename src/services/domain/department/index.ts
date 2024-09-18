@@ -45,10 +45,10 @@ export async function getInventoryDepartments() {
 
 const { request: addRequest } =
   actionConfigs[Actions.ADD_DEPARTMENT].schema;
-type AddRequest = z.infer<typeof addRequest>;
+export type AddDepartmentRequest = z.infer<typeof addRequest>;
 
-export async function addDepartment(params: AddRequest) {
-  return await callApi<AddRequest, { id: string }>({
+export async function addDepartment(params: AddDepartmentRequest) {
+  return await callApi<AddDepartmentRequest, { id: string }>({
     action: Actions.ADD_DEPARTMENT,
     params,
   });
@@ -56,10 +56,12 @@ export async function addDepartment(params: AddRequest) {
 
 const { request: updateRequest } =
   actionConfigs[Actions.UPDATE_DEPARTMENT].schema;
-type UpdateRequest = z.infer<typeof updateRequest>;
+export type UpdateDepartmentRequest = z.infer<typeof updateRequest>;
 
-export async function updateDepartment(params: UpdateRequest) {
-  return await callApi<UpdateRequest, { id: string }>({
+export async function updateDepartment(
+  params: UpdateDepartmentRequest,
+) {
+  return await callApi<UpdateDepartmentRequest, { id: string }>({
     action: Actions.UPDATE_DEPARTMENT,
     params,
   });
