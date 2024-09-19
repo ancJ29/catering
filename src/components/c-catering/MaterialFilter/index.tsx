@@ -69,6 +69,7 @@ const MaterialFilter = ({
         data={materialNames}
         value={keyword}
         onReload={onReload}
+        onChange={onReload}
       />
       {onChangeOrderCycles && (
         <MultiSelect
