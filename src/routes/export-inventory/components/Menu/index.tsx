@@ -85,15 +85,13 @@ const Menu = () => {
 
   return (
     <Flex direction="column" gap={10}>
-      <Flex gap={10} justify="end" align="end">
+      <Flex justify="space-between" align="end">
         <DateInput
-          label={t("Meal date")}
+          label={t("Daily Menu")}
           value={new Date(dailyMenuDate)}
           onChangeDate={store.setDailyMenuDate}
           w="20vw"
         />
-      </Flex>
-      <Flex justify="end" align="end">
         <Button onClick={addToExportReceipt}>
           {t("Add to export receipt")}
         </Button>

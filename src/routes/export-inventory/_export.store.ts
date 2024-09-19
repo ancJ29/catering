@@ -736,12 +736,24 @@ async function initBomData(
         material: materials.get(materialId),
         amount: inventories[materialId]?.amount || 0,
       });
-      currentMenuMaterials[materialId] = {
-        materialId,
-        amount,
-        exportAmount: Math.min(inventory, amount),
-        name: "",
-      };
+
+      if (currentMenuMaterials[materialId]) {
+        currentMenuMaterials[materialId].amount = roundToDecimals(
+          currentMenuMaterials[materialId].amount + amount,
+          10,
+        );
+        currentMenuMaterials[materialId].exportAmount = Math.min(
+          inventory,
+          currentMenuMaterials[materialId].amount,
+        );
+      } else {
+        currentMenuMaterials[materialId] = {
+          materialId,
+          amount,
+          exportAmount: Math.min(inventory, amount),
+          name: "",
+        };
+      }
     }
   }
   return currentMenuMaterials;

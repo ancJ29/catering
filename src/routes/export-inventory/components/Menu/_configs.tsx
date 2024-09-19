@@ -21,6 +21,7 @@ export const dailyMenuConfigs = (
     {
       key: "quantity",
       header: t("Quantity"),
+      textAlign: "center",
       width: "15%",
       renderCell: (_, row: MenuItem) => {
         return row.quantity.toLocaleString();
@@ -29,6 +30,7 @@ export const dailyMenuConfigs = (
     {
       key: "shift",
       header: t("Meal shift"),
+      textAlign: "center",
       width: "15%",
       renderCell: (_, row: MenuItem) => {
         return row.shift;
@@ -37,6 +39,7 @@ export const dailyMenuConfigs = (
     {
       key: "customerName",
       header: t("Customer"),
+      textAlign: "center",
       width: "20%",
       renderCell: (_, row: MenuItem) => {
         return customers.get(row.customerId)?.name || "N/A";
@@ -62,7 +65,7 @@ export const materialConfigs = (
     {
       key: "materialName",
       header: t("Material name"),
-      width: "20%",
+      width: "30%",
       defaultVisible: true,
       renderCell: (_, row: MenuMaterial) => {
         return materials.get(row.materialId)?.name || "N/A";
@@ -71,7 +74,7 @@ export const materialConfigs = (
     {
       key: "unit",
       header: t("Unit"),
-      width: "10%",
+      width: "20%",
       textAlign: "center",
       defaultVisible: true,
       renderCell: (_, row: MenuMaterial) => {
@@ -83,7 +86,7 @@ export const materialConfigs = (
     {
       key: "inventory",
       header: t("Inventory"),
-      width: "20%",
+      width: "15%",
       textAlign: "right",
       renderCell: (_, row: MenuMaterial) => {
         return store.getInventory(row.materialId);
@@ -92,7 +95,7 @@ export const materialConfigs = (
     {
       key: "quantity",
       header: t("Quantity"),
-      width: "20%",
+      width: "15%",
       textAlign: "right",
       renderCell: (_, row: MenuMaterial) => {
         return row.amount;

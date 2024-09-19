@@ -26,7 +26,7 @@ const map = new Map<number, DailyMenuStatus>(
   statuses.map((s, i) => [i, s]),
 );
 
-const size = 16;
+const size = 12;
 
 const Steppers = ({
   disabled = false,
@@ -61,7 +61,7 @@ const Steppers = ({
   return (
     <Stepper
       w="100%"
-      size="sm"
+      size="xs"
       onStepClick={click}
       color={color}
       m={10}
