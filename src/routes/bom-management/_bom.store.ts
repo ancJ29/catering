@@ -1,4 +1,4 @@
-import { Bom } from "@/services/domain";
+import { Bom, Material } from "@/services/domain";
 import materialStore from "@/stores/material.store";
 import { cloneDeep, compareDeep, createStore } from "@/utils";
 
@@ -120,6 +120,7 @@ function reducer(action: Action, state: State): State {
   let updated = false;
   let key = "";
   let customized: Record<string, Record<string, number>>;
+  const materials = materialStore.getState().materials;
   switch (action.type) {
     case ActionType.RESET:
       return { ...defaultState, updatedAt: Date.now() };
@@ -145,10 +146,14 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET:
       if (action.bom) {
+        const materialIds = _sortMaterialByName(
+          Object.keys(action.bom.bom),
+          materials,
+        );
         return {
           originalBom: cloneDeep(action.bom),
           bom: action.bom,
-          materialIds: Object.keys(action.bom.bom),
+          materialIds,
           updated: false,
           updatedAt: Date.now(),
         };
@@ -237,4 +242,15 @@ function reducer(action: Action, state: State): State {
       break;
   }
   return state;
+}
+
+function _sortMaterialByName(
+  materialIds: string[],
+  materials: Map<string, Material>,
+) {
+  return materialIds.sort((a, b) => {
+    const materialA = materials.get(a)?.name || "";
+    const materialB = materials.get(b)?.name || "";
+    return materialA.localeCompare(materialB);
+  });
 }
