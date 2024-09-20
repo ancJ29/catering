@@ -67,9 +67,8 @@ const MaterialFilter = ({
         label={t("Material name")}
         w={{ base: "100%", sm: "20vw" }}
         data={materialNames}
-        value={keyword}
+        defaultValue={keyword}
         onReload={onReload}
-        onChange={onReload}
       />
       {onChangeOrderCycles && (
         <MultiSelect
