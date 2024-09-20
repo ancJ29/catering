@@ -14,7 +14,7 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
 
-const initialValues: AddDepartmentRequest = {
+export const initialValues: AddDepartmentRequest = {
   name: "",
   code: "",
   enabled: true,

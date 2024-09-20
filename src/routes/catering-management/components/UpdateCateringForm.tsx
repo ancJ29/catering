@@ -11,11 +11,12 @@ import { Button, Switch, Text, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
+import { initialValues } from "./AddCateringForm";
 
 const w = "100%";
 
 type UpdateCateringFormProps = {
-  catering: Department;
+  catering?: Department;
   onSuccess: () => void;
 };
 
@@ -26,7 +27,13 @@ const UpdateCateringForm = ({
   const t = useTranslation();
   const form = useForm<UpdateDepartmentRequest>({
     validate: _validate(t),
-    initialValues: catering,
+    initialValues: {
+      ...(catering ?? initialValues),
+      id: catering?.id || "",
+      email: catering?.email || "",
+      shortName: catering?.shortName || "",
+      address: catering?.address || "",
+    },
   });
 
   const submit = useCallback(
