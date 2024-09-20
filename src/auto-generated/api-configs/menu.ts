@@ -4,7 +4,7 @@ import { ClientRoles } from "./others";
 export default [
   {
     roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.CATERING],
-    dashboard: [ClientRoles.CATERING],
+    dashboard: [ClientRoles.OWNER, ClientRoles.CATERING],
     key: "dashboard",
     label: "Dashboard",
     icon: "dashboard",

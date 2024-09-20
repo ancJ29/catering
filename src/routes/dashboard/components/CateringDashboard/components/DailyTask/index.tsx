@@ -1,13 +1,13 @@
 import useTranslation from "@/hooks/useTranslation";
+import { DailyTaskType } from "@/routes/dashboard/_configs";
 import { FilterType as ExternalWarehouseFilterType } from "@/routes/external-warehouse-entry/_configs";
 import { FilterType as InternalWarehouseFilterType } from "@/routes/internal-warehouse-entry/_configs";
 import { CateringDashboard } from "@/services/domain";
 import { buildHash, endOfDay, startOfDay } from "@/utils";
 import { Card, Flex } from "@mantine/core";
 import { IconBookmark } from "@tabler/icons-react";
-import { DailyTaskType } from "../../_configs";
+import Title from "../../../Title";
 import DailyTaskItem from "../DailyTaskItem";
-import Title from "../Title";
 import classes from "./DailyTask.module.scss";
 
 type DailyTaskProps = {

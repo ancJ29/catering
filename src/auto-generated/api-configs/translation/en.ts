@@ -463,4 +463,21 @@ export default {
   "Add catering": "Add catering",
   "Are you sure you want to add new catering?":
     "Are you sure you want to add new catering?",
+  "Update catering": "Update catering",
+  "Are you sure you want to update catering?":
+    "Are you sure you want to update catering?",
+  "User": "User",
+  "Enable catering": "Enable catering",
+  "Customers to be served": "Customers to be served",
+  "Pending confirmation": "Pending confirmation",
+  "Dispatch case": "Dispatch case",
+  "Purchase case": "Purchase case",
+  "PO to be processed": "PO to be processed",
+  "Catering has not ordered": "Catering has not ordered",
+  "Catering has ordered for tomorrow": "Catering has ordered for tomorrow",
+  "Catering has not stocked": "Catering has not stocked",
+  "Catering has not conducted inventory":
+    "Catering has not conducted inventory",
+  "Important data": "Important data",
+  "Other data": "Other data",
 } satisfies Record<string, string>;

@@ -1,6 +1,6 @@
 import { TablerIconsProps } from "@tabler/icons-react";
 
-export type DailyDataType = {
+export type DashboardDataType = {
   title: string;
   unit?: string;
   amount: number;

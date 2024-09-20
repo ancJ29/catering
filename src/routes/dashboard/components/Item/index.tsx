@@ -1,14 +1,14 @@
 import useTranslation from "@/hooks/useTranslation";
+import { DashboardDataType } from "@/routes/dashboard/_configs";
 import { numberWithDelimiter } from "@/utils";
 import { Card, Flex, Text } from "@mantine/core";
-import { DailyDataType } from "../../_configs";
 import classes from "./DailyDataItem.module.scss";
 
-type DailyDataItemProps = {
-  item: DailyDataType;
+type ItemProps = {
+  item: DashboardDataType;
 };
 
-const DailyDataItem = ({ item }: DailyDataItemProps) => {
+const Item = ({ item }: ItemProps) => {
   const t = useTranslation();
   return (
     <Card
@@ -41,4 +41,4 @@ const DailyDataItem = ({ item }: DailyDataItemProps) => {
   );
 };
 
-export default DailyDataItem;
+export default Item;

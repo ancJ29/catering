@@ -94,6 +94,7 @@ export enum Actions {
   GET_WAREHOUSE_IMPORTS = "get-warehouse-imports",
   ADD_WAREHOUSE_RECEIPT = "add-warehouse-receipt",
   GET_CATERING_DASHBOARD = "get-catering-dashboard",
+  GET_OWNER_DASHBOARD = "get-owner-dashboard",
   GET_NOTIFICATIONS = "get-notifications",
   ADD_NOTIFICATION = "add-notification",
   UPDATE_NOTIFICATION = "update-notification",
@@ -126,7 +127,8 @@ export enum Permissions {
   PURCHASE_COORDINATION_FULL_ACCESS = "purchase-coordination-full-access",
   PURCHASE_REQUEST_FULL_ACCESS = "purchase-request-full-access",
   WAREHOUSE_RECEIPT_FULL_ACCESS = "warehouse-receipt-full-access",
-  CATERING_DASHBOARD_FULL_ACCESS = "catering-dashboard-full-access",
+  CATERING_DASHBOARD_READ_ONLY = "catering-dashboard-read-only",
+  OWNER_DASHBOARD_READ_ONLY = "owner-dashboard-read-only",
   NOTIFICATION_FULL_ACCESS = "notification-full-access",
   TEMPLATE_FULL_ACCESS = "template-full-access",
 }
