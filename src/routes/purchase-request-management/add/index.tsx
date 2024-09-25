@@ -173,6 +173,9 @@ const AddPurchaseRequest = () => {
         color: "blue.5",
         message: t("Add purchase request successfully"),
       });
+      if (isCatering) {
+        handleChangeValues("departmentId", cateringId);
+      }
     } else {
       notifications.show({
         color: "red.5",

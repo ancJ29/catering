@@ -41,6 +41,11 @@ const ExternalWarehouseImportDetail = () => {
     [t],
   );
 
+  const returnPageList = useCallback(() => {
+    navigate("/external-warehouse-entry");
+    window.location.reload();
+  }, [navigate]);
+
   const complete = useCallback(async () => {
     const isCheckAll = store.isCheckAll();
     const status = purchaseOrder?.others.status;
@@ -50,7 +55,8 @@ const ExternalWarehouseImportDetail = () => {
         showFailNotification();
         break;
       case poCateringStatusSchema.Values.CNK:
-        store.update();
+        await store.update();
+        returnPageList();
         break;
       case poCateringStatusSchema.Values.PONHT:
         if (isCheckAll) {
@@ -74,6 +80,7 @@ const ExternalWarehouseImportDetail = () => {
             labels: { confirm: "OK", cancel: t("Cancel") },
             onConfirm: async () => {
               await store.save();
+              returnPageList();
             },
           });
         } else {
@@ -83,7 +90,12 @@ const ExternalWarehouseImportDetail = () => {
         }
         break;
     }
-  }, [purchaseOrder?.others.status, showFailNotification, t]);
+  }, [
+    purchaseOrder?.others.status,
+    returnPageList,
+    showFailNotification,
+    t,
+  ]);
 
   const onReset = async () => {
     await store.initData(purchaseOrderId || "", navigate);
