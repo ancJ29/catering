@@ -41,6 +41,7 @@ import {
   dailyMenuOthersSchema,
   departmentOthersSchema,
   inventoryOthersSchema,
+  materialOthersSchema,
   piStatusSchema,
   poStatusSchema,
   prStatusSchema,
@@ -582,16 +583,21 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: xMaterialSchema
-        .pick({
-          id: true,
-          name: true,
-          code: true,
-          sku: true,
-          others: true,
-        })
         .partial({
           id: true,
+        })
+        .omit({
+          others: true,
+          lastModifiedBy: true,
+          clientId: true,
+          createdAt: true,
+          updatedAt: true,
+          code: true,
+        })
+        .extend({
+          others: materialOthersSchema,
         }),
+      response: addResponse,
     },
   },
   [Actions.UPDATE_MATERIAL_SUPPLIER]: {

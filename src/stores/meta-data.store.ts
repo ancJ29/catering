@@ -16,7 +16,7 @@ type OmitUnitType =
   | "createdAt"
   | "updatedAt"
   | "lastModifiedBy";
-type Unit = Omit<z.infer<typeof unitSchema>, OmitUnitType>;
+export type Unit = Omit<z.infer<typeof unitSchema>, OmitUnitType>;
 
 type MetaDataStore = {
   materialGroupByType: Record<string, string[]>;

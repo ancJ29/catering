@@ -45,7 +45,7 @@ const Filter = ({
 }: FilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(caterings.values()).map((p: Department) => ({
       label: p.name,
       value: p.id,
@@ -82,7 +82,7 @@ const Filter = ({
         value={deliveryCateringIds}
         label={t("Purchase internal delivery catering")}
         w={{ base: "100%", sm: "20vw" }}
-        options={_caterings}
+        options={cateringOptions}
         onChange={onChangeDeliveryCateringIds}
       />
       <DateRangeInput

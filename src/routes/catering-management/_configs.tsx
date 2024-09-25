@@ -1,11 +1,15 @@
 import {
   Actions,
+  ClientRoles,
   configs as actionConfigs,
+  emailSchema,
 } from "@/auto-generated/api-configs";
 import IconBadge from "@/components/c-catering/IconBadge";
+import { AddDepartmentRequest } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { DataGridColumnProps } from "@/types";
-import { unique } from "@/utils";
+import { isVietnamesePhoneNumber, unique } from "@/utils";
+import { isNotEmpty } from "@mantine/form";
 import { z } from "zod";
 
 const { response } = actionConfigs[Actions.GET_DEPARTMENTS].schema;
@@ -92,4 +96,45 @@ function findSuppliersByCateringId(cateringId: string) {
     }
   }
   return unique(suppliers);
+}
+
+export const initialValues: AddDepartmentRequest = {
+  name: "",
+  code: "",
+  enabled: true,
+  level: 1,
+  phone: "",
+  email: "",
+  shortName: "",
+  address: "",
+  others: {
+    role: ClientRoles.CATERING,
+    isCenter: false,
+    totalSupplier: 0,
+  },
+};
+
+export function _validate(t: (s: string) => string) {
+  return {
+    name: isNotEmpty(t("Field is required")),
+    phone: (value: unknown) => {
+      if (value) {
+        if (typeof value !== "string") {
+          return t("Invalid phone number");
+        }
+        if (value && !isVietnamesePhoneNumber(value)) {
+          return t("Invalid phone number");
+        }
+      }
+    },
+    email: (value: unknown) => {
+      if (value) {
+        try {
+          emailSchema.parse(value);
+        } catch (error) {
+          return t("Invalid email");
+        }
+      }
+    },
+  };
 }

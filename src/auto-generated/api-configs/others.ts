@@ -243,7 +243,6 @@ export const materialOthersSchema = z.object({
     )
     .optional(),
   orderCycle: materialOrderCycleSchema,
-  allowFloat: booleanSchema,
   /*
     Unit:
       [kg, g] => [1000] ~ 1kg = 1000g
@@ -256,6 +255,7 @@ export const materialOthersSchema = z.object({
       name: true,
       units: true,
       converters: true,
+      allowFloat: true,
     })
     .extend({
       unitId: stringSchema,
