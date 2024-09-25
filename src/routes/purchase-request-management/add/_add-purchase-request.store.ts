@@ -273,6 +273,7 @@ function reducer(action: Action, state: State): State {
           ...defaultState,
           updates: {},
           currents: {},
+          cateringId: state.cateringId,
         };
       }
     }
