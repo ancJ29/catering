@@ -59,7 +59,7 @@ const PurchaseRequestFilter = ({
   const t = useTranslation();
   const { caterings } = useCateringStore();
   const { isCatering } = useAuthStore();
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(caterings.values()).map((p: Department) => ({
       label: p.name,
       value: p.id,
@@ -126,7 +126,7 @@ const PurchaseRequestFilter = ({
             value={departmentIds}
             label={t("Purchase request kitchen")}
             w={{ base: "100%", sm: "20vw" }}
-            options={_caterings}
+            options={cateringOptions}
             onChange={onChangeDepartmentIds}
             disabled={isCatering}
           />

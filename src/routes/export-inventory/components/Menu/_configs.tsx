@@ -116,7 +116,8 @@ export const materialConfigs = (
                 store.setExportAmount(row.materialId, value)
               }
               allowDecimal={
-                materials.get(row.materialId)?.others.allowFloat
+                materials.get(row.materialId)?.others.unit
+                  ?.allowFloat || false
               }
               allowNegative={false}
               max={store.getInventory(row.materialId)}

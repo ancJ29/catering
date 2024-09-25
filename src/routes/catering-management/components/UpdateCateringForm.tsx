@@ -1,4 +1,3 @@
-import { emailSchema } from "@/auto-generated/api-configs";
 import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import {
@@ -6,12 +5,11 @@ import {
   updateDepartment,
   UpdateDepartmentRequest,
 } from "@/services/domain";
-import { isVietnamesePhoneNumber } from "@/utils";
 import { Button, Switch, Text, TextInput } from "@mantine/core";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
-import { initialValues } from "./AddCateringForm";
+import { _validate, initialValues } from "../_configs";
 
 const w = "100%";
 
@@ -112,28 +110,3 @@ const UpdateCateringForm = ({
 };
 
 export default UpdateCateringForm;
-
-function _validate(t: (s: string) => string) {
-  return {
-    name: isNotEmpty(t("Field is required")),
-    phone: (value: unknown) => {
-      if (value) {
-        if (typeof value !== "string") {
-          return t("Invalid phone number");
-        }
-        if (value && !isVietnamesePhoneNumber(value)) {
-          return t("Invalid phone number");
-        }
-      }
-    },
-    email: (value: unknown) => {
-      if (value) {
-        try {
-          emailSchema.parse(value);
-        } catch (error) {
-          return t("Invalid email");
-        }
-      }
-    },
-  };
-}

@@ -41,7 +41,7 @@ const PurchaseRequestInformationForm = ({
     return typePriorityAndStatusRequestOptions(t);
   }, [t]);
 
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -56,7 +56,7 @@ const PurchaseRequestInformationForm = ({
         value={values.departmentId}
         label={t("Purchase request kitchen")}
         w={"25vw"}
-        options={_caterings}
+        options={cateringOptions}
         onChange={(value) => onChangeValues("departmentId", value)}
         required
         error={errors["departmentId"]}

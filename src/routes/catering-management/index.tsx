@@ -1,9 +1,10 @@
+import AddButton from "@/components/c-catering/AddButton";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import useCateringStore from "@/stores/catering.store";
-import { Button, Flex, Stack } from "@mantine/core";
+import { Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { Department, configs } from "./_configs";
@@ -57,14 +58,14 @@ const CateringManagement = () => {
   );
 
   return (
-    <Stack gap={10}>
-      <Flex justify="space-between" align="center">
+    <Stack gap={10} pos="relative">
+      <AddButton onClick={addCatering} />
+      <Flex justify="end" align="center">
         <AutocompleteForFilterData
           data={names}
           onReload={reload}
           w={{ base: "50%", sm: "20rem" }}
         />
-        <Button onClick={addCatering}>{t("Add")}</Button>
       </Flex>
       <DataGrid
         hasOrderColumn

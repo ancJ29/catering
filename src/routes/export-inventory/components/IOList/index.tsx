@@ -42,7 +42,7 @@ const IOList = () => {
   const [selectedPI, setSelectedPI] =
     useState<PurchaseInternalCatering>();
 
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -134,7 +134,7 @@ const IOList = () => {
           value={condition?.receivingCateringIds}
           label={t("Purchase internal receiving catering")}
           w={"20vw"}
-          options={_caterings}
+          options={cateringOptions}
           onChange={updateCondition.bind(
             null,
             "receivingCateringIds",

@@ -18,7 +18,7 @@ const Filter = () => {
   const { activeCaterings } = useCateringStore();
   const { isCatering, cateringId } = useAuthStore();
 
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -38,7 +38,7 @@ const Filter = () => {
         value={selectedCateringId}
         label={t("Meal catering")}
         w={{ base: "40%", sm: "20rem" }}
-        options={_caterings}
+        options={cateringOptions}
         onChange={store.setSelectedCateringId}
         disabled={isCatering}
       />

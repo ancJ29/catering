@@ -67,8 +67,8 @@ const Item = ({
           isPositive={true}
           defaultValue={amount}
           onChange={_onChangeAmount}
-          allowDecimal={material?.others.allowFloat}
-          isInteger={!material?.others.allowFloat}
+          allowDecimal={material?.others.unit?.allowFloat || false}
+          isInteger={!material?.others.unit?.allowFloat}
           disabled={disabled}
         />
       ),

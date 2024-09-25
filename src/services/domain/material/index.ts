@@ -149,3 +149,14 @@ export function materialOrderCycleOptions(
     }));
   return [orderCycleOptions];
 }
+
+const { request: pushRequest } =
+  actionConfigs[Actions.PUSH_MATERIAL].schema;
+type PushMaterialRequest = z.infer<typeof pushRequest>;
+
+export async function pushMaterial(params: PushMaterialRequest) {
+  return await callApi<PushMaterialRequest, { id: string }>({
+    action: Actions.PUSH_MATERIAL,
+    params,
+  });
+}

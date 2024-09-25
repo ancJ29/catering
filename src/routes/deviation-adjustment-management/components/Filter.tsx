@@ -50,7 +50,7 @@ const PurchaseOrderFilter = ({
 }: PurchaseOrderFilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(caterings.values()).map((p: Department) => ({
       label: p.name,
       value: p.id,
@@ -121,7 +121,7 @@ const PurchaseOrderFilter = ({
           value={receivingCateringIds}
           label={t("Purchase order catering")}
           w={{ base: "100%", sm: "20vw" }}
-          options={_caterings}
+          options={cateringOptions}
           onChange={onChangeReceivingCateringIds}
         />
       </Flex>

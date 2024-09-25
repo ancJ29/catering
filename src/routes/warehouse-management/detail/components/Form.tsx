@@ -19,7 +19,7 @@ const Form = ({ warehouse }: FormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
 
-  const _caterings: OptionProps[] = useMemo(() => {
+  const cateringOptions: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -38,7 +38,7 @@ const Form = ({ warehouse }: FormProps) => {
         value={warehouse?.departmentId}
         label={t("Warehouse receipt created by catering")}
         w="20vw"
-        options={_caterings}
+        options={cateringOptions}
         onChange={() => null}
         disabled
       />
