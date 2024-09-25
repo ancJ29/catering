@@ -59,8 +59,8 @@ const Item = ({
             isPositive={true}
             defaultValue={internalDetail.actualAmount}
             onChange={onChangeActualAmount}
-            allowDecimal={material?.others.unit?.allowFloat || false}
-            isInteger={!material?.others.unit?.allowFloat}
+            allowDecimal={material?.others.allowFloat}
+            isInteger={!material?.others.allowFloat}
             disabled={disabled}
             w="80%"
           />

@@ -1,4 +1,3 @@
-import AddButton from "@/components/c-catering/AddButton";
 import DataGrid from "@/components/common/DataGrid";
 import {
   FilterType,
@@ -10,16 +9,13 @@ import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { Stack } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
-import AddMaterialForm from "./components/AddMaterialForm";
 import Filter from "./components/Filter";
-import UpdateMaterialForm from "./components/UpdateMaterialForm";
 
 const MaterialManagement = () => {
   const t = useTranslation();
-  const { materials, reload: reloadMaterial } = useMaterialStore();
+  const { materials } = useMaterialStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
   const dataLoader = useCallback(() => {
@@ -45,42 +41,8 @@ const MaterialManagement = () => {
     defaultCondition,
   });
 
-  const _reload = useCallback(async () => {
-    reloadMaterial(true);
-    modals.closeAll();
-  }, [reloadMaterial]);
-
-  const addMaterial = useCallback(() => {
-    modals.open({
-      title: t("Add material"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddMaterialForm onSuccess={_reload} />,
-    });
-  }, [_reload, t]);
-
-  const updateMaterial = useCallback(
-    (material: Material) => {
-      modals.open({
-        title: t("Update material"),
-        classNames: { title: "c-catering-font-bold" },
-        centered: true,
-        size: "lg",
-        children: (
-          <UpdateMaterialForm
-            material={material}
-            onSuccess={_reload}
-          />
-        ),
-      });
-    },
-    [_reload, t],
-  );
-
   return (
-    <Stack gap={10} pos="relative">
-      <AddButton onClick={addMaterial} />
+    <Stack gap={10}>
       <Filter
         counter={counter}
         condition={condition}
@@ -100,7 +62,6 @@ const MaterialManagement = () => {
         columns={dataGridConfigs}
         data={data}
         onChangePage={setPage}
-        onRowClick={updateMaterial}
       />
     </Stack>
   );

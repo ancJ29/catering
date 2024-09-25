@@ -1,10 +1,9 @@
-import AddButton from "@/components/c-catering/AddButton";
 import useTranslation from "@/hooks/useTranslation";
-import { Button, Flex } from "@mantine/core";
+import { ActionIcon, Affix, Button, Flex } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
-const AddPRButton = () => {
+const AddButton = () => {
   const t = useTranslation();
   const navigate = useNavigate();
 
@@ -14,7 +13,11 @@ const AddPRButton = () => {
 
   return (
     <>
-      <AddButton onClick={onClick} hiddenFrom="sm" />
+      <Affix position={{ bottom: 16, right: 16 }} hiddenFrom="sm">
+        <ActionIcon radius="xl" size={40} onClick={onClick}>
+          <IconPlus size={24} color="white" />
+        </ActionIcon>
+      </Affix>
       <Flex justify="end" align="end" visibleFrom="sm">
         <Button
           onClick={onClick}
@@ -27,4 +30,4 @@ const AddPRButton = () => {
   );
 };
 
-export default AddPRButton;
+export default AddButton;

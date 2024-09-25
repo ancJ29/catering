@@ -17,7 +17,7 @@ const Form = () => {
     store.getSnapshot,
   );
 
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -41,7 +41,7 @@ const Form = () => {
         value={purchaseInternal?.deliveryCateringId}
         label={t("Purchase internal delivery catering")}
         w="20vw"
-        options={cateringOptions}
+        options={_caterings}
         onChange={() => null}
         disabled={true}
       />

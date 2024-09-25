@@ -52,7 +52,7 @@ const Item = ({
           allowNegative={false}
           defaultValue={amount}
           onChange={(val) => onChangeAmount(parseInt(val.toString()))}
-          allowDecimal={material?.others.unit?.allowFloat || false}
+          allowDecimal={material?.others.allowFloat}
           disabled={disabled}
         />
       ),

@@ -1,14 +1,34 @@
+import {
+  ClientRoles,
+  emailSchema,
+} from "@/auto-generated/api-configs";
 import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import {
   addDepartment,
   AddDepartmentRequest,
 } from "@/services/domain";
+import { isVietnamesePhoneNumber } from "@/utils";
 import { Button, Switch, Text, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
-import { _validate, initialValues } from "../_configs";
+
+export const initialValues: AddDepartmentRequest = {
+  name: "",
+  code: "",
+  enabled: true,
+  level: 1,
+  phone: "",
+  email: "",
+  shortName: "",
+  address: "",
+  others: {
+    role: ClientRoles.CATERING,
+    isCenter: false,
+    totalSupplier: 0,
+  },
+};
 
 const w = "100%";
 
@@ -20,7 +40,7 @@ const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
   const t = useTranslation();
   const form = useForm<AddDepartmentRequest>({
     validate: _validate(t),
-    initialValues: initialValues,
+    initialValues,
   });
 
   const submit = useCallback(
@@ -97,3 +117,28 @@ const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
 };
 
 export default AddCateringForm;
+
+function _validate(t: (s: string) => string) {
+  return {
+    name: isNotEmpty(t("Field is required")),
+    phone: (value: unknown) => {
+      if (value) {
+        if (typeof value !== "string") {
+          return t("Invalid phone number");
+        }
+        if (value && !isVietnamesePhoneNumber(value)) {
+          return t("Invalid phone number");
+        }
+      }
+    },
+    email: (value: unknown) => {
+      if (value) {
+        try {
+          emailSchema.parse(value);
+        } catch (error) {
+          return t("Invalid email");
+        }
+      }
+    },
+  };
+}

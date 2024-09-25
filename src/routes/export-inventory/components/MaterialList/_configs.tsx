@@ -82,8 +82,8 @@ export const configs = (
             onChange={(value) =>
               store.setAmountInventory(row.id, value)
             }
-            allowDecimal={row.others.unit?.allowFloat || false}
-            isInteger={!row.others.unit?.allowFloat}
+            allowDecimal={row.others.allowFloat}
+            isInteger={!row.others.allowFloat}
             max={inventories[row.id]?.amount || 0}
             style={{ paddingLeft: "2rem" }}
           />

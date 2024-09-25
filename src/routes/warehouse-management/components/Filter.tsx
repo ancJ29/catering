@@ -44,7 +44,7 @@ const Filter = ({
 }: FilterProps) => {
   const t = useTranslation();
   const { caterings } = useCateringStore();
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(caterings.values()).map((p: Department) => ({
       label: p.name,
       value: p.id,
@@ -69,7 +69,7 @@ const Filter = ({
         value={cateringIds}
         label={t("Warehouse receipt created by catering")}
         w={{ base: "100%", sm: "20vw" }}
-        options={cateringOptions}
+        options={_caterings}
         onChange={onChangeCateringIds}
       />
       <MultiSelect

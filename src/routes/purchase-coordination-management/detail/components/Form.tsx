@@ -23,7 +23,7 @@ const Form = ({ values }: FormProps) => {
     return typePriorityAndStatusRequestOptions(t);
   }, [t]);
 
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -38,7 +38,7 @@ const Form = ({ values }: FormProps) => {
         value={values.receivingCateringId}
         label={t("Purchase coordination catering")}
         w="25vw"
-        options={cateringOptions}
+        options={_caterings}
         onChange={() => null}
         disabled={true}
       />

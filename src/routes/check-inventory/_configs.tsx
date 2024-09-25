@@ -86,8 +86,8 @@ export const configs = (
             isPositive={true}
             defaultValue={store.getAmount(row.id)}
             onChange={(value) => store.setAmount(row.id, value)}
-            allowDecimal={row?.others.unit?.allowFloat || false}
-            isInteger={!row?.others.unit?.allowFloat}
+            allowDecimal={row?.others.allowFloat}
+            isInteger={!row?.others.allowFloat}
             style={{ paddingLeft: "2rem" }}
           />
         );

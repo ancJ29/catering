@@ -16,7 +16,7 @@ import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { configs } from "./_configs";
-import AddPRButton from "./components/AddPRButton";
+import AddButton from "./components/AddButton";
 import Filter from "./components/Filter";
 
 const PurchaseRequestManagement = () => {
@@ -79,7 +79,7 @@ const PurchaseRequestManagement = () => {
 
   return (
     <Stack gap={10} key={caterings.size} pos="relative">
-      <AddPRButton />
+      <AddButton />
       <Filter
         condition={condition}
         keyword={keyword}

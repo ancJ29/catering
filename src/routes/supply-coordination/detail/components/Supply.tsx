@@ -25,7 +25,7 @@ const Supply = ({
   const { isAllPurchaseInternal, generalCatering } =
     useSyncExternalStore(store.subscribe, store.getSnapshot);
   const { activeCaterings } = useCateringStore();
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values())
       .map((p: Department) => ({
         label: p.name,
@@ -40,7 +40,7 @@ const Supply = ({
       <Select
         value={generalCatering}
         w="15vw"
-        options={cateringOptions}
+        options={_caterings}
         onChange={store.setGeneralCatering}
         required
         disabled={!isAllPurchaseInternal ?? disabled}

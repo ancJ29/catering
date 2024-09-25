@@ -16,7 +16,7 @@ const Form = ({ values }: FormProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
 
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -31,7 +31,7 @@ const Form = ({ values }: FormProps) => {
         value={values.receivingCateringId}
         label={t("Purchase internal receiving catering")}
         w="20vw"
-        options={cateringOptions}
+        options={_caterings}
         onChange={() => null}
         disabled={true}
       />
@@ -48,7 +48,7 @@ const Form = ({ values }: FormProps) => {
         value={values.deliveryCateringId}
         label={t("Purchase internal delivery catering")}
         w="20vw"
-        options={cateringOptions}
+        options={_caterings}
         onChange={() => null}
         disabled={true}
       />

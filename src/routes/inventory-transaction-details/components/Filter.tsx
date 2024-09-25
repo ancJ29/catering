@@ -44,7 +44,7 @@ const Filter = ({
 }: FilterProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (p: Department) => ({
         label: p.name,
@@ -90,7 +90,7 @@ const Filter = ({
           value={cateringId}
           label={t("Catering name")}
           w={{ base: "100%", sm: "20vw" }}
-          options={cateringOptions}
+          options={_caterings}
           onChange={onChangeCateringId}
         />
         <Select

@@ -18,7 +18,7 @@ const Form = ({ values }: FormProps) => {
   const { activeCaterings } = useCateringStore();
   const { suppliers } = useSupplierStore();
 
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values()).map(
       (d: Department) => ({
         label: d.name,
@@ -40,7 +40,7 @@ const Form = ({ values }: FormProps) => {
         value={values.departmentId}
         label={t("Purchase order catering")}
         w={"25vw"}
-        options={cateringOptions}
+        options={_caterings}
         disabled={true}
       />
       <DateTimeInput

@@ -39,12 +39,10 @@ const Item = ({
           defaultValue={orderDetail.paymentAmount}
           onChange={onChangePaymentAmount}
           allowDecimal={
-            materials.get(orderDetail.materialId)?.others.unit
-              ?.allowFloat || false
+            materials.get(orderDetail.materialId)?.others.allowFloat
           }
           isInteger={
-            !materials.get(orderDetail.materialId)?.others.unit
-              ?.allowFloat
+            !materials.get(orderDetail.materialId)?.others.allowFloat
           }
           disabled={disabled}
         />

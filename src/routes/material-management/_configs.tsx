@@ -1,7 +1,6 @@
 import IconBadge from "@/components/c-catering/IconBadge";
 import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { isNotEmpty } from "@mantine/form";
 
 export const configs = (
   t: (key: string) => string,
@@ -77,41 +76,3 @@ export const configs = (
     },
   ];
 };
-
-export type PushMaterialRequest = {
-  id: string;
-  name: string;
-  sku: string;
-  others: {
-    oldId: number;
-    internalCode: string;
-    type: string;
-    group: string | null;
-    orderCycle: string;
-    unit: string;
-  };
-};
-
-export const initialValues: PushMaterialRequest = {
-  id: "",
-  name: "",
-  sku: "",
-  others: {
-    oldId: 0,
-    internalCode: "",
-    type: "",
-    group: null,
-    orderCycle: "",
-    unit: "",
-  },
-};
-
-export function _validate(t: (s: string) => string) {
-  return {
-    "name": isNotEmpty(t("Field is required")),
-    "others.type": isNotEmpty(t("Field is required")),
-    "others.group": isNotEmpty(t("Field is required")),
-    "others.orderCycle": isNotEmpty(t("Field is required")),
-    "others.unit": isNotEmpty(t("Field is required")),
-  };
-}

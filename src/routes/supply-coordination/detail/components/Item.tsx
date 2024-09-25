@@ -48,7 +48,7 @@ const Item = ({
 }: ItemProps) => {
   const t = useTranslation();
   const { activeCaterings } = useCateringStore();
-  const cateringOptions: OptionProps[] = useMemo(() => {
+  const _caterings: OptionProps[] = useMemo(() => {
     return Array.from(activeCaterings.values())
       .map((p: Department) => ({
         label: p.name,
@@ -92,7 +92,7 @@ const Item = ({
         <Select
           value={coordinationDetail?.deliveryCatering}
           w="max-content"
-          options={cateringOptions}
+          options={_caterings}
           onChange={onChangeDeliveryCatering}
           required
           styles={{
@@ -113,8 +113,8 @@ const Item = ({
           isPositive={true}
           defaultValue={coordinationDetail?.dispatchQuantity}
           onChange={onChangeAmount}
-          allowDecimal={material?.others.unit?.allowFloat || false}
-          isInteger={!material?.others.unit?.allowFloat}
+          allowDecimal={material?.others.allowFloat}
+          isInteger={!material?.others.allowFloat}
           disabled={disabled}
         />
       ),
