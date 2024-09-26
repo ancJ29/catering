@@ -480,7 +480,6 @@ function initPurchaseDetail(
   const _amount = Math.floor(
     roundToDecimals(minimumAmount - amount, 3),
   );
-
   return {
     materialId: inventory.materialId,
     inventory: amount,

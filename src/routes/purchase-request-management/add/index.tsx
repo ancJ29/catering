@@ -173,14 +173,15 @@ const AddPurchaseRequest = () => {
         color: "blue.5",
         message: t("Add purchase request successfully"),
       });
-      if (isCatering) {
-        handleChangeValues("departmentId", cateringId);
-      }
     } else {
       notifications.show({
         color: "red.5",
         message: t("Add purchase request failed"),
       });
+    }
+    if (isCatering) {
+      handleChangeValues("departmentId", cateringId);
+      window.location.reload();
     }
   };
 
