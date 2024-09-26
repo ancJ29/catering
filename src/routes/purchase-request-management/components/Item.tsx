@@ -2,7 +2,7 @@ import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
 import { RequestDetail, TextAlign } from "@/types";
-import { roundToDecimals } from "@/utils";
+import { numberWithDelimiter, roundToDecimals } from "@/utils";
 import { Button, Checkbox, Table, TextInput } from "@mantine/core";
 import { useState } from "react";
 
@@ -58,7 +58,10 @@ const Item = ({
       content: material?.name,
       align: "left",
     },
-    { content: requestDetail?.inventory, align: "right" },
+    {
+      content: numberWithDelimiter(requestDetail?.inventory || 0),
+      align: "right",
+    },
     {
       content: (
         <NumberInput
@@ -125,7 +128,7 @@ const Item = ({
 
   if (showNeedToOrder) {
     columns.splice(3, 0, {
-      content: requestDetail?.needToOrder,
+      content: requestDetail?.needToOrder || 0,
       align: "right",
     });
   }
