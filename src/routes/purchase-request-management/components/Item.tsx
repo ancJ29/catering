@@ -130,7 +130,7 @@ const Item = ({
 
   if (showNeedToOrder) {
     columns.splice(3, 0, {
-      content: requestDetail?.needToOrder || 0,
+      content: numberWithDelimiter(requestDetail?.needToOrder || 0),
       align: "right",
     });
   }
