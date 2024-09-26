@@ -477,11 +477,15 @@ function initPurchaseDetail(
     material,
     amount: inventory.minimumAmount,
   });
+  const _amount = Math.floor(
+    roundToDecimals(minimumAmount - amount, 3),
+  );
+
   return {
     materialId: inventory.materialId,
     inventory: amount,
-    needToOrder: roundToDecimals(minimumAmount - amount, 3),
-    amount: roundToDecimals(minimumAmount - amount, 3),
+    needToOrder: _amount,
+    amount: _amount,
     supplierNote: "",
     internalNote: "",
     price:
