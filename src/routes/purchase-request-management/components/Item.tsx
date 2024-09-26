@@ -79,9 +79,11 @@ const Item = ({
       pr: 10,
     },
     {
-      content: roundToDecimals(
-        amount - (requestDetail?.needToOrder || 0),
-        3,
+      content: numberWithDelimiter(
+        roundToDecimals(
+          amount - (requestDetail?.needToOrder || 0),
+          3,
+        ),
       ),
       align: "right",
     },
