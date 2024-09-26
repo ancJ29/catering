@@ -480,4 +480,10 @@ export default {
     "Catering has not conducted inventory",
   "Important data": "Important data",
   "Other data": "Other data",
+  "Add material": "Add material",
+  "Update material": "Update material",
+  "Are you sure you want to add new material?":
+    "Are you sure you want to add new material?",
+  "Are you sure you want to update material?":
+    "Are you sure you want to update material?",
 } satisfies Record<string, string>;

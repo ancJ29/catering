@@ -479,4 +479,10 @@ export default {
   "Catering has not conducted inventory": "Bếp chưa phát sinh kiểm kê",
   "Important data": "Thông tin cần lưu ý",
   "Other data": "Thông tin khác",
+  "Add material": "Thêm nguyên liệu",
+  "Update material": "Cập nhật nguyên liệu",
+  "Are you sure you want to add new material?":
+    "Bạn có chắc chắn muốn thêm nguyên liệu mới?",
+  "Are you sure you want to update material?":
+    "Bạn có chắc chắn muốn cập nhật nguyên liệu?",
 } satisfies Record<string, string>;
