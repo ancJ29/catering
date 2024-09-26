@@ -83,14 +83,12 @@ const Notice = () => {
           </Indicator>
         </Popover.Target>
         <Popover.Dropdown p={0} w={350}>
-          {total > 0 && (
-            <Flex className={classes.markAllRead}>
-              <IconCheck color="51b68c" />
-              <Text onClick={markAllRead} fw="bold">
-                {t("Mark all read")}
-              </Text>
-            </Flex>
-          )}
+          <Flex className={classes.markAllRead}>
+            <IconCheck color="#51b68c" />
+            <Text onClick={markAllRead} fw="bold">
+              {t("Mark all read")}
+            </Text>
+          </Flex>
           <ScrollArea.Autosize mah={300} type="always" scrollbars="y">
             {data.map((notification, index) => (
               <NoticeItem
@@ -99,17 +97,6 @@ const Notice = () => {
                 reload={getData}
               />
             ))}
-            {total === 0 && (
-              <Flex
-                w="100%"
-                align="center"
-                justify="center"
-                fw="bold"
-                py={20}
-              >
-                {t("No new notifications")}
-              </Flex>
-            )}
           </ScrollArea.Autosize>
         </Popover.Dropdown>
       </Popover>

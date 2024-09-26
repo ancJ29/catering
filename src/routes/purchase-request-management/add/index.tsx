@@ -9,7 +9,7 @@ import {
   initialPurchaseRequestForm,
 } from "@/types";
 import { formatTime, isSameDate, processExcelFile } from "@/utils";
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -179,49 +179,45 @@ const AddPurchaseRequest = () => {
         message: t("Add purchase request failed"),
       });
     }
-    if (isCatering) {
-      handleChangeValues("departmentId", cateringId);
-      window.location.reload();
-    }
+    setFieldValue("departmentId", values.departmentId);
+    store.initBackgroundData(values.departmentId || "");
   };
 
   return (
-    <Stack gap={0}>
-      <Flex direction="column" gap={10}>
-        <PurchaseActions
-          returnUrl="/purchase-request-management"
-          completeButtonTitle="Complete"
-          complete={complete}
-        />
-        <PurchaseRequestInformationForm
-          values={values}
-          onChangeValues={handleChangeValues}
-          getInputProps={getInputProps}
-          errors={errors}
-        />
-        <ImportMaterials
-          selectedSource={selectedSource}
-          onChangeSelectedSource={(value) =>
-            handleChangeSelectedSource(value, undefined)
-          }
-          opened={opened}
-          toggle={() => setOpened(!opened)}
-          error={sourceError}
-        />
-        <input
-          type="file"
-          accept=".xlsx, .xls"
-          ref={fileInputRef}
-          onChange={handleFileUpload}
-          style={{ display: "none" }}
-        />
-        <Table
-          opened={opened}
-          showNeedToOrder={
-            selectedSource !== ImportMaterialAction.ADD_MANUALLY
-          }
-        />
-      </Flex>
+    <Stack gap={10}>
+      <PurchaseActions
+        returnUrl="/purchase-request-management"
+        completeButtonTitle="Complete"
+        complete={complete}
+      />
+      <PurchaseRequestInformationForm
+        values={values}
+        onChangeValues={handleChangeValues}
+        getInputProps={getInputProps}
+        errors={errors}
+      />
+      <ImportMaterials
+        selectedSource={selectedSource}
+        onChangeSelectedSource={(value) =>
+          handleChangeSelectedSource(value, undefined)
+        }
+        opened={opened}
+        toggle={() => setOpened(!opened)}
+        error={sourceError}
+      />
+      <input
+        type="file"
+        accept=".xlsx, .xls"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        style={{ display: "none" }}
+      />
+      <Table
+        opened={opened}
+        showNeedToOrder={
+          selectedSource !== ImportMaterialAction.ADD_MANUALLY
+        }
+      />
     </Stack>
   );
 };
