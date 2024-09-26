@@ -44,6 +44,7 @@ import {
   materialOthersSchema,
   piStatusSchema,
   poStatusSchema,
+  productOthersSchema,
   prStatusSchema,
   supplierOthersSchema,
   userNotificationOthersSchema,
@@ -129,6 +130,7 @@ export const configs = {
             name: true,
             units: true,
             converters: true,
+            allowFloat: true,
           })
           .array(),
         enums: idAndNameSchema
@@ -422,14 +424,35 @@ export const configs = {
           enabled: true,
           createdAt: true,
           updatedAt: true,
+          others: true,
         })
         .partial({
           code: true,
         })
         .extend({
-          categoryId: optionalStringSchema,
+          others: productOthersSchema,
         }),
       response: addResponse,
+    },
+  },
+  [Actions.UPDATE_PRODUCT]: {
+    name: Actions.UPDATE_PRODUCT,
+    group: ActionGroups.PRODUCT_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: productSchema
+        .omit({
+          clientId: true,
+          enabled: true,
+          createdAt: true,
+          updatedAt: true,
+        })
+        .partial({
+          code: true,
+        })
+        .extend({
+          others: productOthersSchema,
+        }),
     },
   },
   [Actions.GET_DAILY_MENU]: {

@@ -6,6 +6,7 @@ import { Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { buildHash } from "@/utils";
 import { ActionIcon } from "@mantine/core";
+import { isNotEmpty } from "@mantine/form";
 import { IconSoup } from "@tabler/icons-react";
 import { NavigateFunction } from "react-router-dom";
 
@@ -99,4 +100,40 @@ export function filter(p: Product, x?: FilterType) {
     return false;
   }
   return true;
+}
+
+export type ProductRequest = {
+  name: string;
+  code: string;
+  description: string;
+  others: {
+    type: string;
+    oldId: number;
+    internalCode: string;
+    category: string;
+    party: boolean;
+    normal: boolean;
+    supply: boolean;
+  };
+};
+
+export const initialValues: ProductRequest = {
+  name: "",
+  code: "",
+  description: "",
+  others: {
+    type: "",
+    oldId: 0,
+    internalCode: "",
+    category: "",
+    party: true,
+    normal: true,
+    supply: true,
+  },
+};
+
+export function _validate(t: (s: string) => string) {
+  return {
+    name: isNotEmpty(t("Field is required")),
+  };
 }

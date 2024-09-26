@@ -1,9 +1,11 @@
+import AddButton from "@/components/c-catering/AddButton";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Product } from "@/services/domain";
 import userProductStore from "@/stores/product.store";
 import { Stack } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,7 +14,9 @@ import {
   defaultCondition,
   filter,
 } from "./_configs";
+import AddProductForm from "./components/AddProductForm";
 import Filter from "./components/Filter";
+import UpdateProductForm from "./components/UpdateProductForm";
 
 const ProductManagement = () => {
   const t = useTranslation();
@@ -21,7 +25,7 @@ const ProductManagement = () => {
     () => configs(t, navigate),
     [t, navigate],
   );
-  const { products } = userProductStore();
+  const { products, reload: reloadProduct } = userProductStore();
 
   const dataLoader = useCallback(() => {
     return Array.from(products.values());
@@ -45,8 +49,39 @@ const ProductManagement = () => {
     defaultCondition,
   });
 
+  const _reload = useCallback(async () => {
+    reloadProduct(true);
+    modals.closeAll();
+  }, [reloadProduct]);
+
+  const addProduct = useCallback(() => {
+    modals.open({
+      title: t("Add product"),
+      classNames: { title: "c-catering-font-bold" },
+      centered: true,
+      size: "lg",
+      children: <AddProductForm onSuccess={_reload} />,
+    });
+  }, [_reload, t]);
+
+  const updateProduct = useCallback(
+    (product: Product) => {
+      modals.open({
+        title: t("Update product"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <UpdateProductForm product={product} onSuccess={_reload} />
+        ),
+      });
+    },
+    [_reload, t],
+  );
+
   return (
-    <Stack gap={10}>
+    <Stack gap={10} pos="relative">
+      <AddButton onClick={addProduct} />
       <Filter
         counter={counter}
         condition={condition}
@@ -65,6 +100,7 @@ const ProductManagement = () => {
         columns={dataGridConfigs}
         data={data}
         onChangePage={setPage}
+        onRowClick={updateProduct}
       />
     </Stack>
   );

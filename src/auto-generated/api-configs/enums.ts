@@ -46,6 +46,7 @@ export enum Actions {
   GET_PRODUCTS = "get-products",
   GET_ALL_PRODUCTS = "get-all-products",
   ADD_PRODUCT = "add-product",
+  UPDATE_PRODUCT = "update-product",
   // UPDATE_PRODUCT = "update-product",
   // DELETE_PRODUCT = "delete-product",
   // GET_MENUS = "get-menus",

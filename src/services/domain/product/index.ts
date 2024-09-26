@@ -74,3 +74,25 @@ export function productTypeOptions(
     value: type,
   }));
 }
+
+const { request: addRequest } =
+  actionConfigs[Actions.ADD_PRODUCT].schema;
+export type AddProductRequest = z.infer<typeof addRequest>;
+
+export async function addProduct(params: AddProductRequest) {
+  return await callApi<AddProductRequest, { id: string }>({
+    action: Actions.ADD_PRODUCT,
+    params,
+  });
+}
+
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_PRODUCT].schema;
+export type UpdateProductRequest = z.infer<typeof updateRequest>;
+
+export async function updateProduct(params: UpdateProductRequest) {
+  return await callApi<UpdateProductRequest, { id: string }>({
+    action: Actions.UPDATE_PRODUCT,
+    params,
+  });
+}
