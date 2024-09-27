@@ -28,8 +28,7 @@ const PurchaseActions = ({
   const navigate = useNavigate();
 
   const onReturn = () => {
-    navigate(returnUrl);
-    // window.location.reload();
+    navigate(returnUrl, { state: { refresh: true } });
   };
 
   return (

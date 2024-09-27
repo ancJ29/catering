@@ -14,7 +14,7 @@ import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { configs } from "./_configs";
 import AddPRButton from "./components/AddPRButton";
 import Filter from "./components/Filter";
@@ -22,6 +22,7 @@ import Filter from "./components/Filter";
 const PurchaseRequestManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [purchaseRequests, setPurchaseRequests] = useState<
   PurchaseRequest[]
   >([]);
@@ -39,6 +40,12 @@ const PurchaseRequestManagement = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.refresh) {
+      getData();
+    }
+  }, [location.state]);
 
   const dataLoader = useCallback(() => {
     return purchaseRequests;
