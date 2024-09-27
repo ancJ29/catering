@@ -29,7 +29,7 @@ const PurchaseActions = ({
 
   const onReturn = () => {
     navigate(returnUrl);
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
