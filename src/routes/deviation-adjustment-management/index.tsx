@@ -12,7 +12,7 @@ import useSupplierStore from "@/stores/supplier.store";
 import { endOfWeek, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   configs,
   defaultCondition,
@@ -53,6 +53,13 @@ const DeviationAdjustmentManagement = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.refresh) {
+      getData();
+    }
+  }, [location.state]);
 
   const dataLoader = useCallback(() => {
     return currents;

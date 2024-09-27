@@ -90,8 +90,9 @@ const SupplyCoordinationDetail = () => {
         message: t("Update purchase request successfully"),
       });
       setTimeout(() => {
-        navigate("/supply-coordination");
-        window.location.reload();
+        navigate("/supply-coordination", {
+          state: { refresh: true },
+        });
       }, 500);
     } else {
       showFailNotification();

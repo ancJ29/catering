@@ -78,7 +78,7 @@ const PurchaseRequestDetail = () => {
       prStatusSchema.Values.KD,
       values.priority || "",
     );
-    window.location.reload();
+    load();
   };
 
   return (

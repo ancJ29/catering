@@ -9,7 +9,7 @@ import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   FilterType,
   configs,
@@ -36,6 +36,13 @@ const PurchaseInternalManagement = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.refresh) {
+      getData();
+    }
+  }, [location.state]);
 
   const dataLoader = useCallback(() => {
     return currents;

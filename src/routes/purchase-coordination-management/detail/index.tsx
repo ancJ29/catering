@@ -38,7 +38,7 @@ const PurchaseCoordinationDetail = () => {
     }
     await store.initData(purchaseCoordinationId);
     const purchaseCoordination = store.getPurchaseCoordination();
-    if(!purchaseCoordination) {
+    if (!purchaseCoordination) {
       navigate("/");
     }
     setValues({
@@ -78,8 +78,9 @@ const PurchaseCoordinationDetail = () => {
             message: t("Add purchase order successfully"),
           });
           setTimeout(() => {
-            navigate("/purchase-coordination-management");
-            window.location.reload();
+            navigate("/purchase-coordination-management", {
+              state: { refresh: true },
+            });
           }, 500);
         } else {
           notifications.show({

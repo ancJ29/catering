@@ -42,8 +42,9 @@ const ExternalWarehouseImportDetail = () => {
   );
 
   const returnPageList = useCallback(() => {
-    navigate("/external-warehouse-entry");
-    window.location.reload();
+    navigate("/external-warehouse-entry", {
+      state: { refresh: true },
+    });
   }, [navigate]);
 
   const complete = useCallback(async () => {

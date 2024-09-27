@@ -22,7 +22,6 @@ import Filter from "./components/Filter";
 const PurchaseRequestManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const [purchaseRequests, setPurchaseRequests] = useState<
   PurchaseRequest[]
   >([]);
@@ -41,6 +40,7 @@ const PurchaseRequestManagement = () => {
     getData();
   }, []);
 
+  const location = useLocation();
   useEffect(() => {
     if (location.state?.refresh) {
       getData();

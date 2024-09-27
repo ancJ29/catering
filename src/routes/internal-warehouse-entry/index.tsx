@@ -11,7 +11,7 @@ import useCateringStore from "@/stores/catering.store";
 import { endOfDay, startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   configs,
   defaultCondition,
@@ -71,6 +71,14 @@ const InternalWarehouseEntry = () => {
     getData(condition?.from, condition?.to);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.refresh) {
+      getData(condition?.from, condition?.to);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
   const onChangeDateRange = useCallback(
     (from?: number, to?: number) => {
