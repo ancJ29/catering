@@ -4,6 +4,7 @@ import useTranslation from "@/hooks/useTranslation";
 import { Department, Material } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import { OptionProps, TextAlign } from "@/types";
+import { roundToDecimals } from "@/utils";
 import {
   Button,
   Checkbox,
@@ -104,7 +105,7 @@ const Item = ({
       ),
     },
     { content: coordinationDetail?.orderQuantity, align: "right" },
-    { content: kitchenQuantity, align: "right" },
+    { content: roundToDecimals(kitchenQuantity, 3), align: "right" },
     {
       content: (
         <NumberInput
