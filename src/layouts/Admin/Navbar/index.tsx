@@ -1,4 +1,9 @@
+import { prStatusSchema } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
+import {
+  getPurchaseRequests,
+  PurchaseRequest,
+} from "@/services/domain";
 import { Menu, MenuItem } from "@/types";
 import { AppShell, Box, NavLink, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
@@ -11,6 +16,7 @@ import classes from "./navbar.module.scss";
 // TODO: remove debug
 // const debug = window.location.hostname.includes("localhost");
 const debug = true;
+const supplyCoordinationKey = "supply-coordination";
 
 type NavbarProps = {
   opened?: boolean;
@@ -32,6 +38,17 @@ const Navbar = ({
   const [active, setActive] = useState(location.pathname);
   const [activeKey, setActiveKey] = useState("");
   const [_menu, setMenu] = useState<Menu>([]);
+  const [pr, setPR] = useState<PurchaseRequest[]>([]);
+
+  const getData = async (from?: number, to?: number) => {
+    setPR(
+      await getPurchaseRequests(from, to, prStatusSchema.Values.DD),
+    );
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   useEffect(() => {
     setActive(location.pathname);
@@ -103,7 +120,15 @@ const Navbar = ({
               key={idx}
               h="3rem"
               onClick={open.bind(null, item)}
-              label={opened ? t(item.label) : ""}
+              label={
+                opened
+                  ? `${t(item.label)}${
+                    item.key === supplyCoordinationKey
+                      ? ` (${pr.length})`
+                      : ""
+                  }`
+                  : ""
+              }
               classNames={{
                 children: "c-catering-p-0",
               }}
