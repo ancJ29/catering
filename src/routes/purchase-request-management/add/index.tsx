@@ -165,6 +165,13 @@ const AddPurchaseRequest = () => {
       });
       return;
     }
+    if (!store.checkAllMaterialsPositive()) {
+      notifications.show({
+        color: "red.5",
+        message: t("Please check all the amounts of materials"),
+      });
+      return;
+    }
     const result = await store.createPurchasingRequest(values);
     setValues(initialPurchaseRequestForm);
     setSelectedSource(null);

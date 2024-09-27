@@ -205,6 +205,17 @@ export default {
       .getSnapshot()
       .selectedMaterialIds.includes(materialId);
   },
+  checkAllMaterialsPositive() {
+    const state = store.getSnapshot();
+    let check = true;
+    state.selectedMaterialIds.map((materialId) => {
+      if (state.updates[materialId].amount === 0) {
+        check = false;
+        return;
+      }
+    });
+    return check;
+  },
   async createPurchasingRequest(
     purchaseRequest: PurchaseRequestForm,
   ) {
@@ -359,6 +370,7 @@ function reducer(action: Action, state: State): State {
             inventory,
             materials,
             state.cateringId,
+            true,
           );
           state.updates[action.materialId] =
             state.currents[action.materialId];
@@ -467,6 +479,7 @@ function initPurchaseDetail(
   inventory: Inventory,
   materials: Map<string, Material>,
   cateringId: string,
+  isAddManually = false,
 ) {
   const material = materials.get(inventory.materialId);
   const amount = convertAmountBackward({
@@ -483,8 +496,8 @@ function initPurchaseDetail(
   return {
     materialId: inventory.materialId,
     inventory: amount,
-    needToOrder: _amount,
-    amount: _amount,
+    needToOrder: isAddManually ? 0 : _amount,
+    amount: isAddManually ? 0 : _amount,
     supplierNote: "",
     internalNote: "",
     price:
