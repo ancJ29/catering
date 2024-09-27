@@ -4,7 +4,7 @@ import { statusRequestColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
 const PurchaseRequestStatus = ({
-  fz = 12,
+  fz = 10,
   status,
   c,
 }: {

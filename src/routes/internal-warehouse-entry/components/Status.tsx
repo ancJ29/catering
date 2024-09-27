@@ -4,7 +4,7 @@ import { statusInternalCateringColor } from "@/services/domain";
 import { Badge, MantineColor } from "@mantine/core";
 
 const Status = ({
-  fz = 12,
+  fz = 10,
   status,
   c,
 }: {

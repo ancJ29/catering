@@ -10,7 +10,7 @@ type StatusProps = {
   fz?: number;
 };
 
-const Status = ({ status, fz = 12, c }: StatusProps) => {
+const Status = ({ status, fz = 10, c }: StatusProps) => {
   const t = useTranslation();
   return (
     <Badge
