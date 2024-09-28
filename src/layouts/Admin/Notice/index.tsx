@@ -98,6 +98,7 @@ const Notice = () => {
                 key={index}
                 notification={notification}
                 reload={getData}
+                onClose={() => setOpened(false)}
               />
             ))}
             {total === 0 && (

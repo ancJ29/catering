@@ -5,14 +5,21 @@ import {
 } from "@/services/domain/notification";
 import { formatTime } from "@/utils";
 import { Flex, Text } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 import classes from "./NoticeItem.module.scss";
 
 type NoticeItemProps = {
   notification?: Notification;
   reload?: () => void;
+  onClose: () => void;
 };
 
-const NoticeItem = ({ notification, reload }: NoticeItemProps) => {
+const NoticeItem = ({
+  notification,
+  reload,
+  onClose,
+}: NoticeItemProps) => {
+  const navigate = useNavigate();
   const onClick = async () => {
     await updateNotification([
       {
@@ -23,6 +30,11 @@ const NoticeItem = ({ notification, reload }: NoticeItemProps) => {
       },
     ]);
     await reload?.();
+    if (!notification?.url) {
+      return;
+    }
+    navigate(notification?.url);
+    onClose();
   };
 
   return (

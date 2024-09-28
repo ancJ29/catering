@@ -10,6 +10,7 @@ export const userNotificationSchema = z.object({
   id: z.string(),
   notificationId: z.string(),
   userId: z.string(),
+  url: z.string().nullish(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

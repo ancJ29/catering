@@ -24,7 +24,7 @@ import Table from "./components/Table";
 const PurchaseRequestDetail = () => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const { role } = useAuthStore();
+  const { role, isCatering } = useAuthStore();
   const { purchaseRequestId } = useParams();
   const [disabled, setDisabled] = useState(true);
   const { values, setValues, setFieldValue, getInputProps, errors } =
@@ -91,6 +91,7 @@ const PurchaseRequestDetail = () => {
         rejectButtonTitle="Not approved"
         onReject={rejectPurchaseRequest}
         disabledRejectButton={disabled}
+        showCompleteAndRejectButton={!isCatering}
       />
       <PurchaseRequestInformationForm
         values={values}

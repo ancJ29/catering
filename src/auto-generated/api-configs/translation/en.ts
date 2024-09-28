@@ -134,6 +134,7 @@ export default {
   "noodle-for-party": "Soup for party",
   "noodles": "Noodles",
   "On sale ONLY": "Available ONLY",
+  "Active catering ONLY": "Active catering ONLY",
   "On sale": "Available",
   "Page": "Page",
   "Password copied to clipboard": "Password copied to clipboard",
@@ -486,4 +487,5 @@ export default {
     "Are you sure you want to add new material?",
   "Are you sure you want to update material?":
     "Are you sure you want to update material?",
+  "No new notifications": "No new notifications",
 } satisfies Record<string, string>;

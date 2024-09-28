@@ -132,6 +132,7 @@ export default {
   "noodle-for-party": "Món nước (tiệc)",
   "noodles": "Món nước mặn",
   "On sale ONLY": "Chỉ hiện món đang cung cấp",
+  "Active catering ONLY": "Chỉ hiện bếp đang hoạt động",
   "On sale": "Cung cấp",
   "Page": "Trang",
   "Password copied to clipboard": "Mật khẩu đã được sao chép",
@@ -485,4 +486,5 @@ export default {
     "Bạn có chắc chắn muốn thêm nguyên liệu mới?",
   "Are you sure you want to update material?":
     "Bạn có chắc chắn muốn cập nhật nguyên liệu?",
+  "No new notifications": "Không có thông báo mới",
 } satisfies Record<string, string>;

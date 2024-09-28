@@ -1,5 +1,4 @@
 import useTranslation from "@/hooks/useTranslation";
-import useAuthStore from "@/stores/auth.store";
 import { Button, Flex } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ type PurchaseActionsProps = {
   rejectButtonTitle?: string;
   onReject?: () => void;
   disabledRejectButton?: boolean;
+  showCompleteAndRejectButton?: boolean;
 };
 
 const PurchaseActions = ({
@@ -24,10 +24,10 @@ const PurchaseActions = ({
   rejectButtonTitle,
   onReject,
   disabledRejectButton = false,
+  showCompleteAndRejectButton = true,
 }: PurchaseActionsProps) => {
   const t = useTranslation();
   const navigate = useNavigate();
-  const { isCatering } = useAuthStore();
 
   const onReturn = () => {
     navigate(returnUrl, { state: { refresh: true } });
@@ -35,7 +35,7 @@ const PurchaseActions = ({
 
   return (
     <Flex justify="end" align="end" gap={10}>
-      {!isCatering && (
+      {showCompleteAndRejectButton && (
         <>
           {rejectButtonTitle && (
             <Button

@@ -1111,6 +1111,7 @@ export const configs = {
       request: z.object({
         content: stringSchema,
         userIds: stringSchema.array(),
+        url: stringSchema.optional(),
       }),
     },
   },

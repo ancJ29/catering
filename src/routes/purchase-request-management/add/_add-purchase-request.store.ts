@@ -1,3 +1,4 @@
+import { ClientRoles } from "@/auto-generated/api-configs";
 import { TemplateType } from "@/auto-generated/prisma-schema";
 import {
   Inventory,
@@ -245,9 +246,12 @@ export default {
       userIds: Array.from(users.values())
         .filter(
           (user) =>
-            user.departments[0]?.id === purchaseRequest.departmentId,
+            user.roles.filter(
+              (role) => role.name === ClientRoles.OWNER,
+            ).length > 0,
         )
         .map((user) => user.id),
+      url: `/purchase-request-management/${result?.id}`,
     });
     dispatch({ type: ActionType.RESET });
     return result;
