@@ -1,4 +1,5 @@
 import { Actions } from "@/auto-generated/api-configs";
+import AddButton from "@/components/c-catering/AddButton";
 import DataGrid from "@/components/common/DataGrid";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
@@ -125,7 +126,8 @@ const UserManagement = () => {
   );
 
   return (
-    <Stack gap={10}>
+    <Stack gap={10} pos="relative">
+      <AddButton onClick={addUser} />
       <Flex w={"100%"} justify="end" align="center" gap={12}>
         <form
           onSubmit={search}
@@ -149,9 +151,6 @@ const UserManagement = () => {
             {t("Search")}
           </Button>
         </form>
-        <Button w={{ base: 80, sm: 100 }} onClick={addUser}>
-          {t("Add")}
-        </Button>
       </Flex>
       <DataGrid
         onRowClick={updateUser}

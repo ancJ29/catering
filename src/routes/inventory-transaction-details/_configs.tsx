@@ -83,10 +83,13 @@ export const configs = (
       textAlign: "right",
       header: t("Beginning inventory"),
       renderCell: (_, row: MonthlyInventory) => {
-        return convertAmountBackward({
-          material: materials.get(row.materialId),
-          amount: row.amount,
-        });
+        return roundToDecimals(
+          convertAmountBackward({
+            material: materials.get(row.materialId),
+            amount: row.amount,
+          }),
+          3,
+        );
       },
     },
     {

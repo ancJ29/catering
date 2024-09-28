@@ -1,5 +1,6 @@
 import { materialOrderCycleSchema } from "@/auto-generated/api-configs";
 import NumberInput from "@/components/common/NumberInput";
+import { theme } from "@/configs/theme/mantine-theme";
 import { Inventory, Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { Center, Checkbox, Stack, Text } from "@mantine/core";
@@ -43,7 +44,7 @@ export const configs = (
           <Center w="full">
             {row.others?.orderCycle ===
               materialOrderCycleSchema.Values.HN && (
-              <IconCheck color="#51b68c" />
+              <IconCheck color={theme.colors?.primary?.[7] || ""} />
             )}
           </Center>
         );

@@ -1,10 +1,11 @@
+import AddButton from "@/components/c-catering/AddButton";
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
 import { Supplier } from "@/services/domain";
 import useSupplierStore from "@/stores/supplier.store";
-import { Button, Flex, Stack } from "@mantine/core";
+import { Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import { configs } from "./_configs";
@@ -54,16 +55,14 @@ const SupplierManagement = () => {
   }, []);
 
   return (
-    <Stack gap={10}>
+    <Stack gap={10} pos="relative">
+      <AddButton onClick={() => addSupplier()} />
       <Flex justify="end" align="center" gap={10}>
         <AutocompleteForFilterData
           w={{ base: "50%", sm: "20rem" }}
           data={names}
           onReload={reload}
         />
-        <Button w={100} onClick={() => addSupplier()}>
-          {t("Add")}
-        </Button>
       </Flex>
       <DataGrid
         onRowClick={updateSupplier}

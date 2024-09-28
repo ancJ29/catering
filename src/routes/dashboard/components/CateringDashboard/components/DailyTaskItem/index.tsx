@@ -1,3 +1,4 @@
+import { theme } from "@/configs/theme/mantine-theme";
 import useTranslation from "@/hooks/useTranslation";
 import { DailyTaskType } from "@/routes/dashboard/_configs";
 import { Card, Flex, Text } from "@mantine/core";
@@ -34,7 +35,10 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
           <Text ta="start">{item.content}</Text>
         </Flex>
         <Flex gap={5}>
-          <IconEye strokeWidth="1.5" color="#51b68c" />
+          <IconEye
+            strokeWidth="1.5"
+            color={theme.colors?.primary?.[7] || ""}
+          />
           <Text c="primary" lh="xs">
             {t("View")}
           </Text>

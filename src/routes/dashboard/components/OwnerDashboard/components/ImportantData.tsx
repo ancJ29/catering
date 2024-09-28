@@ -1,5 +1,18 @@
+import {
+  poStatusSchema,
+  prStatusSchema,
+} from "@/auto-generated/api-configs";
+import { FilterType as PurchaseRequestFilterType } from "@/configs/filters/purchase-request";
+import { theme } from "@/configs/theme/mantine-theme";
 import { DashboardDataType } from "@/routes/dashboard/_configs";
+import { FilterType as PurchaseOrderFilter } from "@/routes/purchase-order-management/_configs";
 import { OwnerDashboard } from "@/services/domain";
+import {
+  buildHash,
+  endOfWeek,
+  startOfDay,
+  startOfWeek,
+} from "@/utils";
 import {
   IconCar,
   IconCheck,
@@ -14,19 +27,43 @@ type ImportantDataProps = {
 };
 
 const ImportantData = ({ dashboard }: ImportantDataProps) => {
-  const iconColor = "#51b68c";
+  const iconColor = theme.colors?.primary?.[7] || "";
+
+  const purchaseRequestCondition: PurchaseRequestFilterType = {
+    id: "",
+    from: startOfDay(startOfWeek(Date.now())),
+    to: endOfWeek(Date.now()),
+    types: [],
+    priorities: [],
+    statuses: [prStatusSchema.Values.DG],
+    departmentIds: [],
+  };
+  const purchaseRequestHash = buildHash(purchaseRequestCondition);
+
+  const purchaseOrderCondition: PurchaseOrderFilter = {
+    id: "",
+    from: startOfWeek(Date.now()),
+    to: endOfWeek(Date.now()),
+    statuses: [poStatusSchema.Values.DG],
+    supplierIds: [],
+    receivingCateringIds: [],
+  };
+  const purchaseOrderHash = buildHash(purchaseOrderCondition);
+
   const data: DashboardDataType[] = [
     {
       title: "Pending confirmation",
       amount: dashboard?.pendingConfirmation || 0,
       icon: IconCheck,
       iconColor,
+      url: `/purchase-request-management#${purchaseRequestHash}`,
     },
     {
       title: "Dispatch case",
       amount: dashboard?.dispatchCase || 0,
       icon: IconCar,
       iconColor,
+      url: "/purchase-coordination-management",
     },
     {
       title: "Purchase case",
@@ -39,6 +76,7 @@ const ImportantData = ({ dashboard }: ImportantDataProps) => {
       amount: dashboard?.poToBeProcessed || 0,
       icon: IconCheck,
       iconColor,
+      url: `/purchase-order-management#${purchaseOrderHash}`,
     },
     {
       title: "Catering has not ordered",

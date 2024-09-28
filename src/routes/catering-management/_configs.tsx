@@ -98,6 +98,24 @@ function findSuppliersByCateringId(cateringId: string) {
   return unique(suppliers);
 }
 
+export type FilterType = {
+  onSaleOnly: boolean;
+};
+
+export const defaultCondition: FilterType = {
+  onSaleOnly: false,
+};
+
+export function filter(c: Department, x?: FilterType) {
+  if (!x) {
+    return true;
+  }
+  if (x.onSaleOnly && !c.enabled) {
+    return false;
+  }
+  return true;
+}
+
 export const initialValues: AddDepartmentRequest = {
   name: "",
   code: "",

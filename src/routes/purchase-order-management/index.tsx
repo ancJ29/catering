@@ -1,6 +1,7 @@
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
+import useUrlHash from "@/hooks/useUrlHash";
 import { PurchaseOrder, getPurchaseOrders } from "@/services/domain";
 import useCateringStore from "@/stores/catering.store";
 import useSupplierStore from "@/stores/supplier.store";
@@ -61,23 +62,36 @@ const PurchaseOrderManagement = () => {
     updateCondition,
     filtered,
     reset,
+    setCondition,
   } = useFilterData<PurchaseOrder, FilterType>({
     dataLoader: dataLoader,
     filter,
     defaultCondition,
   });
 
-  const onChangeDateRange = (from?: number, to?: number) => {
-    if (condition?.from && condition?.to && from && to) {
-      const _from = startOfDay(from);
-      const _to = endOfDay(to);
-      if (from < condition.from || to > condition.to) {
-        getData(_from, _to);
+  const onChangeDateRange = useCallback(
+    (from?: number, to?: number) => {
+      if (condition?.from && condition?.to && from && to) {
+        const _from = startOfDay(from);
+        const _to = endOfDay(to);
+        if (from < condition.from || to > condition.to) {
+          getData(_from, _to);
+        }
+        updateCondition("from", "", _from);
+        updateCondition("to", "", to);
       }
-      updateCondition("from", "", _from);
-      updateCondition("to", "", to);
-    }
-  };
+    },
+    [condition?.from, condition?.to, updateCondition],
+  );
+
+  const callback = useCallback(
+    (condition: FilterType) => {
+      setCondition(condition);
+      onChangeDateRange(condition?.from, condition?.to);
+    },
+    [onChangeDateRange, setCondition],
+  );
+  useUrlHash(condition ?? defaultCondition, callback);
 
   const onRowClick = (item: PurchaseOrder) => {
     navigate(`/purchase-order-management/${item.id}`);

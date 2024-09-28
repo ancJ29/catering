@@ -14,7 +14,7 @@ const Icon = ({ disabled, label, icon }: IconProps) => {
     <Tooltip
       disabled={disabled}
       label={t(label)}
-      color="#fff"
+      color="white"
       c="black"
       classNames={{ tooltip: "c-catering-bdr-f" }}
     >

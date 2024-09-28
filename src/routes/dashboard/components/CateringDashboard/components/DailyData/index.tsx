@@ -1,3 +1,4 @@
+import { theme } from "@/configs/theme/mantine-theme";
 import { DashboardDataType } from "@/routes/dashboard/_configs";
 import { CateringDashboard } from "@/services/domain";
 import {
@@ -14,7 +15,7 @@ type DailyDataProps = {
 };
 
 const DailyData = ({ dashboard }: DailyDataProps) => {
-  const iconColor = "#51b68c";
+  const iconColor = theme.colors?.primary?.[7] || "";
   const data: DashboardDataType[] = [
     {
       title: "Shift services",

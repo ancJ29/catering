@@ -1,5 +1,8 @@
+import { theme } from "@/configs/theme/mantine-theme";
+import { FilterType as CateringFilterType } from "@/routes/catering-management/_configs";
 import { DashboardDataType } from "@/routes/dashboard/_configs";
 import { OwnerDashboard } from "@/services/domain";
+import { buildHash } from "@/utils";
 import {
   IconBox,
   IconInfoCircle,
@@ -13,43 +16,55 @@ type OtherDataProps = {
 };
 
 const OtherData = ({ dashboard }: OtherDataProps) => {
-  const iconColor = "#51b68c";
+  const iconColor = theme.colors?.primary?.[7] || "";
+
+  const activeCateringCondition: CateringFilterType = {
+    onSaleOnly: true,
+  };
+  const activeCateringHash = buildHash(activeCateringCondition);
+
   const data: DashboardDataType[] = [
     {
       title: "Shift services",
       amount: dashboard?.shiftServices || 0,
       icon: IconToolsKitchen,
       iconColor,
+      url: "/meal-management",
     },
     {
       title: "Enable catering",
       amount: dashboard?.enableCaterings || 0,
       icon: IconInfoCircle,
       iconColor,
+      url: `/catering-management#${activeCateringHash}`,
     },
     {
       title: "User",
       amount: dashboard?.users || 0,
       icon: IconUsers,
       iconColor,
+      url: "/user-management",
     },
     {
       title: "Catering name",
       amount: dashboard?.caterings || 0,
       icon: IconInfoCircle,
       iconColor,
+      url: "/catering-management",
     },
     {
       title: "Customer",
       amount: dashboard?.customers || 0,
       icon: IconInfoCircle,
       iconColor,
+      url: "/customer-management",
     },
     {
       title: "Suppliers",
       amount: dashboard?.suppliers || 0,
       icon: IconInfoCircle,
       iconColor,
+      url: "/supplier-management",
     },
   ];
 

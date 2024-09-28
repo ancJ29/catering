@@ -3,11 +3,18 @@ import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFi
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
+import useUrlHash from "@/hooks/useUrlHash";
 import useCateringStore from "@/stores/catering.store";
-import { Flex, Stack } from "@mantine/core";
+import { Flex, Stack, Switch } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
-import { Department, configs } from "./_configs";
+import {
+  Department,
+  FilterType,
+  configs,
+  defaultCondition,
+  filter,
+} from "./_configs";
 import AddCateringForm from "./components/AddCateringForm";
 import UpdateCateringForm from "./components/UpdateCateringForm";
 
@@ -20,9 +27,27 @@ const CateringManagement = () => {
     return Array.from(caterings.values());
   }, [caterings]);
 
-  const { data, names, reload } = useFilterData<Department>({
+  const {
+    condition,
+    data,
+    keyword,
+    names,
+    reload,
+    updateCondition,
+    setCondition,
+  } = useFilterData<Department, FilterType>({
     dataLoader,
+    filter,
+    defaultCondition,
   });
+
+  const callback = useCallback(
+    (condition: FilterType) => {
+      setCondition(condition);
+    },
+    [setCondition],
+  );
+  useUrlHash(condition ?? defaultCondition, callback);
 
   const _reload = useCallback(async () => {
     reloadCatering(true);
@@ -58,9 +83,21 @@ const CateringManagement = () => {
   );
 
   return (
-    <Stack gap={10} pos="relative">
+    <Stack gap={15} pos="relative">
       <AddButton onClick={addCatering} />
-      <Flex justify="end" align="center">
+      <Flex justify="space-between" align="center">
+        <Switch
+          mt={10}
+          checked={condition?.onSaleOnly ?? false}
+          onChange={updateCondition.bind(
+            null,
+            "onSaleOnly",
+            false,
+            !(condition?.onSaleOnly ?? false),
+            keyword,
+          )}
+          label={t("Active catering ONLY")}
+        />
         <AutocompleteForFilterData
           data={names}
           onReload={reload}

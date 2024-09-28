@@ -1,3 +1,4 @@
+import AddButton from "@/components/c-catering/AddButton";
 import DataGrid from "@/components/common/DataGrid";
 import {
   FilterType,
@@ -6,6 +7,7 @@ import {
 } from "@/configs/filters/purchase-request";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
+import useUrlHash from "@/hooks/useUrlHash";
 import {
   PurchaseRequest,
   getPurchaseRequests,
@@ -16,7 +18,6 @@ import { Stack } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { configs } from "./_configs";
-import AddPRButton from "./components/AddPRButton";
 import Filter from "./components/Filter";
 
 const PurchaseRequestManagement = () => {
@@ -60,6 +61,7 @@ const PurchaseRequestManagement = () => {
     reload,
     setPage,
     updateCondition,
+    setCondition,
     filtered,
     reset,
   } = useFilterData<PurchaseRequest, FilterType>({
@@ -68,25 +70,41 @@ const PurchaseRequestManagement = () => {
     defaultCondition,
   });
 
-  const onChangeDateRange = (from?: number, to?: number) => {
-    if (condition?.from && condition?.to && from && to) {
-      const _from = startOfDay(from);
-      const _to = endOfDay(to);
-      if (from < condition.from || to > condition.to) {
-        getData(_from, _to);
+  const onChangeDateRange = useCallback(
+    (from?: number, to?: number) => {
+      if (condition?.from && condition?.to && from && to) {
+        const _from = startOfDay(from);
+        const _to = endOfDay(to);
+        if (from < condition.from || to > condition.to) {
+          getData(_from, _to);
+        }
+        updateCondition("from", "", _from);
+        updateCondition("to", "", to);
       }
-      updateCondition("from", "", _from);
-      updateCondition("to", "", to);
-    }
-  };
+    },
+    [condition?.from, condition?.to, updateCondition],
+  );
+
+  const callback = useCallback(
+    (condition: FilterType) => {
+      setCondition(condition);
+      onChangeDateRange(condition?.from, condition?.to);
+    },
+    [onChangeDateRange, setCondition],
+  );
+  useUrlHash(condition ?? defaultCondition, callback);
 
   const onRowClick = (item: PurchaseRequest) => {
     navigate(`/purchase-request-management/${item.id}`);
   };
 
+  const addPurchaseRequest = () => {
+    navigate("/purchase-request-management/add");
+  };
+
   return (
     <Stack gap={10} key={caterings.size} pos="relative">
-      <AddPRButton />
+      <AddButton onClick={addPurchaseRequest} />
       <Filter
         condition={condition}
         keyword={keyword}

@@ -1,4 +1,5 @@
 import { userNotificationStatusSchema } from "@/auto-generated/api-configs";
+import { theme } from "@/configs/theme/mantine-theme";
 import useTranslation from "@/hooks/useTranslation";
 import {
   getNotifications,
@@ -85,7 +86,7 @@ const Notice = () => {
         <Popover.Dropdown p={0} w={350}>
           {total > 0 && (
             <Flex className={classes.markAllRead}>
-              <IconCheck color="51b68c" />
+              <IconCheck color={theme.colors?.primary?.[7] || ""} />
               <Text onClick={markAllRead} fw="bold">
                 {t("Mark all read")}
               </Text>

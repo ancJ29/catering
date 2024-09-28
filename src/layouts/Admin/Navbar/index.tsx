@@ -40,11 +40,19 @@ const Navbar = ({
   const [_menu, setMenu] = useState<Menu>([]);
   const [pr, setPR] = useState<PurchaseRequest[]>([]);
 
-  const getData = useCallback(async (from?: number, to?: number) => {
-    setPR(
-      await getPurchaseRequests(from, to, prStatusSchema.Values.DD),
-    );
-  }, []);
+  const getData = useCallback(
+    async (from?: number, to?: number) => {
+      pr.length === 0 &&
+        setPR(
+          await getPurchaseRequests(
+            from,
+            to,
+            prStatusSchema.Values.DD,
+          ),
+        );
+    },
+    [pr.length],
+  );
 
   useEffect(() => {
     getData();
