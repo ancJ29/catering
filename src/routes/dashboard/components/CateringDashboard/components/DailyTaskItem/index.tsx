@@ -37,7 +37,7 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
         <Flex gap={5}>
           <IconEye
             strokeWidth="1.5"
-            color={theme.colors?.primary?.[7] || ""}
+            color={theme.colors?.primary?.[5] || ""}
           />
           <Text c="primary" lh="xs">
             {t("View")}

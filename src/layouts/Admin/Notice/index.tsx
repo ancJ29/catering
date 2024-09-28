@@ -86,7 +86,7 @@ const Notice = () => {
         <Popover.Dropdown p={0} w={350}>
           {total > 0 && (
             <Flex className={classes.markAllRead}>
-              <IconCheck color={theme.colors?.primary?.[7] || ""} />
+              <IconCheck color={theme.colors?.primary?.[5] || ""} />
               <Text onClick={markAllRead} fw="bold">
                 {t("Mark all read")}
               </Text>

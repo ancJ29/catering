@@ -16,7 +16,7 @@ type OtherDataProps = {
 };
 
 const OtherData = ({ dashboard }: OtherDataProps) => {
-  const iconColor = theme.colors?.primary?.[7] || "";
+  const iconColor = theme.colors?.primary?.[5] || "";
 
   const activeCateringCondition: CateringFilterType = {
     onSaleOnly: true,

@@ -15,7 +15,7 @@ type DailyDataProps = {
 };
 
 const DailyData = ({ dashboard }: DailyDataProps) => {
-  const iconColor = theme.colors?.primary?.[7] || "";
+  const iconColor = theme.colors?.primary?.[5] || "";
   const data: DashboardDataType[] = [
     {
       title: "Shift services",

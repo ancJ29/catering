@@ -27,7 +27,7 @@ type ImportantDataProps = {
 };
 
 const ImportantData = ({ dashboard }: ImportantDataProps) => {
-  const iconColor = theme.colors?.primary?.[7] || "";
+  const iconColor = theme.colors?.primary?.[5] || "";
 
   const purchaseRequestCondition: PurchaseRequestFilterType = {
     id: "",

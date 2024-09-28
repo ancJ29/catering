@@ -44,7 +44,7 @@ export const configs = (
           <Center w="full">
             {row.others?.orderCycle ===
               materialOrderCycleSchema.Values.HN && (
-              <IconCheck color={theme.colors?.primary?.[7] || ""} />
+              <IconCheck color={theme.colors?.primary?.[5] || ""} />
             )}
           </Center>
         );
