@@ -40,14 +40,15 @@ const Navbar = ({
   const [_menu, setMenu] = useState<Menu>([]);
   const [pr, setPR] = useState<PurchaseRequest[]>([]);
 
-  const getData = async (from?: number, to?: number) => {
+  const getData = useCallback(async (from?: number, to?: number) => {
     setPR(
       await getPurchaseRequests(from, to, prStatusSchema.Values.DD),
     );
-  };
+  }, []);
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

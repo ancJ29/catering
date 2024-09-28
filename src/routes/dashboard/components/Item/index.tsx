@@ -2,6 +2,7 @@ import useTranslation from "@/hooks/useTranslation";
 import { DashboardDataType } from "@/routes/dashboard/_configs";
 import { numberWithDelimiter } from "@/utils";
 import { Card, Flex, Text } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 import classes from "./DailyDataItem.module.scss";
 
 type ItemProps = {
@@ -10,12 +11,22 @@ type ItemProps = {
 
 const Item = ({ item }: ItemProps) => {
   const t = useTranslation();
+  const navigate = useNavigate();
+
+  const onClick = () => {
+    if (!item.url) {
+      return;
+    }
+    navigate(item.url);
+  };
+
   return (
     <Card
       key={item.title}
       withBorder
       radius="md"
       className={classes.item}
+      onClick={onClick}
     >
       <item.icon
         size="2rem"

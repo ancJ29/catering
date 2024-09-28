@@ -6,6 +6,7 @@ export type DashboardDataType = {
   amount: number;
   icon: (props: TablerIconsProps) => JSX.Element;
   iconColor: string;
+  url?: string;
 };
 
 export type DailyTaskType = {

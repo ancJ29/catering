@@ -1,8 +1,8 @@
 import useTranslation from "@/hooks/useTranslation";
+import { DailyTaskType } from "@/routes/dashboard/_configs";
 import { Card, Flex, Text } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { DailyTaskType } from "../../_configs";
 import classes from "./DailyTaskItem.module.scss";
 
 type DailyTaskItemProps = {
@@ -14,8 +14,8 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
   const t = useTranslation();
   const navigate = useNavigate();
 
-  const onClick = (url: string) => {
-    navigate(url);
+  const onClick = () => {
+    navigate(item.url);
   };
 
   return (
@@ -24,7 +24,7 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
       withBorder
       radius="md"
       className={classes.item}
-      onClick={() => onClick(item.url)}
+      onClick={onClick}
     >
       <Flex align="space-between" justify="space-between" w="100%">
         <Flex direction="column" gap={5}>
