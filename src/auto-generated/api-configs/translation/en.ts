@@ -82,6 +82,8 @@ export default {
   "Cuisine code": "Code",
   "Cuisine name": "Cuisine",
   "Cuisine type": "Type",
+  "Cuisine description": "Description",
+  "Cuisine category": "Category",
   "Customer Management": "Customer Management",
   "Customer target": "Group",
   "Customer type": "Target",
@@ -488,4 +490,10 @@ export default {
   "Are you sure you want to update material?":
     "Are you sure you want to update material?",
   "No new notifications": "No new notifications",
+  "Add product": "Add product",
+  "Update product": "Update product",
+  "Are you sure you want to add new product?":
+    "Are you sure you want to add new product?",
+  "Are you sure you want to update product?":
+    "Are you sure you want to update product?",
 } satisfies Record<string, string>;

@@ -8,10 +8,8 @@ import useSupplierStore from "@/stores/supplier.store";
 import { Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
-import { configs } from "./_configs";
-import AddSupplierForm, {
-  SupplierForm,
-} from "./components/AddSupplierForm";
+import { configs, SupplierRequest } from "./_configs";
+import AddSupplierForm from "./components/AddSupplierForm";
 import UpdateSupplierForm from "./components/UpdateSupplierForm";
 
 // TODO: refactor this component (ref: src/routes/menu-management/)
@@ -22,7 +20,7 @@ const SupplierManagement = () => {
     useFilterData<Supplier>({ dataLoader });
 
   const addSupplier = useCallback(
-    (values?: SupplierForm) => {
+    (values?: SupplierRequest) => {
       modals.open({
         title: t("Add supplier"),
         classNames: { title: "c-catering-font-bold" },

@@ -1,6 +1,9 @@
+import { emailSchema } from "@/auto-generated/api-configs";
 import IconBadge from "@/components/c-catering/IconBadge";
 import { Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { isVietnamesePhoneNumber } from "@/utils";
+import { isNotEmpty } from "@mantine/form";
 
 export const configs = (
   t: (key: string) => string,
@@ -86,3 +89,42 @@ export const configs = (
     },
   ];
 };
+
+export type SupplierRequest = {
+  id?: string;
+  name: string;
+  code: string;
+  others: {
+    active: boolean;
+    taxCode: string;
+    address: string;
+    email: string;
+    phone: string;
+  };
+};
+
+export function _validate(t: (s: string) => string) {
+  return {
+    "name": isNotEmpty(t("Field is required")),
+    "code": isNotEmpty(t("Field is required")),
+    "others.phone": (value: unknown) => {
+      if (value) {
+        if (typeof value !== "string") {
+          return t("Invalid phone number");
+        }
+        if (value && !isVietnamesePhoneNumber(value)) {
+          return t("Invalid phone number");
+        }
+      }
+    },
+    "others.email": (value: unknown) => {
+      if (value) {
+        try {
+          emailSchema.parse(value);
+        } catch (error) {
+          return t("Invalid email");
+        }
+      }
+    },
+  };
+}

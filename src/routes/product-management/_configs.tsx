@@ -103,9 +103,11 @@ export function filter(p: Product, x?: FilterType) {
 }
 
 export type ProductRequest = {
+  id: string;
   name: string;
   code: string;
   description: string;
+  enabled: boolean;
   others: {
     type: string;
     oldId: number;
@@ -118,9 +120,11 @@ export type ProductRequest = {
 };
 
 export const initialValues: ProductRequest = {
+  id: "",
   name: "",
   code: "",
   description: "",
+  enabled: true,
   others: {
     type: "",
     oldId: 0,
@@ -134,6 +138,9 @@ export const initialValues: ProductRequest = {
 
 export function _validate(t: (s: string) => string) {
   return {
-    name: isNotEmpty(t("Field is required")),
+    "name": isNotEmpty(t("Field is required")),
+    "others.internalCode": isNotEmpty(t("Field is required")),
+    "others.type": isNotEmpty(t("Field is required")),
+    "others.category": isNotEmpty(t("Field is required")),
   };
 }

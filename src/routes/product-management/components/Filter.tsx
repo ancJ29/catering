@@ -12,7 +12,6 @@ import { useMemo } from "react";
 import { FilterType } from "../_configs";
 
 type FilterProps = {
-  counter: number;
   condition?: FilterType;
   keyword: string;
   names: string[];
@@ -28,7 +27,6 @@ type FilterProps = {
 };
 
 const Filter = ({
-  counter,
   condition,
   keyword,
   names,
@@ -79,10 +77,9 @@ const Filter = ({
           onChange={updateCondition.bind(null, "type", "")}
         />
         <AutocompleteForFilterData
-          key={counter}
           w={{ base: "100%", sm: "20vw" }}
           data={names}
-          value={keyword}
+          defaultValue={keyword}
           label={t("Cuisine name")}
           onReload={reload}
         />

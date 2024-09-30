@@ -109,6 +109,7 @@ export const initialValues: PushMaterialRequest = {
 export function _validate(t: (s: string) => string) {
   return {
     "name": isNotEmpty(t("Field is required")),
+    "others.internalCode": isNotEmpty(t("Field is required")),
     "others.type": isNotEmpty(t("Field is required")),
     "others.group": isNotEmpty(t("Field is required")),
     "others.orderCycle": isNotEmpty(t("Field is required")),

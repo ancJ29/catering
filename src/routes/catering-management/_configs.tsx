@@ -5,7 +5,6 @@ import {
   emailSchema,
 } from "@/auto-generated/api-configs";
 import IconBadge from "@/components/c-catering/IconBadge";
-import { AddDepartmentRequest } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { DataGridColumnProps } from "@/types";
 import { isVietnamesePhoneNumber, unique } from "@/utils";
@@ -116,7 +115,25 @@ export function filter(c: Department, x?: FilterType) {
   return true;
 }
 
-export const initialValues: AddDepartmentRequest = {
+export type CateringRequest = {
+  id: string;
+  name: string;
+  code: string;
+  enabled: boolean;
+  level: number;
+  phone: string;
+  email: string;
+  shortName: string;
+  address: string;
+  others: {
+    role: ClientRoles;
+    isCenter: boolean;
+    totalSupplier: number;
+  };
+};
+
+export const initialValues: CateringRequest = {
+  id: "",
   name: "",
   code: "",
   enabled: true,

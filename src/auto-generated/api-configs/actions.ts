@@ -303,7 +303,6 @@ export const configs = {
       request: departmentSchema
         .omit({
           clientId: true,
-          code: true,
           supId: true,
           others: true,
           createdAt: true,
@@ -421,7 +420,6 @@ export const configs = {
         .omit({
           id: true,
           clientId: true,
-          enabled: true,
           createdAt: true,
           updatedAt: true,
           others: true,
@@ -443,9 +441,9 @@ export const configs = {
       request: productSchema
         .omit({
           clientId: true,
-          enabled: true,
           createdAt: true,
           updatedAt: true,
+          others: true,
         })
         .partial({
           code: true,

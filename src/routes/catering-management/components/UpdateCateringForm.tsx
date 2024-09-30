@@ -1,17 +1,19 @@
-import PhoneInput from "@/components/common/PhoneInput";
 import useTranslation from "@/hooks/useTranslation";
 import {
   Department,
   updateDepartment,
   UpdateDepartmentRequest,
 } from "@/services/domain";
-import { Button, Switch, Text, TextInput } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback } from "react";
-import { _validate, initialValues } from "../_configs";
-
-const w = "100%";
+import {
+  _validate,
+  CateringRequest,
+  initialValues,
+} from "../_configs";
+import CateringForm from "./CateringForm";
 
 type UpdateCateringFormProps = {
   catering?: Department;
@@ -23,7 +25,7 @@ const UpdateCateringForm = ({
   onSuccess,
 }: UpdateCateringFormProps) => {
   const t = useTranslation();
-  const form = useForm<UpdateDepartmentRequest>({
+  const form = useForm<CateringRequest>({
     validate: _validate(t),
     initialValues: {
       ...(catering ?? initialValues),
@@ -31,6 +33,11 @@ const UpdateCateringForm = ({
       email: catering?.email || "",
       shortName: catering?.shortName || "",
       address: catering?.address || "",
+      phone: catering?.phone || "",
+      others: {
+        ...(catering?.others || initialValues.others),
+        isCenter: catering?.others?.isCenter || false,
+      },
     },
   });
 
@@ -54,58 +61,12 @@ const UpdateCateringForm = ({
   );
 
   return (
-    <form
-      className="c-catering-form-wrapper"
-      onSubmit={form.onSubmit(submit)}
-    >
-      <TextInput
-        w={w}
-        withAsterisk
-        label={t("Name")}
-        placeholder={t("Catering name")}
-        {...form.getInputProps("name")}
-      />
-      <PhoneInput
-        w={w}
-        label={t("Phone")}
-        placeholder={t("Phone")}
-        onChangeValue={(phone) => form.setFieldValue("phone", phone)}
-        {...form.getInputProps("phone")}
-      />
-      <TextInput
-        w={w}
-        label={t("Email")}
-        placeholder={t("Email")}
-        {...form.getInputProps("email")}
-      />
-      <TextInput
-        w={w}
-        label={t("Catering short name")}
-        placeholder={t("Catering short name")}
-        {...form.getInputProps("shortName")}
-      />
-      <TextInput
-        w={w}
-        label={t("Catering address")}
-        placeholder={t("Catering address")}
-        {...form.getInputProps("address")}
-      />
-      <Switch
-        w={w}
-        label={t("Central catering")}
-        labelPosition="left"
-        checked={form.values.others.isCenter}
-        {...form.getInputProps("others.isCenter")}
-      />
-      <Switch
-        w={w}
-        label={t("Active")}
-        labelPosition="left"
-        checked={form.values.enabled}
-        {...form.getInputProps("enabled")}
-      />
-      <Button type="submit">{t("Save")}</Button>
-    </form>
+    <CateringForm
+      form={form}
+      onChangePhone={(phone) => form.setFieldValue("phone", phone)}
+      submit={submit}
+      buttonText={t("Save")}
+    />
   );
 };
 

@@ -33,7 +33,6 @@ const ProductManagement = () => {
 
   const {
     condition,
-    counter,
     data,
     filtered,
     keyword,
@@ -83,7 +82,6 @@ const ProductManagement = () => {
     <Stack gap={10} pos="relative">
       <AddButton onClick={addProduct} />
       <Filter
-        counter={counter}
         condition={condition}
         keyword={keyword}
         names={names}

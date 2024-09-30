@@ -1,10 +1,13 @@
 import {
   Actions,
   configs as actionConfigs,
+  productCategorySchema,
+  productTypeSchema,
   xProductSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
 import logger from "@/services/logger";
+import { OptionProps } from "@/types";
 import { ONE_DAY } from "@/utils";
 import { z } from "zod";
 
@@ -95,4 +98,21 @@ export async function updateProduct(params: UpdateProductRequest) {
     action: Actions.UPDATE_PRODUCT,
     params,
   });
+}
+
+export function typeAndCategoryProductOptions(
+  t: (key: string) => string,
+) {
+  const typeOptions: OptionProps[] = productTypeSchema.options.map(
+    (type) => ({
+      label: t(`products.type.${type}`),
+      value: type,
+    }),
+  );
+  const categoryOptions: OptionProps[] =
+    productCategorySchema.options.map((category) => ({
+      label: t(`products.category.${category}`),
+      value: category,
+    }));
+  return [typeOptions, categoryOptions];
 }

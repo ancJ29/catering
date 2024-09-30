@@ -80,6 +80,8 @@ export default {
   "Cuisine code": "Mã món",
   "Cuisine name": "Tên món",
   "Cuisine type": "Loại món",
+  "Cuisine description": "Mô tả",
+  "Cuisine category": "Danh mục",
   "Customer Management": "Quản lý khách hàng",
   "Customer target": "Nhóm",
   "Customer type": "Đối tượng",
@@ -487,4 +489,10 @@ export default {
   "Are you sure you want to update material?":
     "Bạn có chắc chắn muốn cập nhật nguyên liệu?",
   "No new notifications": "Không có thông báo mới",
+  "Add product": "Thêm sản phẩm",
+  "Update product": "Cập nhật sản phẩm",
+  "Are you sure you want to add new product?":
+    "Bạn có chắc chắn muốn thêm sản phẩm mới?",
+  "Are you sure you want to update product?":
+    "Bạn có chắc chắn muốn cập nhật sản phẩm?",
 } satisfies Record<string, string>;
