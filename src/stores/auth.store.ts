@@ -63,8 +63,8 @@ export default create<AuthStore>((set, get) => ({
         token: user ? token : "",
         isCatering,
       }));
+      localStorage.__LAST_LOGIN__ = Date.now();
       if (remember) {
-        localStorage.__LAST_LOGIN__ = Date.now();
         localStorage.__TOKEN__ = token;
       } else {
         sessionStorage.__TOKEN__ = token;
