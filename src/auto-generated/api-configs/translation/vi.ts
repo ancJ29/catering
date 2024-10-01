@@ -495,4 +495,10 @@ export default {
     "Bạn có chắc chắn muốn thêm sản phẩm mới?",
   "Are you sure you want to update product?":
     "Bạn có chắc chắn muốn cập nhật sản phẩm?",
+  "Add customer": "Thêm khách hàng",
+  "Update customer": "Cập nhật khách hàng",
+  "Are you sure you want to add new customer?":
+    "Bạn có chắc chắn muốn thêm khách hàng mới?",
+  "Are you sure you want to update customer?":
+    "Bạn có chắc chắn muốn cập nhật khách hàng?",
 } satisfies Record<string, string>;

@@ -40,6 +40,7 @@ export enum Actions {
   UPDATE_DEPARTMENT = "update-department",
   DELETE_DEPARTMENT = "delete-department",
   GET_CUSTOMERS = "get-customers",
+  ADD_CUSTOMER = "add-customer",
   UPDATE_CUSTOMER = "update-customer",
   GET_CUSTOMER_PRODUCTS = "get-customer-products",
   UPDATE_CUSTOMER_PRODUCT = "update-customer-product",

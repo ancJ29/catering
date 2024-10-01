@@ -343,12 +343,27 @@ export const configs = {
       }),
     },
   },
+  [Actions.ADD_CUSTOMER]: {
+    name: Actions.ADD_CUSTOMER,
+    group: ActionGroups.CUSTOMER_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: xCustomerSchema.omit({
+        id: true,
+        clientId: true,
+        createdAt: true,
+        updatedAt: true,
+        lastModifiedBy: true,
+      }),
+    },
+  },
   [Actions.UPDATE_CUSTOMER]: {
     name: Actions.UPDATE_CUSTOMER,
     group: ActionGroups.CUSTOMER_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
       request: xCustomerSchema.omit({
+        clientId: true,
         createdAt: true,
         updatedAt: true,
         lastModifiedBy: true,

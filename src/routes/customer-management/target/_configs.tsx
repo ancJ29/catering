@@ -74,28 +74,3 @@ export const configs = (
     },
   ];
 };
-
-export const SERVED = "1";
-export const NOT_SERVED = "0";
-
-export type FilterType = {
-  served: string;
-};
-
-export const defaultCondition: FilterType = {
-  served: "",
-};
-
-export function filter(t: Target, condition?: FilterType) {
-  if (condition?.served && t.enabled && condition.served !== SERVED) {
-    return false;
-  }
-  if (
-    condition?.served &&
-    !t.enabled &&
-    condition.served !== NOT_SERVED
-  ) {
-    return false;
-  }
-  return true;
-}

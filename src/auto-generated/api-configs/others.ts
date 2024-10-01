@@ -115,10 +115,11 @@ export const inventoryOthersSchema = z.object({
     .array(),
 });
 
+export const customerTypeSchema = z.enum(["company"]);
+
 export const customerOthersSchema = z.object({
   cateringId: stringSchema,
-  cateringName: stringSchema,
-  type: z.enum(["company"]),
+  type: customerTypeSchema,
   targets: z
     .object({
       name: stringSchema,
@@ -582,6 +583,7 @@ export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type MaterialType = z.infer<typeof materialTypeSchema>;
 export type MaterialGroup = z.infer<typeof materialGroupSchema>;
 export type MaterialOrderCycle = z.infer<typeof materialOrderCycleSchema>;
+export type CustomerType = z.infer<typeof customerTypeSchema>;
 export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
 export type PRType = z.infer<typeof prTypeSchema>;
 export type PRPriority = z.infer<typeof prPrioritySchema>;

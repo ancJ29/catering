@@ -158,5 +158,8 @@ export async function pushMaterial(params: PushMaterialRequest) {
   return await callApi<PushMaterialRequest, { id: string }>({
     action: Actions.PUSH_MATERIAL,
     params,
+    options: {
+      toastMessage: "Your changes have been saved",
+    },
   });
 }

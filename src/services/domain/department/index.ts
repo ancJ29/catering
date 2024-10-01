@@ -51,6 +51,9 @@ export async function addDepartment(params: AddDepartmentRequest) {
   return await callApi<AddDepartmentRequest, { id: string }>({
     action: Actions.ADD_DEPARTMENT,
     params,
+    options: {
+      toastMessage: "Add successfully",
+    },
   });
 }
 
@@ -64,5 +67,8 @@ export async function updateDepartment(
   return await callApi<UpdateDepartmentRequest, { id: string }>({
     action: Actions.UPDATE_DEPARTMENT,
     params,
+    options: {
+      toastMessage: "Your changes have been saved",
+    },
   });
 }

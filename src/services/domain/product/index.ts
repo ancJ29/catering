@@ -86,6 +86,9 @@ export async function addProduct(params: AddProductRequest) {
   return await callApi<AddProductRequest, { id: string }>({
     action: Actions.ADD_PRODUCT,
     params,
+    options: {
+      toastMessage: "Add successfully",
+    },
   });
 }
 
@@ -97,6 +100,9 @@ export async function updateProduct(params: UpdateProductRequest) {
   return await callApi<UpdateProductRequest, { id: string }>({
     action: Actions.UPDATE_PRODUCT,
     params,
+    options: {
+      toastMessage: "Your changes have been saved",
+    },
   });
 }
 

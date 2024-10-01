@@ -8,12 +8,7 @@ import useCustomerStore from "@/stores/customer.store";
 import { Flex, Stack, Text } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  configs,
-  defaultCondition,
-  filter,
-  FilterType,
-} from "./_configs";
+import { configs } from "./_configs";
 import Filter from "./components/Filter";
 
 const CustomerTargetManagement = () => {
@@ -53,19 +48,10 @@ const CustomerTargetManagement = () => {
     return Array.from(targets.values());
   }, [targets]);
 
-  const {
-    condition,
-    data,
-    names,
-    page,
-    reload,
-    setPage,
-    updateCondition,
-  } = useFilterData<Target, FilterType>({
-    dataLoader,
-    filter,
-    defaultCondition,
-  });
+  const { data, names, page, reload, setPage } =
+    useFilterData<Target>({
+      dataLoader,
+    });
 
   const save = useCallback(async () => {
     if (!targets || !customer) {
@@ -96,12 +82,7 @@ const CustomerTargetManagement = () => {
           {t("Save")}
         </CustomButton>
       </Flex>
-      <Filter
-        names={names}
-        reload={reload}
-        served={condition?.served}
-        onChangeServed={updateCondition.bind(null, "served", "")}
-      />
+      <Filter names={names} reload={reload} />
       <DataGrid
         hasUpdateColumn={false}
         page={page}

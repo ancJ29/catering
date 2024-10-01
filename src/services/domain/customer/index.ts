@@ -28,9 +28,11 @@ const schema = response.omit({ cursor: true, hasMore: true });
 
 export type Customer = z.infer<typeof customerSchema>;
 
-export async function getAllCustomers(): Promise<Customer[]> {
+export async function getAllCustomers(
+  noCache = false,
+): Promise<Customer[]> {
   const key = "domain.customer.getAllCustomers";
-  if (cache.has(key)) {
+  if (!noCache && cache.has(key)) {
     const res = schema.safeParse(cache.get(key));
     if (res.success) {
       logger.trace("cache hit", key);
@@ -40,9 +42,24 @@ export async function getAllCustomers(): Promise<Customer[]> {
   const customers = await loadAll<Customer>({
     key: "customers",
     action: Actions.GET_CUSTOMERS,
+    noCache,
   });
   cache.set(key, { customers });
   return customers;
+}
+
+const { request: addRequest } =
+  actionConfigs[Actions.ADD_CUSTOMER].schema;
+type AddRequest = z.infer<typeof addRequest>;
+
+export async function addCustomer(params: AddRequest) {
+  return await callApi<AddRequest, { id: string }>({
+    action: Actions.ADD_CUSTOMER,
+    params,
+    options: {
+      toastMessage: "Add successfully",
+    },
+  });
 }
 
 const { request: updateRequest } =

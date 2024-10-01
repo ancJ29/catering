@@ -1,13 +1,11 @@
-import { Customer } from "@/services/domain";
+import { Customer, Department } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
-import { ActionIcon, Flex, Tooltip } from "@mantine/core";
-import {
-  IconToolsKitchen,
-  IconUsersGroup,
-} from "@tabler/icons-react";
+import { isNotEmpty } from "@mantine/form";
+import Actions from "./components/Actions";
 
 export const configs = (
   t: (key: string) => string,
+  caterings: Map<string, Department>,
   onProductClick: (id: string) => void,
   onTargetAudienceClick: (id: string) => void,
 ): DataGridColumnProps[] => {
@@ -32,7 +30,7 @@ export const configs = (
       width: "20%",
       textAlign: "left",
       renderCell: (_, row: Customer) => {
-        return row.others?.cateringName || "-";
+        return caterings.get(row.others?.cateringId)?.name || "-";
       },
     },
     {
@@ -51,26 +49,51 @@ export const configs = (
       textAlign: "center",
       renderCell: (_, row: Customer) => {
         return (
-          <Flex gap={10} justify="center">
-            <Tooltip label={t("Meal target audience")}>
-              <ActionIcon
-                variant="outline"
-                onClick={() => onTargetAudienceClick(row.id)}
-              >
-                <IconUsersGroup strokeWidth="1.5" />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip label={t("Dish")}>
-              <ActionIcon
-                variant="outline"
-                onClick={() => onProductClick(row.id)}
-              >
-                <IconToolsKitchen strokeWidth="1.5" />
-              </ActionIcon>
-            </Tooltip>
-          </Flex>
+          <Actions
+            customer={row}
+            onTargetAudienceClick={onTargetAudienceClick}
+            onProductClick={onProductClick}
+          />
         );
       },
     },
   ];
 };
+
+export type CustomerRequest = {
+  id?: string;
+  name: string;
+  code: string;
+  memo?: string;
+  others: {
+    cateringId: string;
+    type: string;
+    targets: {
+      name: string;
+      shift: string;
+      price: number;
+      enabled: boolean;
+    }[];
+  };
+};
+
+export const initialValues: CustomerRequest = {
+  id: "",
+  name: "",
+  code: "",
+  memo: "",
+  others: {
+    cateringId: "",
+    type: "",
+    targets: [],
+  },
+};
+
+export function _validate(t: (s: string) => string) {
+  return {
+    "name": isNotEmpty(t("Field is required")),
+    "code": isNotEmpty(t("Field is required")),
+    "others.cateringId": isNotEmpty(t("Field is required")),
+    "others.type": isNotEmpty(t("Field is required")),
+  };
+}

@@ -1,4 +1,4 @@
-import { ActionIcon } from "@mantine/core";
+import ActionIcon from "@/components/c-catering/ActionIcon";
 import { useWindowScroll } from "@mantine/hooks";
 import { IconArrowUp } from "@tabler/icons-react";
 import classes from "./ScrollTopTopButton.module.scss";
@@ -13,7 +13,6 @@ const ScrollToTopButton = () => {
   return (
     scroll.y >= 10 && (
       <ActionIcon
-        variant="outline"
         radius="xl"
         onClick={scrollToTop}
         className={classes.button}

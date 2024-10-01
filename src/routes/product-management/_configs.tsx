@@ -1,3 +1,4 @@
+import ActionIcon from "@/components/c-catering/ActionIcon";
 import {
   FilterType as ProductFilterType,
   Tab,
@@ -5,7 +6,6 @@ import {
 import { Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { buildHash } from "@/utils";
-import { ActionIcon } from "@mantine/core";
 import { isNotEmpty } from "@mantine/form";
 import { IconSoup } from "@tabler/icons-react";
 import { NavigateFunction } from "react-router-dom";
@@ -68,7 +68,6 @@ export const configs = (
         const hash = buildHash(condition);
         return (
           <ActionIcon
-            variant="outline"
             onClick={() => navigate(`/bom-management#${hash}`)}
           >
             <IconSoup strokeWidth="1.5" />
