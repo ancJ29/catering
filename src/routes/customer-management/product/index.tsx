@@ -1,4 +1,3 @@
-import CustomButton from "@/components/c-catering/CustomButton";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
@@ -11,16 +10,12 @@ import {
 } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
 import useProductStore from "@/stores/product.store";
-import { Flex, Stack, Text } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  FilterType,
-  configs,
-  defaultCondition,
-  filter,
-} from "./_configs";
+import { configs } from "./_configs";
 import Filter from "./components/Filter";
+import Header from "./components/Header";
 
 const CustomerProductManagement = () => {
   const t = useTranslation();
@@ -62,19 +57,10 @@ const CustomerProductManagement = () => {
     return Array.from(products.values());
   }, [products]);
 
-  const {
-    condition,
-    data,
-    names,
-    page,
-    reload,
-    setPage,
-    updateCondition,
-  } = useFilterData<CustomerProduct, FilterType>({
-    dataLoader,
-    filter,
-    defaultCondition,
-  });
+  const { data, names, page, reload, setPage } =
+    useFilterData<CustomerProduct>({
+      dataLoader,
+    });
 
   const save = useCallback(async () => {
     if (!products) {
@@ -91,19 +77,12 @@ const CustomerProductManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex w="100%" align="center" justify="space-between">
-        <Text className="c-catering-font-bold" size="2rem">
-          {customer?.name || "-"} - {t("Product")}
-        </Text>
-        <CustomButton disabled={!changed} onClick={save} confirm>
-          {t("Save")}
-        </CustomButton>
-      </Flex>
+      <Header customer={customer} changed={changed} save={save} />
       <Filter
+        changed={changed}
+        save={save}
         names={names}
         reload={reload}
-        served={condition?.served}
-        onChangeServed={updateCondition.bind(null, "served", "")}
       />
       <DataGrid
         hasUpdateColumn={false}

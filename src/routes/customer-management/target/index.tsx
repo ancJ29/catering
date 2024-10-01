@@ -1,15 +1,15 @@
-import CustomButton from "@/components/c-catering/CustomButton";
 import DataGrid from "@/components/common/DataGrid";
 import useFilterData from "@/hooks/useFilterData";
 import useOnMounted from "@/hooks/useOnMounted";
 import useTranslation from "@/hooks/useTranslation";
 import { Customer, Target, updateCustomer } from "@/services/domain";
 import useCustomerStore from "@/stores/customer.store";
-import { Flex, Stack, Text } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { configs } from "./_configs";
-import Filter from "./components/Filter";
+import Filter from "./components/Filters";
+import Header from "./components/Header";
 
 const CustomerTargetManagement = () => {
   const t = useTranslation();
@@ -74,15 +74,13 @@ const CustomerTargetManagement = () => {
 
   return (
     <Stack gap={10}>
-      <Flex w="100%" align="center" justify="space-between">
-        <Text className="c-catering-font-bold" size="2rem">
-          {customer?.name || "-"} - {t("Product")}
-        </Text>
-        <CustomButton disabled={!changed} onClick={save} confirm>
-          {t("Save")}
-        </CustomButton>
-      </Flex>
-      <Filter names={names} reload={reload} />
+      <Header customer={customer} changed={changed} save={save} />
+      <Filter
+        changed={changed}
+        save={save}
+        names={names}
+        reload={reload}
+      />
       <DataGrid
         hasUpdateColumn={false}
         page={page}

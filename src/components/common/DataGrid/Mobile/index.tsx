@@ -87,7 +87,7 @@ function Mobile<T extends GenericObjectWithModificationInformation>({
   }, [page, _page]);
 
   return (
-    <Flex direction="column" hiddenFrom="sm" gap={10}>
+    <Flex direction="column" hiddenFrom="sm" gap={10} mt={10}>
       {Boolean(rows.length) && isPaginated && (
         <Flex justify="end" align="center">
           <PaginationBar
@@ -243,7 +243,7 @@ function CardRow<T extends GenericObject>({
       px={16}
       className={classes.item}
     >
-      <Text fw="bold" miw="30%" maw="35%">
+      <Text fw="bold" miw="40%" maw="50%">
         {column.headerMobile ?? column.header}
       </Text>
       <Flex ta="end" style={column.style}>

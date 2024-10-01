@@ -2,7 +2,6 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
-import TextCenter from "@/components/common/TextCenter";
 import useTranslation from "@/hooks/useTranslation";
 import callApi from "@/services/api";
 import useAuthStore from "@/stores/auth.store";
@@ -15,6 +14,7 @@ import {
   Group,
   PasswordInput,
   Stack,
+  Text,
   TextInput,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
@@ -85,14 +85,20 @@ const LoginForm = () => {
             {...form.getInputProps("password")}
           />
           <Group justify="flex-start" mt="xl">
-            <Flex w="100%" fz="0.8rem" justify="space-between">
+            <Flex
+              direction={{ base: "column", xs: "row" }}
+              w="100%"
+              fz="0.8rem"
+              justify={{ base: "flex-start", xs: "space-between" }}
+              gap={{ base: "10px", xs: "0" }}
+            >
               <Checkbox
                 label={t("Remember me")}
                 checked={form.values.remember}
                 {...form.getInputProps("remember")}
               />
               <Anchor href="/forgot-password" underline="never">
-                <TextCenter
+                <Text
                   // TODO: use common style
                   style={{
                     fontSize: "1rem",
@@ -101,7 +107,7 @@ const LoginForm = () => {
                   }}
                 >
                   {t("Forgot your password")}?
-                </TextCenter>
+                </Text>
               </Anchor>
             </Flex>
             <Button type="submit" w="100%">

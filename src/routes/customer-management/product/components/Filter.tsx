@@ -1,38 +1,17 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
-import Select from "@/components/common/Select";
+import CustomButton from "@/components/c-catering/CustomButton";
 import useTranslation from "@/hooks/useTranslation";
-import { OptionProps } from "@/types";
 import { Flex } from "@mantine/core";
-import { useMemo } from "react";
-import { NOT_SERVED, SERVED } from "../_configs";
 
 type FilterProps = {
+  changed: boolean;
+  save: () => void;
   names: string[];
   reload: () => void;
-  served?: string;
-  onChangeServed: (value: string) => void;
 };
 
-const Filter = ({
-  names,
-  reload,
-  served,
-  onChangeServed,
-}: FilterProps) => {
+const Filter = ({ changed, save, names, reload }: FilterProps) => {
   const t = useTranslation();
-  const servedList: OptionProps[] = useMemo(
-    () => [
-      {
-        value: SERVED,
-        label: t("Served"),
-      },
-      {
-        value: NOT_SERVED,
-        label: t("Not served"),
-      },
-    ],
-    [t],
-  );
 
   return (
     <Flex justify="end" align="end" gap={10}>
@@ -40,15 +19,16 @@ const Filter = ({
         data={names}
         label={t("Product")}
         onReload={reload}
-        w="20vw"
+        w={{ base: "50%", sm: "20rem" }}
       />
-      <Select
-        value={served}
-        label={t("Served")}
-        w="20vw"
-        options={servedList}
-        onChange={(value) => onChangeServed(value || "")}
-      />
+      <CustomButton
+        disabled={!changed}
+        onClick={save}
+        confirm
+        hiddenFrom="xs"
+      >
+        {t("Save")}
+      </CustomButton>
     </Flex>
   );
 };

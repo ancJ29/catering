@@ -29,6 +29,7 @@ export const configs = (
       header: t("Catering name"),
       width: "20%",
       textAlign: "left",
+      defaultVisible: true,
       renderCell: (_, row: Customer) => {
         return caterings.get(row.others?.cateringId)?.name || "-";
       },

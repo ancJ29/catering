@@ -66,32 +66,3 @@ export const configs = (
     },
   ];
 };
-
-export const SERVED = "1";
-export const NOT_SERVED = "0";
-
-export type FilterType = {
-  served: string;
-};
-
-export const defaultCondition: FilterType = {
-  served: "",
-};
-
-export function filter(cp: CustomerProduct, condition?: FilterType) {
-  if (
-    condition?.served &&
-    cp.enabled &&
-    condition.served !== SERVED
-  ) {
-    return false;
-  }
-  if (
-    condition?.served &&
-    !cp.enabled &&
-    condition.served !== NOT_SERVED
-  ) {
-    return false;
-  }
-  return true;
-}
