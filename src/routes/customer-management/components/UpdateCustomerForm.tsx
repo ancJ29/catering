@@ -13,12 +13,14 @@ import {
 import CustomerForm from "./CustomerForm";
 
 type UpdateCustomerFormProps = {
-  customer?: Customer;
+  customer: Customer;
+  reOpen: (values: Customer) => void;
   onSuccess: () => void;
 };
 
 const UpdateCustomerForm = ({
   customer,
+  reOpen,
   onSuccess,
 }: UpdateCustomerFormProps) => {
   const t = useTranslation();
@@ -27,8 +29,7 @@ const UpdateCustomerForm = ({
     validate: _validate(t),
     initialValues: {
       ...(customer ?? initialValues),
-      id: customer?.id || "",
-      memo: customer?.memo || "",
+      memo: customer.memo || "",
     },
   });
 
@@ -42,6 +43,18 @@ const UpdateCustomerForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen({
+            ...customer,
+            ...values,
+            others: {
+              ...customer.others,
+              ...values.others,
+              type: values.others.type as CustomerType,
+            },
+          });
+        },
         onConfirm: async () => {
           await updateCustomer({
             ...values,
@@ -55,7 +68,7 @@ const UpdateCustomerForm = ({
         },
       });
     },
-    [onSuccess, t],
+    [customer, onSuccess, reOpen, t],
   );
 
   return (

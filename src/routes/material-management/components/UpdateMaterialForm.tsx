@@ -5,6 +5,7 @@ import {
 } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import { Material, pushMaterial } from "@/services/domain";
+import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -18,26 +19,27 @@ import {
 import MaterialForm from "./MaterialForm";
 
 type UpdateMaterialFormProps = {
-  material?: Material;
-  onSuccess: () => void;
+  material: Material;
+  reOpen: (values: Material) => void;
 };
 
 const UpdateMaterialForm = ({
   material,
-  onSuccess,
+  reOpen,
 }: UpdateMaterialFormProps) => {
   const t = useTranslation();
+  const { reload } = useMaterialStore();
   const { units } = useMetaDataStore();
 
   const form = useForm<PushMaterialRequest>({
     validate: _validate(t),
     initialValues: {
       ...(material ?? initialValues),
-      id: material?.id || "",
-      sku: material?.sku || "",
+      id: material.id || "",
+      sku: material.sku || "",
       others: {
-        ...(material?.others ?? initialValues.others),
-        unit: material?.others?.unit?.name || "",
+        ...(material.others ?? initialValues.others),
+        unit: material.others?.unit?.name || "",
       },
     },
   });
@@ -46,6 +48,18 @@ const UpdateMaterialForm = ({
     form.setFieldValue("others.type", value);
     form.setFieldValue("others.group", null);
   };
+
+  const onSuccess = useCallback(() => {
+    reload(true);
+    modals.closeAll();
+  }, [reload]);
+
+  const findUnit = useCallback(
+    (values: PushMaterialRequest) => {
+      return units.find((p) => p.name === values.others.unit);
+    },
+    [units],
+  );
 
   const submit = useCallback(
     (values: PushMaterialRequest) => {
@@ -57,10 +71,31 @@ const UpdateMaterialForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          const unit = findUnit(values);
+          if (!unit) {
+            return;
+          }
+          reOpen({
+            ...material,
+            ...values,
+            others: {
+              ...material.others,
+              ...values.others,
+              group: values.others.group as MaterialGroup,
+              type: values.others.type as MaterialType,
+              orderCycle: values.others
+                .orderCycle as MaterialOrderCycle,
+              unit: {
+                ...unit,
+                unitId: unit?.id || "",
+              },
+            },
+          });
+        },
         onConfirm: async () => {
-          const unit = units.find(
-            (p) => p.name === values.others.unit,
-          );
+          const unit = findUnit(values);
           if (!unit) {
             return;
           }
@@ -82,7 +117,7 @@ const UpdateMaterialForm = ({
         },
       });
     },
-    [onSuccess, t, units],
+    [findUnit, material, onSuccess, reOpen, t],
   );
 
   return (

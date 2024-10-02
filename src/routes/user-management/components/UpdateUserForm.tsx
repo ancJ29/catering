@@ -32,9 +32,11 @@ const w = "100%";
 
 const EditUserForm = ({
   user,
+  reOpen,
   onSuccess,
 }: {
   user: User;
+  reOpen: (values: User) => void;
   onSuccess: () => void;
 }) => {
   const t = useTranslation();
@@ -72,6 +74,13 @@ const EditUserForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen({
+            ...user,
+            ...values,
+          });
+        },
         onConfirm: async () => {
           const res = await callApi<Request, { id: string }>({
             action: Actions.UPDATE_USER,
@@ -93,7 +102,7 @@ const EditUserForm = ({
         },
       });
     },
-    [t, user.id, onSuccess],
+    [t, reOpen, user, onSuccess],
   );
 
   return (

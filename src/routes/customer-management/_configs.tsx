@@ -62,7 +62,7 @@ export const configs = (
 };
 
 export type CustomerRequest = {
-  id?: string;
+  id: string;
   name: string;
   code: string;
   memo?: string;

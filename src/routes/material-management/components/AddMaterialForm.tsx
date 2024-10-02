@@ -5,6 +5,7 @@ import {
 } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import { pushMaterial } from "@/services/domain";
+import useMaterialStore from "@/stores/material.store";
 import useMetaDataStore from "@/stores/meta-data.store";
 import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -18,22 +19,32 @@ import {
 import MaterialForm from "./MaterialForm";
 
 type AddMaterialFormProps = {
-  onSuccess: () => void;
+  initValues?: PushMaterialRequest;
+  reOpen: (values: PushMaterialRequest) => void;
 };
 
-const AddMaterialForm = ({ onSuccess }: AddMaterialFormProps) => {
+const AddMaterialForm = ({
+  initValues: _initValues,
+  reOpen,
+}: AddMaterialFormProps) => {
   const t = useTranslation();
+  const { reload } = useMaterialStore();
   const { units } = useMetaDataStore();
 
   const form = useForm<PushMaterialRequest>({
     validate: _validate(t),
-    initialValues: initialValues,
+    initialValues: _initValues ?? initialValues,
   });
 
   const handleChangeType = (value: string | null) => {
     form.setFieldValue("others.type", value);
     form.setFieldValue("others.group", null);
   };
+
+  const onSuccess = useCallback(() => {
+    reload(true);
+    modals.closeAll();
+  }, [reload]);
 
   const submit = useCallback(
     (values: PushMaterialRequest) => {
@@ -45,6 +56,10 @@ const AddMaterialForm = ({ onSuccess }: AddMaterialFormProps) => {
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen(values);
+        },
         onConfirm: async () => {
           const unit = units.find(
             (p) => p.name === values.others.unit,
@@ -70,7 +85,7 @@ const AddMaterialForm = ({ onSuccess }: AddMaterialFormProps) => {
         },
       });
     },
-    [onSuccess, t, units],
+    [onSuccess, reOpen, t, units],
   );
 
   return (

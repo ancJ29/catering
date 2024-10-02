@@ -91,6 +91,7 @@ const MaterialForm = ({
       />
       <Autocomplete
         w={w}
+        withAsterisk
         label={t("Material unit")}
         data={_units}
         placeholder={t("Material unit")}

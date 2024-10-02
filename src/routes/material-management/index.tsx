@@ -1,9 +1,9 @@
 import AddButton from "@/components/c-catering/AddButton";
 import DataGrid from "@/components/common/DataGrid";
 import {
-  FilterType,
   defaultCondition,
   filter,
+  FilterType,
 } from "@/configs/filters/materials";
 import useFilterData from "@/hooks/useFilterData";
 import useTranslation from "@/hooks/useTranslation";
@@ -12,14 +12,14 @@ import useMaterialStore from "@/stores/material.store";
 import { Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
-import { configs } from "./_configs";
+import { configs, PushMaterialRequest } from "./_configs";
 import AddMaterialForm from "./components/AddMaterialForm";
 import Filter from "./components/Filter";
 import UpdateMaterialForm from "./components/UpdateMaterialForm";
 
 const MaterialManagement = () => {
   const t = useTranslation();
-  const { materials, reload: reloadMaterial } = useMaterialStore();
+  const { materials } = useMaterialStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
   const dataLoader = useCallback(() => {
@@ -45,20 +45,20 @@ const MaterialManagement = () => {
     defaultCondition,
   });
 
-  const _reload = useCallback(async () => {
-    reloadMaterial(true);
-    modals.closeAll();
-  }, [reloadMaterial]);
-
-  const addMaterial = useCallback(() => {
-    modals.open({
-      title: t("Add material"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddMaterialForm onSuccess={_reload} />,
-    });
-  }, [_reload, t]);
+  const addMaterial = useCallback(
+    (values?: PushMaterialRequest) => {
+      modals.open({
+        title: t("Add material"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <AddMaterialForm initValues={values} reOpen={addMaterial} />
+        ),
+      });
+    },
+    [t],
+  );
 
   const updateMaterial = useCallback(
     (material: Material) => {
@@ -70,17 +70,17 @@ const MaterialManagement = () => {
         children: (
           <UpdateMaterialForm
             material={material}
-            onSuccess={_reload}
+            reOpen={updateMaterial}
           />
         ),
       });
     },
-    [_reload, t],
+    [t],
   );
 
   return (
     <Stack gap={10} pos="relative">
-      <AddButton onClick={addMaterial} />
+      <AddButton onClick={() => addMaterial()} />
       <Filter
         counter={counter}
         condition={condition}

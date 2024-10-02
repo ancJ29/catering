@@ -123,7 +123,7 @@ export type CateringRequest = {
   level: number;
   phone: string;
   email: string;
-  shortName: string;
+  shortName?: string;
   address: string;
   others: {
     role: ClientRoles;

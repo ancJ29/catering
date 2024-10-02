@@ -1,7 +1,6 @@
 import {
   Actions,
   ClientRoles as Roles,
-  configs as actionConfigs,
   emailSchema,
 } from "@/auto-generated/api-configs";
 import Autocomplete from "@/components/common/Autocomplete";
@@ -29,17 +28,9 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconCopy } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
-import { z } from "zod";
+import { Request, UserRequest } from "../_configs";
 
-const { request } = actionConfigs[Actions.ADD_USER].schema;
-type Request = z.infer<typeof request>;
-
-type Form = Omit<Request, "departmentIds" | "roleId"> & {
-  department: string;
-  role: string;
-};
-
-const initialValues: Form = {
+const initialValues: UserRequest = {
   department: "",
   role: "",
   userName: "",
@@ -52,10 +43,16 @@ const initialValues: Form = {
 const w = "100%";
 
 type AddUserFormProps = {
+  initValues?: UserRequest;
+  reOpen: (values: UserRequest) => void;
   onSuccess: () => void;
 };
 
-const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
+const AddUserForm = ({
+  initValues,
+  reOpen,
+  onSuccess,
+}: AddUserFormProps) => {
   const t = useTranslation();
   const data = useMetaDataStore();
   const [options] = useState({
@@ -71,16 +68,16 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
     ),
   });
 
-  const form = useForm<Form>({
+  const form = useForm<UserRequest>({
     validate: _validate(t),
-    initialValues: {
+    initialValues: initValues ?? {
       ...initialValues,
       password: randomPassword(),
     },
   });
 
   const submit = useCallback(
-    (values: Form) => {
+    (values: UserRequest) => {
       modals.openConfirmModal({
         title: t("Add user"),
         children: (
@@ -89,6 +86,10 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen(values);
+        },
         onConfirm: async () => {
           const departmentId = values.department
             ? options.departmentIdByName.get(values.department)
@@ -114,7 +115,7 @@ const AddUserForm = ({ onSuccess }: AddUserFormProps) => {
         },
       });
     },
-    [onSuccess, options, t],
+    [onSuccess, options.departmentIdByName, reOpen, t],
   );
 
   const copyPassword = useCallback(() => {

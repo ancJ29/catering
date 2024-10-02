@@ -9,6 +9,7 @@ import { Flex, Stack, Switch } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo } from "react";
 import {
+  CateringRequest,
   Department,
   FilterType,
   configs,
@@ -20,7 +21,7 @@ import UpdateCateringForm from "./components/UpdateCateringForm";
 
 const CateringManagement = () => {
   const t = useTranslation();
-  const { caterings, reload: reloadCatering } = useCateringStore();
+  const { caterings } = useCateringStore();
   const dataGridConfigs = useMemo(() => configs(t), [t]);
 
   const dataLoader = useCallback(() => {
@@ -49,20 +50,20 @@ const CateringManagement = () => {
   );
   useUrlHash(condition ?? defaultCondition, callback);
 
-  const _reload = useCallback(async () => {
-    reloadCatering(true);
-    modals.closeAll();
-  }, [reloadCatering]);
-
-  const addCatering = useCallback(() => {
-    modals.open({
-      title: t("Add catering"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddCateringForm onSuccess={_reload} />,
-    });
-  }, [_reload, t]);
+  const addCatering = useCallback(
+    (values?: CateringRequest) => {
+      modals.open({
+        title: t("Add catering"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <AddCateringForm initValue={values} reOpen={addCatering} />
+        ),
+      });
+    },
+    [t],
+  );
 
   const updateCatering = useCallback(
     (catering: Department) => {
@@ -74,17 +75,17 @@ const CateringManagement = () => {
         children: (
           <UpdateCateringForm
             catering={catering}
-            onSuccess={_reload}
+            reOpen={updateCatering}
           />
         ),
       });
     },
-    [_reload, t],
+    [t],
   );
 
   return (
     <Stack gap={15} pos="relative">
-      <AddButton onClick={addCatering} />
+      <AddButton onClick={() => addCatering()} />
       <Flex justify="space-between" align="center">
         <Switch
           mt={10}

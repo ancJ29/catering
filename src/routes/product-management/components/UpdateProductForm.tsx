@@ -4,6 +4,7 @@ import {
 } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import { Product, updateProduct } from "@/services/domain";
+import useProductStore from "@/stores/product.store";
 import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -16,26 +17,32 @@ import {
 import ProductForm from "./ProductForm";
 
 type UpdateProductFormProps = {
-  product?: Product;
-  onSuccess: () => void;
+  product: Product;
+  reOpen: (value: Product) => void;
 };
 
 const UpdateProductForm = ({
   product,
-  onSuccess,
+  reOpen,
 }: UpdateProductFormProps) => {
   const t = useTranslation();
+  const { reload } = useProductStore();
   const form = useForm<ProductRequest>({
     validate: _validate(t),
     initialValues: {
       ...(product ?? initialValues),
-      id: product?.id || "",
-      description: product?.description || "",
+      id: product.id || "",
+      description: product.description || "",
       others: {
-        ...(product?.others ?? initialValues.others),
+        ...(product.others ?? initialValues.others),
       },
     },
   });
+
+  const onSuccess = useCallback(() => {
+    reload(true);
+    modals.closeAll();
+  }, [reload]);
 
   const submit = useCallback(
     (values: ProductRequest) => {
@@ -47,6 +54,19 @@ const UpdateProductForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen({
+            ...product,
+            ...values,
+            others: {
+              ...product.others,
+              ...values.others,
+              type: values.others.type as ProductType,
+              category: values.others.category as ProductCategory,
+            },
+          });
+        },
         onConfirm: async () => {
           await updateProduct({
             ...values,
@@ -60,7 +80,7 @@ const UpdateProductForm = ({
         },
       });
     },
-    [onSuccess, t],
+    [onSuccess, product, reOpen, t],
   );
 
   return (

@@ -9,7 +9,7 @@ import { Flex, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { configs } from "./_configs";
+import { configs, CustomerRequest } from "./_configs";
 import AddCustomerForm from "./components/AddCustomerForm";
 import UpdateCustomerForm from "./components/UpdateCustomerForm";
 
@@ -62,15 +62,24 @@ const CustomerManagement = () => {
     dataLoader: dataLoader,
   });
 
-  const addCustomer = useCallback(() => {
-    modals.open({
-      title: t("Add customer"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddCustomerForm onSuccess={getData} />,
-    });
-  }, [t]);
+  const addCustomer = useCallback(
+    (values?: CustomerRequest) => {
+      modals.open({
+        title: t("Add customer"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <AddCustomerForm
+            initValues={values}
+            reOpen={addCustomer}
+            onSuccess={getData}
+          />
+        ),
+      });
+    },
+    [t],
+  );
 
   const updateCustomer = useCallback(
     (customer: Customer) => {
@@ -82,6 +91,7 @@ const CustomerManagement = () => {
         children: (
           <UpdateCustomerForm
             customer={customer}
+            reOpen={updateCustomer}
             onSuccess={getData}
           />
         ),
@@ -92,7 +102,7 @@ const CustomerManagement = () => {
 
   return (
     <Stack key={caterings.size} gap={10}>
-      <AddButton onClick={addCustomer} />
+      <AddButton onClick={() => addCustomer()} />
       <Flex justify="end" align="center">
         <AutocompleteForFilterData
           data={names}

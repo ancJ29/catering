@@ -10,6 +10,7 @@ import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FilterType,
+  ProductRequest,
   configs,
   defaultCondition,
   filter,
@@ -25,7 +26,7 @@ const ProductManagement = () => {
     () => configs(t, navigate),
     [t, navigate],
   );
-  const { products, reload: reloadProduct } = userProductStore();
+  const { products } = userProductStore();
 
   const dataLoader = useCallback(() => {
     return Array.from(products.values());
@@ -48,20 +49,20 @@ const ProductManagement = () => {
     defaultCondition,
   });
 
-  const _reload = useCallback(async () => {
-    reloadProduct(true);
-    modals.closeAll();
-  }, [reloadProduct]);
-
-  const addProduct = useCallback(() => {
-    modals.open({
-      title: t("Add product"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddProductForm onSuccess={_reload} />,
-    });
-  }, [_reload, t]);
+  const addProduct = useCallback(
+    (values?: ProductRequest) => {
+      modals.open({
+        title: t("Add product"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <AddProductForm initValues={values} reOpen={addProduct} />
+        ),
+      });
+    },
+    [t],
+  );
 
   const updateProduct = useCallback(
     (product: Product) => {
@@ -71,16 +72,19 @@ const ProductManagement = () => {
         centered: true,
         size: "lg",
         children: (
-          <UpdateProductForm product={product} onSuccess={_reload} />
+          <UpdateProductForm
+            product={product}
+            reOpen={updateProduct}
+          />
         ),
       });
     },
-    [_reload, t],
+    [t],
   );
 
   return (
     <Stack gap={10} pos="relative">
-      <AddButton onClick={addProduct} />
+      <AddButton onClick={() => addProduct()} />
       <Filter
         condition={condition}
         keyword={keyword}

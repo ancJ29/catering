@@ -1,8 +1,6 @@
 import useTranslation from "@/hooks/useTranslation";
-import {
-  addDepartment,
-  AddDepartmentRequest,
-} from "@/services/domain";
+import { addDepartment } from "@/services/domain";
+import useCateringStore from "@/stores/catering.store";
 import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -15,18 +13,28 @@ import {
 import CateringForm from "./CateringForm";
 
 type AddCateringFormProps = {
-  onSuccess: () => void;
+  initValue?: CateringRequest;
+  reOpen: (values: CateringRequest) => void;
 };
 
-const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
+const AddCateringForm = ({
+  initValue: _initValue,
+  reOpen,
+}: AddCateringFormProps) => {
   const t = useTranslation();
+  const { reload } = useCateringStore();
   const form = useForm<CateringRequest>({
     validate: _validate(t),
-    initialValues: initialValues,
+    initialValues: _initValue ?? initialValues,
   });
 
+  const onSuccess = useCallback(() => {
+    reload(true);
+    modals.closeAll();
+  }, [reload]);
+
   const submit = useCallback(
-    (values: AddDepartmentRequest) => {
+    (values: CateringRequest) => {
       modals.openConfirmModal({
         title: t("Add catering"),
         children: (
@@ -35,13 +43,17 @@ const AddCateringForm = ({ onSuccess }: AddCateringFormProps) => {
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen(values);
+        },
         onConfirm: async () => {
           const res = await addDepartment(values);
           res?.id && onSuccess();
         },
       });
     },
-    [onSuccess, t],
+    [onSuccess, reOpen, t],
   );
 
   return (

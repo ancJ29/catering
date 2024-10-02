@@ -13,14 +13,20 @@ import {
 import CustomerForm from "./CustomerForm";
 
 type AddCustomerFormProps = {
+  initValues?: CustomerRequest;
+  reOpen: (values: CustomerRequest) => void;
   onSuccess: () => void;
 };
 
-const AddCustomerForm = ({ onSuccess }: AddCustomerFormProps) => {
+const AddCustomerForm = ({
+  initValues: _initValues,
+  reOpen,
+  onSuccess,
+}: AddCustomerFormProps) => {
   const t = useTranslation();
   const form = useForm<CustomerRequest>({
     validate: _validate(t),
-    initialValues: initialValues,
+    initialValues: _initValues ?? initialValues,
   });
 
   const submit = useCallback(
@@ -33,6 +39,10 @@ const AddCustomerForm = ({ onSuccess }: AddCustomerFormProps) => {
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen(values);
+        },
         onConfirm: async () => {
           const res = await addCustomer({
             ...values,
@@ -45,7 +55,7 @@ const AddCustomerForm = ({ onSuccess }: AddCustomerFormProps) => {
         },
       });
     },
-    [onSuccess, t],
+    [onSuccess, reOpen, t],
   );
 
   return (

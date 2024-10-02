@@ -4,6 +4,7 @@ import {
   updateDepartment,
   UpdateDepartmentRequest,
 } from "@/services/domain";
+import useCateringStore from "@/stores/catering.store";
 import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -16,15 +17,16 @@ import {
 import CateringForm from "./CateringForm";
 
 type UpdateCateringFormProps = {
-  catering?: Department;
-  onSuccess: () => void;
+  catering: Department;
+  reOpen: (values: Department) => void;
 };
 
 const UpdateCateringForm = ({
   catering,
-  onSuccess,
+  reOpen,
 }: UpdateCateringFormProps) => {
   const t = useTranslation();
+  const { reload } = useCateringStore();
   const form = useForm<CateringRequest>({
     validate: _validate(t),
     initialValues: {
@@ -41,6 +43,11 @@ const UpdateCateringForm = ({
     },
   });
 
+  const onSuccess = useCallback(() => {
+    reload(true);
+    modals.closeAll();
+  }, [reload]);
+
   const submit = useCallback(
     (values: UpdateDepartmentRequest) => {
       modals.openConfirmModal({
@@ -51,13 +58,20 @@ const UpdateCateringForm = ({
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
+        onCancel: () => {
+          modals.closeAll();
+          reOpen({
+            ...catering,
+            ...values,
+          });
+        },
         onConfirm: async () => {
           await updateDepartment(values);
           onSuccess();
         },
       });
     },
-    [onSuccess, t],
+    [catering, onSuccess, reOpen, t],
   );
 
   return (

@@ -9,7 +9,7 @@ import { GenericObject } from "@/types";
 import { Button, Flex, Stack, Text, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useCallback, useMemo, useState } from "react";
-import { User, configs } from "./_configs";
+import { User, UserRequest, configs } from "./_configs";
 import AddUserForm from "./components/AddUserForm";
 import UpdateUserForm from "./components/UpdateUserForm";
 
@@ -97,15 +97,24 @@ const UserManagement = () => {
     [filter.keyword, users],
   );
 
-  const addUser = useCallback(() => {
-    modals.open({
-      title: t("Add user"),
-      classNames: { title: "c-catering-font-bold" },
-      centered: true,
-      size: "lg",
-      children: <AddUserForm onSuccess={_reload.bind(null, true)} />,
-    });
-  }, [_reload, t]);
+  const addUser = useCallback(
+    (values?: UserRequest) => {
+      modals.open({
+        title: t("Add user"),
+        classNames: { title: "c-catering-font-bold" },
+        centered: true,
+        size: "lg",
+        children: (
+          <AddUserForm
+            initValues={values}
+            reOpen={addUser}
+            onSuccess={_reload.bind(null, true)}
+          />
+        ),
+      });
+    },
+    [_reload, t],
+  );
 
   const updateUser = useCallback(
     (user: User) => {
@@ -117,6 +126,7 @@ const UserManagement = () => {
         children: (
           <UpdateUserForm
             onSuccess={_reload.bind(null, true)}
+            reOpen={updateUser}
             user={user}
           />
         ),
@@ -127,7 +137,7 @@ const UserManagement = () => {
 
   return (
     <Stack gap={10} pos="relative">
-      <AddButton onClick={addUser} />
+      <AddButton onClick={() => addUser()} />
       <Flex w={"100%"} justify="end" align="center" gap={12}>
         <form
           onSubmit={search}

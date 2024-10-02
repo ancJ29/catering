@@ -4,6 +4,7 @@ import {
 } from "@/auto-generated/api-configs";
 import useTranslation from "@/hooks/useTranslation";
 import { addProduct } from "@/services/domain";
+import useProductStore from "@/stores/product.store";
 import { Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -16,15 +17,25 @@ import {
 import ProductForm from "./ProductForm";
 
 type AddProductFormProps = {
-  onSuccess: () => void;
+  initValues?: ProductRequest;
+  reOpen: (values: ProductRequest) => void;
 };
 
-const AddProductForm = ({ onSuccess }: AddProductFormProps) => {
+const AddProductForm = ({
+  initValues: _initValues,
+  reOpen,
+}: AddProductFormProps) => {
   const t = useTranslation();
+  const { reload } = useProductStore();
   const form = useForm<ProductRequest>({
     validate: _validate(t),
-    initialValues: initialValues,
+    initialValues: _initValues ?? initialValues,
   });
+
+  const onSuccess = useCallback(() => {
+    reload(true);
+    modals.closeAll();
+  }, [reload]);
 
   const submit = useCallback(
     (values: ProductRequest) => {
@@ -36,7 +47,10 @@ const AddProductForm = ({ onSuccess }: AddProductFormProps) => {
           </Text>
         ),
         labels: { confirm: "OK", cancel: t("Cancel") },
-        onCancel: () => modals.close,
+        onCancel: () => {
+          modals.closeAll();
+          reOpen(values);
+        },
         onConfirm: async () => {
           const res = await addProduct({
             ...values,
@@ -50,7 +64,7 @@ const AddProductForm = ({ onSuccess }: AddProductFormProps) => {
         },
       });
     },
-    [onSuccess, t],
+    [onSuccess, reOpen, t],
   );
 
   return (

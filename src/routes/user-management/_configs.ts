@@ -69,3 +69,14 @@ export const configs = (
     },
   ];
 };
+
+const { request } = actionConfigs[Actions.ADD_USER].schema;
+export type Request = z.infer<typeof request>;
+
+export type UserRequest = Omit<
+Request,
+"departmentIds" | "roleId"
+> & {
+  department: string;
+  role: string;
+};
