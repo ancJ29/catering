@@ -1,6 +1,6 @@
 import useTranslation from "@/hooks/useTranslation";
 import useAuthStore from "@/stores/auth.store";
-import { AppShell, NavLink } from "@mantine/core";
+import { AppShell, NavLink, Text } from "@mantine/core";
 import { IconLogout, IconUser } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import classes from "./Logout.module.scss";
@@ -13,6 +13,7 @@ const FooterNavbar = ({ opened }: FooterNavbarProps) => {
   const t = useTranslation();
   const navigate = useNavigate();
   const { removeToken } = useAuthStore();
+  const version = import.meta.env.APP_VERSION;
 
   const gotoProfilePage = () => {
     navigate("/profile");
@@ -46,6 +47,11 @@ const FooterNavbar = ({ opened }: FooterNavbarProps) => {
           hiddenFrom={item.hiddenFrom}
         />
       ))}
+      {opened && (
+        <Text c="dimmed" ta="right" pr={20} pb={5}>
+          {`${t("Version")}: ${version}`}
+        </Text>
+      )}
     </AppShell.Section>
   );
 };

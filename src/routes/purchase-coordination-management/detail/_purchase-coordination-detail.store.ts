@@ -20,6 +20,7 @@ import {
   convertAmountBackward,
   convertAmountForward,
   createStore,
+  roundToDecimals,
 } from "@/utils";
 import {
   CoordinationDetail,
@@ -163,7 +164,7 @@ export default {
     const { materials } = useMaterialStore.getState();
     const state = store.getSnapshot();
     if (!state.purchaseCoordination) {
-      return;
+      return false;
     }
     const grouped: { [key: string]: CoordinationDetail[] } = {};
     const purchaseOrder: AddPurchaseOrderRequest = [];
@@ -385,10 +386,15 @@ function initCoordinationDetail(
   const material = materials.get(
     purchaseCoordinationDetail.materialId,
   );
-  const amount = convertAmountBackward({
-    material,
-    amount: purchaseCoordinationDetail.amount,
-  });
+  const amount = Math.floor(
+    roundToDecimals(
+      convertAmountBackward({
+        material,
+        amount: purchaseCoordinationDetail.amount,
+      }),
+      3,
+    ),
+  );
   return {
     id: purchaseCoordinationDetail.id,
     materialId: purchaseCoordinationDetail.materialId,

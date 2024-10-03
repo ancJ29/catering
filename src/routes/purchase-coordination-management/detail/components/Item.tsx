@@ -2,7 +2,7 @@ import NumberInput from "@/components/common/NumberInput";
 import useTranslation from "@/hooks/useTranslation";
 import { Material } from "@/services/domain";
 import { TextAlign } from "@/types";
-import { numberWithDelimiter } from "@/utils";
+import { numberWithDelimiter, roundToDecimals } from "@/utils";
 import { Button, Flex, Table, Text, TextInput } from "@mantine/core";
 import { useState } from "react";
 import {
@@ -54,7 +54,10 @@ const Item = ({
       align: "left",
     },
     {
-      content: coordinationDetail?.approvedQuantity,
+      content: roundToDecimals(
+        coordinationDetail?.approvedQuantity || 0,
+        3,
+      ),
       align: "right",
     },
     {
@@ -154,7 +157,9 @@ const Item = ({
   ];
 
   return (
-    <Table.Tr>
+    <Table.Tr
+      bg={coordinationDetail?.supplierId ? "white" : "primary.0"}
+    >
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign} pl={col.pl}>
           {col.content}
