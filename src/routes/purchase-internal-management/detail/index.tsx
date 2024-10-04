@@ -49,7 +49,7 @@ const PurchaseInternalDetail = () => {
     const purchaseInternal = await getPurchaseInternalById(
       purchaseInternalId,
     );
-    if(!purchaseInternal) {
+    if (!purchaseInternal) {
       navigate("/");
     }
     setValues({
@@ -169,7 +169,12 @@ const PurchaseInternalDetail = () => {
           disabledCompleteButton={disabled}
         />
         <Form values={values} />
-        <Steppers status={values.status} />
+        <Steppers
+          status={values.status}
+          onChangeStatus={(value) =>
+            setValues({ ...values, status: value })
+          }
+        />
         <Table
           purchaseInternalDetails={currents}
           onChangeAmount={handleChangeAmount}
