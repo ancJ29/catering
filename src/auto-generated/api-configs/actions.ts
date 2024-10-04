@@ -355,6 +355,7 @@ export const configs = {
         updatedAt: true,
         lastModifiedBy: true,
       }),
+      response: addResponse,
     },
   },
   [Actions.UPDATE_CUSTOMER]: {

@@ -501,4 +501,5 @@ export default {
     "Bạn có chắc chắn muốn thêm khách hàng mới?",
   "Are you sure you want to update customer?":
     "Bạn có chắc chắn muốn cập nhật khách hàng?",
+  "Version": "Phiên bản",
 } satisfies Record<string, string>;

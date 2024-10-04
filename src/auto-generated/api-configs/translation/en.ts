@@ -502,4 +502,5 @@ export default {
     "Are you sure you want to add new customer?",
   "Are you sure you want to update customer?":
     "Are you sure you want to update customer?",
+  "Version": "Version",
 } satisfies Record<string, string>;

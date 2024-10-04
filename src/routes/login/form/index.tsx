@@ -18,7 +18,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
@@ -36,7 +36,6 @@ const LoginForm = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const { setToken } = useAuthStore();
-
   const form = useForm<LoginProps>({
     initialValues,
     validate: {
@@ -44,6 +43,14 @@ const LoginForm = () => {
       password: isNotEmpty(t("Please enter password")),
     },
   });
+
+  useEffect(() => {
+    form.setFieldValue(
+      "remember",
+      localStorage.__REMEMBER__ === "true",
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const login = useCallback(
     async ({ password, userName, remember }: LoginProps) => {
