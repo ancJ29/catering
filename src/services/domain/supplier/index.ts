@@ -2,6 +2,7 @@ import {
   Actions,
   configs as actionConfigs,
 } from "@/auto-generated/api-configs";
+import callApi from "@/services/api";
 import cache from "@/services/cache";
 import { loadAll } from "@/services/data-loaders";
 import logger from "@/services/logger";
@@ -50,6 +51,7 @@ export async function getAllSuppliers(
     key: "suppliers",
     action: Actions.GET_SUPPLIERS,
     take: 300,
+    noCache,
   });
   suppliers = suppliers.map((supplier) => {
     supplier.name = supplier.name.replace(/\.[0-9]+$/g, "");
@@ -57,4 +59,15 @@ export async function getAllSuppliers(
   });
   cache.set(key, { suppliers });
   return suppliers;
+}
+
+const { request: updateRequest } =
+  actionConfigs[Actions.UPDATE_SUPPLIER].schema;
+type UpdateRequest = z.infer<typeof updateRequest>;
+
+export async function updateSupplier(params: UpdateRequest) {
+  await callApi<UpdateRequest, { id: string }>({
+    action: Actions.UPDATE_SUPPLIER,
+    params,
+  });
 }

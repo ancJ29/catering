@@ -5,9 +5,11 @@ import {
   emailSchema,
 } from "@/auto-generated/api-configs";
 import IconBadge from "@/components/c-catering/IconBadge";
-import useMaterialStore from "@/stores/material.store";
 import { DataGridColumnProps } from "@/types";
-import { isVietnamesePhoneNumber, unique } from "@/utils";
+import {
+  findSuppliersByCateringId,
+  isVietnamesePhoneNumber,
+} from "@/utils";
 import { isNotEmpty } from "@mantine/form";
 import { z } from "zod";
 
@@ -82,20 +84,6 @@ export const configs = (
     },
   ];
 };
-
-function findSuppliersByCateringId(cateringId: string) {
-  const { materials } = useMaterialStore.getState();
-  const suppliers: string[] = [];
-  for (const material of materials.values()) {
-    if (
-      material.others.prices &&
-      material.others.prices[cateringId]
-    ) {
-      suppliers.push(material.others.prices[cateringId].supplierId);
-    }
-  }
-  return unique(suppliers);
-}
 
 export type FilterType = {
   onSaleOnly: boolean;

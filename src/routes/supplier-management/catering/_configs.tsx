@@ -29,7 +29,7 @@ export const configs = (
       width: "25%",
       defaultVisible: true,
       renderCell(_, row: Catering) {
-        return <span>{row?.others.address || "N/A"}</span>;
+        return <span>{row?.address || "N/A"}</span>;
       },
     },
     {
