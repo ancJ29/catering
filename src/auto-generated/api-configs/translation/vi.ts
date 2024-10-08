@@ -502,4 +502,5 @@ export default {
   "Are you sure you want to update customer?":
     "Bạn có chắc chắn muốn cập nhật khách hàng?",
   "Version": "Phiên bản",
+  "Priority price": "Giá ưu tiên",
 } satisfies Record<string, string>;

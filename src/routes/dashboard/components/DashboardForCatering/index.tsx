@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import DailyData from "./components/DailyData";
 import DailyTask from "./components/DailyTask";
 
-const CateringDashboard = () => {
+const DashboardForCatering = () => {
   const [dashboard, setDashboard] = useState<CaterDashboard>();
   const { cateringId } = useAuthStore();
   const { customersByCateringId } = useCustomerStore();
@@ -34,4 +34,4 @@ const CateringDashboard = () => {
   );
 };
 
-export default CateringDashboard;
+export default DashboardForCatering;

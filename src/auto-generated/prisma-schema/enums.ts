@@ -66,3 +66,18 @@ export const TemplateType = {
   "PURCHASE_ORDER_CONFIRMATION": "PURCHASE_ORDER_CONFIRMATION" as TemplateType,
   "PURCHASE_REQUEST_CREATE": "PURCHASE_REQUEST_CREATE" as TemplateType,
 };
+
+export const reportStatusEnum = z.nativeEnum({
+  RUNNING: "RUNNING",
+  DONE: "DONE"
+} as {
+  "RUNNING": "RUNNING",
+  "DONE": "DONE",
+});
+
+export type ReportStatus = "RUNNING" | "DONE";
+
+export const ReportStatus = {
+  "RUNNING": "RUNNING" as ReportStatus,
+  "DONE": "DONE" as ReportStatus,
+};

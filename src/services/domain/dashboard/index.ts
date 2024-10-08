@@ -33,3 +33,17 @@ undefined | OwnerDashboard
     action: Actions.GET_OWNER_DASHBOARD,
   });
 }
+
+const addOwnerDashboardResponse =
+  actionConfigs[Actions.ADD_OWNER_DASHBOARD].schema.request;
+
+export type AddOwnerDashboard = z.infer<
+  typeof addOwnerDashboardResponse
+>;
+
+export async function addOwnerDashboard(params: AddOwnerDashboard) {
+  return await callApi<AddOwnerDashboard, { id: string }>({
+    action: Actions.ADD_OWNER_DASHBOARD,
+    params,
+  });
+}

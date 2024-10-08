@@ -1,5 +1,5 @@
 import useTranslation from "@/hooks/useTranslation";
-import { DailyTaskType } from "@/routes/dashboard/_configs";
+import { DashboardDataType } from "@/routes/dashboard/_configs";
 import { FilterType as ExternalWarehouseFilterType } from "@/routes/external-warehouse-entry/_configs";
 import { FilterType as InternalWarehouseFilterType } from "@/routes/internal-warehouse-entry/_configs";
 import { CateringDashboard } from "@/services/domain";
@@ -35,31 +35,31 @@ const DailyTask = ({ dashboard }: DailyTaskProps) => {
   };
   const externalWarehouseHash = buildHash(externalWarehouseCondition);
 
-  const data: DailyTaskType[] = [
+  const data: DashboardDataType[] = [
     {
       title: "Supplier orders",
-      content: `${t("Today, there are")} ${
+      description: `${t("Today, there are")} ${
         dashboard?.externalWarehouseEntry || 0
       } ${t("PO order(s) to import")}`,
       url: `/external-warehouse-entry#${externalWarehouseHash}`,
     },
     {
       title: "Internal orders to complete",
-      content: `${t("Today, there are")} ${
+      description: `${t("Today, there are")} ${
         dashboard?.internalWarehouseEntry || 0
       } ${t("transfer order(s) to import")}`,
       url: `/internal-warehouse-entry#${internalWarehouseHash}`,
     },
     {
       title: "Warehouse usage output",
-      content: `${t("Today, there are")} ${
+      description: `${t("Today, there are")} ${
         dashboard?.warehouseUsageOrder || 0
       } ${t("warehouse usage orders to import")}`,
       url: "/export-inventory",
     },
     {
       title: "Check Inventory",
-      content: `${t("Today, there are")} ${
+      description: `${t("Today, there are")} ${
         dashboard?.inventoryCheckInOrder || 0
       } ${t("inventory check order(s) to import")}, ${
         dashboard?.inventoryCheckOutOrder || 0
@@ -69,12 +69,12 @@ const DailyTask = ({ dashboard }: DailyTaskProps) => {
     {
       // TODO
       title: "Order production materials",
-      content: "",
+      description: "",
       url: "/purchase-request-management",
     },
     {
       title: "Update meal plans",
-      content: t("Update meal plan description"),
+      description: t("Update meal plan description"),
       url: "/meal-management",
     },
   ];

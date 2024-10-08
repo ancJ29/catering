@@ -53,54 +53,65 @@ const ImportantData = ({ dashboard }: ImportantDataProps) => {
   const data: DashboardDataType[] = [
     {
       title: "Pending confirmation",
-      amount: dashboard?.pendingConfirmation || 0,
+      amount: dashboard?.content.pendingConfirmation || 0,
       icon: IconCheck,
       iconColor,
       url: `/purchase-request-management#${purchaseRequestHash}`,
     },
     {
       title: "Dispatch case",
-      amount: dashboard?.dispatchCase || 0,
+      amount: dashboard?.content.dispatchCase || 0,
       icon: IconCar,
       iconColor,
       url: "/purchase-coordination-management",
     },
     {
       title: "Purchase case",
-      amount: dashboard?.purchaseCase || 0,
+      amount: dashboard?.content.purchaseCase || 0,
       icon: IconShoppingCart,
       iconColor,
     },
     {
       title: "PO to be processed",
-      amount: dashboard?.poToBeProcessed || 0,
+      amount: dashboard?.content.poToBeProcessed || 0,
       icon: IconCheck,
       iconColor,
       url: `/purchase-order-management#${purchaseOrderHash}`,
     },
+  ];
+
+  const data2: DashboardDataType[] = [
     {
       title: "Catering has not ordered",
-      amount: dashboard?.cateringHasNotOrdered || 0,
+      amount: dashboard?.content.cateringHasNotOrdered.length || 0,
       icon: IconInfoCircle,
       iconColor,
+      cateringIds: dashboard?.content.cateringHasNotOrdered,
     },
     {
       title: "Catering has ordered for tomorrow",
-      amount: dashboard?.cateringHasOrderedForTomorrow || 0,
+      amount:
+        dashboard?.content.cateringHasOrderedForTomorrow.length || 0,
       icon: IconInfoCircle,
       iconColor,
+      cateringIds: dashboard?.content.cateringHasOrderedForTomorrow,
     },
     {
       title: "Catering has not stocked",
-      amount: dashboard?.cateringHasNotStocked || 0,
+      amount: dashboard?.content.cateringHasNotStocked.length || 0,
       icon: IconInfoCircle,
       iconColor,
+      cateringIds: dashboard?.content.cateringHasNotStocked,
     },
     {
       title: "Catering has not conducted inventory",
-      amount: dashboard?.cateringHasNotConductedInventory || 0,
+      amount:
+        dashboard?.content.cateringHasNotConductedInventory.length ||
+        0,
       icon: IconInfoCircle,
       iconColor,
+      cateringIds:
+        dashboard?.content.cateringHasNotConductedInventory,
     },
   ];
 
@@ -109,6 +120,7 @@ const ImportantData = ({ dashboard }: ImportantDataProps) => {
       icon={IconExclamationMark}
       title="Important data"
       data={data}
+      data2={data2}
     />
   );
 };

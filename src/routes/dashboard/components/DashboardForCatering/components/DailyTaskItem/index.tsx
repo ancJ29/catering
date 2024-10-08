@@ -1,6 +1,6 @@
 import { theme } from "@/configs/theme/mantine-theme";
 import useTranslation from "@/hooks/useTranslation";
-import { DailyTaskType } from "@/routes/dashboard/_configs";
+import { DashboardDataType } from "@/routes/dashboard/_configs";
 import { Card, Flex, Text } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import classes from "./DailyTaskItem.module.scss";
 
 type DailyTaskItemProps = {
   index: number;
-  item: DailyTaskType;
+  item: DashboardDataType;
 };
 
 const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
@@ -16,7 +16,7 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
   const navigate = useNavigate();
 
   const onClick = () => {
-    navigate(item.url);
+    item.url && navigate(item.url);
   };
 
   return (
@@ -32,7 +32,7 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
           <Text c="primary" ta="start" fw="bold">
             {`${index + 1}. ${t(item.title)}`}
           </Text>
-          <Text ta="start">{item.content}</Text>
+          <Text ta="start">{item.description}</Text>
         </Flex>
         <Flex gap={5}>
           <IconEye

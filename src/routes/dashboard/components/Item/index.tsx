@@ -28,14 +28,16 @@ const Item = ({ item }: ItemProps) => {
       className={classes.item}
       onClick={onClick}
     >
-      <item.icon
-        size="2rem"
-        strokeWidth="1.5"
-        color={item.iconColor}
-      />
+      {item.icon && (
+        <item.icon
+          size="2rem"
+          strokeWidth="1.5"
+          color={item.iconColor}
+        />
+      )}
       <Flex direction="column" align="start">
         <Text size="xl" fw="bold" lh="xs" c="primary">
-          {numberWithDelimiter(item.amount)}
+          {numberWithDelimiter(item.amount || 0)}
         </Text>
         <Text
           size="xs"

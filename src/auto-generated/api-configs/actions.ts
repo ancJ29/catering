@@ -5,6 +5,7 @@ import {
   menuSchema,
   monthlyInventorySchema,
   productSchema,
+  reportSchema,
   templateSchema,
   unitSchema,
 } from "@/auto-generated/prisma-schema";
@@ -1085,22 +1086,39 @@ export const configs = {
     type: ActionType.READ,
     schema: {
       request: z.any(),
-      response: z.object({
-        pendingConfirmation: numberSchema,
-        dispatchCase: numberSchema,
-        purchaseCase: numberSchema,
-        poToBeProcessed: numberSchema,
-        cateringHasNotOrdered: numberSchema,
-        cateringHasOrderedForTomorrow: numberSchema,
-        cateringHasNotStocked: numberSchema,
-        cateringHasNotConductedInventory: numberSchema,
-        shiftServices: numberSchema,
-        enableCaterings: numberSchema,
-        users: numberSchema,
-        caterings: numberSchema,
-        customers: numberSchema,
-        suppliers: numberSchema,
+      response: reportSchema
+        .omit({
+          content: true,
+        })
+        .extend({
+          content: z.object({
+            pendingConfirmation: numberSchema,
+            dispatchCase: numberSchema,
+            purchaseCase: numberSchema,
+            poToBeProcessed: numberSchema,
+            cateringHasNotOrdered: stringSchema.array(),
+            cateringHasOrderedForTomorrow: stringSchema.array(),
+            cateringHasNotStocked: stringSchema.array(),
+            cateringHasNotConductedInventory: stringSchema.array(),
+            shiftServices: numberSchema,
+            enableCaterings: numberSchema,
+            users: numberSchema,
+            caterings: numberSchema,
+            customers: numberSchema,
+            suppliers: numberSchema,
+          }),
+        }),
+    },
+  },
+  [Actions.ADD_OWNER_DASHBOARD]: {
+    name: Actions.GET_OWNER_DASHBOARD,
+    group: ActionGroups.DASHBOARD_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        key: stringSchema,
       }),
+      response: addResponse,
     },
   },
   [Actions.GET_NOTIFICATIONS]: {
