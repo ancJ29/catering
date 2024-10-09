@@ -174,6 +174,7 @@ const PurchaseInternalDetail = () => {
           onChangeStatus={(value) =>
             setValues({ ...values, status: value })
           }
+          disabled={disabled}
         />
         <Table
           purchaseInternalDetails={currents}
