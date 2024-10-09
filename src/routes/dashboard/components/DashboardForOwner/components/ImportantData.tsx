@@ -44,11 +44,21 @@ const ImportantData = ({ dashboard }: ImportantDataProps) => {
     id: "",
     from: startOfWeek(Date.now()),
     to: endOfWeek(Date.now()),
-    statuses: [poStatusSchema.Values.DG],
+    statuses: [],
     supplierIds: [],
     receivingCateringIds: [],
   };
   const purchaseOrderHash = buildHash(purchaseOrderCondition);
+
+  const poInProcessCondition: PurchaseOrderFilter = {
+    id: "",
+    from: startOfWeek(Date.now()),
+    to: endOfWeek(Date.now()),
+    statuses: [poStatusSchema.Values.DG],
+    supplierIds: [],
+    receivingCateringIds: [],
+  };
+  const poInProcessHash = buildHash(poInProcessCondition);
 
   const data: DashboardDataType[] = [
     {
@@ -70,13 +80,14 @@ const ImportantData = ({ dashboard }: ImportantDataProps) => {
       amount: dashboard?.content.purchaseCase || 0,
       icon: IconShoppingCart,
       iconColor,
+      url: `/purchase-order-management#${purchaseOrderHash}`,
     },
     {
       title: "PO to be processed",
       amount: dashboard?.content.poToBeProcessed || 0,
       icon: IconCheck,
       iconColor,
-      url: `/purchase-order-management#${purchaseOrderHash}`,
+      url: `/purchase-order-management#${poInProcessHash}`,
     },
   ];
 
