@@ -14,10 +14,7 @@ const Item = ({ item }: ItemProps) => {
   const navigate = useNavigate();
 
   const onClick = () => {
-    if (!item.url) {
-      return;
-    }
-    navigate(item.url);
+    item.url && navigate(item.url, { state: { refresh: true } });
   };
 
   return (

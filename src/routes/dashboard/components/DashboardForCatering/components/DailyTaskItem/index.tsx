@@ -16,7 +16,7 @@ const DailyTaskItem = ({ index, item }: DailyTaskItemProps) => {
   const navigate = useNavigate();
 
   const onClick = () => {
-    item.url && navigate(item.url);
+    item.url && navigate(item.url, { state: { refresh: true } });
   };
 
   return (

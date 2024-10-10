@@ -91,27 +91,6 @@ export function dailyMenuStatusColor(
 //   };
 // }
 
-export const _getDailyMenu = async function getDailyMenu({
-  id,
-  customerId,
-  from = Date.now() - ONE_WEEK,
-  to = Date.now() + ONE_WEEK,
-  noCache = false,
-}: {
-  id?: string;
-  from: number;
-  to: number;
-  customerId: string;
-  noCache?: boolean;
-}): Promise<DailyMenu[]> {
-  const dailyMenuList = await callApi<unknown, Response>({
-    action: Actions.GET_DAILY_MENU,
-    params: { id, customerId, from, to },
-    options: { noCache },
-  });
-  return dailyMenuList || [];
-};
-
 export async function getDailyMenu({
   id,
   customerIds,
