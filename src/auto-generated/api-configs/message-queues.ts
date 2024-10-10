@@ -7,7 +7,6 @@ export enum MESSAGE_QUEUE_CHANNEL {
   PRODUCT_UPDATED = "product-updated",
   DAILY_MENU_UPDATED = "daily-menu-updated",
   REQUEST_HANDLER_TRIGGER = "request-handler-trigger",
-  OWNER_DASHBOARD_ADDED = "owner-dashboard-added",
 }
 
 export const messageQueueSchemaConfigs = {
@@ -41,11 +40,6 @@ export const messageQueueSchemaConfigs = {
           return v;
         })
         .optional(),
-    }),
-  },
-  [MESSAGE_QUEUE_CHANNEL.OWNER_DASHBOARD_ADDED]: {
-    schema: z.object({
-      id: stringSchema,
     }),
   },
 } satisfies Record<MESSAGE_QUEUE_CHANNEL, { schema: z.AnyZodObject }>;

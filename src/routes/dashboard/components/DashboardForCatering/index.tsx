@@ -1,33 +1,43 @@
+import useTranslation from "@/hooks/useTranslation";
 import {
+  addCateringDashboard,
   CateringDashboard as CaterDashboard,
   getCateringDashboard,
 } from "@/services/domain";
-import useAuthStore from "@/stores/auth.store";
-import useCustomerStore from "@/stores/customer.store";
-import { Stack } from "@mantine/core";
+import { Button, Flex, Stack } from "@mantine/core";
+import { IconReload } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import DailyData from "./components/DailyData";
 import DailyTask from "./components/DailyTask";
 
 const DashboardForCatering = () => {
+  const t = useTranslation();
   const [dashboard, setDashboard] = useState<CaterDashboard>();
-  const { cateringId } = useAuthStore();
-  const { customersByCateringId } = useCustomerStore();
+
+  const fetchDashboard = async () => {
+    const data = await getCateringDashboard();
+    setDashboard(data);
+  };
 
   useEffect(() => {
-    const fetchDashboard = async () => {
-      const customers = customersByCateringId.get(cateringId || "");
-      const data = await getCateringDashboard(
-        customers?.map((customer) => customer.id) || [],
-      );
-      setDashboard(data);
-    };
-
     fetchDashboard();
-  }, [cateringId, customersByCateringId]);
+  }, []);
+
+  const reload = async () => {
+    await addCateringDashboard({ key: dashboard?.key || "" });
+    await fetchDashboard();
+  };
 
   return (
     <Stack gap={10} align="center">
+      <Flex justify="end" w="100%">
+        <Button
+          leftSection={<IconReload size={14} />}
+          onClick={reload}
+        >
+          {t("Reload")}
+        </Button>
+      </Flex>
       <DailyData dashboard={dashboard} />
       <DailyTask dashboard={dashboard} />
     </Stack>

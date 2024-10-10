@@ -19,27 +19,27 @@ const DailyData = ({ dashboard }: DailyDataProps) => {
   const data: DashboardDataType[] = [
     {
       title: "Shift services",
-      amount: dashboard?.shiftService || 0,
+      amount: dashboard?.content.shiftService || 0,
       icon: IconClock,
       iconColor,
     },
     {
       title: "Meal count",
-      amount: dashboard?.mealCount || 0,
+      amount: dashboard?.content.mealCount || 0,
       icon: IconGrill,
       iconColor,
     },
     {
       title: "Revenue",
       unit: "VNĐ",
-      amount: dashboard?.revenue || 0,
+      amount: dashboard?.content.revenue || 0,
       icon: IconMoneybag,
       iconColor,
     },
     {
       title: "Cost",
       unit: "VNĐ",
-      amount: dashboard?.cost || 0,
+      amount: dashboard?.content.cost || 0,
       icon: IconCurrencyDollar,
       iconColor,
     },

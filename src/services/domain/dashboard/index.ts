@@ -12,12 +12,25 @@ export type CateringDashboard = z.infer<
   typeof cateringDashboardResponse
 >;
 
-export async function getCateringDashboard(
-  customerIds: string[],
-): Promise<undefined | CateringDashboard> {
+export async function getCateringDashboard(): Promise<
+undefined | CateringDashboard
+> {
   return await callApi<unknown, CateringDashboard>({
     action: Actions.GET_CATERING_DASHBOARD,
-    params: { customerIds },
+  });
+}
+
+const addCateringDashboardResponse =
+  actionConfigs[Actions.ADD_CATERING_DASHBOARD].schema.request;
+
+export type AddCateringDashboard = z.infer<
+  typeof addCateringDashboardResponse
+>;
+
+export async function addCateringDashboard(params: AddCateringDashboard) {
+  return await callApi<AddCateringDashboard, { id: string }>({
+    action: Actions.ADD_CATERING_DASHBOARD,
+    params,
   });
 }
 

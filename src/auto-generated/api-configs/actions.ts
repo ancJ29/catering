@@ -1063,21 +1063,25 @@ export const configs = {
     group: ActionGroups.DASHBOARD_MANAGEMENT,
     type: ActionType.READ,
     schema: {
-      request: z.object({
-        customerIds: stringSchema.array(),
-      }),
-      response: z.object({
-        shiftService: numberSchema,
-        mealCount: numberSchema,
-        revenue: numberSchema,
-        cost: numberSchema,
-        externalWarehouseEntry: numberSchema,
-        internalWarehouseEntry: numberSchema,
-        warehouseUsageOrder: numberSchema,
-        inventoryCheckInOrder: numberSchema,
-        inventoryCheckOutOrder: numberSchema,
-        purchaseRequest: numberSchema,
-      }),
+      request: z.any(),
+      response: reportSchema
+        .omit({
+          content: true,
+        })
+        .extend({
+          content: z.object({
+            shiftService: numberSchema,
+            mealCount: numberSchema,
+            revenue: numberSchema,
+            cost: numberSchema,
+            externalWarehouseEntry: numberSchema,
+            internalWarehouseEntry: numberSchema,
+            warehouseUsageOrder: numberSchema,
+            inventoryCheckInOrder: numberSchema,
+            inventoryCheckOutOrder: numberSchema,
+            purchaseRequest: numberSchema,
+          }),
+        }),
     },
   },
   [Actions.GET_OWNER_DASHBOARD]: {
@@ -1111,7 +1115,7 @@ export const configs = {
     },
   },
   [Actions.ADD_OWNER_DASHBOARD]: {
-    name: Actions.GET_OWNER_DASHBOARD,
+    name: Actions.ADD_OWNER_DASHBOARD,
     group: ActionGroups.DASHBOARD_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
@@ -1119,6 +1123,16 @@ export const configs = {
         key: stringSchema,
       }),
       response: addResponse,
+    },
+  },
+  [Actions.ADD_CATERING_DASHBOARD]: {
+    name: Actions.ADD_CATERING_DASHBOARD,
+    group: ActionGroups.DASHBOARD_MANAGEMENT,
+    type: ActionType.WRITE,
+    schema: {
+      request: z.object({
+        key: stringSchema,
+      }),
     },
   },
   [Actions.GET_NOTIFICATIONS]: {

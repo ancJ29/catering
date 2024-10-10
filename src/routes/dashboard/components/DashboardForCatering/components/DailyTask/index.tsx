@@ -39,30 +39,30 @@ const DailyTask = ({ dashboard }: DailyTaskProps) => {
     {
       title: "Supplier orders",
       description: `${t("Today, there are")} ${
-        dashboard?.externalWarehouseEntry || 0
+        dashboard?.content.externalWarehouseEntry || 0
       } ${t("PO order(s) to import")}`,
       url: `/external-warehouse-entry#${externalWarehouseHash}`,
     },
     {
       title: "Internal orders to complete",
       description: `${t("Today, there are")} ${
-        dashboard?.internalWarehouseEntry || 0
+        dashboard?.content.internalWarehouseEntry || 0
       } ${t("transfer order(s) to import")}`,
       url: `/internal-warehouse-entry#${internalWarehouseHash}`,
     },
     {
       title: "Warehouse usage output",
       description: `${t("Today, there are")} ${
-        dashboard?.warehouseUsageOrder || 0
+        dashboard?.content.warehouseUsageOrder || 0
       } ${t("warehouse usage orders to import")}`,
       url: "/export-inventory",
     },
     {
       title: "Check Inventory",
       description: `${t("Today, there are")} ${
-        dashboard?.inventoryCheckInOrder || 0
+        dashboard?.content.inventoryCheckInOrder || 0
       } ${t("inventory check order(s) to import")}, ${
-        dashboard?.inventoryCheckOutOrder || 0
+        dashboard?.content.inventoryCheckOutOrder || 0
       } ${t("inventory check order(s) to export")}`,
       url: "/check-inventory",
     },

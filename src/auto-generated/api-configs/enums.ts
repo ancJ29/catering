@@ -96,6 +96,7 @@ export enum Actions {
   GET_WAREHOUSE_IMPORTS = "get-warehouse-imports",
   ADD_WAREHOUSE_RECEIPT = "add-warehouse-receipt",
   GET_CATERING_DASHBOARD = "get-catering-dashboard",
+  ADD_CATERING_DASHBOARD = "add-catering-dashboard",
   GET_OWNER_DASHBOARD = "get-owner-dashboard",
   ADD_OWNER_DASHBOARD = "add-owner-dashboard",
   GET_NOTIFICATIONS = "get-notifications",
