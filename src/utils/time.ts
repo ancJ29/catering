@@ -106,3 +106,19 @@ export function addDayToDate(date: Date, days: number) {
   newDate.setDate(newDate.getDate() + days);
   return newDate;
 }
+
+export function compareDatesByDay(date1: Date, date2: Date): number {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  d1.setHours(0, 0, 0, 0);
+  d2.setHours(0, 0, 0, 0);
+
+  if (d1 > d2) {
+    return 1;
+  }
+  if (d1 < d2) {
+    return -1;
+  }
+  return 0;
+}

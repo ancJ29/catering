@@ -8,6 +8,7 @@ import useCateringStore from "@/stores/catering.store";
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
 import {
+  compareDatesByDay,
   convertAmountBackward,
   endOfDay,
   exportToPOByCateringExcel,
@@ -136,8 +137,25 @@ const PurchaseOrderManagement = () => {
   }, [t]);
 
   const exportExcelBySupplier = useCallback(
-    (deliveryDate: Date, supplierId: string) => {
-      const _purchaseOrders = purchaseOrders.filter(
+    async (deliveryDate: Date, supplierId: string) => {
+      let poList = purchaseOrders;
+      if (
+        compareDatesByDay(
+          deliveryDate,
+          new Date(condition?.to || ""),
+        ) < 0 ||
+        compareDatesByDay(
+          deliveryDate,
+          new Date(condition?.from || ""),
+        ) > 0
+      ) {
+        poList = await getPurchaseOrders({
+          from: startOfDay(deliveryDate.getTime()),
+          to: endOfDay(deliveryDate.getTime()),
+        });
+      }
+
+      const _purchaseOrders = poList.filter(
         (po) =>
           isSameDate(po.deliveryDate, deliveryDate) &&
           (supplierId === "all" || po.supplierId === supplierId) &&
@@ -248,6 +266,8 @@ const PurchaseOrderManagement = () => {
     },
     [
       caterings,
+      condition?.from,
+      condition?.to,
       materials,
       purchaseOrders,
       showFailNotification,
@@ -256,8 +276,24 @@ const PurchaseOrderManagement = () => {
   );
 
   const exportExcelByCatering = useCallback(
-    (deliveryDate: Date, cateringId: string) => {
-      const _purchaseOrders = purchaseOrders.filter(
+    async (deliveryDate: Date, cateringId: string) => {
+      let poList = purchaseOrders;
+      if (
+        compareDatesByDay(
+          deliveryDate,
+          new Date(condition?.to || ""),
+        ) < 0 ||
+        compareDatesByDay(
+          deliveryDate,
+          new Date(condition?.from || ""),
+        ) > 0
+      ) {
+        poList = await getPurchaseOrders({
+          from: startOfDay(deliveryDate.getTime()),
+          to: endOfDay(deliveryDate.getTime()),
+        });
+      }
+      const _purchaseOrders = poList.filter(
         (po) =>
           isSameDate(po.deliveryDate, deliveryDate) &&
           (cateringId === "all" ||
@@ -318,6 +354,8 @@ const PurchaseOrderManagement = () => {
     },
     [
       caterings,
+      condition?.from,
+      condition?.to,
       materials,
       purchaseOrders,
       showFailNotification,
