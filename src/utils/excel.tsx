@@ -4,10 +4,20 @@ import {
   ExportSupplierExcelData,
 } from "@/routes/purchase-order-management/_configs";
 import logger from "@/services/logger";
+import ExcelJS, { Font } from "exceljs";
 import * as XLSX from "xlsx";
 import { formatTime, getWeekNumber } from "./time";
 
 const companyName = "CÔNG TY TNHH THẢO HÀ";
+const boldFont: Partial<Font> = {
+  name: "Calibri",
+  size: 13,
+  bold: true,
+};
+const normalFont: Partial<Font> = {
+  name: "Calibri",
+  size: 11,
+};
 
 export function processExcelFile<T>(
   file: File,
@@ -86,75 +96,99 @@ export function exportToPOBySupplierExcel(
   data: ExportSupplierExcelData[],
   deliveryDate: Date,
 ) {
-  const workbook = XLSX.utils.book_new();
+  const workbook = new ExcelJS.Workbook();
+
   data.forEach((el) => {
     const { sheetName, cateringNames, date, title, items } = el;
-    const worksheetData = [
-      [
-        {
-          v: companyName,
-          s: { font: { name: "Arial", sz: 13, bold: true } },
-        },
-      ],
-      ["Ngày giao", date],
-      [title],
-      [],
-      [
-        "STT",
-        "Tên Vật Tư",
-        "ĐVT",
-        "Tổng cộng",
-        ...cateringNames,
-        "Ghi chú",
-      ],
-    ];
+    const worksheet = workbook.addWorksheet(sheetName);
+
+    worksheet.addRow([companyName]).font = boldFont;
+    const dateRow = worksheet.addRow([]);
+    dateRow.getCell(1).value = "Ngày giao";
+    dateRow.getCell(1).font = boldFont;
+
+    dateRow.getCell(2).value = date;
+    dateRow.getCell(2).font = normalFont;
+
+    worksheet.addRow([title]).font = boldFont;
+    worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([
+      "STT",
+      "Tên Vật Tư",
+      "ĐVT",
+      "Tổng cộng",
+      ...cateringNames,
+      "Ghi chú",
+    ]);
+    headerRow.font = boldFont;
+    headerRow.alignment = { horizontal: "center" };
+    headerRow.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
 
     items.forEach((item) => {
-      const cateringAmounts = cateringNames.map((cateringName) =>
-        String(item.cateringQuantities[cateringName] || "-"),
+      const cateringAmounts = cateringNames.map(
+        (cateringName) =>
+          item.cateringQuantities[cateringName].toLocaleString() ||
+          "-",
       );
 
-      worksheetData.push([
-        String(item.index),
+      const row = worksheet.addRow([
+        item.index,
         item.materialName,
         item.unit,
-        String(item.totalAmount),
+        item.totalAmount,
         ...cateringAmounts,
         item.note || "",
       ]);
+
+      row.eachCell((cell) => {
+        cell.font = normalFont;
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+
+      row.getCell(1).alignment = { horizontal: "center" };
+      row.getCell(3).alignment = { horizontal: "center" };
+      row.getCell(4).alignment = { horizontal: "right" };
+      row.getCell(4).font = boldFont;
+      cateringAmounts.forEach((_, index) => {
+        row.getCell(5 + index).alignment = { horizontal: "right" };
+      });
     });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
   });
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
+  workbook.xlsx.writeBuffer().then((buffer) => {
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = `tong-hop${formatTime(
+      deliveryDate,
+      "YYYY/MM/DD",
+    )}.xlsx`;
+    link.click();
+    URL.revokeObjectURL(url);
   });
-
-  const blob = new Blob([excelBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  link.href = url;
-  link.download = `tong-hop${formatTime(
-    deliveryDate,
-    "YYYY/MM/DD",
-  )}.xlsx`;
-
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
 
 export function exportToPOByCateringExcel(
   data: ExportCateringExcelData[],
 ) {
-  const workbook = XLSX.utils.book_new();
+  const workbook = new ExcelJS.Workbook();
+
   data.forEach((el) => {
     const {
       sheetName,
@@ -165,60 +199,61 @@ export function exportToPOByCateringExcel(
       address,
       items,
     } = el;
-    const worksheetData = [
-      [companyName],
-      ["PHIẾU MUA HÀNG"],
-      ["Mã", purchaseOrderCode],
-      ["Ngày nhận", date],
-      ["Bếp", cateringName],
-      ["Nhà cung cấp", supplierName],
-      ["Địa chỉ nhận", address],
-      [],
-      [
-        "STT",
-        "Mã Vật Tư",
-        "Tên Vật Tư",
-        "ĐVT",
-        "Đặt",
-        "Nhận",
-        "Thanh toán",
-        "Ghi chú cho NCC",
-      ],
-    ];
+
+    const worksheet = workbook.addWorksheet(sheetName);
+
+    worksheet.addRow([companyName]).font = {
+      name: "Arial",
+      size: 14,
+      bold: true,
+    };
+    worksheet.addRow(["PHIẾU MUA HÀNG"]).font = {
+      name: "Arial",
+      size: 16,
+      bold: true,
+    };
+    worksheet.addRow(["Mã", purchaseOrderCode]);
+    worksheet.addRow(["Ngày nhận", date]);
+    worksheet.addRow(["Bếp", cateringName]);
+    worksheet.addRow(["Nhà cung cấp", supplierName]);
+    worksheet.addRow(["Địa chỉ nhận", address]);
+    worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([
+      "STT",
+      "Mã Vật Tư",
+      "Tên Vật Tư",
+      "ĐVT",
+      "Đặt",
+      "Nhận",
+      "Thanh toán",
+      "Ghi chú cho NCC",
+    ]);
+    headerRow.font = { name: "Arial", size: 12, bold: true };
 
     items.forEach((item) => {
-      worksheetData.push([
-        String(item.index),
+      worksheet.addRow([
+        item.index,
         item.materialCode,
         item.materialName,
         item.unit,
-        String(item.orderAmount),
-        String(item.receivedAmount),
-        String(item.paymentAmount),
+        item.orderAmount,
+        item.receivedAmount,
+        item.paymentAmount,
         item.note,
       ]);
     });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
   });
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
+  workbook.xlsx.writeBuffer().then((buffer) => {
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = "DON-DAT-HANG.xlsx";
+    link.click();
+    URL.revokeObjectURL(url);
   });
-
-  const blob = new Blob([excelBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  link.href = url;
-  link.download = "DON-DAT-HANG.xlsx";
-
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }

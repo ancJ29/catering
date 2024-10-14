@@ -8,6 +8,7 @@ import useCateringStore from "@/stores/catering.store";
 import useMaterialStore from "@/stores/material.store";
 import useSupplierStore from "@/stores/supplier.store";
 import {
+  convertAmountBackward,
   endOfDay,
   exportToPOByCateringExcel,
   exportToPOBySupplierExcel,
@@ -35,7 +36,7 @@ const PurchaseOrderManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseOrders, setPurchaseOrders] = useState<
-    PurchaseOrder[]
+  PurchaseOrder[]
   >([]);
   const { caterings } = useCateringStore();
   const { suppliers } = useSupplierStore();
@@ -166,8 +167,8 @@ const PurchaseOrderManagement = () => {
         const purchaseOrdersForSupplier =
           purchaseOrdersBySupplier[supplierId];
         const materialMap = new Map<
-          string,
-          { quantities: Record<string, number>; notes: string[] }
+        string,
+        { quantities: Record<string, number>; notes: string[] }
         >();
         const cateringSet = new Set<string>();
 
@@ -195,7 +196,10 @@ const PurchaseOrderManagement = () => {
             if (materialEntry) {
               materialEntry.quantities[cateringName] =
                 (materialEntry.quantities[cateringName] || 0) +
-                amount;
+                convertAmountBackward({
+                  material: materials.get(materialId),
+                  amount,
+                });
               materialEntry.notes.push(supplierNote);
             }
           });
@@ -292,9 +296,18 @@ const PurchaseOrderManagement = () => {
                 materialCode: material?.others.internalCode || "",
                 materialName: material?.name || "",
                 unit: material?.others.unit?.name || "",
-                orderAmount: e.amount || 0,
-                receivedAmount: e.actualAmount || 0,
-                paymentAmount: e.paymentAmount || 0,
+                orderAmount: convertAmountBackward({
+                  material,
+                  amount: e.amount,
+                }),
+                receivedAmount: convertAmountBackward({
+                  material,
+                  amount: e.actualAmount,
+                }),
+                paymentAmount: convertAmountBackward({
+                  material,
+                  amount: e.paymentAmount,
+                }),
                 note: e.others.supplierNote || "",
               };
             }),
