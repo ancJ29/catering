@@ -6,6 +6,7 @@ import {
 } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { endOfWeek, formatTime, startOfWeek } from "@/utils";
+import { z } from "zod";
 import Status from "./components/Status";
 
 export const configs = (
@@ -154,3 +155,58 @@ export function filter(po: PurchaseOrder, condition?: FilterType) {
   }
   return true;
 }
+
+export const modelTypeSchema = z.enum([
+  "Follow supplier",
+  "Follow catering",
+]);
+
+export type ModelType = z.infer<typeof modelTypeSchema>;
+
+export type POSummaryType = {
+  deliveryDate: Date;
+  model: ModelType;
+  supplierId: string | null;
+  cateringId: string | null;
+};
+
+export const initialPOSummaryForm: POSummaryType = {
+  deliveryDate: new Date(),
+  model: "Follow supplier",
+  supplierId: null,
+  cateringId: null,
+};
+
+export type ExportSupplierExcelData = {
+  sheetName: string;
+  cateringNames: string[];
+  date: string;
+  title: string;
+  items: {
+    index: number;
+    materialName: string;
+    unit: string;
+    totalAmount: number;
+    cateringQuantities: Record<string, number>;
+    note: string;
+  }[];
+};
+
+export type ExportCateringExcelData = {
+  sheetName: string;
+  purchaseOrderCode: string;
+  date: string;
+  cateringName: string;
+  supplierName: string;
+  address: string;
+  items: {
+    index: number;
+    materialCode: string;
+    materialName: string;
+    unit: string;
+    orderAmount: number;
+    receivedAmount: number;
+    paymentAmount: number;
+    note: string;
+  }[];
+};
