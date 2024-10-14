@@ -35,7 +35,7 @@ const PurchaseOrderManagement = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const [purchaseOrders, setPurchaseOrders] = useState<
-  PurchaseOrder[]
+    PurchaseOrder[]
   >([]);
   const { caterings } = useCateringStore();
   const { suppliers } = useSupplierStore();
@@ -140,7 +140,7 @@ const PurchaseOrderManagement = () => {
         (po) =>
           isSameDate(po.deliveryDate, deliveryDate) &&
           (supplierId === "all" || po.supplierId === supplierId) &&
-          po.others.status === poStatusSchema.Values.DTC,
+          po.others.status !== poStatusSchema.Values.DTC,
       );
 
       if (_purchaseOrders.length === 0) {
@@ -166,8 +166,8 @@ const PurchaseOrderManagement = () => {
         const purchaseOrdersForSupplier =
           purchaseOrdersBySupplier[supplierId];
         const materialMap = new Map<
-        string,
-        { quantities: Record<string, number>; notes: string[] }
+          string,
+          { quantities: Record<string, number>; notes: string[] }
         >();
         const cateringSet = new Set<string>();
 
@@ -258,7 +258,7 @@ const PurchaseOrderManagement = () => {
           isSameDate(po.deliveryDate, deliveryDate) &&
           (cateringId === "all" ||
             po.others.receivingCateringId === cateringId) &&
-          po.others.status === poStatusSchema.Values.DTC,
+          po.others.status !== poStatusSchema.Values.DTC,
       );
 
       if (_purchaseOrders.length === 0) {
