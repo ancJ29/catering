@@ -1,5 +1,6 @@
 import { Customer, Material, Product } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { numberWithDelimiter } from "@/utils";
 import { Center, Checkbox, Flex, NumberInput } from "@mantine/core";
 import store from "../../_export.store";
 
@@ -24,7 +25,7 @@ export const dailyMenuConfigs = (
       textAlign: "center",
       width: "15%",
       renderCell: (_, row: MenuItem) => {
-        return row.quantity.toLocaleString();
+        return numberWithDelimiter(row.quantity);
       },
     },
     {
@@ -110,7 +111,6 @@ export const materialConfigs = (
         return (
           <Flex ml={16}>
             <NumberInput
-              thousandSeparator=""
               value={store.getExportAmount(row.materialId)}
               onChange={(value) =>
                 store.setExportAmount(row.materialId, value)

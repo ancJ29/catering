@@ -1,5 +1,6 @@
 import { Material, Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { numberWithDelimiter } from "@/utils";
 
 export const configs = (
   t: (key: string) => string,
@@ -55,9 +56,9 @@ export const configs = (
       header: t("Priority price"),
       style: { fontWeight: "bold" },
       renderCell: (_, row: Material) => {
-        return (
-          row?.others?.prices?.[cateringId || ""]?.price || 0
-        ).toLocaleString();
+        return numberWithDelimiter(
+          row?.others?.prices?.[cateringId || ""]?.price || 0,
+        );
       },
     },
     {

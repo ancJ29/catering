@@ -6,6 +6,7 @@ import {
 import logger from "@/services/logger";
 import ExcelJS, { Borders, Font } from "exceljs";
 import * as XLSX from "xlsx";
+import { numberWithDelimiter } from "./string";
 import { formatTime } from "./time";
 
 const companyName = "CÔNG TY TNHH THẢO HÀ";
@@ -165,14 +166,15 @@ export function exportToPOBySupplierExcel(
     items.forEach((item) => {
       const cateringAmounts = cateringNames.map(
         (cateringName) =>
-          item.cateringQuantities[cateringName].toLocaleString() ||
-          "-",
+          numberWithDelimiter(
+            item.cateringQuantities[cateringName],
+          ) || "-",
       );
       const row = worksheet.addRow([
         item.index,
         item.materialName,
         item.unit,
-        item.totalAmount.toLocaleString(),
+        numberWithDelimiter(item.totalAmount),
         ...cateringAmounts,
         item.note || "",
       ]);
@@ -270,9 +272,9 @@ export function exportToPOByCateringExcel(
         item.materialCode,
         item.materialName,
         item.unit,
-        item.orderAmount.toLocaleString(),
-        item.receivedAmount.toLocaleString(),
-        item.paymentAmount.toLocaleString(),
+        numberWithDelimiter(item.orderAmount),
+        numberWithDelimiter(item.receivedAmount),
+        numberWithDelimiter(item.paymentAmount),
         item.note,
       ]);
       row.eachCell((cell) => {

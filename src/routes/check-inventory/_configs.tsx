@@ -1,6 +1,7 @@
 import NumberInput from "@/components/common/NumberInput";
 import { Material } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
+import { numberWithDelimiter } from "@/utils";
 import {
   Center,
   Checkbox,
@@ -39,7 +40,7 @@ export const configs = (
       textAlign: "right",
       width: "8%",
       renderCell: (_, row: Material) => {
-        return store.getAmountAfterAudit(row.id).toLocaleString();
+        return numberWithDelimiter(store.getAmountAfterAudit(row.id));
       },
     },
     {
@@ -48,9 +49,9 @@ export const configs = (
       textAlign: "right",
       width: "8%",
       renderCell: (_, row: Material) => {
-        return store
-          .getAmountShippedAfterAudit(row.id)
-          .toLocaleString();
+        return numberWithDelimiter(
+          store.getAmountShippedAfterAudit(row.id),
+        );
       },
     },
     {
@@ -59,9 +60,9 @@ export const configs = (
       textAlign: "right",
       width: "8%",
       renderCell: (_, row: Material) => {
-        return store
-          .getAmountReceivedAfterAudit(row.id)
-          .toLocaleString();
+        return numberWithDelimiter(
+          store.getAmountReceivedAfterAudit(row.id),
+        );
       },
     },
     {
@@ -70,7 +71,7 @@ export const configs = (
       width: "8%",
       textAlign: "right",
       renderCell: (_, row: Material) => {
-        return store.getSystemAmount(row.id).toLocaleString();
+        return numberWithDelimiter(store.getSystemAmount(row.id));
       },
     },
     {
@@ -81,8 +82,7 @@ export const configs = (
       renderCell: (_, row: Material) => {
         return (
           <NumberInput
-            key={row.id}
-            thousandSeparator=""
+            // key={row.id}
             isPositive={true}
             defaultValue={store.getAmount(row.id)}
             onChange={(value) => store.setAmount(row.id, value)}
@@ -99,7 +99,7 @@ export const configs = (
       textAlign: "right",
       width: "8%",
       renderCell: (_, row: Material) => {
-        return store.getDifference(row.id).toLocaleString();
+        return numberWithDelimiter(store.getDifference(row.id));
       },
     },
     {

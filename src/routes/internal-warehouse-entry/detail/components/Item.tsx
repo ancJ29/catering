@@ -55,7 +55,6 @@ const Item = ({
       content: (
         <Flex gap={10} align="center" ml={10}>
           <NumberInput
-            thousandSeparator=""
             isPositive={true}
             defaultValue={internalDetail.actualAmount}
             onChange={onChangeActualAmount}
@@ -81,7 +80,6 @@ const Item = ({
     {
       content: (
         <NumberInput
-          thousandSeparator=""
           isPositive={true}
           defaultValue={internalDetail.actualPrice}
           onChange={onChangeActualPrice}

@@ -77,7 +77,6 @@ export const configs = (
         return (
           <NumberInput
             key={row.id}
-            thousandSeparator=""
             isPositive={true}
             defaultValue={store.getAmountInventory(row.id)}
             onChange={(value) =>

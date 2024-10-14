@@ -48,7 +48,6 @@ const Item = ({
     {
       content: (
         <NumberInput
-          thousandSeparator=""
           allowNegative={false}
           defaultValue={amount}
           onChange={(val) => onChangeAmount(parseInt(val.toString()))}

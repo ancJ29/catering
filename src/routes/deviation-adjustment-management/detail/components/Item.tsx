@@ -34,7 +34,6 @@ const Item = ({
     {
       content: (
         <NumberInput
-          thousandSeparator=""
           isPositive={true}
           defaultValue={orderDetail.paymentAmount}
           onChange={onChangePaymentAmount}
@@ -54,7 +53,6 @@ const Item = ({
     {
       content: (
         <NumberInput
-          thousandSeparator=""
           isPositive={true}
           defaultValue={orderDetail.price}
           onChange={onChangePrice}

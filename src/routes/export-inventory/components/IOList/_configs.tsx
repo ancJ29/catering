@@ -10,6 +10,7 @@ import {
   convertAmountBackward,
   endOfWeek,
   formatTime,
+  numberWithDelimiter,
   startOfWeek,
 } from "@/utils";
 import store from "../../_export.store";
@@ -99,10 +100,12 @@ export const piDetailConfigs = (
       textAlign: "right",
       defaultVisible: true,
       renderCell: (_, row: InternalDetail) => {
-        return convertAmountBackward({
-          material: materials.get(row.materialId),
-          amount: row.amount,
-        }).toLocaleString();
+        return numberWithDelimiter(
+          convertAmountBackward({
+            material: materials.get(row.materialId),
+            amount: row.amount,
+          }),
+        );
       },
     },
     {
@@ -111,7 +114,9 @@ export const piDetailConfigs = (
       width: "25%",
       textAlign: "right",
       renderCell: (_, row: InternalDetail) => {
-        return store.getInventory(row.materialId).toLocaleString();
+        return numberWithDelimiter(
+          store.getInventory(row.materialId),
+        );
       },
     },
     {

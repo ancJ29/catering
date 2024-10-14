@@ -110,7 +110,6 @@ const Item = ({
       content: (
         <NumberInput
           w="10vw"
-          thousandSeparator=""
           isPositive={true}
           defaultValue={coordinationDetail?.dispatchQuantity}
           onChange={onChangeAmount}

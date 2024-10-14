@@ -43,7 +43,6 @@ const Item = ({
       content: (
         <NumberInput
           w="15vw"
-          thousandSeparator=""
           isPositive={true}
           defaultValue={amount}
           onChange={onChangeAmount}

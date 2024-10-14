@@ -1,7 +1,7 @@
 import { WarehouseReceiptDetail } from "@/services/domain";
 import useMaterialStore from "@/stores/material.store";
 import { TextAlign } from "@/types";
-import { convertAmountBackward } from "@/utils";
+import { convertAmountBackward, numberWithDelimiter } from "@/utils";
 import { Table } from "@mantine/core";
 
 type ItemProps = {
@@ -38,16 +38,16 @@ const Item = ({ index, warehouseDetail }: ItemProps) => {
       align: "right",
     },
     {
-      content: warehouseDetail.price.toLocaleString(),
+      content: numberWithDelimiter(warehouseDetail.price),
       align: "right",
     },
     {
-      content: (
+      content: numberWithDelimiter(
         convertAmountBackward({
           material,
           amount: warehouseDetail.amount,
-        }) * warehouseDetail.price
-      ).toLocaleString(),
+        }) * warehouseDetail.price,
+      ),
       align: "right",
     },
     { content: warehouseDetail?.others.memo, align: "left" },

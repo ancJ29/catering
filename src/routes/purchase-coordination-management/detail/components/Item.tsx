@@ -64,7 +64,6 @@ const Item = ({
       content: (
         <Flex align="center">
           <NumberInput
-            thousandSeparator=""
             isPositive={true}
             defaultValue={amount}
             onChange={_onChangeAmount}
