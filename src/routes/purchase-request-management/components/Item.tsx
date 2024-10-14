@@ -32,7 +32,8 @@ const Item = ({
   showNeedToOrder = true,
 }: ItemProps) => {
   const t = useTranslation();
-  const [amount, setAmount] = useState(requestDetail?.amount || 0);
+  const needToOrder = requestDetail?.amount || 0;
+  const [amount, setAmount] = useState(needToOrder);
 
   const _onChangeAmount = (value: number) => {
     if (requestDetail) {
@@ -78,12 +79,16 @@ const Item = ({
       pr: 10,
     },
     {
-      content: numberWithDelimiter(
+      content: `${numberWithDelimiter(
         roundToDecimals(
           amount - (requestDetail?.needToOrder || 0),
           3,
         ),
-      ),
+      )} (${roundToDecimals(
+        ((amount - (requestDetail?.needToOrder || 0)) / needToOrder ||
+          0) * 100,
+        3,
+      )}%)`,
       align: "right",
     },
     { content: material?.others.unit?.name, align: "center" },
