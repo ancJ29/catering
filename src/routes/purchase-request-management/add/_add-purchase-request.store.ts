@@ -472,10 +472,16 @@ function initPurchaseDetails(
   cateringId: string,
 ) {
   return Object.fromEntries(
-    inventories.map((inventory) => [
-      inventory.materialId,
-      initPurchaseDetail(inventory, materials, cateringId),
-    ]),
+    inventories.flatMap((inventory) => {
+      const detail = initPurchaseDetail(
+        inventory,
+        materials,
+        cateringId,
+      );
+      return detail.amount !== 0
+        ? [[inventory.materialId, detail]]
+        : [];
+    }),
   );
 }
 
@@ -486,7 +492,7 @@ function initPurchaseDetail(
   isAddManually = false,
 ) {
   const material = materials.get(inventory.materialId);
-  const amount = convertAmountBackward({
+  const inventoryAmount = convertAmountBackward({
     material,
     amount: inventory.amount,
   });
@@ -495,12 +501,12 @@ function initPurchaseDetail(
     amount: inventory.minimumAmount,
   });
   const _amount = Math.floor(
-    roundToDecimals(minimumAmount - amount, 3),
+    roundToDecimals(minimumAmount - inventoryAmount, 3),
   );
   return {
     materialId: inventory.materialId,
-    inventory: amount,
-    needToOrder: isAddManually ? 0 : _amount,
+    inventory: inventoryAmount,
+    needToOrder: isAddManually ? 0 : Math.floor(minimumAmount),
     amount: isAddManually ? 0 : _amount,
     supplierNote: "",
     internalNote: "",
