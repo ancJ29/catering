@@ -85,7 +85,7 @@ const CateringManagement = () => {
 
   return (
     <Stack gap={15} pos="relative">
-      <AddButton onClick={() => addCatering()} />
+      <AddButton onClick={() => addCatering()} label="Add catering" />
       <Flex justify="space-between" align="center">
         <Switch
           mt={10}

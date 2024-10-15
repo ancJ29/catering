@@ -84,7 +84,7 @@ const ProductManagement = () => {
 
   return (
     <Stack gap={10} pos="relative">
-      <AddButton onClick={() => addProduct()} />
+      <AddButton onClick={() => addProduct()} label="Add product" />
       <Filter
         condition={condition}
         keyword={keyword}

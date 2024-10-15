@@ -80,7 +80,7 @@ const MaterialManagement = () => {
 
   return (
     <Stack gap={10} pos="relative">
-      <AddButton onClick={() => addMaterial()} />
+      <AddButton onClick={() => addMaterial()} label="Add material" />
       <Filter
         counter={counter}
         condition={condition}

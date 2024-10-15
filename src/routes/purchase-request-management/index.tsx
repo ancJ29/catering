@@ -104,7 +104,10 @@ const PurchaseRequestManagement = () => {
 
   return (
     <Stack gap={10} key={caterings.size} pos="relative">
-      <AddButton onClick={addPurchaseRequest} />
+      <AddButton
+        onClick={addPurchaseRequest}
+        label="Add purchase request"
+      />
       <Filter
         condition={condition}
         keyword={keyword}

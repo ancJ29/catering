@@ -54,7 +54,7 @@ const SupplierManagement = () => {
 
   return (
     <Stack gap={10} pos="relative">
-      <AddButton onClick={() => addSupplier()} />
+      <AddButton onClick={() => addSupplier()} label="Add supplier" />
       <Flex justify="end" align="center" gap={10}>
         <AutocompleteForFilterData
           w={{ base: "50%", sm: "20rem" }}

@@ -102,7 +102,7 @@ const CustomerManagement = () => {
 
   return (
     <Stack key={caterings.size} gap={10}>
-      <AddButton onClick={() => addCustomer()} />
+      <AddButton onClick={() => addCustomer()} label="Add customer" />
       <Flex justify="end" align="center">
         <AutocompleteForFilterData
           data={names}
