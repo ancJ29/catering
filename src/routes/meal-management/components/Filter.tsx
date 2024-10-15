@@ -28,7 +28,7 @@ const Filter = () => {
   }, [activeCaterings]);
 
   useEffect(() => {
-    isCatering && store.setSelectedCateringId(cateringId || "");
+    store.initData(isCatering ? cateringId : null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

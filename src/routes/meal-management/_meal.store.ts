@@ -68,14 +68,21 @@ export default {
   reset() {
     dispatch({ type: ActionType.RESET });
   },
-  async initData() {
+  async initData(cateringId?: string | null) {
     const state = store.getSnapshot();
+    const { customersByCateringId } = useCustomerStore.getState();
+    const customerIds: string[] = [];
+    if (cateringId) {
+      customersByCateringId.get(cateringId)?.flatMap((customer) => {
+        customerIds.push(customer.id);
+      });
+    }
     const dailyMenus = await getDailyMenu({
       from: state.from,
       to: state.to,
-      customerIds: [],
+      customerIds,
     });
-    dispatch({ type: ActionType.INIT_DATA, dailyMenus });
+    dispatch({ type: ActionType.INIT_DATA, dailyMenus, cateringId });
   },
   async setSelectedCateringId(cateringId: string | null) {
     if (cateringId === null) {
@@ -190,10 +197,12 @@ function reducer(action: Action, state: State): State {
       if (action.dailyMenus !== undefined) {
         const dailyMenus = initDailyMenus(action.dailyMenus);
         const dateString = formatTime(state.date, "YYYY/MM/DD");
-        const dailyMenuByCatering = dailyMenus[dateString];
+        const dailyMenuByDate = dailyMenus[dateString];
         const currents = initDailyMenuToDisplay(
           customers,
-          Object.values(dailyMenuByCatering).flatMap((el) => el),
+          action.cateringId
+            ? dailyMenuByDate[action.cateringId]
+            : Object.values(dailyMenuByDate).flatMap((el) => el),
         );
         return {
           ...state,
@@ -201,6 +210,7 @@ function reducer(action: Action, state: State): State {
           updates: cloneDeep(currents),
           dailyMenus,
           date: action.date ?? state.date,
+          selectedCateringId: action.cateringId ?? null,
           canEditPrice:
             role === ClientRoles.OWNER ||
             role === ClientRoles.MANAGER,

@@ -11,10 +11,6 @@ import Table from "./components/Table";
 const MealManagement = () => {
   const t = useTranslation();
 
-  useEffect(() => {
-    store.initData();
-  }, []);
-
   const location = useLocation();
   useEffect(() => {
     if (location.state?.refresh) {
