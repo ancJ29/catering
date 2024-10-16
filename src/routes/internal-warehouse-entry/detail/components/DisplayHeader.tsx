@@ -1,7 +1,15 @@
 import useTranslation from "@/hooks/useTranslation";
-import { Flex, Table } from "@mantine/core";
+import { Checkbox, Flex, Table } from "@mantine/core";
 
-const DisplayHeader = () => {
+type DisplayHeaderProps = {
+  isCheckAll: boolean;
+  onChangeCheckAll: (value: boolean) => void;
+};
+
+const DisplayHeader = ({
+  isCheckAll,
+  onChangeCheckAll,
+}: DisplayHeaderProps) => {
   const t = useTranslation();
 
   return (
@@ -31,7 +39,15 @@ const DisplayHeader = () => {
                 {t("Adjusted")}
               </Flex>
               <Flex w="49%" justify="center" ta="end">
-                {t("Actual")}
+                <Flex w="80%" ml={10} justify="center">
+                  {t("Actual")}
+                </Flex>
+                <Checkbox
+                  checked={isCheckAll}
+                  onChange={(event) =>
+                    onChangeCheckAll(event.currentTarget.checked)
+                  }
+                />
               </Flex>
             </Flex>
           </Flex>

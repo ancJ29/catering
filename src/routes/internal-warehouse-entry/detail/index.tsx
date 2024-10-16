@@ -18,7 +18,7 @@ const InternalWarehouseImportDetail = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const { purchaseInternalId } = useParams();
-  const { disabled, purchaseInternal, changed } =
+  const { disabled, purchaseInternal, changed, isCheckAll } =
     useSyncExternalStore(store.subscribe, store.getSnapshot);
 
   const load = useCallback(async () => {
@@ -40,7 +40,6 @@ const InternalWarehouseImportDetail = () => {
   );
 
   const complete = useCallback(async () => {
-    const isCheckAll = store.isCheckAll();
     const status = purchaseInternal?.others.status;
 
     switch (status) {

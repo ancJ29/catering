@@ -10,6 +10,7 @@ type ItemProps = {
   index: number;
   internalDetail: InternalDetail;
   disabled: boolean;
+  isChecked: boolean;
   onChangeActualAmount: (value: number) => void;
   onChangeActualPrice: (value: number) => void;
   onChangeExpiryDate: (value?: number) => void;
@@ -21,6 +22,7 @@ const Item = ({
   index,
   internalDetail,
   disabled,
+  isChecked,
   onChangeActualAmount,
   onChangeActualPrice,
   onChangeExpiryDate,
@@ -64,7 +66,7 @@ const Item = ({
             w="80%"
           />
           <Checkbox
-            defaultChecked={internalDetail.isChecked}
+            checked={isChecked}
             onChange={(event) =>
               onChangeChecked(event.currentTarget.checked)
             }

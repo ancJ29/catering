@@ -21,8 +21,8 @@ import {
   convertAmountForward,
   createStore,
 } from "@/utils";
-import { InternalDetail } from "./_configs";
 import { NavigateFunction } from "react-router-dom";
+import { InternalDetail } from "./_configs";
 
 type State = {
   purchaseInternal?: PurchaseInternalCatering;
@@ -31,6 +31,7 @@ type State = {
   disabled: boolean;
   changed: boolean;
   key: number;
+  isCheckAll: boolean;
 };
 
 enum ActionType {
@@ -42,6 +43,7 @@ enum ActionType {
   SET_STATUS = "SET_STATUS",
   SET_CHECKED = "SET_CHECKED",
   SET_EXPIRY_DATE = "SET_EXPIRY_DATE",
+  SET_CHECK_ALL = "SET_CHECK_ALL",
 }
 
 type Action = {
@@ -62,6 +64,7 @@ const defaultState = {
   disabled: true,
   changed: false,
   key: Date.now(),
+  isCheckAll: false,
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -70,11 +73,14 @@ const { dispatch, ...store } = createStore<State, Action>(reducer, {
 
 export default {
   ...store,
-  async initData(purchaseInternalId: string, navigate: NavigateFunction) {
+  async initData(
+    purchaseInternalId: string,
+    navigate: NavigateFunction,
+  ) {
     const purchaseInternal = await getPurchaseInternalById(
       purchaseInternalId,
     );
-    if(!purchaseInternal) {
+    if (!purchaseInternal) {
       navigate("/");
     }
     dispatch({ type: ActionType.INIT_DATA, purchaseInternal });
@@ -95,19 +101,21 @@ export default {
   setStatus(status: string) {
     dispatch({ type: ActionType.SET_STATUS, status });
   },
+  isChecked(materialId: string) {
+    const state = store.getSnapshot();
+    return state.currents[materialId].isChecked;
+  },
   setIsChecked(materialId: string, isChecked: boolean) {
     dispatch({ type: ActionType.SET_CHECKED, materialId, isChecked });
   },
+  setCheckAll(isCheckAll: boolean) {
+    dispatch({
+      type: ActionType.SET_CHECK_ALL,
+      isChecked: isCheckAll,
+    });
+  },
   setExpiryDate(materialId: string, date?: number) {
     dispatch({ type: ActionType.SET_EXPIRY_DATE, materialId, date });
-  },
-  isCheckAll() {
-    for (const item of Object.values(store.getSnapshot().updates)) {
-      if (!item.isChecked) {
-        return false;
-      }
-    }
-    return true;
   },
   async save() {
     const state = store.getSnapshot();
@@ -184,6 +192,7 @@ function reducer(action: Action, state: State): State {
             piCateringStatusSchema.Values.PINHT,
           changed: false,
           key: Date.now(),
+          isCheckAll: isCheckAll(currents),
         };
       }
       break;
@@ -242,13 +251,30 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_CHECKED:
       if (action.materialId && action.isChecked !== undefined) {
-        state.updates[action.materialId] = {
-          ...state.updates[action.materialId],
+        state.currents[action.materialId] = {
+          ...state.currents[action.materialId],
           isChecked: action.isChecked,
         };
         return {
           ...state,
           changed: true,
+          isCheckAll: isCheckAll(state.currents),
+        };
+      }
+      break;
+    case ActionType.SET_CHECK_ALL:
+      if (action.isChecked !== undefined) {
+        Object.keys(state.currents).map((key) => {
+          state.currents[key] = {
+            ...state.currents[key],
+            isChecked: action.isChecked || false,
+          };
+        });
+        return {
+          ...state,
+          updates: cloneDeep(state.currents),
+          changed: true,
+          isCheckAll: action.isChecked,
         };
       }
       break;
@@ -358,4 +384,13 @@ function setUpAddToInventory(
     departmentId: purchaseInternal.others.receivingCateringId,
     expiryDate: new Date(item.expiryDate),
   }));
+}
+
+function isCheckAll(records: Record<string, InternalDetail>) {
+  for (const item of Object.values(records)) {
+    if (!item.isChecked) {
+      return false;
+    }
+  }
+  return true;
 }

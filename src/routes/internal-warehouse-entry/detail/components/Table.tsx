@@ -7,15 +7,16 @@ import Header from "./Header";
 import Item from "./Item";
 
 const Table = () => {
-  const { currents, disabled, key } = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-  );
+  const { currents, disabled, key, isCheckAll } =
+    useSyncExternalStore(store.subscribe, store.getSnapshot);
 
   return (
     <>
       <MantineTable withTableBorder withColumnBorders>
-        <DisplayHeader />
+        <DisplayHeader
+          isCheckAll={isCheckAll}
+          onChangeCheckAll={store.setCheckAll}
+        />
       </MantineTable>
       <MantineTable.ScrollContainer
         minWidth={500}
@@ -32,6 +33,9 @@ const Table = () => {
                   index={index}
                   internalDetail={internalDetail}
                   disabled={disabled}
+                  isChecked={store.isChecked(
+                    internalDetail.materialId,
+                  )}
                   onChangeActualAmount={(value) =>
                     store.setActualAmount(
                       internalDetail.materialId,

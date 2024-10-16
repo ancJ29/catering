@@ -18,10 +18,8 @@ const ExternalWarehouseImportDetail = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const { purchaseOrderId } = useParams();
-  const { disabled, purchaseOrder, changed } = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-  );
+  const { disabled, purchaseOrder, changed, isCheckAll } =
+    useSyncExternalStore(store.subscribe, store.getSnapshot);
 
   const load = useCallback(async () => {
     if (!purchaseOrderId) {
@@ -48,7 +46,6 @@ const ExternalWarehouseImportDetail = () => {
   }, [navigate]);
 
   const complete = useCallback(async () => {
-    const isCheckAll = store.isCheckAll();
     const status = purchaseOrder?.others.status;
 
     switch (status) {
@@ -92,6 +89,7 @@ const ExternalWarehouseImportDetail = () => {
         break;
     }
   }, [
+    isCheckAll,
     purchaseOrder?.others.status,
     returnPageList,
     showFailNotification,

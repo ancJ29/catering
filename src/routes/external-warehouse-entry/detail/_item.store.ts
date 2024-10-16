@@ -35,6 +35,7 @@ type State = {
   disabled: boolean;
   changed: boolean;
   key: number;
+  isCheckAll: boolean;
 };
 
 enum ActionType {
@@ -48,6 +49,7 @@ enum ActionType {
   SET_DELIVERY_TIME_STATUS = "SET_DELIVERY_TIME_STATUS",
   SET_CHECKED = "SET_CHECKED",
   SET_EXPIRY_DATE = "SET_EXPIRY_DATE",
+  SET_CHECK_ALL = "SET_CHECK_ALL",
 }
 
 type Action = {
@@ -68,6 +70,7 @@ const defaultState = {
   disabled: true,
   changed: false,
   key: Date.now(),
+  isCheckAll: false,
 };
 
 const { dispatch, ...store } = createStore<State, Action>(reducer, {
@@ -114,16 +117,18 @@ export default {
       status: serviceStatus,
     });
   },
+  isChecked(materialId: string) {
+    const state = store.getSnapshot();
+    return state.currents[materialId].isChecked;
+  },
   setIsChecked(materialId: string, isChecked: boolean) {
     dispatch({ type: ActionType.SET_CHECKED, materialId, isChecked });
   },
-  isCheckAll() {
-    for (const item of Object.values(store.getSnapshot().updates)) {
-      if (!item.isChecked) {
-        return false;
-      }
-    }
-    return true;
+  setCheckAll(isCheckAll: boolean) {
+    dispatch({
+      type: ActionType.SET_CHECK_ALL,
+      isChecked: isCheckAll,
+    });
   },
   setExpiryDate(materialId: string, date?: number) {
     dispatch({ type: ActionType.SET_EXPIRY_DATE, materialId, date });
@@ -208,6 +213,7 @@ function reducer(action: Action, state: State): State {
             purchaseOrder.others.status ===
             poCateringStatusSchema.Values.PONHT,
           changed: false,
+          isCheckAll: isCheckAll(currents),
         };
       }
       break;
@@ -291,13 +297,31 @@ function reducer(action: Action, state: State): State {
       break;
     case ActionType.SET_CHECKED:
       if (action.materialId && action.isChecked !== undefined) {
-        state.updates[action.materialId] = {
-          ...state.updates[action.materialId],
+        state.currents[action.materialId] = {
+          ...state.currents[action.materialId],
           isChecked: action.isChecked,
         };
         return {
           ...state,
+          updates: cloneDeep(state.currents),
           changed: true,
+          isCheckAll: isCheckAll(state.currents),
+        };
+      }
+      break;
+    case ActionType.SET_CHECK_ALL:
+      if (action.isChecked !== undefined) {
+        Object.keys(state.currents).map((key) => {
+          state.currents[key] = {
+            ...state.currents[key],
+            isChecked: action.isChecked || false,
+          };
+        });
+        return {
+          ...state,
+          updates: cloneDeep(state.currents),
+          changed: true,
+          isCheckAll: action.isChecked,
         };
       }
       break;
@@ -434,4 +458,13 @@ function setUpAddToInventory(
     departmentId: purchaseOrder.others.receivingCateringId,
     expiryDate: new Date(item.expiryDate),
   }));
+}
+
+function isCheckAll(records: Record<string, OrderDetail>) {
+  for (const item of Object.values(records)) {
+    if (!item.isChecked) {
+      return false;
+    }
+  }
+  return true;
 }
