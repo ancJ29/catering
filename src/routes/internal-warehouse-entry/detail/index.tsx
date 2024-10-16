@@ -29,58 +29,73 @@ const InternalWarehouseImportDetail = () => {
   }, [navigate, purchaseInternalId]);
   useOnMounted(load);
 
-  const showFailNotification = useCallback(
-    (status?: string) => {
-      notifications.show({
-        color: "red.5",
-        message: status ?? t("Please update status"),
-      });
-    },
-    [t],
-  );
+  const showFailNotification = useCallback(() => {
+    notifications.show({
+      color: "red.5",
+      message: t("Please check all the amounts of materials"),
+    });
+  }, [t]);
+
+  const returnPageList = useCallback(() => {
+    navigate("/internal-warehouse-entry", {
+      state: { refresh: true },
+    });
+  }, [navigate]);
+
+  const openConfirmModal = useCallback(() => {
+    modals.openConfirmModal({
+      size: "md",
+      title: <Text fw="bold">{t("Confirm")}</Text>,
+      children: (
+        <Flex direction="column">
+          <Text size="sm">
+            {t(
+              "The inventory quantity will be changed when the status is updated",
+            )}
+          </Text>
+          <Text size="sm">
+            {t(
+              "Are you sure you have checked the actual material quantity?",
+            )}
+          </Text>
+        </Flex>
+      ),
+      labels: { confirm: "OK", cancel: t("Cancel") },
+      onConfirm: async () => {
+        await store.save();
+        returnPageList();
+      },
+    });
+  }, [returnPageList, t]);
+
+  const handleUpdateOrConfirm = useCallback(async () => {
+    if (isCheckAll) {
+      openConfirmModal();
+    } else {
+      await store.update();
+      returnPageList();
+    }
+  }, [isCheckAll, openConfirmModal, returnPageList]);
 
   const complete = useCallback(async () => {
     const status = purchaseInternal?.others.status;
 
     switch (status) {
       case piCateringStatusSchema.Values.CN:
-        showFailNotification();
-        break;
       case piCateringStatusSchema.Values.CNK:
-        store.update();
+        await handleUpdateOrConfirm();
         break;
       case piCateringStatusSchema.Values.PINHT:
-        if (isCheckAll) {
-          modals.openConfirmModal({
-            size: "md",
-            title: <Text fw="bold">{t("Confirm")}</Text>,
-            children: (
-              <Flex direction="column">
-                <Text size="sm">
-                  {t(
-                    "The inventory quantity will be changed when the status is updated",
-                  )}
-                </Text>
-                <Text size="sm">
-                  {t(
-                    "Are you sure you have checked the actual material quantity?",
-                  )}
-                </Text>
-              </Flex>
-            ),
-            labels: { confirm: "OK", cancel: t("Cancel") },
-            onConfirm: async () => {
-              await store.save();
-            },
-          });
-        } else {
-          showFailNotification(
-            t("Please check all the amounts of materials"),
-          );
-        }
+        isCheckAll ? openConfirmModal() : showFailNotification();
         break;
     }
-  }, [purchaseInternal?.others.status, showFailNotification, t]);
+  }, [
+    handleUpdateOrConfirm,
+    isCheckAll,
+    openConfirmModal,
+    purchaseInternal?.others.status,
+    showFailNotification,
+  ]);
 
   const onReset = async () => {
     await store.initData(purchaseInternalId || "", navigate);
