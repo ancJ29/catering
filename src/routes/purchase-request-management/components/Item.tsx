@@ -36,6 +36,8 @@ const Item = ({
     (requestDetail?.needToOrder || 0) -
     (requestDetail?.inventory || 0);
   const [amount, setAmount] = useState(requestDetail?.amount || 0);
+  const difference =
+    ((amount - needToOrder) / needToOrder || 0) * 100;
 
   const _onChangeAmount = (value: number) => {
     if (requestDetail) {
@@ -75,6 +77,7 @@ const Item = ({
           allowDecimal={material?.others.unit?.allowFloat || false}
           isInteger={!material?.others.unit?.allowFloat}
           disabled={disabled}
+          min={1}
         />
       ),
       align: "left",
@@ -83,10 +86,7 @@ const Item = ({
     {
       content: `${numberWithDelimiter(
         roundToDecimals(amount - needToOrder, 3),
-      )} (${roundToDecimals(
-        ((amount - needToOrder) / needToOrder || 0) * 100,
-        3,
-      )}%)`,
+      )} (${roundToDecimals(difference, 2)}%)`,
       align: "right",
     },
     { content: material?.others.unit?.name, align: "center" },
@@ -137,8 +137,15 @@ const Item = ({
     });
   }
 
+  const bg = () => {
+    if (difference > 10) {
+      return "error.0";
+    }
+    return requestDetail?.price === 0 ? "primary.0" : "white";
+  };
+
   return (
-    <Table.Tr bg={requestDetail?.price === 0 ? "primary.0" : "white"}>
+    <Table.Tr bg={bg()}>
       {columns.map((col, index) => (
         <Table.Td key={index} ta={col.align as TextAlign} pr={col.pr}>
           {col.content}

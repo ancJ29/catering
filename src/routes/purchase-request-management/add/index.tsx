@@ -165,10 +165,10 @@ const AddPurchaseRequest = () => {
       });
       return;
     }
-    if (!store.checkAllMaterialsPositive()) {
+    if (!store.checkItemDifferenceNotes()) {
       notifications.show({
         color: "red.5",
-        message: t("Please check all the amounts of materials"),
+        message: t("Note for materials with difference"),
       });
       return;
     }

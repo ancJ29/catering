@@ -206,11 +206,16 @@ export default {
       .getSnapshot()
       .selectedMaterialIds.includes(materialId);
   },
-  checkAllMaterialsPositive() {
+  checkItemDifferenceNotes() {
     const state = store.getSnapshot();
     let check = true;
     state.selectedMaterialIds.map((materialId) => {
-      if (state.updates[materialId].amount === 0) {
+      const item = state.updates[materialId];
+      const needToOrder = item.needToOrder - item?.inventory;
+      const amount = item.amount;
+      const difference =
+        ((amount - needToOrder) / needToOrder || 0) * 100;
+      if (difference > 10 && item.internalNote === "") {
         check = false;
         return;
       }
@@ -478,9 +483,10 @@ function initPurchaseDetails(
         materials,
         cateringId,
       );
-      return detail.amount !== 0
-        ? [[inventory.materialId, detail]]
-        : [];
+      if (detail.amount === 0) {
+        return [];
+      }
+      return [[inventory.materialId, detail]];
     }),
   );
 }
