@@ -520,4 +520,7 @@ export default {
   "Follow catering": "Theo bếp",
   "Follow supplier": "Theo nhà cung cấp",
   "PO summary": "Tổng hợp PO",
+  "No data": "Không có dữ liệu",
+  "Note for materials with difference":
+    "Những nguyên liệu có chênh lệch trên 10% phải có ghi chú nội bộ",
 } satisfies Record<string, string>;

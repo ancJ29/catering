@@ -520,4 +520,7 @@ export default {
   "Follow catering": "Follow catering",
   "Follow supplier": "Follow supplier",
   "PO summary": "PO summary",
+  "No data": "No data",
+  "Note for materials with difference":
+    "Materials with a difference of over 10% must have internal note",
 } satisfies Record<string, string>;
