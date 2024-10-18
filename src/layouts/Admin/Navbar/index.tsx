@@ -123,21 +123,19 @@ const Navbar = ({
       >
         {_menu.map((item, idx) => {
           const isActive = _isActive(item, active);
+          const supplyCoordinationLabel = `${t(item.label)}${
+            item.key === supplyCoordinationKey
+              ? ` (${pr.length})`
+              : ""
+          }`;
+          const label = opened ? supplyCoordinationLabel : "";
           return (
             <NavLink
               opened={item.subs && activeKey === item.key}
               key={idx}
               h="3rem"
               onClick={open.bind(null, item)}
-              label={
-                opened
-                  ? `${t(item.label)}${
-                    item.key === supplyCoordinationKey
-                      ? ` (${pr.length})`
-                      : ""
-                  }`
-                  : ""
-              }
+              label={label}
               classNames={{
                 children: "c-catering-p-0",
               }}

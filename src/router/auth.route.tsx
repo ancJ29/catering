@@ -62,6 +62,8 @@ const componentMap: Record<string, LazyExoticComponent> = {
   InternalWarehouseImportDetail: lazy(() => import("@/routes/internal-warehouse-entry/detail")),
   ExportManagement: lazy(() => import("@/routes/export-management")),
   ExportInventory: lazy(() => import("@/routes/export-inventory")),
+  QuotationManagement: lazy(() => import("@/routes/quotation-management")),
+  QuotationHistoryManagement: lazy(() => import("@/routes/quotation-history-management")),
   BlankPage: lazy(() => import("@/routes/blank-page")),
 };
 
@@ -512,6 +514,28 @@ const configs: Config[] = [
       props: {
         routeGroup: "export-inventory",
         title: "Export Inventory",
+      },
+    },
+  },
+  {
+    path: "/quotation-management",
+    element: "QuotationManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        routeGroup: "quotation-management",
+        title: "Quotation Management",
+      },
+    },
+  },
+  {
+    path: "/quotation-history-management",
+    element: "QuotationHistoryManagement",
+    wrapper: {
+      element: ServiceWrapper as Wrapper,
+      props: {
+        routeGroup: "quotation-history-management",
+        title: "Quotation History Management",
       },
     },
   },
