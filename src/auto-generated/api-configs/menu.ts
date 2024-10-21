@@ -145,20 +145,20 @@ export default [
     ],
   },
   {
-    roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
+    roles: [ClientRoles.CATERING],
     key: "quotation-management",
     label: "Quotation Management",
     icon: "blockquote",
     subs: [
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
+        roles: [ClientRoles.CATERING],
         key: "quotation-management",
         label: "Quotation Management",
         icon: "blockquote",
         url: "/quotation-management",
       },
       {
-        roles: [ClientRoles.OWNER, ClientRoles.MANAGER, ClientRoles.PURCHASING],
+        roles: [ClientRoles.CATERING],
         key: "quotation-history-management",
         label: "Quotation History Management",
         icon: "history",

@@ -523,4 +523,5 @@ export default {
   "No data": "No data",
   "Note for materials with difference":
     "Materials with a difference of over 10% must have internal note",
+  "Applicable date": "Applicable date",
 } satisfies Record<string, string>;

@@ -523,4 +523,5 @@ export default {
   "No data": "Không có dữ liệu",
   "Note for materials with difference":
     "Những nguyên liệu có chênh lệch trên 10% phải có ghi chú nội bộ",
+  "Applicable date": "Ngày áp dụng",
 } satisfies Record<string, string>;

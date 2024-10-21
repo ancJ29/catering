@@ -785,6 +785,7 @@ export const configs = {
                   id: stringSchema,
                   name: stringSchema,
                 }),
+                updatedAt: dateSchema,
               })
               .array(),
           })
