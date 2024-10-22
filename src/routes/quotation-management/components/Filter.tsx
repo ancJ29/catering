@@ -1,6 +1,5 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
-import DateRangeInput from "@/components/common/DateRangeInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
 import { typeAndGroupOptions } from "@/services/domain";
@@ -26,7 +25,6 @@ type FilterProps = {
   setCondition: (
     value: React.SetStateAction<FilterType | undefined>,
   ) => void;
-  onChangeDateRange: (from?: number, to?: number) => void;
 };
 
 const Filter = ({
@@ -38,7 +36,6 @@ const Filter = ({
   reload,
   updateCondition,
   setCondition,
-  onChangeDateRange,
 }: FilterProps) => {
   const t = useTranslation();
   const { materialGroupByType } = useMetaDataStore();
@@ -62,13 +59,6 @@ const Filter = ({
 
   return (
     <Flex gap={10} align="end" justify="end">
-      <DateRangeInput
-        label={t("Applicable date")}
-        from={condition?.from}
-        to={condition?.to}
-        onChange={onChangeDateRange}
-        w={{ base: "100%", sm: "22vw" }}
-      />
       <Select
         w={{ base: "100%", sm: "15vw" }}
         label={t("Supplier name")}

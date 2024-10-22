@@ -8,13 +8,13 @@ import useSupplierStore from "@/stores/supplier.store";
 import { startOfDay } from "@/utils";
 import { Stack } from "@mantine/core";
 import { useCallback, useMemo } from "react";
-import Filter from "./components/Filter";
 import {
   filter as _filter,
   configs,
   defaultCondition,
   FilterType,
-} from "./configs";
+} from "./_configs";
+import Filter from "./components/Filter";
 
 const QuotationHistoryManagement = () => {
   const t = useTranslation();
@@ -31,6 +31,13 @@ const QuotationHistoryManagement = () => {
     return Array.from(materials.values());
   }, [materials]);
 
+  const filter = useCallback(
+    (el: Material, filter?: FilterType | undefined) => {
+      return _filter(el, filter, cateringId, suppliers);
+    },
+    [cateringId, suppliers],
+  );
+
   const {
     condition,
     data,
@@ -45,8 +52,7 @@ const QuotationHistoryManagement = () => {
     reset,
   } = useFilterData<Material, FilterType>({
     dataLoader: dataLoader,
-    filter: (el: Material, filter?: FilterType) =>
-      _filter(el, filter, cateringId, suppliers),
+    filter,
     defaultCondition,
   });
 

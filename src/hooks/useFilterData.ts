@@ -62,7 +62,7 @@ export default function useFilterData<
       setPage(1);
       setCounter((c) => c + 1);
     },
-    [xRecords, condition, filter],
+    [condition, filter, xRecords],
   );
 
   const reset = useCallback(() => {
