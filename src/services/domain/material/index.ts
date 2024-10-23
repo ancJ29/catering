@@ -1,10 +1,14 @@
 import {
   Actions,
+  SMStatus,
   configs as actionConfigs,
   booleanSchema,
+  dateSchema,
   materialOrderCycleSchema,
   numberSchema,
+  smStatusSchema,
   stringSchema,
+  supplierMaterialOthersSchema,
   xMaterialSchema,
 } from "@/auto-generated/api-configs";
 import callApi from "@/services/api";
@@ -37,6 +41,8 @@ const cacheSchema = xMaterialSchema
             active: booleanSchema,
           }),
         }),
+        others: supplierMaterialOthersSchema,
+        updatedAt: dateSchema,
       })
       .array(),
   })
@@ -162,4 +168,28 @@ export async function pushMaterial(params: PushMaterialRequest) {
       toastMessage: "Your changes have been saved",
     },
   });
+}
+
+export function statusSMColor(status: SMStatus, level = 6) {
+  const colors: Record<SMStatus, string> = {
+    /* cspell:disable */
+    DXL: "green",
+    TL: "blue",
+    YCDG: "orange",
+    /* cspell:enable */
+  };
+  if (!status) {
+    return "";
+  }
+  return `${colors[status]}.${level}`;
+}
+
+export function statusSMOptions(t: (key: string) => string) {
+  const statusOptions: OptionProps[] = smStatusSchema.options.map(
+    (status) => ({
+      label: t(`supplierMaterial.status.${status}`),
+      value: status,
+    }),
+  );
+  return [statusOptions];
 }

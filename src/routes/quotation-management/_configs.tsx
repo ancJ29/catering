@@ -3,6 +3,7 @@ import { Material, Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { numberWithDelimiter } from "@/utils";
 import { TextInput } from "@mantine/core";
+import Status from "./components/Status";
 
 export const configs = (
   t: (key: string) => string,
@@ -118,8 +119,16 @@ export const configs = (
       header: t("Status"),
       width: "10%",
       textAlign: "center",
-      renderCell: () => {
-        return <></>;
+      renderCell: (_, row: Material) => {
+        const supplierId =
+          row.others?.prices?.[cateringId || ""]?.supplierId || "";
+        const supplierMaterial = row.supplierMaterials.find(
+          (m) => m.supplier.id === supplierId,
+        );
+        if (!supplierMaterial?.others.status) {
+          return "";
+        }
+        return <Status status={supplierMaterial.others.status} />;
       },
     },
   ];
@@ -146,6 +155,10 @@ export function filter(
 ) {
   const supplierId =
     m.others?.prices?.[cateringId || ""]?.supplierId || "";
+  const status =
+    m.supplierMaterials.find((m) => m.supplier.id === supplierId)
+      ?.others.status || "";
+
   if (condition?.group && m.others.group !== condition.group) {
     return false;
   }
@@ -153,6 +166,9 @@ export function filter(
     return false;
   }
   if (condition?.supplierId && supplierId !== condition.supplierId) {
+    return false;
+  }
+  if (condition?.status && status !== condition.status) {
     return false;
   }
   return true;

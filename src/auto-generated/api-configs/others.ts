@@ -1,4 +1,7 @@
-import { unitSchema } from "@/auto-generated/prisma-schema";
+import {
+  supplierMaterialSchema,
+  unitSchema,
+} from "@/auto-generated/prisma-schema";
 import { z } from "zod";
 import {
   booleanSchema,
@@ -233,6 +236,7 @@ export const materialOthersSchema = z.object({
   price: optionalNumberSchema,
   /*
     cateringId: {
+      id
       supplierId
       price
     }
@@ -240,7 +244,11 @@ export const materialOthersSchema = z.object({
   prices: z
     .record(
       stringSchema,
-      z.object({ supplierId: stringSchema, price: numberSchema }),
+      supplierMaterialSchema.pick({
+        id: true,
+        supplierId: true,
+        price: true,
+      }),
     )
     .optional(),
   orderCycle: materialOrderCycleSchema,
@@ -311,6 +319,18 @@ export const bomOthersSchema = z.object({
     .record(stringSchema, z.record(stringSchema, numberSchema))
     .default({}),
   memo: z.record(stringSchema, stringSchema).optional(),
+});
+
+export const smStatusSchema = z.enum([
+  // cspell:disable
+  "DXL", // Đã xử lý
+  "TL", // Thương lượng
+  "YCDG", // Yêu cầu duyệt giá
+  // cspell:enable
+]);
+
+export const supplierMaterialOthersSchema = z.object({
+  status: smStatusSchema,
 });
 
 export const prStatusSchema = z.enum([
@@ -585,6 +605,7 @@ export type MaterialGroup = z.infer<typeof materialGroupSchema>;
 export type MaterialOrderCycle = z.infer<typeof materialOrderCycleSchema>;
 export type CustomerType = z.infer<typeof customerTypeSchema>;
 export type DailyMenuStatus = z.infer<typeof dailyMenuStatusSchema>;
+export type SMStatus = z.infer<typeof smStatusSchema>;
 export type PRType = z.infer<typeof prTypeSchema>;
 export type PRPriority = z.infer<typeof prPrioritySchema>;
 export type PRStatus = z.infer<typeof prStatusSchema>;

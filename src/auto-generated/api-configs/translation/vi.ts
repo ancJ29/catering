@@ -246,7 +246,7 @@ export default {
   "Add manually": "Thêm thủ công",
   "Inventory": "Tồn",
   "Need to order": "Cần đặt",
-  "Supplier note": "Ghi chú nhà cung cấp",
+  "Supplier note": "Ghi chú NCC",
   "Internal note": "Ghi chú nội bộ",
   "Total": "Tổng cộng",
   "Quantity of material": "Số lượng nguyên liệu",
@@ -524,4 +524,7 @@ export default {
   "Note for materials with difference":
     "Những nguyên liệu có chênh lệch trên 10% phải có ghi chú nội bộ",
   "Applicable date": "Ngày áp dụng",
+  "New price": "Giá mới",
+  "Admin note": "Ghi chú admin",
+  "Maximum 500 characters": "Tối đa 500 ký tự",
 } satisfies Record<string, string>;

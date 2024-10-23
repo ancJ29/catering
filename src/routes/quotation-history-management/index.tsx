@@ -33,9 +33,9 @@ const QuotationHistoryManagement = () => {
 
   const filter = useCallback(
     (el: Material, filter?: FilterType | undefined) => {
-      return _filter(el, filter, cateringId, suppliers);
+      return _filter(el, filter, cateringId);
     },
-    [cateringId, suppliers],
+    [cateringId],
   );
 
   const {

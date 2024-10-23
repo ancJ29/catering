@@ -47,6 +47,7 @@ import {
   poStatusSchema,
   productOthersSchema,
   prStatusSchema,
+  supplierMaterialOthersSchema,
   supplierOthersSchema,
   userNotificationOthersSchema,
   userOthersSchema,
@@ -585,6 +586,8 @@ export const configs = {
                 name: stringSchema,
                 others: supplierOthersSchema,
               }),
+              others: supplierMaterialOthersSchema,
+              updatedAt: dateSchema,
             })
             .array(),
         })

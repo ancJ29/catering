@@ -16,6 +16,7 @@ import {
   PRPriority,
   PRStatus,
   PRType,
+  SMStatus,
   WRType,
 } from "../others";
 import en from "./en";
@@ -32,6 +33,7 @@ type MaterialKey =
   | `materials.type.${MaterialType}`
   | `materials.group.${MaterialGroup}`
   | `materials.orderCycle.${MaterialOrderCycle}`;
+type SupplierMaterialKey = `supplierMaterial.status.${SMStatus}`;
 type PurchaseRequestKey =
   | `purchaseRequest.type.${PRType}`
   | `purchaseRequest.priority.${PRPriority}`
@@ -239,7 +241,25 @@ const materialDictionaries: {
     /* cspell:enable */
   },
 };
-
+const supplierMaterialDictionaries: {
+  en: Record<SupplierMaterialKey, string>;
+  vi: Record<SupplierMaterialKey, string>;
+} = {
+  en: {
+    /* cspell:disable */
+    "supplierMaterial.status.DXL": "Processed",
+    "supplierMaterial.status.TL": "Negotiation",
+    "supplierMaterial.status.YCDG": "Request for price approval",
+    /* cspell:enable */
+  },
+  vi: {
+    /* cspell:disable */
+    "supplierMaterial.status.DXL": "Đã xử lý",
+    "supplierMaterial.status.TL": "Thương lượng",
+    "supplierMaterial.status.YCDG": "Yêu cầu duyệt giá",
+    /* cspell:enable */
+  },
+};
 const purchaseRequestDictionaries: {
   en: Record<PurchaseRequestKey, string>;
   vi: Record<PurchaseRequestKey, string>;
@@ -281,6 +301,7 @@ const purchaseInternalDictionaries: {
   vi: Record<PurchaseInternalKey, string>;
 } = {
   en: {
+    /* cspell:disable */
     "purchaseInternal.status.DG": "Sent",
     "purchaseInternal.status.DD": "Approved",
     "purchaseInternal.status.SSGH": "Ready to deliver",
@@ -289,6 +310,7 @@ const purchaseInternalDictionaries: {
     "purchaseInternal.cateringStatus.CN": "Not Received",
     "purchaseInternal.cateringStatus.CNK": "Pending Entry",
     "purchaseInternal.cateringStatus.PINHT": "PI Completed",
+    /* cspell:enable */
   },
   vi: {
     /* cspell:disable */
@@ -425,6 +447,7 @@ export const dictionaries: {
     ...dailyMenuDictionaries.en,
     ...materialDictionaries.en,
     ...productDictionaries.en,
+    ...supplierMaterialDictionaries.en,
     ...purchaseRequestDictionaries.en,
     ...purchaseInternalDictionaries.en,
     ...purchaseCoordinationDictionaries.en,
@@ -437,6 +460,7 @@ export const dictionaries: {
     ...dailyMenuDictionaries.vi,
     ...materialDictionaries.vi,
     ...productDictionaries.vi,
+    ...supplierMaterialDictionaries.vi,
     ...purchaseRequestDictionaries.vi,
     ...purchaseInternalDictionaries.vi,
     ...purchaseCoordinationDictionaries.vi,

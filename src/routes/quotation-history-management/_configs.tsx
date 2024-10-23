@@ -126,14 +126,11 @@ export function filter(
   m: Material,
   condition: FilterType | undefined,
   cateringId: string | undefined,
-  suppliers: Map<string, Supplier>,
 ) {
   const supplierId =
     m.others?.prices?.[cateringId || ""]?.supplierId || "";
-  const supplierMaterials =
-    suppliers.get(supplierId)?.supplierMaterials;
-  const supplierMaterial = supplierMaterials?.find(
-    (e) => e.material.id === m.id,
+  const supplierMaterial = m.supplierMaterials.find(
+    (sm) => sm.supplier.id === supplierId,
   );
   if (
     condition?.from &&

@@ -524,4 +524,7 @@ export default {
   "Note for materials with difference":
     "Materials with a difference of over 10% must have internal note",
   "Applicable date": "Applicable date",
+  "New price": "New price",
+  "Admin note": "Admin note",
+  "Maximum 500 characters": "Maximum 500 characters",
 } satisfies Record<string, string>;

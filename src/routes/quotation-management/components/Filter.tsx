@@ -2,7 +2,10 @@ import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFi
 import CustomButton from "@/components/c-catering/CustomButton";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
-import { typeAndGroupOptions } from "@/services/domain";
+import {
+  statusSMOptions,
+  typeAndGroupOptions,
+} from "@/services/domain";
 import useMetaDataStore from "@/stores/meta-data.store";
 import useSupplierStore from "@/stores/supplier.store";
 import { Flex } from "@mantine/core";
@@ -57,6 +60,10 @@ const Filter = ({
     ];
   }, [suppliers]);
 
+  const [statusOptions] = useMemo(() => {
+    return statusSMOptions(t);
+  }, [t]);
+
   return (
     <Flex gap={10} align="end" justify="end">
       <Select
@@ -93,6 +100,13 @@ const Filter = ({
         data={names}
         value={keyword}
         onReload={reload}
+      />
+      <Select
+        value={condition?.status}
+        label={t("State")}
+        w={{ base: "100%", sm: "15vw" }}
+        options={statusOptions}
+        onChange={updateCondition.bind(null, "status", "")}
       />
       <CustomButton
         mt={{ base: 10, sm: 0 }}
