@@ -1,8 +1,14 @@
-import NumberInput from "@/components/common/NumberInput";
+import { smStatusSchema } from "@/auto-generated/api-configs";
 import { Material, Supplier } from "@/services/domain";
 import { DataGridColumnProps } from "@/types";
 import { numberWithDelimiter } from "@/utils";
-import { TextInput } from "@mantine/core";
+import {
+  ActionIcon,
+  Flex,
+  NumberInput,
+  TextInput,
+} from "@mantine/core";
+import { IconCheck } from "@tabler/icons-react";
 import Status from "./components/Status";
 
 export const configs = (
@@ -53,9 +59,9 @@ export const configs = (
       },
     },
     {
-      key: "price",
-      header: t("Price"),
-      width: "5%",
+      key: "appliedPrice",
+      header: t("Applied price"),
+      width: "10%",
       textAlign: "right",
       renderCell: (_, row: Material) => {
         return numberWithDelimiter(
@@ -66,33 +72,45 @@ export const configs = (
     {
       key: "newPrice",
       header: t("New price"),
-      width: "10%",
+      width: "13%",
       textAlign: "center",
       headerStyle: {
-        paddingLeft: "20px",
+        padding: "0 20px",
       },
-      renderCell: () => {
+      renderCell: (_, row: Material) => {
+        const supplierId =
+          row.others?.prices?.[cateringId || ""]?.supplierId || "";
+        const supplierMaterial = row.supplierMaterials.find(
+          (m) => m.supplier.id === supplierId,
+        );
         return (
-          <NumberInput
-            isPositive={true}
-            defaultValue={0}
-            onChange={() => null}
-            allowDecimal={false}
-            isInteger={true}
-            ml={20}
-          />
+          <Flex gap={5} align="center" mx="20">
+            <NumberInput
+              value={supplierMaterial?.newPrice || 0}
+              onChange={() => null}
+              allowNegative={false}
+              thousandSeparator="."
+              decimalSeparator=","
+            />
+            {supplierMaterial?.others.status ===
+              smStatusSchema.Values.TL && (
+              <ActionIcon variant="transparent">
+                <IconCheck size={24} stroke={1.5} />
+              </ActionIcon>
+            )}
+          </Flex>
         );
       },
     },
     {
       key: "adminNote",
       header: t("Admin note"),
-      width: "15%",
+      width: "10%",
       textAlign: "center",
       renderCell: () => {
         return (
           <TextInput
-            defaultValue=""
+            value=""
             onChange={() => null}
             placeholder={t("Maximum 500 characters")}
           />
@@ -102,12 +120,12 @@ export const configs = (
     {
       key: "supplierNote",
       header: t("Supplier note"),
-      width: "15%",
+      width: "10%",
       textAlign: "center",
       renderCell: () => {
         return (
           <TextInput
-            defaultValue=""
+            value=""
             onChange={() => null}
             placeholder={t("Maximum 500 characters")}
           />

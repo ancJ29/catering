@@ -527,4 +527,5 @@ export default {
   "New price": "Giá mới",
   "Admin note": "Ghi chú admin",
   "Maximum 500 characters": "Tối đa 500 ký tự",
+  "State": "Tình trạng",
 } satisfies Record<string, string>;

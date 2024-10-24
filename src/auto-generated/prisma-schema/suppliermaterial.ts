@@ -11,6 +11,7 @@ export const supplierMaterialSchema = z.object({
   supplierId: z.string(),
   materialId: z.string(),
   price: z.number(),
+  newPrice: z.number(),
   others: jsonSchema,
   createdAt: z.date(),
   updatedAt: z.date(),

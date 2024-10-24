@@ -34,6 +34,7 @@ const cacheSchema = xMaterialSchema
     supplierMaterials: z
       .object({
         price: numberSchema.nonnegative(),
+        newPrice: numberSchema.nonnegative(),
         supplier: z.object({
           id: stringSchema,
           name: stringSchema,

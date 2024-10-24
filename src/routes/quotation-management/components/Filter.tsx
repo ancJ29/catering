@@ -67,7 +67,7 @@ const Filter = ({
   return (
     <Flex gap={10} align="end" justify="end">
       <Select
-        w={{ base: "100%", sm: "15vw" }}
+        w={{ base: "100%", sm: "18vw" }}
         label={t("Supplier name")}
         options={supplierOptions}
         value={condition?.supplierId}
@@ -76,7 +76,7 @@ const Filter = ({
       <Select
         value={condition?.type}
         label={t("Material type")}
-        w={{ base: "100%", sm: "15vw" }}
+        w={{ base: "100%", sm: "18vw" }}
         options={typeOptions}
         onChange={(value) => {
           setCondition({
@@ -90,13 +90,13 @@ const Filter = ({
       <Select
         value={condition?.group}
         label={t("Material group")}
-        w={{ base: "100%", sm: "15vw" }}
+        w={{ base: "100%", sm: "18vw" }}
         options={groupOptions}
         onChange={updateCondition.bind(null, "group", "")}
       />
       <AutocompleteForFilterData
         label={t("Material name")}
-        w={{ base: "100%", sm: "15vw" }}
+        w={{ base: "100%", sm: "18vw" }}
         data={names}
         value={keyword}
         onReload={reload}
@@ -104,7 +104,7 @@ const Filter = ({
       <Select
         value={condition?.status}
         label={t("State")}
-        w={{ base: "100%", sm: "15vw" }}
+        w={{ base: "100%", sm: "18vw" }}
         options={statusOptions}
         onChange={updateCondition.bind(null, "status", "")}
       />

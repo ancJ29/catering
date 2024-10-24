@@ -82,10 +82,8 @@ export const configs = (
       renderCell: (_, row: Material) => {
         const supplierId =
           row.others?.prices?.[cateringId || ""]?.supplierId || "";
-        const supplierMaterials =
-          suppliers.get(supplierId)?.supplierMaterials;
-        const supplierMaterial = supplierMaterials?.find(
-          (e) => e.material.id === row.id,
+        const supplierMaterial = row.supplierMaterials.find(
+          (sm) => sm.supplier.id === supplierId,
         );
         return formatTime(supplierMaterial?.updatedAt);
       },
