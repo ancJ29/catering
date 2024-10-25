@@ -528,4 +528,5 @@ export default {
   "Admin note": "Ghi chú admin",
   "Maximum 500 characters": "Tối đa 500 ký tự",
   "State": "Tình trạng",
+  "Applied price": "Giá áp dụng",
 } satisfies Record<string, string>;

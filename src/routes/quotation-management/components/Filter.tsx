@@ -66,6 +66,13 @@ const Filter = ({
 
   return (
     <Flex gap={10} align="end" justify="end">
+      <AutocompleteForFilterData
+        label={t("Material name")}
+        w={{ base: "100%", sm: "18vw" }}
+        data={names}
+        defaultValue={keyword}
+        onReload={reload}
+      />
       <Select
         w={{ base: "100%", sm: "18vw" }}
         label={t("Supplier name")}
@@ -93,13 +100,6 @@ const Filter = ({
         w={{ base: "100%", sm: "18vw" }}
         options={groupOptions}
         onChange={updateCondition.bind(null, "group", "")}
-      />
-      <AutocompleteForFilterData
-        label={t("Material name")}
-        w={{ base: "100%", sm: "18vw" }}
-        data={names}
-        value={keyword}
-        onReload={reload}
       />
       <Select
         value={condition?.status}

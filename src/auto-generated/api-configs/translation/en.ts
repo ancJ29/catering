@@ -528,4 +528,5 @@ export default {
   "Admin note": "Admin note",
   "Maximum 500 characters": "Maximum 500 characters",
   "State": "State",
+  "Applied price": "Applied price",
 } satisfies Record<string, string>;

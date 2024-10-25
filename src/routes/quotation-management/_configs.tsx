@@ -15,6 +15,13 @@ export const configs = (
   t: (key: string) => string,
   cateringId: string | undefined,
   suppliers: Map<string, Supplier>,
+  prices: Map<string, number>,
+  setPrice: (materialId: string, price: number) => void,
+  onApprove: (
+    materialId: string,
+    price: number,
+    supplierId: string,
+  ) => void,
 ): DataGridColumnProps[] => {
   return [
     {
@@ -83,18 +90,29 @@ export const configs = (
         const supplierMaterial = row.supplierMaterials.find(
           (m) => m.supplier.id === supplierId,
         );
+        const price =
+          prices.get(row.id) || supplierMaterial?.newPrice || 0;
         return (
           <Flex gap={5} align="center" mx="20">
             <NumberInput
-              value={supplierMaterial?.newPrice || 0}
-              onChange={() => null}
+              value={price}
+              onChange={(price) => setPrice(row.id, Number(price))}
               allowNegative={false}
               thousandSeparator="."
               decimalSeparator=","
             />
             {supplierMaterial?.others.status ===
               smStatusSchema.Values.TL && (
-              <ActionIcon variant="transparent">
+              <ActionIcon
+                variant="transparent"
+                onClick={() =>
+                  onApprove(
+                    row.id,
+                    supplierMaterial?.newPrice,
+                    supplierId,
+                  )
+                }
+              >
                 <IconCheck size={24} stroke={1.5} />
               </ActionIcon>
             )}

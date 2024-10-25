@@ -47,6 +47,7 @@ import {
   poStatusSchema,
   productOthersSchema,
   prStatusSchema,
+  smStatusSchema,
   supplierMaterialOthersSchema,
   supplierOthersSchema,
   userNotificationOthersSchema,
@@ -846,6 +847,7 @@ export const configs = {
           .object({
             materialId: stringSchema,
             price: numberSchema.nonnegative(),
+            status: smStatusSchema.optional(),
           })
           .array(),
       }),
