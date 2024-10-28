@@ -19,7 +19,7 @@ export const configs = (
       key: "userName",
       sortable: true,
       header: t("Username"),
-      width: "15%",
+      width: "20%",
       defaultVisible: true,
     },
     {
@@ -62,7 +62,7 @@ export const configs = (
     {
       key: "active",
       header: t("Status"),
-      width: "20%",
+      width: "15%",
       renderCell: (active) => {
         return active ? t("Active") : t("Disabled");
       },

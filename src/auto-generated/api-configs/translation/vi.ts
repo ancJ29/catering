@@ -529,4 +529,8 @@ export default {
   "Maximum 500 characters": "Tối đa 500 ký tự",
   "State": "Tình trạng",
   "Applied price": "Giá áp dụng",
+  "Please copy and keep password safe before update password":
+    "Vui lòng sao chép và lưu mật khẩu trước khi cập nhật mật khẩu",
+  "Random password": "Mật khẩu ngẫu nhiên",
+  "The passwords did not match": "Mật khẩu không khớp",
 } satisfies Record<string, string>;

@@ -172,7 +172,7 @@ const AddUserForm = ({
           </UnstyledButton>
         </Flex>
         <Flex w={w} justify="end">
-          <InputLabel c={"red.5"}>
+          <InputLabel c="red.5">
             {t(
               "Please copy and keep password safe before create new user",
             )}

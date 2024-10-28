@@ -32,6 +32,7 @@ export enum Actions {
   UPDATE_UNITS = "update-units",
   GET_USERS = "get-users",
   CHANGE_PASSWORD = "change-password",
+  RESET_PASSWORD = "reset-password",
   DISABLE_USERS = "disable-users",
   ADD_USER = "add-user",
   UPDATE_USER = "update-user",

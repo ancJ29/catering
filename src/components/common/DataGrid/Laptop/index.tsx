@@ -397,11 +397,11 @@ function Headers<T>({
           </Box>
         );
       })}
-      {hasActionColumn && actionHandlers && (
-        <Box className={classes.actions}>&nbsp;</Box>
-      )}
       {hasUpdateColumn && (
         <Box className={classes.updated}>&nbsp;</Box>
+      )}
+      {hasActionColumn && actionHandlers && (
+        <Box className={classes.actions}>&nbsp;</Box>
       )}
     </div>
   );

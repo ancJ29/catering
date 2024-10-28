@@ -138,7 +138,7 @@ const UserManagement = () => {
   return (
     <Stack gap={10} pos="relative">
       <AddButton onClick={() => addUser()} label="Add user" />
-      <Flex w={"100%"} justify="end" align="center" gap={12}>
+      <Flex w="100%" justify="end" align="center" gap={10}>
         <form
           onSubmit={search}
           style={{
@@ -167,6 +167,7 @@ const UserManagement = () => {
         hasOrderColumn
         columns={dataGridConfigs}
         data={data}
+        hasActionColumn
         actionHandlers={{
           onDelete,
           deletable: (user) => user?.active === true,

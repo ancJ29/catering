@@ -529,4 +529,8 @@ export default {
   "Maximum 500 characters": "Maximum 500 characters",
   "State": "State",
   "Applied price": "Applied price",
+  "Please copy and keep password safe before update password":
+    "Please copy and keep password safe before update password",
+  "Random password": "Random password",
+  "The passwords did not match": "The passwords did not match",
 } satisfies Record<string, string>;

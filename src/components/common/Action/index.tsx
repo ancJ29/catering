@@ -1,3 +1,4 @@
+import { stopMouseEvent } from "@/utils";
 import { Flex, UnstyledButton } from "@mantine/core";
 import { IconCopy, IconEdit, IconTrash } from "@tabler/icons-react";
 
@@ -17,22 +18,37 @@ const Action = ({
   onEdit,
   onDelete,
 }: Props) => {
+  const handleClick = (e: React.MouseEvent, action?: () => void) => {
+    stopMouseEvent(e);
+    action && action();
+  };
+
   return (
-    <Flex
-      gap={5}
-      px={2}
-      justify={justify}
-      opacity={disable ? 0.6 : 1}
-    >
-      <UnstyledButton disabled={!onDelete} onClick={onDelete}>
-        <IconTrash strokeWidth="1.5" color="black" />
-      </UnstyledButton>
-      <UnstyledButton disabled={!onEdit} onClick={onEdit}>
-        <IconEdit strokeWidth="1.5" color="black" />
-      </UnstyledButton>
-      <UnstyledButton disabled={!onClone} onClick={onClone}>
-        <IconCopy strokeWidth="1.5" color="black" />
-      </UnstyledButton>
+    <Flex gap={5} justify={justify} opacity={disable ? 0.6 : 1}>
+      {onDelete && (
+        <UnstyledButton
+          disabled={!onDelete}
+          onClick={(e) => handleClick(e, onDelete)}
+        >
+          <IconTrash strokeWidth="1.5" color="black" />
+        </UnstyledButton>
+      )}
+      {onEdit && (
+        <UnstyledButton
+          disabled={!onEdit}
+          onClick={(e) => handleClick(e, onEdit)}
+        >
+          <IconEdit strokeWidth="1.5" color="black" />
+        </UnstyledButton>
+      )}
+      {onClone && (
+        <UnstyledButton
+          disabled={!onClone}
+          onClick={(e) => handleClick(e, onClone)}
+        >
+          <IconCopy strokeWidth="1.5" color="black" />
+        </UnstyledButton>
+      )}
     </Flex>
   );
 };

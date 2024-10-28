@@ -168,11 +168,24 @@ export const configs = {
   },
   [Actions.CHANGE_PASSWORD]: {
     name: Actions.CHANGE_PASSWORD,
+    group: ActionGroups.AUTHENTICATIONS,
+    type: ActionType.WRITE,
+    public: true,
+    schema: {
+      request: z.object({
+        userName: stringSchema,
+        currentPassword: stringSchema,
+        password: stringSchema,
+      }),
+    },
+  },
+  [Actions.RESET_PASSWORD]: {
+    name: Actions.RESET_PASSWORD,
     group: ActionGroups.PROFILE_MANAGEMENT,
     type: ActionType.WRITE,
     schema: {
       request: z.object({
-        currentPassword: stringSchema,
+        userId: stringSchema,
         password: stringSchema,
       }),
     },

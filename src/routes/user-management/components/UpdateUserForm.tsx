@@ -13,12 +13,13 @@ import {
   convertToInternationalFormat,
   isVietnamesePhoneNumber,
 } from "@/utils";
-import { Button, Text, TextInput } from "@mantine/core";
+import { Button, Flex, Text, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import { User } from "../_configs";
+import UpdatePasswordForm from "./UpdatePasswordForm";
 
 const { request } = actionConfigs[Actions.UPDATE_USER].schema;
 type Request = z.infer<typeof request>;
@@ -105,6 +106,16 @@ const EditUserForm = ({
     [t, reOpen, user, onSuccess],
   );
 
+  const updatePassword = useCallback(() => {
+    modals.open({
+      title: user.fullName,
+      classNames: { title: "c-catering-font-bold" },
+      centered: true,
+      size: "lg",
+      children: <UpdatePasswordForm user={user} />,
+    });
+  }, [user]);
+
   return (
     <form
       className="c-catering-form-wrapper"
@@ -153,7 +164,12 @@ const EditUserForm = ({
         onChangeValue={(phone) => form.setFieldValue("phone", phone)}
         {...form.getInputProps("phone")}
       />
-      <Button type="submit">{t("Save")}</Button>
+      <Flex align="center" gap={10}>
+        <Button color="blue" onClick={updatePassword}>
+          {t("Update password")}
+        </Button>
+        <Button type="submit">{t("Save")}</Button>
+      </Flex>
     </form>
   );
 };
