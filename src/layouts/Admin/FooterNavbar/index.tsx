@@ -14,6 +14,7 @@ const FooterNavbar = ({ opened }: FooterNavbarProps) => {
   const navigate = useNavigate();
   const { removeToken } = useAuthStore();
   const version = import.meta.env.APP_VERSION;
+  const buildTime = import.meta.env.BUILD_TIME;
 
   const gotoProfilePage = () => {
     navigate("/profile");
@@ -49,7 +50,7 @@ const FooterNavbar = ({ opened }: FooterNavbarProps) => {
       ))}
       {opened && (
         <Text c="dimmed" ta="right" pr={20} pb={5}>
-          {`${t("Version")}: ${version}`}
+          {`${t("Version")}: ${version} (${buildTime})`}
         </Text>
       )}
     </AppShell.Section>

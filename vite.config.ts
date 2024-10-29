@@ -22,7 +22,8 @@ export default ({ mode }: { mode: string }) => {
       "import.meta.env.CLIENT_ID": JSON.stringify(env.CLIENT_ID),
       "import.meta.env.BASE_URL": JSON.stringify(env.BASE_URL),
       "import.meta.env.DEBUG_CODE": JSON.stringify(env.DEBUG_CODE),
-      "import.meta.env.APP_VERSION": JSON.stringify(version)
+      "import.meta.env.APP_VERSION": JSON.stringify(version),
+      "import.meta.env.BUILD_TIME": JSON.stringify(new Date().toLocaleString()),
     },
   });
 };
