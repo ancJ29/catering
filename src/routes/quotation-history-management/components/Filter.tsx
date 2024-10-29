@@ -1,5 +1,6 @@
 import AutocompleteForFilterData from "@/components/c-catering/AutocompleteForFilterData";
 import CustomButton from "@/components/c-catering/CustomButton";
+import ResponsiveFilter from "@/components/c-catering/ResponsiveFilter";
 import DateRangeInput from "@/components/common/DateRangeInput";
 import Select from "@/components/common/Select";
 import useTranslation from "@/hooks/useTranslation";
@@ -60,8 +61,13 @@ const Filter = ({
     ];
   }, [suppliers]);
 
-  return (
-    <Flex gap={10} align="end" justify="end">
+  const filterComponent = (
+    <Flex
+      gap={10}
+      align="end"
+      justify="end"
+      direction={{ base: "column", sm: "row" }}
+    >
       <DateRangeInput
         label={t("Applicable date")}
         from={condition?.from}
@@ -112,6 +118,15 @@ const Filter = ({
         {t("Clear")}
       </CustomButton>
     </Flex>
+  );
+
+  return (
+    <>
+      <Flex direction="column" visibleFrom="sm">
+        {filterComponent}
+      </Flex>
+      <ResponsiveFilter>{filterComponent}</ResponsiveFilter>
+    </>
   );
 };
 

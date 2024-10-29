@@ -93,7 +93,12 @@ export const configs = (
         const price =
           prices.get(row.id) || supplierMaterial?.newPrice || 0;
         return (
-          <Flex gap={5} align="center" mx="20">
+          <Flex
+            gap={5}
+            align="center"
+            ml="24"
+            mr={{ base: "0", xs: "20" }}
+          >
             <NumberInput
               value={price}
               onChange={(price) => setPrice(row.id, Number(price))}
