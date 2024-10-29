@@ -7,6 +7,7 @@ import callApi from "@/services/api";
 import {
   Button,
   Card,
+  Flex,
   PasswordInput,
   TextInput,
 } from "@mantine/core";
@@ -102,9 +103,12 @@ const ForgotPasswordForm = () => {
           withAsterisk
           {...form.getInputProps("reNewPassword")}
         />
-        <Button type="submit" w="100%">
-          {t("Save")}
-        </Button>
+        <Flex gap={10} justify="center">
+          <Button color="blue" onClick={() => navigate("/login")}>
+            {t("Return")}
+          </Button>
+          <Button type="submit">{t("Update")}</Button>
+        </Flex>
       </form>
     </Card>
   );
