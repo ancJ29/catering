@@ -49,7 +49,7 @@ const FooterNavbar = ({ opened }: FooterNavbarProps) => {
         />
       ))}
       {opened && (
-        <Text c="dimmed" ta="right" pr={20} pb={5}>
+        <Text fz="sm" c="dimmed" ta="right" pr={20} pb={5}>
           {`${t("Version")}: ${version} (${buildTime})`}
         </Text>
       )}
